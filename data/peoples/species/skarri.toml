@@ -1,0 +1,47 @@
+id       = "skarri"
+name     = "Skarri"
+plural   = "Skarri"
+sentient = true
+plan     = "winged"
+rarity   = "uncommon"
+blurb    = "light, hollow-boned folk of the cliffs who nest on the heights"
+
+[size]
+height_cm = [140, 165]
+mass_kg   = [30, 45]
+
+[life]
+mature_years = 14
+lifespan     = [45, 65]
+
+[diet]
+kind = "carnivore"
+
+[senses]
+sight      = 3
+dark_sight = 0
+hearing    = 1
+smell      = 0
+
+[climate]
+comfort_c = [-10, 18]
+coat      = "feathers"
+
+[habitat]
+layers = ["surface"]
+builds = "nests"
+
+[social]
+structure = "clan"
+bonding   = "pair"
+
+[temperament]
+convictions = { strangers = 0.3, trust = -0.2, deep_digging = -0.6, nature = 0.4, martial_prowess = 0.4 }
+
+[art]
+body  = "skarri"
+skin  = ["feather_brown", "feather_grey", "feather_white"]
+hair  = false
+
+[living]
+ways = ["hunting", "fishing"]

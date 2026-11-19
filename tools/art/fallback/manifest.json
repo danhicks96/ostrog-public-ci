@@ -1,0 +1,1471 @@
+[
+  {
+    "path": "godot/assets/items/ale.png",
+    "sha256": "b3a63436339c91143bc5b3ce3b3ac35d76eac8ba74e201e187036fcdf9ad9746",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:ale",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items/clay.png",
+    "sha256": "affcdb30fded52da654fca0e52066180e06ff1f886f81b688103278b8d649fdb",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:clay",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items/figurine.png",
+    "sha256": "d756347d5c0ae4876abbb399f36928647d0c09a06cf9a063dca95ea64ab7c021",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items/jewel.png",
+    "sha256": "7efc36a3dc651d89f0618aba1bd09e952e2c5dbc69ec15d14fda192f1ea96548",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:jewel",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items/leather.png",
+    "sha256": "da9275b156ac55f29905f75b27baa861a6c44967c0dfb24ecc393d4e570f82c1",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:leather",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items/sand.png",
+    "sha256": "526fe487c321ec9cbdb6b5c23380d8ebfb9b1863e5433e81ad4ff3745bcb2460",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:sand",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items/vessel.png",
+    "sha256": "1b926ea9be768557a46a09a731dd8c2f2a904f04bcfb8749ae05e8c605201d66",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:vessel",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items/wine.png",
+    "sha256": "473e1f1dc9dee04baeec4a9443eff486942bc59245469d8fb2f26f18ce4b9e38",
+    "size": [
+      16,
+      16
+    ],
+    "source": "new-geometric:wine",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/ale.png",
+    "sha256": "02aec082b135c64fd2b27d7ba4a13d5f8390cdf0f1e90ed5febf7ab2c6cfea90",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:ale",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/armour.png",
+    "sha256": "d84ce8cd4d03891de4d85339378a40323b643922138b2fd11e8e6ae6c2bc976c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:armour",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/armour_bronze.png",
+    "sha256": "693fa07ed820277f670e6611c367b27508796196922abcea446a2c35deb473f9",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:armour",
+    "variant": "bronze",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/armour_copper.png",
+    "sha256": "3efba5252a09c34861f38612f368b552bf2f95373f6658508728543abb712b0d",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:armour",
+    "variant": "copper",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/bar.png",
+    "sha256": "559d9d98e02c9344fcfab689fcdcf6e74dfc95d149c9cd38aaaf30935b592cc1",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:bar",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/bar_bronze.png",
+    "sha256": "998c132e6683266f66e8d0dfa5d06ef2ad80d6460eb56ed62f98dce43fcaeca1",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:bar",
+    "variant": "bronze",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/bar_gold.png",
+    "sha256": "998c132e6683266f66e8d0dfa5d06ef2ad80d6460eb56ed62f98dce43fcaeca1",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:bar",
+    "variant": "gold",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/bar_silver.png",
+    "sha256": "57f903dbbde9e8b7c3396f1f5c61ac832eff4655c4a3466aa41380adf2d89b3b",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:bar",
+    "variant": "silver",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/bar_tin.png",
+    "sha256": "57f903dbbde9e8b7c3396f1f5c61ac832eff4655c4a3466aa41380adf2d89b3b",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:bar",
+    "variant": "tin",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/berries.png",
+    "sha256": "1c219aa2a43567451b6cb3eb81bff91746bc2caae786c936041d66cb6a27849a",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:berries",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/bucket.png",
+    "sha256": "a00edff5709916a7bf6e8f8ec7cab3aa362238f396115f2ad10bdca33a518f84",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:bucket",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/chisel.png",
+    "sha256": "c39a01301e999eada3fa6c24d7ce2d0f5aebb3220f43c376b462641cb279709d",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:chisel",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/clay.png",
+    "sha256": "05c1ec4e37c61e87bca3259ec93999edfe1c34a076bbc514c2bb6457ebc72f73",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:clay",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/cloth.png",
+    "sha256": "7bd370c6a3f8c7e4dbb9d3d8371d13a20fa7ab2ff1d8c0c5da83cf6dfb28bb00",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:cloth",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/clothes.png",
+    "sha256": "396bb957eaec07c79f7f2d10657b5eaceaecdd7def8ecbc483865760e3b4d378",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:clothes",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/coal.png",
+    "sha256": "bdd547a76c184305ac7043c157e3d266a4c676442b9be1129102287c3eee9430",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:coal",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/copper_bar.png",
+    "sha256": "97ea73240844858fc197bc21d223fef1e06106a5e0e7f9e5ab3e52bf8542de32",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:copper_bar",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/copper_ore.png",
+    "sha256": "4a9da7ab098e772cc8183c22e9446ca27cf7fd7b5edb1d7f91ae52f74575ded1",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:copper_ore",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/fibre.png",
+    "sha256": "261b6d4cbcd995d47bcef0a3e701a170caf884cb9a3422ee23d209d058f0bdd6",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:fibre",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine.png",
+    "sha256": "848a349b836798dba4c1cfeae575df09ca77e33c63e69bf8b210b7f9e3ede063",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_basalt.png",
+    "sha256": "8ae0fd09acf58f135743009d2c891a97c2e6574a4239142e94ad9dde71da788c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "basalt",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_birch.png",
+    "sha256": "e033bf256804a42e0641ccb9ac3ed0e9001e5e93b8eed588bb95b61c7b8d1bb6",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "birch",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_fungus_wood.png",
+    "sha256": "9d568910cf6c5ec1c20f09a4b848b641de466b5fc3b09c7cc2da13b4246cef46",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "fungus_wood",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_granite.png",
+    "sha256": "26424c7450e81cd93bc20f9552ae42c34cd3142b24f3ffe735aed9e6b65d69a7",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "granite",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_limestone.png",
+    "sha256": "8ae0fd09acf58f135743009d2c891a97c2e6574a4239142e94ad9dde71da788c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "limestone",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_marble.png",
+    "sha256": "26424c7450e81cd93bc20f9552ae42c34cd3142b24f3ffe735aed9e6b65d69a7",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "marble",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_oak.png",
+    "sha256": "9d568910cf6c5ec1c20f09a4b848b641de466b5fc3b09c7cc2da13b4246cef46",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "oak",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_pine.png",
+    "sha256": "e033bf256804a42e0641ccb9ac3ed0e9001e5e93b8eed588bb95b61c7b8d1bb6",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "pine",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/figurine_slate.png",
+    "sha256": "8ae0fd09acf58f135743009d2c891a97c2e6574a4239142e94ad9dde71da788c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:figurine",
+    "variant": "slate",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/firewood.png",
+    "sha256": "bdb7d75a8313f174cc8a1d22c0a59c056228ecdfaf06fb1c4bec0bef1b93fa31",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:firewood",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/gem.png",
+    "sha256": "1a5e2504c0a92b8d2cb60420c3ddb755effbb4c4c459dc9f46bbdfcf389527b2",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:gem",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/gem_amethyst.png",
+    "sha256": "14a9ca96b54006381a82387e6237bfc840b21e31195400528d424ce1cd917e33",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:gem",
+    "variant": "amethyst",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/gem_emerald.png",
+    "sha256": "7d0c57b1d76b70d7742ef98648a31bc41df1565a1b48af049603ef3377152d1b",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:gem",
+    "variant": "emerald",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/gem_garnet.png",
+    "sha256": "78d2140c08d934f43a3b9eda1d5d25cc96369df4f64e437af2d2776365623d72",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:gem",
+    "variant": "garnet",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/gem_sapphire.png",
+    "sha256": "669d02b6c7685814100e73d7d4707a65c878c33c3e6db913aa5c12b2cdca9cd6",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:gem",
+    "variant": "sapphire",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/grain_sheaf.png",
+    "sha256": "5b9096b62d228e611322e66e2d3e025c77603d98e2de184c13f40965009ff3d9",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:grain_sheaf",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hammer.png",
+    "sha256": "deddabed1088a9147ef938ecd76c00c7ad10e1c07442de71d44ca80a62f3fc20",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hammer",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide.png",
+    "sha256": "fd367c2b958948b98356df0f3ddda6ace4d4a5d17662e6fd78eac90dabe9f2a8",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide_bear_pelt.png",
+    "sha256": "1306751d1cf59b60b65e951aa7a56e06e04c67018e98d7bcd24d2be7bab7ef89",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "bear_pelt",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide_boar_hide.png",
+    "sha256": "fd367c2b958948b98356df0f3ddda6ace4d4a5d17662e6fd78eac90dabe9f2a8",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "boar_hide",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide_fox_pelt.png",
+    "sha256": "1306751d1cf59b60b65e951aa7a56e06e04c67018e98d7bcd24d2be7bab7ef89",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "fox_pelt",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide_goat_hide.png",
+    "sha256": "b8931d63f75177d571be875681b8e219561b0fa6949764417544e2d4d9432591",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "goat_hide",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide_hare_pelt.png",
+    "sha256": "fd367c2b958948b98356df0f3ddda6ace4d4a5d17662e6fd78eac90dabe9f2a8",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "hare_pelt",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide_white_harts_hide.png",
+    "sha256": "1306751d1cf59b60b65e951aa7a56e06e04c67018e98d7bcd24d2be7bab7ef89",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "white_harts_hide",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/hide_wolf_pelt.png",
+    "sha256": "fd367c2b958948b98356df0f3ddda6ace4d4a5d17662e6fd78eac90dabe9f2a8",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:hide",
+    "variant": "wolf_pelt",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/iron_bar.png",
+    "sha256": "b6f0808d8c48d5737dcc8ac22d48d1463077475cee00d52d43789a68478b0520",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:iron_bar",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/iron_ore.png",
+    "sha256": "bc410369ac67d92e3299f3f3b239372b77f94998c290283f8df397bb718994e6",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:iron_ore",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/jewel.png",
+    "sha256": "e6c96b56acb970c4eb58b641ac3dd279e6d617836038f00c8238e2e2b28b0cd1",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:jewel",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/jewel_silver.png",
+    "sha256": "0023f362fbde4416845504a1e7ff7ea07c0b80aeb3f7a7b6ff28f4161855ac14",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:jewel",
+    "variant": "silver",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/leather.png",
+    "sha256": "1a269820519bf1cbb36fcc9982bb7d0dd018e32857cd96a1aeec70047efae714",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:leather",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log.png",
+    "sha256": "8adb14d664c4c98288298449f34b903bc9c1923a3ca473fb1801627ea3774fb5",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_alder.png",
+    "sha256": "19abca69d8b748362c06c746894b8803efa69947dd021ab857b96814ad4e97ba",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "alder",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_applewood.png",
+    "sha256": "9ea0d9c90cd0064c187384a95cbcf15485599356b5f9dc7cea79b9511b51cb21",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "applewood",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_ash.png",
+    "sha256": "6ff2cba819567f95b8ea25ef1b2a514ab5e5d862bbd1ee3eadefb18de71a569c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "ash",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_birch.png",
+    "sha256": "6ff2cba819567f95b8ea25ef1b2a514ab5e5d862bbd1ee3eadefb18de71a569c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "birch",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_bonewood.png",
+    "sha256": "6ff2cba819567f95b8ea25ef1b2a514ab5e5d862bbd1ee3eadefb18de71a569c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "bonewood",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_fungus_wood.png",
+    "sha256": "9ea0d9c90cd0064c187384a95cbcf15485599356b5f9dc7cea79b9511b51cb21",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "fungus_wood",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_pine.png",
+    "sha256": "6ff2cba819567f95b8ea25ef1b2a514ab5e5d862bbd1ee3eadefb18de71a569c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "pine",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_willow.png",
+    "sha256": "19abca69d8b748362c06c746894b8803efa69947dd021ab857b96814ad4e97ba",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "willow",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/log_yew.png",
+    "sha256": "9ea0d9c90cd0064c187384a95cbcf15485599356b5f9dc7cea79b9511b51cb21",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:log",
+    "variant": "yew",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/meal.png",
+    "sha256": "8e44c40e98253521be4182a33452339acce48d1064bcd4baf9f653bf015dfcb9",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:meal",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/meal_grain.png",
+    "sha256": "aec3904c44bb31acda207885982f01c932e3758e0d82c7e00c37fdd4626e98b4",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:meal",
+    "variant": "grain",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/meal_meat.png",
+    "sha256": "aec3904c44bb31acda207885982f01c932e3758e0d82c7e00c37fdd4626e98b4",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:meal",
+    "variant": "meat",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/needle.png",
+    "sha256": "fa5089ef3737e350fb1137331f014ef8785eaa6177b0decaa75de6b3e7ce3b4c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:needle",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/ore.png",
+    "sha256": "1a5608da721fae3c3e27b576f6df8e8bb80091b7ab2f7b52fe9b0e61e6634b1f",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:ore",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/ore_gold_ore.png",
+    "sha256": "de27e0af9ac498a3c4289599b2de37b8ce0ca98fb7c5e2c541d27cd0e8b21fb0",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:ore",
+    "variant": "gold_ore",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/ore_silver_ore.png",
+    "sha256": "5e337c4be1ce88dc53e0403a633be83c5e70188d15523f2962f70cc2e9fbb799",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:ore",
+    "variant": "silver_ore",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/ore_tin_ore.png",
+    "sha256": "53e82e47e1ba0e19704c67ecff3f9459a8a8641bca4aa82bb80388bb4151b195",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:ore",
+    "variant": "tin_ore",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank.png",
+    "sha256": "da5b1994d3d9aa3f41cfd388a5563f4696068097fec76c4feef75cbf926c6527",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_alder.png",
+    "sha256": "da5b1994d3d9aa3f41cfd388a5563f4696068097fec76c4feef75cbf926c6527",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "alder",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_applewood.png",
+    "sha256": "d7c5fbb593317a12afd34781636dc1224f54d32295c62627e4957dceab95f77f",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "applewood",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_ash.png",
+    "sha256": "4db229445d947555fbfd27df51c15b20817ce55182597e5836285458c88671c0",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "ash",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_birch.png",
+    "sha256": "4db229445d947555fbfd27df51c15b20817ce55182597e5836285458c88671c0",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "birch",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_bonewood.png",
+    "sha256": "4db229445d947555fbfd27df51c15b20817ce55182597e5836285458c88671c0",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "bonewood",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_fungus_wood.png",
+    "sha256": "d7c5fbb593317a12afd34781636dc1224f54d32295c62627e4957dceab95f77f",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "fungus_wood",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_pine.png",
+    "sha256": "4db229445d947555fbfd27df51c15b20817ce55182597e5836285458c88671c0",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "pine",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_willow.png",
+    "sha256": "da5b1994d3d9aa3f41cfd388a5563f4696068097fec76c4feef75cbf926c6527",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "willow",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/plank_yew.png",
+    "sha256": "d7c5fbb593317a12afd34781636dc1224f54d32295c62627e4957dceab95f77f",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:plank",
+    "variant": "yew",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/poultice.png",
+    "sha256": "fd6ec3be2c03dc0c9fee7dbc8b617e25c55c858562aa133b3a48c5ac108a89f8",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:poultice",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/raw_meat.png",
+    "sha256": "0b467da851dd4d49e91823156717ac873f3802147e395538fa95fd483b6218cd",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:raw_meat",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/record.png",
+    "sha256": "d9354848477246ba3975a0e2fdf87529acc998a74428e59480e19ccf708a5803",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:record",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/root.png",
+    "sha256": "e03ddeceb8b159fdca6ed4c470d0ee4c0521bb3072ca09ce4446f7787cb3385e",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:root",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/sand.png",
+    "sha256": "aaf0089e2704de2b73420dc602a1fc705de84b82bae68ee858041782f73e4588",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:sand",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/saw.png",
+    "sha256": "d1c0ff56dc4216ee5c47d42e07716ad8c3fe8dbfeb5f856f11dbbd6d732bd1b4",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:saw",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/sledge_hammer.png",
+    "sha256": "50e63c0a6975ac22d25d1b8ae68b094420b63748460312415be82ce7129ac7e3",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:sledge_hammer",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block.png",
+    "sha256": "e08e9773147bb2a31e2529ef4aae9c1cc9660bb5a40b0e178b7e48cd88f71536",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_basalt.png",
+    "sha256": "48aaff3e9131a781ad8a3024a3a515dc18add005eae370cc840a3b2246bd6aae",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "basalt",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_gabbro.png",
+    "sha256": "48aaff3e9131a781ad8a3024a3a515dc18add005eae370cc840a3b2246bd6aae",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "gabbro",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_gneiss.png",
+    "sha256": "3bf0780d0423ccf959888e473c1851d6ecf6160180c366a67c805e8f1d45e9b6",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "gneiss",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_limestone.png",
+    "sha256": "48aaff3e9131a781ad8a3024a3a515dc18add005eae370cc840a3b2246bd6aae",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "limestone",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_marble.png",
+    "sha256": "807ecb08079512b762d12000ab366bec9bcd71e1120a4cb40325b9417b307e01",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "marble",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_milkstone.png",
+    "sha256": "807ecb08079512b762d12000ab366bec9bcd71e1120a4cb40325b9417b307e01",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "milkstone",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_sandstone.png",
+    "sha256": "807ecb08079512b762d12000ab366bec9bcd71e1120a4cb40325b9417b307e01",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "sandstone",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/stone_block_slate.png",
+    "sha256": "48aaff3e9131a781ad8a3024a3a515dc18add005eae370cc840a3b2246bd6aae",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:stone_block",
+    "variant": "slate",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/tool.png",
+    "sha256": "8f51dc476e77480fcddf7f05e9e7f6590a71d8bbfb5d56cf21f392cabd86e1af",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:tool",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/torch.png",
+    "sha256": "0a3d2a807260fcca447227ec3a9ae3fb78ae2302b999d8be83bac7703c9e248f",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:torch",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/vessel.png",
+    "sha256": "e72999328e0b18fd643534dff6b328f8471db8547cd829d770286b1a1cd7601a",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:vessel",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/vessel_glass.png",
+    "sha256": "e1ce5901cf957f448c6b1f2c52dc3234fef3d0c0055a3afaa503ada224d75670",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:vessel",
+    "variant": "glass",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/weapon.png",
+    "sha256": "6f7b8aeb740d066ec2c04c115af29444c28049d642ea03c486d7286edf5f20b5",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:weapon",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/weapon_birch.png",
+    "sha256": "3400d7f3102173d82535acee7b80f2acf82676770e5f99e1f523e304424b200c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:weapon",
+    "variant": "birch",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/weapon_bronze.png",
+    "sha256": "d758dc15e63e5dee3565dcfde528bace673bf8158ee13aa64014f37c159ccbbd",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:weapon",
+    "variant": "bronze",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/weapon_copper.png",
+    "sha256": "1e79ea16c36b534308de94abc244ff42ed77d9f2e6730bc4bc58b675bb864ac8",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:weapon",
+    "variant": "copper",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/weapon_oak.png",
+    "sha256": "38337d9d1f7adb5a306f06e1f3a412f57ef38d9d30e3af0932c2af7e9d03e33b",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:weapon",
+    "variant": "oak",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/weapon_pine.png",
+    "sha256": "3400d7f3102173d82535acee7b80f2acf82676770e5f99e1f523e304424b200c",
+    "size": [
+      32,
+      32
+    ],
+    "source": "tracked-text-template:weapon",
+    "variant": "pine",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  },
+  {
+    "path": "godot/assets/items32/wine.png",
+    "sha256": "d3610c088c396a0b0c0d6b62e096465c23d1dcc05fb23293877f63f6d4bd888f",
+    "size": [
+      32,
+      32
+    ],
+    "source": "new-geometric:wine",
+    "variant": "",
+    "generator": "generate.py",
+    "rights_status": "unreviewed",
+    "selection": "fallback-rehearsal-only"
+  }
+]

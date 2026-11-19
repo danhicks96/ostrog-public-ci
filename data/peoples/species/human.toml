@@ -1,0 +1,47 @@
+# The portal party's kind, and the baseline every depth gate compares against
+# (docs/design-peoples.md section 1). Ranges are the individual's, read from the genome.
+id       = "human"
+name     = "Human"
+plural   = "Humans"
+sentient = true
+plan     = "biped"
+rarity   = "common"
+blurb    = "the portal party's kind"
+fertile_with = ["hollin"]
+
+[size]
+height_cm = [150, 190]
+mass_kg   = [51, 79]
+
+[life]
+mature_years = 16
+lifespan     = [50, 70]
+
+[diet]
+kind = "omnivore"
+
+[senses]
+sight      = 2
+dark_sight = 0
+hearing    = 0
+smell      = 0
+
+[climate]
+comfort_c = [2, 30]
+coat      = "bare"
+
+[habitat]
+layers = ["surface"]
+builds = "houses"
+
+[social]
+structure = "household"
+bonding   = "pair"
+
+[art]
+body  = "human"
+skin  = ["deep", "dark", "tan", "olive", "fair", "pale"]
+hair  = true
+
+[living]
+ways = ["farming", "herding", "hunting", "fishing"]

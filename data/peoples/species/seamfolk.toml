@@ -1,0 +1,47 @@
+id       = "seamfolk"
+name     = "Seamfolk"
+plural   = "Seamfolk"
+sentient = true
+plan     = "biped"
+rarity   = "rare"
+blurb    = "tall, thin, long-lived folk born where the world is thin, who feel the echoes of the dead"
+
+[size]
+height_cm = [175, 205]
+mass_kg   = [48, 68]
+
+[life]
+mature_years = 30
+lifespan     = [200, 300]
+
+[diet]
+kind = "omnivore"
+
+[senses]
+sight      = 2
+dark_sight = 1
+hearing    = 1
+smell      = 0
+
+[climate]
+comfort_c = [0, 24]
+coat      = "bare"
+
+[habitat]
+layers = ["surface"]
+builds = "houses"
+
+[social]
+structure = "household"
+bonding   = "pair"
+
+[temperament]
+convictions = { death = 0.5, burial = 0.6, knowledge = 0.5, deity_signs = 0.5 }
+
+[art]
+body  = "seamfolk"
+skin  = ["pale", "pale_lilac", "chalk"]
+hair  = true
+
+[living]
+ways = ["farming"]

@@ -1,0 +1,14 @@
+# A soft body (#423): a slime or blob, one mass with no fixed parts. It is counted in hundredths
+# of its whole (plan.rs SOFT_WHOLE), so a blow can take part of it away or split it. Beasts only.
+# Abilities (#423): a cutting blow can split it in two, it takes small creatures into itself,
+# it gets through the gaps of a wooden wall, and it grows back while fed.
+id    = "soft"
+kind  = "soft"
+cell  = 32
+tiles = 1
+
+[[part]]
+id = "mass"
+roles = ["sense", "vital", "locomote"]
+wound_weight = 1
+abilities = ["split", "engulf", "squeeze", "regrow"]

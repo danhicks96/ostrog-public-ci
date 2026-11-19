@@ -1,0 +1,30 @@
+id    = "amphibious"
+cell  = 48
+tiles = 1
+
+[[part]]
+id = "head"
+roles = ["sense", "vital"]
+wound_weight = 8
+[[part]]
+id = "torso"
+roles = ["vital"]
+wound_weight = 30
+[[part]]
+id = "arm_l"
+roles = ["manipulate", "swim"]
+wound_weight = 10
+[[part]]
+id = "arm_r"
+roles = ["manipulate", "swim"]
+wound_weight = 10
+[[part]]
+id = "leg_l"
+roles = ["locomote", "swim"]
+wound_weight = 12
+form = "webbed"
+[[part]]
+id = "leg_r"
+roles = ["locomote", "swim"]
+wound_weight = 12
+form = "webbed"

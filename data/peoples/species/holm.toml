@@ -1,0 +1,47 @@
+id       = "holm"
+name     = "Holm"
+plural   = "Holm"
+sentient = true
+plan     = "huge_biped"
+rarity   = "uncommon"
+blurb    = "great slow stone-skinned folk of the deep caverns, who live for centuries and forget nothing they have carved"
+
+[size]
+height_cm = [260, 320]
+mass_kg   = [260, 380]
+
+[life]
+mature_years = 40
+lifespan     = [160, 240]
+
+[diet]
+kind = "omnivore"
+
+[senses]
+sight      = 1
+dark_sight = 2
+hearing    = 1
+smell      = 1
+
+[climate]
+comfort_c = [4, 30]
+coat      = "bare"
+
+[habitat]
+layers = ["caverns", "deep_caverns"]
+builds = "hollows"
+
+[social]
+structure = "clan"
+bonding   = "pair"
+
+[temperament]
+convictions = { violence = -0.2, tradition = 0.6, craftsmanship = 0.6, deep_digging = 0.5, peace = 0.4 }
+
+[art]
+body  = "holm"
+skin  = ["stone_grey", "basalt"]
+hair  = true
+
+[living]
+ways = ["herding", "farming"]

@@ -1,0 +1,146 @@
+{
+ "cues": {
+  "autumn_day": {
+   "bars": 32,
+   "bpm": 72,
+   "files": {
+    "drone": "music/autumn_day_drone.ogg",
+    "melody": "music/autumn_day_melody.ogg",
+    "pad": "music/autumn_day_pad.ogg",
+    "tension": "music/autumn_day_tension.ogg"
+   },
+   "key": "A dorian",
+   "meter": 4,
+   "season": 2,
+   "seconds": 106.6667,
+   "time": "day"
+  },
+  "autumn_night": {
+   "bars": 32,
+   "bpm": 60,
+   "files": {
+    "drone": "music/autumn_night_drone.ogg",
+    "melody": "music/autumn_night_melody.ogg",
+    "pad": "music/autumn_night_pad.ogg",
+    "tension": "music/autumn_night_tension.ogg"
+   },
+   "key": "E dorian",
+   "meter": 4,
+   "season": 2,
+   "seconds": 128.0,
+   "time": "night"
+  },
+  "deep": {
+   "bars": 32,
+   "bpm": 60,
+   "files": {
+    "drone": "music/deep_drone.ogg",
+    "melody": "music/deep_melody.ogg",
+    "pad": "music/deep_pad.ogg",
+    "tension": "music/deep_tension.ogg"
+   },
+   "key": "D aeolian",
+   "meter": 4,
+   "season": -1,
+   "seconds": 128.0,
+   "time": "deep"
+  },
+  "spring_day": {
+   "bars": 32,
+   "bpm": 76,
+   "files": {
+    "drone": "music/spring_day_drone.ogg",
+    "melody": "music/spring_day_melody.ogg",
+    "pad": "music/spring_day_pad.ogg",
+    "tension": "music/spring_day_tension.ogg"
+   },
+   "key": "G mixolydian",
+   "meter": 3,
+   "season": 0,
+   "seconds": 75.7895,
+   "time": "day"
+  },
+  "spring_night": {
+   "bars": 32,
+   "bpm": 64,
+   "files": {
+    "drone": "music/spring_night_drone.ogg",
+    "melody": "music/spring_night_melody.ogg",
+    "pad": "music/spring_night_pad.ogg",
+    "tension": "music/spring_night_tension.ogg"
+   },
+   "key": "D lydian",
+   "meter": 4,
+   "season": 0,
+   "seconds": 120.0,
+   "time": "night"
+  },
+  "summer_day": {
+   "bars": 32,
+   "bpm": 80,
+   "files": {
+    "drone": "music/summer_day_drone.ogg",
+    "melody": "music/summer_day_melody.ogg",
+    "pad": "music/summer_day_pad.ogg",
+    "tension": "music/summer_day_tension.ogg"
+   },
+   "key": "D ionian",
+   "meter": 3,
+   "season": 1,
+   "seconds": 72.0,
+   "time": "day"
+  },
+  "summer_night": {
+   "bars": 32,
+   "bpm": 62,
+   "files": {
+    "drone": "music/summer_night_drone.ogg",
+    "melody": "music/summer_night_melody.ogg",
+    "pad": "music/summer_night_pad.ogg",
+    "tension": "music/summer_night_tension.ogg"
+   },
+   "key": "A ionian",
+   "meter": 4,
+   "season": 1,
+   "seconds": 123.871,
+   "time": "night"
+  },
+  "winter_day": {
+   "bars": 32,
+   "bpm": 66,
+   "files": {
+    "drone": "music/winter_day_drone.ogg",
+    "melody": "music/winter_day_melody.ogg",
+    "pad": "music/winter_day_pad.ogg",
+    "tension": "music/winter_day_tension.ogg"
+   },
+   "key": "E aeolian",
+   "meter": 3,
+   "season": 3,
+   "seconds": 87.2727,
+   "time": "day"
+  },
+  "winter_night": {
+   "bars": 32,
+   "bpm": 60,
+   "files": {
+    "drone": "music/winter_night_drone.ogg",
+    "melody": "music/winter_night_melody.ogg",
+    "pad": "music/winter_night_pad.ogg",
+    "tension": "music/winter_night_tension.ogg"
+   },
+   "key": "B aeolian",
+   "meter": 4,
+   "season": 3,
+   "seconds": 128.0,
+   "time": "night"
+  }
+ },
+ "phrase_bars": 4,
+ "stems": [
+  "drone",
+  "pad",
+  "melody",
+  "tension"
+ ]
+}

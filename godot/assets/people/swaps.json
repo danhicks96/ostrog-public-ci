@@ -1,0 +1,524 @@
+{
+ "skin": {
+  "source": [
+   "#73452c",
+   "#a2694a",
+   "#c68d66",
+   "#e2b48c"
+  ],
+  "targets": [
+   [
+    "#40282e",
+    "#4a2a1e",
+    "#73452c",
+    "#a2694a"
+   ],
+   [
+    "#4a2a1e",
+    "#73452c",
+    "#a2694a",
+    "#c68d66"
+   ],
+   [
+    "#73452c",
+    "#a2694a",
+    "#c68d66",
+    "#e2b48c"
+   ],
+   [
+    "#56362f",
+    "#8b5c3a",
+    "#c68d66",
+    "#e2b48c"
+   ],
+   [
+    "#a2694a",
+    "#c68d66",
+    "#e2b48c",
+    "#f3d6b4"
+   ],
+   [
+    "#c68d66",
+    "#e2b48c",
+    "#f3d6b4",
+    "#e6ded0"
+   ],
+   [
+    "#5e6678",
+    "#7b8190",
+    "#9ea1a7",
+    "#c3c1be"
+   ],
+   [
+    "#40282e",
+    "#56362f",
+    "#6f432e",
+    "#8b5c3a"
+   ],
+   [
+    "#485029",
+    "#616a32",
+    "#7e8746",
+    "#9fa667"
+   ],
+   [
+    "#1f3e33",
+    "#2a5634",
+    "#366e32",
+    "#53893a"
+   ],
+   [
+    "#333748",
+    "#484e5f",
+    "#5e6678",
+    "#7b8190"
+   ],
+   [
+    "#4a2624",
+    "#723b2c",
+    "#9c5132",
+    "#be6d45"
+   ],
+   [
+    "#2a5634",
+    "#366e32",
+    "#53893a",
+    "#7ea94f"
+   ],
+   [
+    "#616a32",
+    "#7e8746",
+    "#9fa667",
+    "#c1c788"
+   ],
+   [
+    "#56362f",
+    "#6f432e",
+    "#8b5c3a",
+    "#ac8156"
+   ],
+   [
+    "#484e5f",
+    "#5e6678",
+    "#7b8190",
+    "#9ea1a7"
+   ],
+   [
+    "#7b8190",
+    "#9ea1a7",
+    "#c3c1be",
+    "#fbf7ef"
+   ],
+   [
+    "#723b2c",
+    "#9c5132",
+    "#be6d45",
+    "#d49067"
+   ],
+   [
+    "#2a1b2b",
+    "#40282e",
+    "#56362f",
+    "#6f432e"
+   ],
+   [
+    "#6f432e",
+    "#8b5c3a",
+    "#ac8156",
+    "#cea773"
+   ],
+   [
+    "#7b8190",
+    "#9ea1a7",
+    "#c3c1be",
+    "#e9e3d6"
+   ],
+   [
+    "#7b8190",
+    "#9589d1",
+    "#b1b0e8",
+    "#cfd7ff"
+   ],
+   [
+    "#333748",
+    "#5e6678",
+    "#7b8190",
+    "#9ea1a7"
+   ],
+   [
+    "#1f2232",
+    "#333748",
+    "#484e5f",
+    "#5e6678"
+   ],
+   [
+    "#4a2624",
+    "#8e3234",
+    "#b9422e",
+    "#e99059"
+   ],
+   [
+    "#2d2051",
+    "#453275",
+    "#224b70",
+    "#41809f"
+   ]
+  ],
+  "names": [
+   "deep",
+   "dark",
+   "tan",
+   "olive",
+   "fair",
+   "pale",
+   "ash",
+   "bark",
+   "lichen",
+   "moss_skin",
+   "slate_skin",
+   "scale_rust",
+   "scale_green",
+   "scale_dun",
+   "feather_brown",
+   "feather_grey",
+   "feather_white",
+   "copper_skin",
+   "umber",
+   "dust",
+   "chalk",
+   "pale_lilac",
+   "stone_grey",
+   "basalt",
+   "ember",
+   "abyss"
+  ]
+ },
+ "hair": {
+  "source": [
+   "#333748",
+   "#484e5f",
+   "#5e6678",
+   "#7b8190"
+  ],
+  "targets": [
+   [
+    "#0d0b11",
+    "#1f1518",
+    "#2b2634",
+    "#333748"
+   ],
+   [
+    "#40282e",
+    "#56362f",
+    "#6f432e",
+    "#8b5c3a"
+   ],
+   [
+    "#40282e",
+    "#56362f",
+    "#b9422e",
+    "#8b5c3a"
+   ],
+   [
+    "#652234",
+    "#8e3234",
+    "#b9422e",
+    "#d96339"
+   ],
+   [
+    "#6f432e",
+    "#c99a52",
+    "#ac8156",
+    "#cea773"
+   ],
+   [
+    "#484e5f",
+    "#5e6678",
+    "#7b8190",
+    "#9ea1a7"
+   ],
+   [
+    "#7b8190",
+    "#9ea1a7",
+    "#c3c1be",
+    "#fbf7ef"
+   ],
+   [
+    "#652234",
+    "#56362f",
+    "#b9422e",
+    "#d96339"
+   ]
+  ],
+  "names": [
+   "black",
+   "brown",
+   "chestnut",
+   "red",
+   "blonde",
+   "grey",
+   "white",
+   "auburn"
+  ]
+ },
+ "cloth": {
+  "source": [
+   "#8e3234",
+   "#b9422e",
+   "#d96339",
+   "#e99059",
+   "#453275",
+   "#5f459a",
+   "#7962ba",
+   "#9589d1"
+  ],
+  "targets": [
+   [
+    "#6f432e",
+    "#8b5c3a",
+    "#ac8156",
+    "#cea773",
+    "#1f3e33",
+    "#2a5634",
+    "#366e32",
+    "#53893a"
+   ],
+   [
+    "#40282e",
+    "#56362f",
+    "#6f432e",
+    "#8b5c3a",
+    "#b9422e",
+    "#d96339",
+    "#e99059",
+    "#f6bc79"
+   ],
+   [
+    "#652234",
+    "#8e3234",
+    "#b9422e",
+    "#d96339",
+    "#6f432e",
+    "#8b5c3a",
+    "#ac8156",
+    "#cea773"
+   ],
+   [
+    "#8e3234",
+    "#b9422e",
+    "#d96339",
+    "#e99059",
+    "#b9422e",
+    "#d96339",
+    "#e99059",
+    "#f6bc79"
+   ],
+   [
+    "#b9422e",
+    "#d96339",
+    "#e99059",
+    "#f6bc79",
+    "#40282e",
+    "#56362f",
+    "#6f432e",
+    "#8b5c3a"
+   ],
+   [
+    "#1f3e33",
+    "#2a5634",
+    "#366e32",
+    "#53893a",
+    "#6f432e",
+    "#8b5c3a",
+    "#ac8156",
+    "#cea773"
+   ],
+   [
+    "#2a5634",
+    "#366e32",
+    "#53893a",
+    "#7ea94f",
+    "#40282e",
+    "#56362f",
+    "#6f432e",
+    "#8b5c3a"
+   ],
+   [
+    "#1b355a",
+    "#224b70",
+    "#286387",
+    "#41809f",
+    "#286387",
+    "#41809f",
+    "#6ba4b7",
+    "#95c8ce"
+   ],
+   [
+    "#286387",
+    "#41809f",
+    "#6ba4b7",
+    "#95c8ce",
+    "#170f30",
+    "#2d2051",
+    "#453275",
+    "#5f459a"
+   ],
+   [
+    "#170f30",
+    "#2d2051",
+    "#453275",
+    "#5f459a",
+    "#6f432e",
+    "#8b5c3a",
+    "#ac8156",
+    "#cea773"
+   ],
+   [
+    "#453275",
+    "#5f459a",
+    "#7962ba",
+    "#9589d1",
+    "#b9422e",
+    "#d96339",
+    "#e99059",
+    "#f6bc79"
+   ],
+   [
+    "#333748",
+    "#484e5f",
+    "#5e6678",
+    "#7b8190",
+    "#652234",
+    "#8e3234",
+    "#b9422e",
+    "#d96339"
+   ]
+  ],
+  "names": [
+   "undyed",
+   "brown",
+   "rust",
+   "madder",
+   "ochre",
+   "moss",
+   "leaf",
+   "teal",
+   "sky",
+   "indigo",
+   "violet",
+   "slate"
+  ]
+ },
+ "steps": [
+  "shadow",
+  "mid",
+  "light",
+  "highlight"
+ ],
+ "outline": "#0d0b11",
+ "hair_styles": {
+  "hair_01": "crop",
+  "hair_02": "bowl",
+  "hair_03": "long",
+  "hair_04": "ponytail",
+  "hair_05": "bun",
+  "hair_06": "balding",
+  "hair_07": "braids",
+  "hair_08": "crest",
+  "hair_09": "curly",
+  "hair_10": "fringe"
+ },
+ "layout": {
+  "cell": 48,
+  "rows": [
+   "S",
+   "W",
+   "E",
+   "N"
+  ],
+  "columns": [
+   "idle",
+   "idle2",
+   "idle3",
+   "glance",
+   "walk1",
+   "walk2",
+   "walk3",
+   "walk4",
+   "walk5",
+   "walk6",
+   "swing1",
+   "swing2",
+   "swing3",
+   "stoop1",
+   "stoop2",
+   "stoop3",
+   "tap1",
+   "tap2",
+   "tap3",
+   "hold",
+   "carry1",
+   "carry2",
+   "carry3",
+   "carry4",
+   "carry5",
+   "carry6",
+   "sleep",
+   "sit",
+   "strike1",
+   "strike2",
+   "strike3",
+   "hit",
+   "fall",
+   "lying",
+   "talk1",
+   "talk2",
+   "talk3",
+   "eat1",
+   "eat2",
+   "eat3",
+   "sleep2",
+   "sleep3",
+   "tend1",
+   "tend2",
+   "tend3",
+   "drink1",
+   "drink2",
+   "drink3"
+  ]
+ },
+ "plan_cells": {
+  "biped": 48,
+  "small_biped": 48,
+  "digitigrade_tail": 48,
+  "winged": 48,
+  "four_armed": 48,
+  "amphibious": 48,
+  "taur": 64,
+  "huge_biped": 96,
+  "serpentine": 96
+ },
+ "plan_tiles": {
+  "biped": 1,
+  "small_biped": 1,
+  "digitigrade_tail": 1,
+  "winged": 1,
+  "four_armed": 1,
+  "amphibious": 1,
+  "taur": 1,
+  "huge_biped": 2,
+  "serpentine": 2
+ },
+ "plan_carry_lift": {
+  "biped": 0,
+  "small_biped": -9,
+  "digitigrade_tail": 0,
+  "winged": 0,
+  "four_armed": 0,
+  "amphibious": 2,
+  "taur": 14,
+  "huge_biped": 20,
+  "serpentine": 24
+ },
+ "note": "Layers are painted in source colours; swap source[i] -> target[i]. Hair, clothing, equipment and overlay sheets are drawn per build and age on the same skeleton as the body sheet: <layer>_<build>_<age>.png, except that the average adult hair, clothing and equipment sheets have no suffix."
+}

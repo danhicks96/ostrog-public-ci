@@ -1,0 +1,47 @@
+id       = "tharn"
+name     = "Tharn"
+plural   = "Tharn"
+sentient = true
+plan     = "four_armed"
+rarity   = "uncommon"
+blurb    = "four-handed makers of the hot dry lands, with long memories for a wrong"
+
+[size]
+height_cm = [170, 200]
+mass_kg   = [75, 105]
+
+[life]
+mature_years = 18
+lifespan     = [60, 90]
+
+[diet]
+kind = "omnivore"
+
+[senses]
+sight      = 2
+dark_sight = 0
+hearing    = 0
+smell      = 1
+
+[climate]
+comfort_c = [14, 36]
+coat      = "bare"
+
+[habitat]
+layers = ["surface"]
+builds = "houses"
+
+[social]
+structure = "clan"
+bonding   = "pair"
+
+[temperament]
+convictions = { strangers = 0.1, violence = 0.2, trust = -0.1, craftsmanship = 0.6, commerce = 0.5, tradition = 0.3 }
+
+[art]
+body  = "tharn"
+skin  = ["copper_skin", "umber", "dust"]
+hair  = true
+
+[living]
+ways = ["farming", "herding"]

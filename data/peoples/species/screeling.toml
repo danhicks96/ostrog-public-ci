@@ -1,0 +1,48 @@
+id       = "screeling"
+name     = "Screeling"
+plural   = "Screelings"
+sentient = true
+plan     = "digitigrade_tail"
+rarity   = "uncommon"
+blurb    = "small scaled trap-makers of the scree and upper caves, cold-blooded and egg-laying"
+
+[size]
+height_cm = [80, 105]
+mass_kg   = [25, 40]
+
+[life]
+mature_years = 8
+lifespan     = [30, 45]
+litter       = [2, 4]
+
+[diet]
+kind = "carnivore"
+
+[senses]
+sight      = 2
+dark_sight = 2
+hearing    = 1
+smell      = 2
+
+[climate]
+comfort_c = [18, 32]
+coat      = "scales"
+
+[habitat]
+layers = ["surface", "upper_caves"]
+builds = "hollows"
+
+[social]
+structure = "band"
+bonding   = "group"
+
+[temperament]
+convictions = { strangers = 0.4, fire = 0.3, keeping_beasts = -0.4, tranquility = 0.5, burial = -0.3 }
+
+[art]
+body  = "screeling"
+skin  = ["scale_rust", "scale_green", "scale_dun"]
+hair  = false
+
+[living]
+ways = ["hunting", "fishing"]

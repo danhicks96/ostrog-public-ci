@@ -1,0 +1,36 @@
+id    = "four_armed"
+cell  = 48
+tiles = 1
+
+[[part]]
+id = "head"
+roles = ["sense", "vital"]
+wound_weight = 7
+[[part]]
+id = "torso"
+roles = ["vital"]
+wound_weight = 28
+[[part]]
+id = "arm_l"
+roles = ["manipulate"]
+wound_weight = 8
+[[part]]
+id = "arm_r"
+roles = ["manipulate"]
+wound_weight = 8
+[[part]]
+id = "lower_arm_l"
+roles = ["manipulate"]
+wound_weight = 8
+[[part]]
+id = "lower_arm_r"
+roles = ["manipulate"]
+wound_weight = 8
+[[part]]
+id = "leg_l"
+roles = ["locomote"]
+wound_weight = 11
+[[part]]
+id = "leg_r"
+roles = ["locomote"]
+wound_weight = 11

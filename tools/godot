@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Godot 4.6.3 wrapper. Project-local copy preferred, then a sibling checkout's copy.
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+for g in "$ROOT/.tools/godot4" "$ROOT/.tools/godot4.exe" "$ROOT"/../*/.tools/godot4 "$(command -v godot4)" "$(command -v godot)"; do
+  [ -n "$g" ] && [ -x "$g" ] && exec "$g" "$@"
+done
+echo "godot4 not found" >&2; exit 1

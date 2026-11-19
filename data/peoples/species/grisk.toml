@@ -1,0 +1,49 @@
+id       = "grisk"
+name     = "Grisk"
+plural   = "Grisk"
+sentient = true
+plan     = "small_biped"
+rarity   = "common"
+cycle    = "nocturnal"
+blurb    = "small, quick-breeding hill folk who see in the dark and live short lives"
+
+[size]
+height_cm = [95, 120]
+mass_kg   = [30, 46]
+
+[life]
+mature_years = 10
+lifespan     = [25, 40]
+litter       = [1, 3]
+
+[diet]
+kind = "omnivore"
+
+[senses]
+sight      = 2
+dark_sight = 3
+hearing    = 2
+smell      = 1
+
+[climate]
+comfort_c = [-4, 20]
+coat      = "bare"
+
+[habitat]
+layers = ["surface", "upper_caves"]
+builds = "hollows"
+
+[social]
+structure = "clan"
+bonding   = "group"
+
+[temperament]
+convictions = { strangers = 0.6, violence = 0.4, hunger = 0.3, eat_dead = 0.5, theft = 0.3, family = 0.4 }
+
+[art]
+body  = "grisk"
+skin  = ["lichen", "moss_skin", "slate_skin"]
+hair  = true
+
+[living]
+ways = ["hunting", "herding"]

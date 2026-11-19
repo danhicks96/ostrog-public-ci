@@ -1,0 +1,252 @@
+{
+ "bear": {
+  "bus": "SFX",
+  "files": [
+   "bear_0.ogg",
+   "bear_1.ogg"
+  ],
+  "loop": false
+ },
+ "boar": {
+  "bus": "SFX",
+  "files": [
+   "boar_0.ogg",
+   "boar_1.ogg"
+  ],
+  "loop": false
+ },
+ "cave_loop": {
+  "bus": "Ambience",
+  "files": [
+   "cave_loop.ogg"
+  ],
+  "loop": true
+ },
+ "chop": {
+  "bus": "SFX",
+  "files": [
+   "chop_0.ogg",
+   "chop_1.ogg",
+   "chop_2.ogg",
+   "chop_3.ogg"
+  ],
+  "loop": false
+ },
+ "cook": {
+  "bus": "SFX",
+  "files": [
+   "cook_0.ogg",
+   "cook_1.ogg",
+   "cook_2.ogg"
+  ],
+  "loop": false
+ },
+ "crow": {
+  "bus": "SFX",
+  "files": [
+   "crow_0.ogg",
+   "crow_1.ogg",
+   "crow_2.ogg"
+  ],
+  "loop": false
+ },
+ "day_loop": {
+  "bus": "Ambience",
+  "files": [
+   "day_loop.ogg"
+  ],
+  "loop": true
+ },
+ "deer": {
+  "bus": "SFX",
+  "files": [
+   "deer_0.ogg",
+   "deer_1.ogg"
+  ],
+  "loop": false
+ },
+ "door": {
+  "bus": "SFX",
+  "files": [
+   "door_0.ogg",
+   "door_1.ogg"
+  ],
+  "loop": false
+ },
+ "douse": {
+  "bus": "SFX",
+  "files": [
+   "douse_0.ogg",
+   "douse_1.ogg"
+  ],
+  "loop": false
+ },
+ "duck": {
+  "bus": "SFX",
+  "files": [
+   "duck_0.ogg",
+   "duck_1.ogg"
+  ],
+  "loop": false
+ },
+ "fire_loop": {
+  "bus": "SFX",
+  "files": [
+   "fire_loop.ogg"
+  ],
+  "loop": true
+ },
+ "flare": {
+  "bus": "SFX",
+  "files": [
+   "flare_0.ogg",
+   "flare_1.ogg"
+  ],
+  "loop": false
+ },
+ "fox": {
+  "bus": "SFX",
+  "files": [
+   "fox_0.ogg",
+   "fox_1.ogg"
+  ],
+  "loop": false
+ },
+ "gust": {
+  "bus": "Ambience",
+  "files": [
+   "gust_0.ogg",
+   "gust_1.ogg",
+   "gust_2.ogg"
+  ],
+  "loop": false
+ },
+ "hammer": {
+  "bus": "SFX",
+  "files": [
+   "hammer_0.ogg",
+   "hammer_1.ogg",
+   "hammer_2.ogg",
+   "hammer_3.ogg"
+  ],
+  "loop": false
+ },
+ "hare": {
+  "bus": "SFX",
+  "files": [
+   "hare_0.ogg",
+   "hare_1.ogg"
+  ],
+  "loop": false
+ },
+ "hoe": {
+  "bus": "SFX",
+  "files": [
+   "hoe_0.ogg",
+   "hoe_1.ogg",
+   "hoe_2.ogg",
+   "hoe_3.ogg"
+  ],
+  "loop": false
+ },
+ "mine": {
+  "bus": "SFX",
+  "files": [
+   "mine_0.ogg",
+   "mine_1.ogg",
+   "mine_2.ogg",
+   "mine_3.ogg"
+  ],
+  "loop": false
+ },
+ "night_loop": {
+  "bus": "Ambience",
+  "files": [
+   "night_loop.ogg"
+  ],
+  "loop": true
+ },
+ "rain_heavy": {
+  "bus": "Ambience",
+  "files": [
+   "rain_heavy.ogg"
+  ],
+  "loop": true
+ },
+ "rain_light": {
+  "bus": "Ambience",
+  "files": [
+   "rain_light.ogg"
+  ],
+  "loop": true
+ },
+ "rain_mid": {
+  "bus": "Ambience",
+  "files": [
+   "rain_mid.ogg"
+  ],
+  "loop": true
+ },
+ "saw": {
+  "bus": "SFX",
+  "files": [
+   "saw_0.ogg",
+   "saw_1.ogg",
+   "saw_2.ogg"
+  ],
+  "loop": false
+ },
+ "thunder": {
+  "bus": "Ambience",
+  "files": [
+   "thunder_0.ogg",
+   "thunder_1.ogg",
+   "thunder_2.ogg",
+   "thunder_3.ogg"
+  ],
+  "loop": false
+ },
+ "ui_chime": {
+  "bus": "UI",
+  "files": [
+   "ui_chime.ogg"
+  ],
+  "loop": false
+ },
+ "ui_click": {
+  "bus": "UI",
+  "files": [
+   "ui_click.ogg"
+  ],
+  "loop": false
+ },
+ "ui_page": {
+  "bus": "UI",
+  "files": [
+   "ui_page.ogg"
+  ],
+  "loop": false
+ },
+ "water_loop": {
+  "bus": "Ambience",
+  "files": [
+   "water_loop.ogg"
+  ],
+  "loop": true
+ },
+ "wind_loop": {
+  "bus": "Ambience",
+  "files": [
+   "wind_loop.ogg"
+  ],
+  "loop": true
+ },
+ "wolf": {
+  "bus": "SFX",
+  "files": [
+   "wolf_0.ogg",
+   "wolf_1.ogg"
+  ],
+  "loop": false
+ }
+}

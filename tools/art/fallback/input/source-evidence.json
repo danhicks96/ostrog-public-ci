@@ -1,0 +1,13 @@
+{
+  "candidate": "b5daa9d60a13afa3afe4cef0566093ade9ee6034",
+  "excluded_ambiguous_templates": [
+    "clothes",
+    "copper_bar",
+    "fibre",
+    "iron_bar",
+    "plank"
+  ],
+  "text_input_sha256": "e5be3eafc86e92e7b324de10a0d9c2d98ecd550bb709c40caf4bae27abf84473",
+  "palette_sha256": "7b9b0d0c153c7665b571d48c4c697bb45ed4023cb62b34c33405278f326196c4",
+  "status": "unreviewed rehearsal; no legal-clearance claim"
+}

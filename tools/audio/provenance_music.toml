@@ -1,0 +1,253 @@
+# Written by tools/audio/music.py; every cue is composed and synthesised there.
+
+[[asset]]
+path = "godot/assets/audio/music/spring_day_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/spring_day_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/spring_day_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/spring_day_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_day_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_day_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_day_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_day_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_day_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_day_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_day_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_day_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_day_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_day_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_day_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_day_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/spring_night_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/spring_night_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/spring_night_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/spring_night_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_night_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_night_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_night_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/summer_night_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_night_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_night_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_night_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/autumn_night_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_night_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_night_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_night_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/winter_night_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/deep_drone.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/deep_pad.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/deep_melody.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/music/deep_tension.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/music.py"
+licence = "project-original"

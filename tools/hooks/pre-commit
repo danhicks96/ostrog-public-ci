@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Optional: `git config core.hooksPath tools/hooks` once per clone. Checks staged lines for
+# identifying details before each commit (same rules as CI).
+exec python3 -I "$(git rev-parse --show-toplevel)/tools/hygiene/scan_identifiers.py" --staged

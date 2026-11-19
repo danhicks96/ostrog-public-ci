@@ -1,0 +1,33 @@
+/target/
+**/target/
+/godot/.godot/
+/godot/export/
+/releases/
+*.hfsave
+*.hfsave.tmp
+*.hfrec
+/soak/
+/shots/out/
+/.tools
+*.log
+__pycache__/
+MIRROR_PENDING.md
+/godot/bin/
+!/crates/hf-sim/tests/fixtures/saves/*.hfsave
+!/crates/hf-sim/tests/fixtures/saves/*.hfsave/**
+# Godot-generated import settings and UID sidecars from the editor import pass.
+# Regenerated automatically; not tracked (same convention as the box's checkout).
+/godot/assets/**/*.import
+/godot/scripts/*.uid
+# Windows export output: 100 MB+ binaries. Built locally, never committed.
+/export/
+to_delete/
+
+# soak run byproducts (C74 committed the 86 MB binary by accident)
+docs/soak/*/ostrog
+docs/soak/*/*.csv
+soak-out/
+
+# CI inputs are generated locally, never committed or uploaded.
+/godot/assets/**/*.png
+/godot/assets/**/*.ogg

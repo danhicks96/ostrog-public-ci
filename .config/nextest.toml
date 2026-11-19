@@ -1,0 +1,24 @@
+# cargo-nextest settings for tools/ci.sh (tools/boxci/README.md, "Parallel tests").
+
+# The version tools/boxci pins; an older nextest stops with a message to update instead of
+# reading the settings below differently.
+nextest-version = { required = "0.9.148" }
+
+# Tests that assert on wall-clock time run first, one at a time, with nothing else running:
+# `threads-required` takes every test slot and the high priority puts them at the head of the
+# queue, before any long sim test starts. Run beside the other tests they measured the load
+# instead of the code (realm_peoples a_thousand_years_is_quick took 17.7 s against its 15 s
+# budget, 2026-10-27). Since #582 they measure their own thread's CPU time
+# (crates/hf-sim/tests/support/cpu.rs), which other processes do not inflate; they still run
+# alone, as a cheap guard against what contention does to caches. A new test with a time budget
+# goes in this list.
+[[profile.default.overrides]]
+filter = """
+  (binary(realm) & test(=a_world_map_is_quick))
+  | (binary(realm_peoples) & test(=a_thousand_years_is_quick))
+  | (binary(realm_figures) & test(=a_thousand_years_bring_tens_of_thousands_of_figures))
+  | (binary(history_pass) & test(=history_pass_budget))
+  | (binary(navigation) & test(=unreachable_detected_o1))
+"""
+threads-required = "num-test-threads"
+priority = 100

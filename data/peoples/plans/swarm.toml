@@ -1,0 +1,14 @@
+# A swarm (#423): many small bodies acting as one creature. A wound takes members away, so it
+# thins rather than bleeds; `count` is how many a grown swarm has, least and most. Beasts only.
+# Abilities (#423): it gets through the gaps of a wooden wall, and breeds back while fed.
+id    = "swarm"
+kind  = "swarm"
+cell  = 32
+tiles = 1
+count = [24, 40]
+
+[[part]]
+id = "member"
+roles = ["sense", "vital", "locomote"]
+wound_weight = 1
+abilities = ["squeeze", "regrow"]

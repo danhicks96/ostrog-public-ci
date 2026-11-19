@@ -1,0 +1,9 @@
+{
+  "magic": "HEARTHFALL-SAVE",
+  "format_version": 2,
+  "game_version": "0.1.0",
+  "seed": 77,
+  "tick": 7200,
+  "world_sha256": "19b4d97937f26c964fc7cf07fc7d45a03296b92b836c73ea46b4f8d3402905a9",
+  "chronicle_sha256": "ee9485781a5d51d8cb8b3ff2495780eb49b5f68cc10df6eaa3648ace78c613ae"
+}

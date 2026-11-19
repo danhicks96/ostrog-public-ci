@@ -1,0 +1,28 @@
+id    = "small_biped"
+cell  = 48
+tiles = 1
+
+[[part]]
+id = "head"
+roles = ["sense", "vital"]
+wound_weight = 10
+[[part]]
+id = "torso"
+roles = ["vital"]
+wound_weight = 28
+[[part]]
+id = "arm_l"
+roles = ["manipulate"]
+wound_weight = 10
+[[part]]
+id = "arm_r"
+roles = ["manipulate"]
+wound_weight = 10
+[[part]]
+id = "leg_l"
+roles = ["locomote"]
+wound_weight = 12
+[[part]]
+id = "leg_r"
+roles = ["locomote"]
+wound_weight = 12

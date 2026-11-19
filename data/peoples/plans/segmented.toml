@@ -1,0 +1,18 @@
+# A segmented body (#423): a head leading a chain of segments that each carry it. Losing a
+# segment shortens it; `count` is how many segments a grown one has, least and most. Beasts only.
+# Abilities (#423): it climbs rock faces, and grows back lost segments while fed.
+id    = "segmented"
+kind  = "segmented"
+cell  = 32
+tiles = 1
+count = [8, 14]
+
+[[part]]
+id = "head"
+roles = ["sense", "vital"]
+wound_weight = 10
+[[part]]
+id = "segment"
+roles = ["locomote"]
+wound_weight = 90
+abilities = ["climb", "regrow"]

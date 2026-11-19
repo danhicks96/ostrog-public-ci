@@ -1,0 +1,262 @@
+[
+  {
+    "path": "data/peoples/plans/amphibious.toml",
+    "sha256": "ea248d27474565538cc08a62d5354368ab656e7486560c6d89ff890a65c9604f"
+  },
+  {
+    "path": "data/peoples/plans/biped.toml",
+    "sha256": "9a80983ee87cb0f96789a3ff7d32793fd0c6c5a85f5844dbf7b53b0644f08bb4"
+  },
+  {
+    "path": "data/peoples/plans/digitigrade_tail.toml",
+    "sha256": "25e09e720ecd910b99c78de10ce6ef5bab59b9597c284237c4d4a54903e9e143"
+  },
+  {
+    "path": "data/peoples/plans/four_armed.toml",
+    "sha256": "6a4b9abf6da1472ab99e0072f3ee9f42ea04a18f0d764c6577737224846de595"
+  },
+  {
+    "path": "data/peoples/plans/huge_biped.toml",
+    "sha256": "6e93eacbe71d875d15b4fa68c6953d54eeca618c7abd20ff6beb94bec98f8f54"
+  },
+  {
+    "path": "data/peoples/plans/segmented.toml",
+    "sha256": "e067d7154abf3329331aeccfd139007f355f856c4e44470379ecb3b75943a5c7"
+  },
+  {
+    "path": "data/peoples/plans/serpentine.toml",
+    "sha256": "b80d404fedc3c49b788704aa4649cf7e8b354834f1d61861417fda16f9390e7e"
+  },
+  {
+    "path": "data/peoples/plans/small_biped.toml",
+    "sha256": "8afe4a379570ef90654f1b7ce045613f3cd88f8432afd5389d48f6d160230d8d"
+  },
+  {
+    "path": "data/peoples/plans/soft.toml",
+    "sha256": "41a39fb85771cb711f6efa2c2f48f799a7823f9c6fd8e9abc5cdd8a1690be3b2"
+  },
+  {
+    "path": "data/peoples/plans/swarm.toml",
+    "sha256": "728cbe4788c9edf6e2372b6820aa159ae56c9fbd95c5025fa8ed2726dafa9f8c"
+  },
+  {
+    "path": "data/peoples/plans/taur.toml",
+    "sha256": "7522a3685b8190a48404cec52f1feb31a0b7426b5b9911538ed3035eeb7d8a38"
+  },
+  {
+    "path": "data/peoples/plans/winged.toml",
+    "sha256": "29b972da120cdda2d47b9491ff61c45c7a9b5501df8a39a0d7030dfa329faf1c"
+  },
+  {
+    "path": "data/peoples/species/below.toml",
+    "sha256": "57070c414501552dce4bc44f12e05b4e2ad425da8e1d7a31dfee648645987041"
+  },
+  {
+    "path": "data/peoples/species/gnarrow.toml",
+    "sha256": "93fbd222f7c38caba9e8be7a5fa3b13e0aea69d8e48e92941c865de5c5984c72"
+  },
+  {
+    "path": "data/peoples/species/grisk.toml",
+    "sha256": "fb4e24011f99d88c52364b5115dc04e456b313728ae7b207c3b8b2ccca39da20"
+  },
+  {
+    "path": "data/peoples/species/hollin.toml",
+    "sha256": "bc6fb443c7668265a6fc8482d6de82fb9d61fa32e8bc3c84d920f0d8c1082c63"
+  },
+  {
+    "path": "data/peoples/species/holm.toml",
+    "sha256": "ad7a43405078f39767d77c4a13a785ca101baa1adadbe4241e979c669dd08de9"
+  },
+  {
+    "path": "data/peoples/species/human.toml",
+    "sha256": "7cf66fed29432016475529e2d118e918c4bc2bc93b2f4363ca382c08b33c7dfa"
+  },
+  {
+    "path": "data/peoples/species/meer.toml",
+    "sha256": "dcec0bf9408ac0d5cfaddfe5604c4178aadd4cbd39c4c6e121577bdbaa4d635a"
+  },
+  {
+    "path": "data/peoples/species/murrow.toml",
+    "sha256": "e4e6c632565d1d393b845375642e7abe3c6350382d849d348885613a258a8519"
+  },
+  {
+    "path": "data/peoples/species/screeling.toml",
+    "sha256": "86c6425d9f0b90b5093a3c822d1617f23f205c8a1dcaecdc36c6eeecdc9f6e12"
+  },
+  {
+    "path": "data/peoples/species/seamfolk.toml",
+    "sha256": "980d93259d5829c18e025ba50de8a824250a077d210314b7c2a1683b47234475"
+  },
+  {
+    "path": "data/peoples/species/skarri.toml",
+    "sha256": "35f4cb2302d489511354e696dccf212e1023207cfddf6cf970213ef2849713d0"
+  },
+  {
+    "path": "data/peoples/species/tharn.toml",
+    "sha256": "bd78443143883cc44bb1ed49ed776d8717e4f91f3eb2e0480e788a93a43bbbcc"
+  },
+  {
+    "path": "tools/art/animals.py",
+    "sha256": "2aec8fe1a10ce18c9a14efa61d2c5ad016e5147012b2de6cacb687e42353e80f"
+  },
+  {
+    "path": "tools/art/contact_sheet.py",
+    "sha256": "f8918f13e7b4506b344716d865313568152b921cacd7be7bdcd0aa76f9396f6b"
+  },
+  {
+    "path": "tools/art/contrast_report.py",
+    "sha256": "4c6770b881e120ed756315629e023e8c4f256f6ee606124559f8aa523d9c4a8c"
+  },
+  {
+    "path": "tools/art/draw.py",
+    "sha256": "e4027f3f2bb3858b1e310e199fb3c0194b7d59bcb7ff7ce89038f9ca81212c15"
+  },
+  {
+    "path": "tools/art/effects.py",
+    "sha256": "16b99f67deb74180538a62666caf29788fe7d69a76937ce5efe56b900ef77986"
+  },
+  {
+    "path": "tools/art/effects_check.py",
+    "sha256": "2d3ba6a77ff43e9bce178082a3fa22076f88c3ab3e129e01ad0642f3dc286f57"
+  },
+  {
+    "path": "tools/art/fallback/generate.py",
+    "sha256": "b7dea404da83f9e306401dbe78d356de65b7a500f88d31d12ecbfaef0d76d351"
+  },
+  {
+    "path": "tools/art/fallback/input/palette.json",
+    "sha256": "7b9b0d0c153c7665b571d48c4c697bb45ed4023cb62b34c33405278f326196c4"
+  },
+  {
+    "path": "tools/art/fallback/input/slots.json",
+    "sha256": "49a0a78950b5cac76c34e207098f339304fbe87293c93445780d22b70e89d0d5"
+  },
+  {
+    "path": "tools/art/fallback/input/source-evidence.json",
+    "sha256": "cf3a8cfb68a8891c41c4344e7bf3386e48d6fc7f554e336de715a11cc778c447"
+  },
+  {
+    "path": "tools/art/fallback/input/templates.json",
+    "sha256": "da0c9689de8b0ba0c0eaa2a0704f2b4ff243b0a6ff2b72c1af5608146fa4849c"
+  },
+  {
+    "path": "tools/art/fallback/manifest.json",
+    "sha256": "bb100781cc098863bfadfdce11ee592831e6a81b1d75b95583c355249b822c5c"
+  },
+  {
+    "path": "tools/art/ground_check.py",
+    "sha256": "0de1099f9490e478f8ce0c6e578b9b82fbfb9eeb6a95474ae45c4195fd1d766f"
+  },
+  {
+    "path": "tools/art/items.py",
+    "sha256": "dc97a222848c70386693b9d72efef0ac103906de7df28a786cacc025edf42a32"
+  },
+  {
+    "path": "tools/art/light.py",
+    "sha256": "e4a9fb463685b43b711e1787f4e6534801d15eb27d9cbe63365f832edaa2f6c3"
+  },
+  {
+    "path": "tools/art/lineup.py",
+    "sha256": "80eb3a0f3bc23d348626349fcc22b079a38a29b1d5b9a23ea590f81f550fa540"
+  },
+  {
+    "path": "tools/art/markings_contact.py",
+    "sha256": "925cc579db3d39ac82c1dc80ff16e4daf513191388e98399b2d42f62784ee6c4"
+  },
+  {
+    "path": "tools/art/overlays.py",
+    "sha256": "6f09dd9570e598b64cfc7f89a6aa6a25222639c23e377eab35c933c1bf66af00"
+  },
+  {
+    "path": "tools/art/pal.py",
+    "sha256": "f1257bb3068a4cfc28ff58e5a59bef044f7dab07ad2158e646ec4efc1bac4c0a"
+  },
+  {
+    "path": "tools/art/palette.py",
+    "sha256": "82e6272e705c9b40f5f931ddfd229c20334b6e10ffc1b6669dfadb4daed9e2f5"
+  },
+  {
+    "path": "tools/art/palette_check.py",
+    "sha256": "8c79a93b95e5f442cd1f090905ac0da7333a2f09217e5b3f6ed17271e136ef20"
+  },
+  {
+    "path": "tools/art/people.py",
+    "sha256": "f7eba866907dd670a49a47e29dbbbe545c5c3315acd9eab3c0cb2797c84cbbff"
+  },
+  {
+    "path": "tools/art/people_contact.py",
+    "sha256": "6ded75754a7bdb4259f47334cdd5623e5108e5eb60b122dff3347b6c567aa8fb"
+  },
+  {
+    "path": "tools/art/plants.py",
+    "sha256": "d6440a126bf7fb6d56c157fea6e06145126652bfede33849f6ef5ce6c384252f"
+  },
+  {
+    "path": "tools/art/plants_animals_check.py",
+    "sha256": "3b4f28e9682b495256ae341e055d1eb591d54875b6bd9c6f98925b7dba0886e6"
+  },
+  {
+    "path": "tools/art/prompt_library_check.py",
+    "sha256": "b70e8b0ef940d2bc93587222e082e013604f0b17b1ec57cb1cf39976c3e9ad3a"
+  },
+  {
+    "path": "tools/art/provenance.py",
+    "sha256": "956de8df367d919ee7ea6c5d70b3a60d8e7759e225bd3a27bc7b984a4893bcd6"
+  },
+  {
+    "path": "tools/art/provenance.toml",
+    "sha256": "ec031739856f01636badc8c59e708c99e585008e0e5f6e497663f99c5352ab7d"
+  },
+  {
+    "path": "tools/art/provenance_check.py",
+    "sha256": "0a0a606142d15a0b034881e177dd70f76e879538e0437d9ab3b0f40ae5b6deec"
+  },
+  {
+    "path": "tools/art/provenance_people.toml",
+    "sha256": "afb757d79944799abba7354019ba6bcd2a47fb6813b78c11020fd475fc221997"
+  },
+  {
+    "path": "tools/art/provenance_report.py",
+    "sha256": "559d7523ac50736f1fcb63fb2afc0d7afd667ceb2eb2df831b5a25e91e447084"
+  },
+  {
+    "path": "tools/art/replacement_policy.py",
+    "sha256": "a1a496eacd26764b80717dac026a1170a9e746fdf6b839d29e7f779ae45169b5"
+  },
+  {
+    "path": "tools/art/silhouette_baseline.json",
+    "sha256": "3334e70a05dba6cfb38b8c9bfddf7d645dd72616ca3d23c9d5f302ac44964277"
+  },
+  {
+    "path": "tools/art/silhouette_check.py",
+    "sha256": "da436c2a7cc68ecb98f6bdd38455e1d0e5ecec94ea429a834c1a7bcba9ba536d"
+  },
+  {
+    "path": "tools/art/structures.py",
+    "sha256": "41d6ed1c9650a6d3ac992f4eaecb37dd1ef1e4e43294f6941c2b83b327281182"
+  },
+  {
+    "path": "tools/art/structures_check.py",
+    "sha256": "2435da8871cfd275a66d7d7fb1bec0dbc344a81c52399349f453ff4b57857435"
+  },
+  {
+    "path": "tools/art/terrain.py",
+    "sha256": "44f055694bb6187f0e83f0e34bafaa41457c290d745525700f203d9ca29861a0"
+  },
+  {
+    "path": "tools/art/underground.py",
+    "sha256": "5b9c45610eff09e3acee5ee4dd929c7adc433105aa255cdf3d0102463ceb20e6"
+  },
+  {
+    "path": "tools/art/underground_check.py",
+    "sha256": "b87964ff032c2639864f39ea7587f0534d7713d31f5608f488b86c61fc2d4047"
+  },
+  {
+    "path": "tools/art/underground_review.py",
+    "sha256": "1ccddcf5604575ce4bfe711a8c3adac6f4486427b28be77cb0cf571a4e3d5d40"
+  },
+  {
+    "path": "tools/art/value_report.py",
+    "sha256": "5ffc4f053342ef1f8ee2dd329568735825f47e1cc108814e71a3bc2155de0f78"
+  }
+]

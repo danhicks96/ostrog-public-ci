@@ -1,0 +1,41 @@
+[workspace]
+resolver = "2"
+members = ["crates/hf-sim", "crates/hf-cli", "crates/hf-godot", "crates/hf-update", "crates/hf-launcher", "crates/hf-release"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+
+[workspace.dependencies]
+rand = "0.8"
+rand_chacha = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+bincode = "1"
+rmp-serde = "1.3"
+anyhow = "1"
+rusqlite = { version = "0.31", features = ["bundled", "backup"] }
+sha2 = "0.10"
+ed25519-dalek = { version = "2.1", default-features = false, features = ["std"] }
+hex = "0.4"
+ureq = { version = "2.12", default-features = false, features = ["tls"] }
+zip = { version = "9.4.1", default-features = false, features = ["deflate"] }
+toml = "1"
+clap = { version = "4", features = ["derive"] }
+tempfile = "3"
+# Pinned (D55): the sim spreads path searches and site searches across threads.
+rayon = "=1.12.0"
+
+# The simulation is CPU-bound even in dev.
+[profile.dev]
+opt-level = 1
+[profile.dev.package."*"]
+opt-level = 3
+[profile.test]
+opt-level = 3
+[profile.release]
+opt-level = 3
+debug = 1
+lto = "thin"
+codegen-units = 4

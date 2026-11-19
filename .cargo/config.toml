@@ -1,0 +1,6 @@
+# Windows release binaries link the C runtime statically. Without this, hf-launcher.exe and
+# hf_godot.dll import VCRUNTIME140.dll, which is not part of Windows (it comes with the Visual C++
+# redistributable), so a friend's PC without it could not start the launcher or load the game's
+# bridge (FIXLOG 2026-11-13, WP-02). Godot's own export templates are already static.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

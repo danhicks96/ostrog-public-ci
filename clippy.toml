@@ -1,0 +1,25 @@
+disallowed-types = [
+  { path = "std::collections::HashMap", reason = "iteration order is nondeterministic; use BTreeMap or an indexed Vec (DECISIONS D7)" },
+  { path = "std::collections::HashSet", reason = "iteration order is nondeterministic; use BTreeSet (DECISIONS D7)" },
+]
+# The platform's C maths library rounds these differently on Linux and Windows, and the world
+# digest then differs for the same commit (#234, FIXLOG 2026-10-22). Use `hf_sim::fmath::Det`
+# (`d_exp`, `d_ln`, `d_powf`, `d_sin`, `d_cos`, `d_atan2`), which is libm: the same bits everywhere.
+disallowed-methods = [
+  { path = "f32::exp", reason = "platform libm; use fmath::Det::d_exp (#234)" },
+  { path = "f64::exp", reason = "platform libm; use fmath::Det::d_exp (#234)" },
+  { path = "f32::ln", reason = "platform libm; use fmath::Det::d_ln (#234)" },
+  { path = "f64::ln", reason = "platform libm; use fmath::Det::d_ln (#234)" },
+  { path = "f32::powf", reason = "platform libm; use fmath::Det::d_powf (#234)" },
+  { path = "f64::powf", reason = "platform libm; use fmath::Det::d_powf (#234)" },
+  { path = "f32::sin", reason = "platform libm; use fmath::Det::d_sin (#234)" },
+  { path = "f64::sin", reason = "platform libm; use fmath::Det::d_sin (#234)" },
+  { path = "f32::cos", reason = "platform libm; use fmath::Det::d_cos (#234)" },
+  { path = "f64::cos", reason = "platform libm; use fmath::Det::d_cos (#234)" },
+  { path = "f32::atan2", reason = "platform libm; use fmath::Det::d_atan2 (#234)" },
+  { path = "f64::atan2", reason = "platform libm; use fmath::Det::d_atan2 (#234)" },
+  { path = "f32::tan", reason = "platform libm; add it to fmath::Det (#234)" },
+  { path = "f32::exp2", reason = "platform libm; add it to fmath::Det (#234)" },
+  { path = "f32::log10", reason = "platform libm; add it to fmath::Det (#234)" },
+  { path = "f32::log2", reason = "platform libm; add it to fmath::Det (#234)" },
+]

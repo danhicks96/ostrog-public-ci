@@ -1,0 +1,129 @@
+//! "While you were away": counts and the major lines since a tick, from the chronicle.
+
+use anyhow::Result;
+
+use crate::chronicle::Chronicle;
+use crate::events::Severity;
+use crate::world_state::World;
+
+pub struct Summary {
+    pub from_tick: u64,
+    pub to_tick: u64,
+    pub counts: Vec<(String, i64)>,
+    /// (history_id, tick, line json) of major events, newest first.
+    pub major: Vec<(i64, u64, String)>,
+}
+
+/// Only rows the viewer may be told of (view::known).
+pub fn since(
+    w: &World,
+    c: &Chronicle,
+    from_tick: u64,
+    to_tick: u64,
+    max_major: usize,
+) -> Result<Summary> {
+    let told = crate::view::known::rows_told_sql(w);
+    let mut st = c.conn.prepare(&format!("SELECT kind, COUNT(*) FROM real_history WHERE tick > ?1 AND tick <= ?2{told} GROUP BY kind ORDER BY COUNT(*) DESC"))?;
+    let counts = st
+        .query_map(rusqlite::params![from_tick as i64, to_tick as i64], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?))
+        })?
+        .collect::<std::result::Result<Vec<_>, _>>()?;
+    let mut st2 = c.conn.prepare(&format!("SELECT id, tick, detail FROM real_history WHERE tick > ?1 AND tick <= ?2 AND severity >= ?3{told} ORDER BY id DESC LIMIT ?4"))?;
+    let major = st2
+        .query_map(
+            rusqlite::params![
+                from_tick as i64,
+                to_tick as i64,
+                Severity::Notable as i64,
+                max_major as i64
+            ],
+            |r| {
+                Ok((
+                    r.get::<_, i64>(0)?,
+                    r.get::<_, i64>(1)? as u64,
+                    r.get::<_, String>(2)?,
+                ))
+            },
+        )?
+        .collect::<std::result::Result<Vec<_>, _>>()?;
+    Ok(Summary {
+        from_tick,
+        to_tick,
+        counts,
+        major,
+    })
+}
+
+/// The kinds that change who is in the valley or what they are, most weighty first (#1443).
+/// There is no recorded "parted" row yet; add it here, at its weight, when one exists.
+const CHANGE_KINDS: [&str; 12] = [
+    "died",
+    "born",
+    "paired",
+    "arrived",
+    "joined",
+    "left",
+    "exiled",
+    "captured",
+    "returned",
+    "broke",
+    "craft_lost",
+    "role",
+];
+
+/// One life event of the catch-up card: who, the row it comes from, when, and its line.
+pub struct Change {
+    /// The first person the row names (a pairing names the first of the two); `None` for a row
+    /// about no one in particular (a craft lost to a community).
+    pub agent: Option<crate::ids::AgentId>,
+    pub history_id: i64,
+    pub tick: u64,
+    pub line: String,
+}
+
+/// #1443: the life events between two ticks (from, to], the ones to tell first on coming back:
+/// deaths, births, pairings, arrivals, and so on through `CHANGE_KINDS`, ordered by that list,
+/// then by tick. Every line is narrated from a recorded row (D9), and only rows the viewer may
+/// be told of (view::known) are read. A role counts only the first time the person took it.
+/// Not wired into the card yet (#1445).
+pub fn changes(w: &World, c: &Chronicle, from: u64, to: u64) -> Result<Vec<Change>> {
+    let kinds: Vec<String> = CHANGE_KINDS.iter().map(|k| format!("'{k}'")).collect();
+    let sql = format!(
+        "SELECT id, tick, kind, detail FROM real_history WHERE tick > ?1 AND tick <= ?2 \
+         AND kind IN ({}) AND (kind <> 'role' OR NOT EXISTS (SELECT 1 FROM real_history p \
+         WHERE p.kind = 'role' AND p.detail = real_history.detail AND p.id < real_history.id))\
+         {} ORDER BY tick, id",
+        kinds.join(","),
+        crate::view::known::rows_told_sql(w)
+    );
+    let mut st = c.conn.prepare(&sql)?;
+    let rows = st
+        .query_map(rusqlite::params![from as i64, to as i64], |r| {
+            Ok((
+                r.get::<_, i64>(0)?,
+                r.get::<_, i64>(1)? as u64,
+                r.get::<_, String>(2)?,
+                r.get::<_, String>(3)?,
+            ))
+        })?
+        .collect::<std::result::Result<Vec<_>, _>>()?;
+    let mut out: Vec<(usize, Change)> = rows
+        .into_iter()
+        .filter_map(|(id, tick, kind, detail)| {
+            let e = crate::view::history::event_from_row(id, tick, &detail)?;
+            let rank = CHANGE_KINDS.iter().position(|k| *k == kind)?;
+            Some((
+                rank,
+                Change {
+                    agent: e.participants().first().copied(),
+                    history_id: id,
+                    tick,
+                    line: crate::view::narrate::line(w, &e),
+                },
+            ))
+        })
+        .collect();
+    out.sort_by_key(|(rank, ch)| (*rank, ch.tick, ch.history_id));
+    Ok(out.into_iter().map(|(_, ch)| ch).collect())
+}

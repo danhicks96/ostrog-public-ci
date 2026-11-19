@@ -1,0 +1,29 @@
+Ostrog
+Copyright 2026 Dan Hicks
+
+Ostrog was designed and directed by Dan Hicks and developed with AI assistance on the
+author's local AI workstation.
+
+Code and everything else: the source code, scripts, shaders, scenes, game data, data files (including
+the JSON manifests under godot/assets/) and documentation text are licensed under the GNU General Public License, version 3 or (at your option) any later
+version (see LICENSE). You may use, study, change and share it. If you distribute it or a work
+based on it, you must pass on the same licence with the source code, keep the copyright and
+licence notices in the files, and say which files you changed.
+
+Art and sound: the sprites, tiles, overlays, effects, sound effects and music under godot/assets/
+and the images under docs/ are licensed under the Creative Commons Attribution-ShareAlike 4.0
+International licence (see LICENSE-ASSETS). Credit "Ostrog, Dan Hicks" with a link to the project,
+say what you changed, and share changes under the same licence. They are
+produced by scripts in tools/art and tools/audio. The 113 fallback rehearsal sprites listed in
+tools/art/fallback/manifest.json are unreviewed test inputs; this rehearsal does not select them
+for release or assert a rights grant for them. See docs/ASSETS.md for their separate status.
+
+Name: "Ostrog", its logo and its title treatment are trademarks of the author and are not
+licensed for use as the name or branding of a derived work. This is a statement about
+trademark law, not an additional term of the licences above. A fork should use a different name
+and should not suggest that it is the original or is endorsed by the author.
+
+Third-party software: this project uses open-source Rust crates and the Godot engine under their
+own licences (MIT, Apache-2.0, MPL-2.0, BSD, ISC, Zlib, Unlicense, CDLA-Permissive-2.0,
+Unicode-3.0, and SQLite, which is public domain), all compatible with the GPL v3. The exact set
+is in Cargo.lock; each crate carries its own licence text.

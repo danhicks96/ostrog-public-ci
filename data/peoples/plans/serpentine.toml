@@ -1,0 +1,24 @@
+id    = "serpentine"
+cell  = 96
+tiles = 2
+
+[[part]]
+id = "head"
+roles = ["sense", "vital"]
+wound_weight = 8
+[[part]]
+id = "torso"
+roles = ["vital"]
+wound_weight = 30
+[[part]]
+id = "arm_l"
+roles = ["manipulate"]
+wound_weight = 10
+[[part]]
+id = "arm_r"
+roles = ["manipulate"]
+wound_weight = 10
+[[part]]
+id = "coil"
+roles = ["locomote"]
+wound_weight = 42

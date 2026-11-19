@@ -1,0 +1,47 @@
+id       = "gnarrow"
+name     = "Gnarrow"
+plural   = "Gnarrow"
+sentient = true
+plan     = "taur"
+rarity   = "uncommon"
+blurb    = "four-legged herders of the open grass, fast and strong-backed, who cannot climb a ladder"
+
+[size]
+height_cm = [200, 260]
+mass_kg   = [250, 400]
+
+[life]
+mature_years = 12
+lifespan     = [40, 60]
+
+[diet]
+kind = "herbivore"
+
+[senses]
+sight      = 2
+dark_sight = 0
+hearing    = 1
+smell      = 1
+
+[climate]
+comfort_c = [-2, 26]
+coat      = "fur"
+
+[habitat]
+layers = ["surface"]
+builds = "tents"
+
+[social]
+structure = "band"
+bonding   = "group"
+
+[temperament]
+convictions = { keeping_beasts = 0.6, family = 0.4, tradition = 0.2, violence = 0.1 }
+
+[art]
+body  = "taur"
+skin  = ["tan", "umber", "dust"]
+hair  = true
+
+[living]
+ways = ["herding"]

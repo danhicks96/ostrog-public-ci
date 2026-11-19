@@ -1,0 +1,47 @@
+id       = "meer"
+name     = "Meer"
+plural   = "Meer"
+sentient = true
+plan     = "amphibious"
+rarity   = "uncommon"
+blurb    = "webbed fisherfolk of the lakeshores and rivers, at home in the water, who let nobody drown"
+
+[size]
+height_cm = [140, 170]
+mass_kg   = [45, 70]
+
+[life]
+mature_years = 15
+lifespan     = [55, 80]
+
+[diet]
+kind = "carnivore"
+
+[senses]
+sight      = 2
+dark_sight = 1
+hearing    = 1
+smell      = 1
+
+[climate]
+comfort_c = [8, 28]
+coat      = "bare"
+
+[habitat]
+layers = ["surface"]
+builds = "houses"
+
+[social]
+structure = "household"
+bonding   = "pair"
+
+[temperament]
+convictions = { strangers = -0.3, hospitality = 0.5, nature = 0.3, commerce = 0.2 }
+
+[art]
+body  = "amphibious"
+skin  = ["lichen", "scale_green", "moss_skin"]
+hair  = false
+
+[living]
+ways = ["fishing"]

@@ -1,0 +1,48 @@
+id       = "hollin"
+name     = "Hollin"
+plural   = "Hollin"
+sentient = true
+plan     = "biped"
+rarity   = "uncommon"
+blurb    = "long-lived folk of the old forests, for whom a living tree is not to be cut"
+fertile_with = ["human"]
+
+[size]
+height_cm = [165, 195]
+mass_kg   = [48, 72]
+
+[life]
+mature_years = 40
+lifespan     = [250, 400]
+
+[diet]
+kind = "omnivore"
+
+[senses]
+sight      = 3
+dark_sight = 1
+hearing    = 1
+smell      = 0
+
+[climate]
+comfort_c = [0, 22]
+coat      = "bare"
+
+[habitat]
+layers = ["surface"]
+builds = "houses"
+
+[social]
+structure = "household"
+bonding   = "pair"
+
+[temperament]
+convictions = { strangers = 0.2, death = 0.4, violence = -0.3, cut_living_tree = -0.9, nature = 0.7, tradition = 0.4 }
+
+[art]
+body  = "hollin"
+skin  = ["fair", "pale", "ash", "bark"]
+hair  = true
+
+[living]
+ways = ["hunting", "farming"]

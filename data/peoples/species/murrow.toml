@@ -1,0 +1,48 @@
+id       = "murrow"
+name     = "Murrow"
+plural   = "Murrow"
+sentient = true
+plan     = "biped"
+rarity   = "common"
+cycle    = "nocturnal"
+blurb    = "eyeless fungus-farmers of the caverns, who hear a footfall through the rock and shun the light"
+
+[size]
+height_cm = [140, 170]
+mass_kg   = [40, 65]
+
+[life]
+mature_years = 14
+lifespan     = [50, 75]
+
+[diet]
+kind = "fungivore"
+
+[senses]
+sight      = 0
+dark_sight = 0
+hearing    = 3
+smell      = 2
+
+[climate]
+comfort_c = [6, 22]
+coat      = "bare"
+
+[habitat]
+layers = ["upper_caves", "caverns"]
+builds = "hollows"
+
+[social]
+structure = "household"
+bonding   = "pair"
+
+[temperament]
+convictions = { strangers = 0.4, tradition = 0.4, deep_digging = 0.6, burial = 0.5, nature = 0.3 }
+
+[art]
+body  = "murrow"
+skin  = ["chalk", "pale_lilac"]
+hair  = false
+
+[living]
+ways = ["farming", "hunting"]

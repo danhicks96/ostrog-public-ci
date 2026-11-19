@@ -1,0 +1,449 @@
+# Written by tools/audio/sfx.py; every sound is synthesised there.
+
+[[asset]]
+path = "godot/assets/audio/bear_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/bear_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/boar_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/boar_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/cave_loop.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/chop_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/chop_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/chop_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/chop_3.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/cook_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/cook_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/cook_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/crow_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/crow_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/crow_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/day_loop.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/deer_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/deer_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/door_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/door_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/douse_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/douse_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/duck_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/duck_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/fire_loop.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/flare_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/flare_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/fox_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/fox_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/gust_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/gust_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/gust_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hammer_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hammer_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hammer_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hammer_3.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hare_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hare_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hoe_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hoe_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hoe_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/hoe_3.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/mine_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/mine_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/mine_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/mine_3.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/night_loop.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/rain_heavy.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/rain_light.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/rain_mid.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/saw_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/saw_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/saw_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/thunder_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/thunder_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/thunder_2.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/thunder_3.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/ui_chime.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/ui_click.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/ui_page.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/water_loop.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/wind_loop.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/wolf_0.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/audio/wolf_1.ogg"
+kind = "audio"
+source = "generated"
+generator = "tools/audio/sfx.py"
+licence = "project-original"
