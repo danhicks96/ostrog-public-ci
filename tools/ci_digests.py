@@ -34,7 +34,8 @@ def main():
         tick0 = compute(sys.argv[1], ['digest', '--seed', seed], opening=False)
         day3 = compute(sys.argv[1], ['run', '--opening', '--seed', seed, '--days', '3'], opening=True)
         lines.extend((f'seed {seed} tick0 {tick0}', f'seed {seed} day3 {day3}'))
-    print('\n'.join(lines))
+    # Windows text stdout expands LF to CRLF; raw cross-platform diff needs LF bytes.
+    sys.stdout.buffer.write(('\n'.join(lines) + '\n').encode('ascii'))
 
 if __name__ == '__main__':
     try:
