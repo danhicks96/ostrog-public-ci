@@ -74,7 +74,7 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 ### OST-014 · Fold repeated Catch Up details before limiting the list
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Mara (MR) · **Public PR:** None
 
 Use the existing named-change read model and repeat keys. Fold viewer-visible events of Notable severity or higher before applying the display cap to the details list. Do not fold or cap the named changes, or change raw counts or timelapse markers.
 
