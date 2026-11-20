@@ -1,0 +1,66 @@
+name: breakdown-evidence
+
+on:
+  push:
+    branches: [evidence/ost-005-breakdowns]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ost-005-breakdown-evidence
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 260
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        seed: [1, 2, 3, 4]
+    env:
+      SEED: ${{ matrix.seed }}
+    steps:
+      - name: Prepare failure summary and check disk
+        run: |
+          python3 -I -B - <<'PY'
+          import json, os, pathlib, shutil
+          seed = int(os.environ["SEED"])
+          path = pathlib.Path(os.environ["RUNNER_TEMP"]) / f"seed-{seed}.json"
+          roots = [os.environ[k] for k in ("GITHUB_WORKSPACE", "RUNNER_TEMP")]
+          ok = all(shutil.disk_usage(p).free >= 4 * 1024**3 for p in roots)
+          path.write_text(json.dumps({
+              "seed": seed, "status": "unverified",
+              "stage": "checkout-or-selftest" if ok else "disk-floor"
+          }) + "\n")
+          if not ok:
+              raise SystemExit("Insufficient disk headroom")
+          PY
+      - uses: actions/checkout@v4
+        with:
+          path: evidence
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 35c0bff2bad0d5889e2312d056b0871f7f1c13f2
+          path: base
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: b132a4481a1705cafabeb320e4f85da2d6b4f0ac
+          path: head
+          persist-credentials: false
+      - name: Validate and compare
+        run: |
+          python3 -I -B evidence/tools/breakdown_evidence.py --selftest
+          python3 -I -B evidence/tools/breakdown_evidence.py "$SEED" "$RUNNER_TEMP/seed-$SEED.json"
+      - name: Upload only the structured summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: breakdown-seed-${{ matrix.seed }}
+          path: ${{ runner.temp }}/seed-${{ matrix.seed }}.json
+          retention-days: 7
+          if-no-files-found: error
