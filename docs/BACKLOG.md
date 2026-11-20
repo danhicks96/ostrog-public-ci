@@ -72,6 +72,14 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 **Acceptance:** Build a summary with two deaths, one birth and many hauling rows. It names the births and deaths with the right counts, omits hauling in the headline, and leaves the raw summary counts available to existing consumers.
 
+### OST-014 · Fold repeated Catch Up details before limiting the list
+
+**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+
+Use the existing named-change read model and repeat keys. Fold viewer-visible events of Notable severity or higher before applying the display cap to the details list. Do not fold or cap the named changes, or change raw counts or timelapse markers.
+
+**Acceptance:** In a summary with many repeated suspicions and several distinct raids, the suspicions group without crowding the raids out before folding. Each folded line keeps the newest history ID as its navigation anchor, and stores its earliest and latest event ticks separately. Verify those ticks with out-of-order input, preserve distinct named changes, and check that the timelapse still receives the same raw markers.
+
 ## Waiting on code or measurement
 
 ### OST-003 · Compare long-run camera coverage
@@ -102,7 +110,7 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 **Milestone:** Make important events easier to follow · **State:** Waiting on dependencies · **Developer:** None · **Public PR:** None
 
-**Dependencies:** Readable counts in OST-010 and a folded summary that keeps named changes separate from routine rows. Use the named-change read model already available.
+**Dependencies:** Readable counts in OST-010 and the folded details in OST-014. Use the named-change read model already available.
 
 **Acceptance:** With two named changes and three folded lines, Catch Up renders the headline and named changes before the folded details. Opening History does not close or replace Catch Up. Check the result after an away period in the running client.
 
@@ -112,15 +120,15 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 **Dependencies:** The independent panel in OST-011. Keep idle-return behavior and the manual control in one client lane to avoid conflicting controller edits.
 
-**Acceptance:** Returning after a long idle with new events opens Catch Up; long idle without news and short idle with news do not. Retain the focus trigger. A click can open the panel and select a time span; verify the previous-day span and the five-day season boundary. Confirm on a second-screen client without pausing play.
+**Acceptance:** With the proposed 300-second default, test 299, 300 and 301 seconds: the return opens Catch Up only after more than 300 seconds and only with news, meaning a viewer-visible named change or notable line. Retain the focus trigger. A click opens the panel and selects a time span. Place qualifying rows just before, at and after midnight and a five-day season boundary, then assert which rows each span returns. Previous-day ranges exclude the new day; the current day and season include their boundary row. At tick zero, a qualifying row at tick zero is included in the current day and season, with no underflow or invented previous day. Confirm on a second-screen client without pausing play.
 
 ### OST-013 · Check that Catch Up preserves important events
 
 **Milestone:** Make important events easier to follow · **State:** Waiting on dependencies · **Developer:** None · **Public PR:** None
 
-**Dependencies:** The folded summary must be available for the full census. Fixture design may inform the eventual implementation, but it is not a separate claim: the acceptance fixture must exercise the same folded summary used by the census.
+**Dependencies:** The folded details in OST-014 must be available for the full census. Fixture design may inform the eventual implementation, but it is not a separate claim: the acceptance fixture must exercise the same folded summary used by the census.
 
-**Acceptance:** Compare each eight-hour window against the chronicle in a matched census of eight seeds, three deities and 120 game-days per run. Every recorded death, birth, pairing, arrival and departure in scope is represented by name. No one event kind takes more than three folded lines. Report missing events and affected windows, not just an aggregate percentage.
+**Acceptance:** Compare each eight-hour window against the chronicle in a matched census of eight seeds, three deities and 120 game-days per run. Compare only qualifying deaths, births, pairings, arrivals and departures the viewer is allowed to know. A qualifying departure is a `left` event, not a caravan setting out. Each qualifying event is represented by name. The census checks whether any event kind takes more than three lines in the folded notable details; report violations rather than adding a second cap to OST-014. Never hide a named change to satisfy this check. Report missing events, violating kinds and affected windows, not just an aggregate percentage.
 
 ## Gated by a published release
 
