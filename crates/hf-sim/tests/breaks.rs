@@ -1,7 +1,7 @@
 //! #332: breakdowns of many kinds, each its own thing, and each person breaking their own way.
 
-use hf_sim::events::EventKind;
-use hf_sim::ids::TilePos;
+use hf_sim::events::{BreakExplanation, Event, EventKind, Severity};
+use hf_sim::ids::{AgentId, EventId, TilePos};
 use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::world::gen::GenParams;
 use hf_sim::World;
@@ -27,7 +27,7 @@ fn breaks(seed: u64, n: usize, days: u64) -> (World, Vec<(hf_sim::ids::AgentId, 
         w.events.pending.clear();
         hf_sim::systems::strain::step(&mut w);
         for e in &w.events.pending {
-            if let EventKind::Broke { agent, kind } = &e.kind {
+            if let EventKind::Broke { agent, kind, .. } = &e.kind {
                 out.push((*agent, kind.clone()));
             }
         }
@@ -122,29 +122,18 @@ fn pair_at_the_end_of_a_rope(seed: u64) -> World {
     w
 }
 
-fn broke_over(w: &World, who: hf_sim::ids::AgentId) -> Vec<(Option<hf_sim::ids::AgentId>, String)> {
-    let mut seen_broke = false;
-    let mut out = Vec::new();
-    for e in &w.events.pending {
-        match &e.kind {
-            EventKind::Broke { agent, .. } if *agent == who => seen_broke = true,
-            EventKind::BrokeOver {
-                agent,
-                about,
-                cause,
-            } if *agent == who => {
-                assert!(seen_broke, "BrokeOver must follow Broke");
-                out.push((*about, cause.clone()));
-            }
-            _ => {}
-        }
-    }
-    out
+fn only_break(w: &World, who: AgentId) -> &Event {
+    let mut found = w
+        .events
+        .pending
+        .iter()
+        .filter(|e| matches!(&e.kind, EventKind::Broke { agent, .. } if *agent == who));
+    let event = found.next().expect("the forced breakdown was recorded");
+    assert!(found.next().is_none(), "only one breakdown was recorded");
+    event
 }
 
-#[test]
-fn a_break_names_the_person_it_is_over() {
-    let mut w = pair_at_the_end_of_a_rope(3323);
+fn anger_about_other(w: &mut World) -> (AgentId, AgentId) {
     let (a, b) = (w.agents[0].id, w.agents[1].id);
     let tick = w.meta.tick;
     w.agents[0].feelings.feel(
@@ -154,10 +143,28 @@ fn a_break_names_the_person_it_is_over() {
         tick,
         None,
     );
+    (a, b)
+}
+
+#[test]
+fn a_break_names_the_person_it_is_over() {
+    let mut w = pair_at_the_end_of_a_rope(3323);
+    let (a, b) = anger_about_other(&mut w);
     hf_sim::systems::strain::step(&mut w);
-    let rows = broke_over(&w, a);
-    assert_eq!(rows.len(), 1, "one BrokeOver: {rows:?}");
-    assert_eq!(rows[0].0, Some(b));
+    let event = only_break(&w, a);
+    assert_eq!(event.participants(), [a]);
+    assert!(matches!(
+        &event.kind,
+        EventKind::Broke {
+            explanation: Some(BreakExplanation::Known { about: Some(about), .. }),
+            ..
+        } if *about == b
+    ));
+    let expected = format!("It was over {}.", w.agents[1].name);
+    assert_eq!(
+        hf_sim::view::narrate::contextual_detail(&w, event),
+        Some(expected)
+    );
 }
 
 #[test]
@@ -165,8 +172,282 @@ fn a_break_with_no_cause_says_so() {
     let mut w = pair_at_the_end_of_a_rope(3324);
     let a = w.agents[0].id;
     hf_sim::systems::strain::step(&mut w);
-    let rows = broke_over(&w, a);
-    assert_eq!(rows.len(), 1, "one BrokeOver: {rows:?}");
-    assert_eq!(rows[0].0, None);
-    assert!(rows[0].1.contains("no reason"), "{rows:?}");
+    let event = only_break(&w, a);
+    assert!(matches!(
+        &event.kind,
+        EventKind::Broke {
+            explanation: Some(BreakExplanation::Unknown),
+            ..
+        }
+    ));
+    assert_eq!(
+        hf_sim::view::narrate::contextual_detail(&w, event).as_deref(),
+        Some("No one could name the cause.")
+    );
+}
+
+#[test]
+fn an_explanation_preserves_event_ids_and_observer_state() {
+    let run = |with_explanation: bool| {
+        let mut w = pair_at_the_end_of_a_rope(3323);
+        let (a, b) = anger_about_other(&mut w);
+        // Remove possible collateral events: no hostile target, fuel, furniture or food.
+        w.agents[0].relationships.clear();
+        w.agents[0].beliefs = Default::default();
+        w.agents[0].came = w.meta.tick;
+        w.structures.clear();
+        w.items.clear();
+        let pos = w.agents[0].pos;
+        w.agents[1].pos = pos.offset(1, 0, 0);
+        w.agents[1].activity = hf_sim::mind::Activity::Idle;
+        w.agents[1].techniques = Default::default();
+        let tick = w.meta.tick;
+        let next = w.events.next_id;
+
+        hf_sim::systems::strain::step(&mut w);
+        assert_eq!(
+            w.events.pending.len(),
+            1,
+            "no second event or collateral event"
+        );
+        let event = only_break(&w, a);
+        assert_eq!(
+            (event.id, event.tick, event.at),
+            (EventId(next), tick, Some(pos))
+        );
+        assert_eq!(event.severity, Severity::Major);
+        assert_eq!(event.kind_name(), "broke");
+        assert_eq!(event.participants(), [a]);
+        if !with_explanation {
+            let EventKind::Broke { explanation, .. } = &mut w.events.pending[0].kind else {
+                unreachable!()
+            };
+            *explanation = None;
+        }
+
+        let followup = w.events.push(
+            tick,
+            Some(pos),
+            Severity::Notable,
+            EventKind::Doused { agent: a, at: pos },
+        );
+        assert_eq!(followup, EventId(next + 1));
+        hf_sim::systems::flush::step(&mut w);
+        hf_sim::systems::culture::observe(&mut w);
+        hf_sim::systems::strain::observe(&mut w);
+        hf_sim::systems::feel::observe(&mut w);
+        hf_sim::systems::learn::observe(&mut w);
+        assert!(matches!(
+            w.culture_log.as_slice(),
+            [(_, _, EventKind::Broke { explanation: None, .. })]
+        ));
+        let learned = w
+            .agents
+            .iter()
+            .find(|a| a.id == b)
+            .unwrap()
+            .techniques
+            .knows(hf_sim::mind::Technique::CarryWater);
+
+        // Match the serialized state after removing only the permitted narration difference.
+        let EventKind::Broke { explanation, .. } = &mut w.last_events[0].kind else {
+            unreachable!()
+        };
+        *explanation = None;
+        (learned, hf_sim::digest::digest(&w), w.culture_log)
+    };
+
+    let (annotated_learned, annotated_digest, annotated_log) = run(true);
+    let (baseline_learned, baseline_digest, baseline_log) = run(false);
+    assert_eq!(annotated_log, baseline_log, "culture log without masking");
+    assert_eq!(annotated_learned, baseline_learned);
+    assert_eq!(annotated_digest, baseline_digest);
+}
+
+#[test]
+fn legacy_break_payloads_have_no_explanation() {
+    #[derive(serde::Serialize)]
+    enum LegacyKind {
+        Broke { agent: AgentId, kind: String },
+    }
+    #[derive(serde::Serialize)]
+    struct LegacyEvent {
+        id: EventId,
+        tick: u64,
+        at: Option<TilePos>,
+        severity: Severity,
+        kind: LegacyKind,
+    }
+
+    let old_json = r#"{"Broke":{"agent":7,"kind":"a daze"}}"#;
+    let from_chronicle: EventKind = serde_json::from_str(old_json).unwrap();
+    assert_eq!(serde_json::to_string(&from_chronicle).unwrap(), old_json);
+    assert!(matches!(
+        &from_chronicle,
+        EventKind::Broke {
+            explanation: None,
+            ..
+        }
+    ));
+
+    let old_event = LegacyEvent {
+        id: EventId(8),
+        tick: 12,
+        at: Some(TilePos::new(3, 4, 0)),
+        severity: Severity::Major,
+        kind: LegacyKind::Broke {
+            agent: AgentId(7),
+            kind: "a daze".into(),
+        },
+    };
+    // Save format 2 writes named-field MessagePack. Use the old event's actual field
+    // layout here, not a new event initialized with an explicit None.
+    let mut bytes = Vec::new();
+    serde::Serialize::serialize(
+        &old_event,
+        &mut rmp_serde::Serializer::new(&mut bytes).with_struct_map(),
+    )
+    .unwrap();
+    let decoded: Event = rmp_serde::from_slice(&bytes).unwrap();
+    assert_eq!(
+        (decoded.id, decoded.tick, decoded.at),
+        (old_event.id, old_event.tick, old_event.at)
+    );
+    assert_eq!(decoded.severity, old_event.severity);
+    assert_eq!(decoded.kind, from_chronicle);
+}
+
+#[test]
+fn recorded_explanations_round_trip_in_save_and_chronicle() {
+    use hf_sim::save::{self, snapshot::Snapshot};
+
+    let mut w = pair_at_the_end_of_a_rope(3323);
+    let (a, b) = (w.agents[0].id, w.agents[1].id);
+    let pos = w.agents[0].pos;
+    let tick = w.meta.tick;
+    let mut chronicle = hf_sim::chronicle::Chronicle::in_memory().unwrap();
+    for (explanation, wire) in [
+        (
+            BreakExplanation::Known {
+                about: Some(b),
+                cause: "anger".into(),
+            },
+            serde_json::json!({"Known": {"about": b.0, "cause": "anger"}}),
+        ),
+        (
+            BreakExplanation::Known {
+                about: None,
+                cause: "from hunger".into(),
+            },
+            serde_json::json!({"Known": {"about": null, "cause": "from hunger"}}),
+        ),
+        (BreakExplanation::Unknown, serde_json::json!("Unknown")),
+    ] {
+        let id = w.events.push(
+            tick,
+            Some(pos),
+            Severity::Major,
+            EventKind::Broke {
+                agent: a,
+                kind: "a daze".into(),
+                explanation: Some(explanation),
+            },
+        );
+        let event = w.events.pending.last().unwrap();
+        chronicle.record(std::slice::from_ref(event)).unwrap();
+        let (_, _, detail) = chronicle.row(id).unwrap().unwrap();
+        assert_eq!(
+            serde_json::from_str::<serde_json::Value>(&detail).unwrap(),
+            serde_json::json!({"Broke": {"agent": a.0, "kind": "a daze", "explanation": wire}})
+        );
+        assert_eq!(
+            serde_json::from_str::<EventKind>(&detail).unwrap(),
+            event.kind
+        );
+    }
+
+    let bytes = save::encode(&Snapshot::capture(&w)).unwrap();
+    assert_eq!(
+        save::decode(&bytes).unwrap().events.pending,
+        w.events.pending
+    );
+
+    hf_sim::systems::flush::step(&mut w);
+    hf_sim::systems::culture::observe(&mut w);
+    let bytes = save::encode(&Snapshot::capture(&w)).unwrap();
+    let loaded = save::decode(&bytes).unwrap();
+    assert_eq!(&*loaded.last_events, &w.last_events);
+    assert_eq!(&*loaded.culture_log, &w.culture_log);
+    assert_eq!(loaded.culture_log.len(), 3);
+    for (logged, full) in loaded.culture_log.iter().zip(loaded.last_events.iter()) {
+        assert_eq!((logged.0, logged.1), (full.id, full.tick));
+        assert_eq!(
+            logged.2,
+            EventKind::Broke {
+                agent: a,
+                kind: "a daze".into(),
+                explanation: None,
+            }
+        );
+        assert!(matches!(
+            &full.kind,
+            EventKind::Broke {
+                explanation: Some(_),
+                ..
+            }
+        ));
+    }
+}
+
+#[test]
+fn an_unfound_subject_does_not_hide_the_break_or_leak_the_explanation() {
+    use hf_sim::opening::{SurvivorSlot, SurvivorState};
+    use hf_sim::view::{history, known, narrate};
+
+    let mut w = pair_at_the_end_of_a_rope(3323);
+    let (a, b) = (w.agents[0].id, w.agents[1].id);
+    let actor = w.agents[0].name.clone();
+    w.agents[1].name = "Unfound person".into();
+    let event = Event {
+        id: EventId(8),
+        tick: w.meta.tick,
+        at: Some(w.agents[0].pos),
+        severity: Severity::Major,
+        kind: EventKind::Broke {
+            agent: a,
+            kind: "a daze".into(),
+            explanation: Some(BreakExplanation::Known {
+                about: Some(b),
+                cause: "hidden explanation".into(),
+            }),
+        },
+    };
+    let headline = format!("{actor} broke down: a daze.");
+    assert_eq!(narrate::line(&w, &event), headline);
+    assert_eq!(
+        narrate::contextual_detail(&w, &event).as_deref(),
+        Some("It was over Unfound person.")
+    );
+    w.survivor_pool.push(SurvivorSlot {
+        index: 4,
+        rerolls: 0,
+        state: SurvivorState::Lost {
+            agent: b,
+            found: false,
+        },
+        past_events: Vec::new(),
+    });
+
+    assert!(known::told(&w, &event));
+    assert_eq!(event.participants(), [a]);
+    assert_eq!(narrate::line(&w, &event), headline);
+    assert_eq!(narrate::detail(&event), None);
+    assert_eq!(narrate::contextual_detail(&w, &event), None);
+
+    let mut chronicle = hf_sim::chronicle::Chronicle::in_memory().unwrap();
+    chronicle.record(std::slice::from_ref(&event)).unwrap();
+    let shown = history::major(&w, &chronicle, 5).unwrap();
+    assert_eq!(shown.len(), 1);
+    assert_eq!(shown[0].2, headline);
+    assert_eq!(shown[0].3, None);
 }

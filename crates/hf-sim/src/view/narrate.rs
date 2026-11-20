@@ -1,7 +1,7 @@
 //! Event text. Every sentence is filled only from the recorded event's fields and the
 //! names of the entities it references. No embellishment.
 
-use crate::events::{Event, EventKind};
+use crate::events::{BreakExplanation, Event, EventKind};
 use crate::world_state::World;
 
 fn name(w: &World, id: crate::ids::AgentId) -> String {
@@ -1079,19 +1079,9 @@ pub fn line(w: &World, e: &Event) -> String {
         Doused { agent, .. } => format!("{} threw water on the fire.", named_as(w, e.tick, *agent)),
         Flooded { tiles } => format!("The water has risen over {tiles} tiles."),
         Receded => "The flood has drawn back.".to_string(),
-        Broke { agent, kind } => format!("{} broke down: {}.", named_as(w, e.tick, *agent), kind),
-        BrokeOver {
-            agent,
-            about,
-            cause,
-        } => match about {
-            Some(o) => format!(
-                "{} broke down over {}.",
-                named_as(w, e.tick, *agent),
-                named_as(w, e.tick, *o)
-            ),
-            None => format!("{} broke down {}.", named_as(w, e.tick, *agent), cause),
-        },
+        Broke { agent, kind, .. } => {
+            format!("{} broke down: {}.", named_as(w, e.tick, *agent), kind)
+        }
         FurnitureBroken { agent, what } => {
             // #1791: an owned piece is named theirs ("Moreya's bed"), not "the Moreya's bed".
             let article = if what.contains('\'') { "" } else { "the " };
@@ -1826,6 +1816,26 @@ pub fn detail(e: &Event) -> Option<String> {
         // A custom's narrative is in its line already (#226: it was printed twice).
         CustomFormed { .. } => None,
         _ => None,
+    }
+}
+
+/// Viewer detail that can depend on which people the viewer has found.
+pub fn contextual_detail(w: &World, e: &Event) -> Option<String> {
+    match &e.kind {
+        EventKind::Broke { explanation, .. } => match explanation {
+            Some(BreakExplanation::Known {
+                about: Some(about), ..
+            }) if !crate::view::known::is_unfound(w, *about) => {
+                Some(format!("It was over {}.", named_as(w, e.tick, *about)))
+            }
+            Some(BreakExplanation::Known { about: None, cause }) => {
+                Some(format!("They broke down {cause}."))
+            }
+            Some(BreakExplanation::Unknown) => Some("No one could name the cause.".into()),
+            // A hidden subject hides only the explanation; a legacy event had none.
+            _ => None,
+        },
+        _ => detail(e),
     }
 }
 

@@ -17,6 +17,17 @@ pub enum Severity {
     Major,
 }
 
+/// What weighed on the person at the time of a breakdown. This is narration metadata,
+/// not a second simulation event or a list of its participants.
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+pub enum BreakExplanation {
+    Unknown,
+    Known {
+        about: Option<AgentId>,
+        cause: String,
+    },
+}
+
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum EventKind {
     WorldCreated {
@@ -760,6 +771,9 @@ pub enum EventKind {
     Broke {
         agent: AgentId,
         kind: String,
+        /// Absent in events recorded before explanations were captured.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        explanation: Option<BreakExplanation>,
     },
     FurnitureBroken {
         agent: AgentId,
@@ -1553,13 +1567,6 @@ pub enum EventKind {
     SaplingTrampled {
         at: TilePos,
     },
-    /// Appended: what a breakdown was over, pushed right after its `Broke` at the same
-    /// tick. `about` is the person it was about, if any; `cause` is a few words.
-    BrokeOver {
-        agent: AgentId,
-        about: Option<AgentId>,
-        cause: String,
-    },
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
@@ -1630,7 +1637,6 @@ impl Event {
             | Died { agent, .. } => vec![*agent],
             Tended { healer, patient } => vec![*healer, *patient],
             Broke { agent, .. } | FurnitureBroken { agent, .. } => vec![*agent],
-            BrokeOver { agent, about, .. } => std::iter::once(*agent).chain(*about).collect(),
             LaidToRest { agent, by, .. } => vec![*agent, *by],
             Fought { a, b } => vec![*a, *b],
             StoodAgainst { beast, by, .. } => {
@@ -2100,7 +2106,6 @@ impl Event {
             Doused { .. } => "doused",
             Flooded { .. } => "flooded",
             Receded => "receded",
-            BrokeOver { .. } => "broke_over",
         }
     }
 }

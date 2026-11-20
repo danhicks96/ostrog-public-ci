@@ -4,11 +4,12 @@
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
 - Cause: strain chose and recorded the breakdown without recording its apparent cause.
-- Fix: retain the original breakdown event and append a separate explanation drawn from a
-  strong feeling, a current negative thought, or an unmet need. If there is no identifiable
-  cause, say so. The explanation does not select the breakdown type.
-- Guards: the focused breakdown tests cover a named person and an unknown cause.
-- Pending: compare breakdown counts by type over paired 60-day runs and report cause coverage.
+- Fix: record the explanation on the original breakdown event. A second event shifted later
+  event IDs, which can change simulation draws. Old events without an explanation still use
+  the original line, and an unfound subject does not appear in the viewer's explanation.
+- Guards: named and unknown causes, event-ID and observer parity, legacy event decoding,
+  and visibility in the feed and history.
+- Pending: rerun the paired 60-day comparison and report cause coverage.
 
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 

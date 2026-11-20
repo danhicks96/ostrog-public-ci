@@ -5,7 +5,7 @@
 use rand::Rng;
 
 use crate::agents::Species;
-use crate::events::{EventKind, Severity};
+use crate::events::{BreakExplanation, EventKind, Severity};
 use crate::ids::AgentId;
 use crate::mind::thoughts::ThoughtKind;
 use crate::mind::{Activity, MemKind, Subject};
@@ -503,7 +503,25 @@ pub fn step(w: &mut World) {
             Break::WalkOut => "walking out",
             Break::Firestart => "setting a fire",
         };
-        let cause = break_cause(&w.agents[i], tick);
+        let explanation = match break_cause(&w.agents[i], tick) {
+            Cause::Feeling(k, Subject::Person(about)) => BreakExplanation::Known {
+                about: Some(about),
+                cause: k.word().to_string(),
+            },
+            Cause::Feeling(k, _) => BreakExplanation::Known {
+                about: None,
+                cause: format!("from {}", k.word()),
+            },
+            Cause::Thought(k, _) => BreakExplanation::Known {
+                about: None,
+                cause: format!("because they were {}", k.label()),
+            },
+            Cause::Need(n) => BreakExplanation::Known {
+                about: None,
+                cause: format!("from {n}"),
+            },
+            Cause::Unknown => BreakExplanation::Unknown,
+        };
         {
             let a = &mut w.agents[i];
             a.stress = 0.15;
@@ -524,23 +542,8 @@ pub fn step(w: &mut World) {
             EventKind::Broke {
                 agent: who,
                 kind: label.into(),
-            },
-        );
-        let (about, cause) = match &cause {
-            Cause::Feeling(k, Subject::Person(o)) => (Some(*o), k.word().to_string()),
-            Cause::Feeling(k, _) => (None, format!("from {}", k.word())),
-            Cause::Thought(k, _) => (None, format!("because they were {}", k.label())),
-            Cause::Need(n) => (None, format!("from {n}")),
-            Cause::Unknown => (None, "for no reason anyone could name".to_string()),
-        };
-        w.events.push(
-            tick,
-            Some(here),
-            Severity::Notable,
-            EventKind::BrokeOver {
-                agent: who,
-                about,
-                cause,
+                // Do not consume a second event ID: some simulation draws use event IDs.
+                explanation: Some(explanation),
             },
         );
         w.agents[i].remember(tick, MemKind::Hardship, Subject::None, -0.6, 0.8, Some(eid));

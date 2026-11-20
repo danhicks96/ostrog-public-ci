@@ -704,7 +704,6 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Flooded | flooded | Major | The water has risen over {tiles} tiles. |
 | Receded | receded | Notable | The flood has drawn back. |
 | Broke | broke | Major | {agent} broke down: {kind}. |
-| BrokeOver | broke_over | Notable | {agent} broke down over {o}. / {agent} broke down {cause}. |
 | FurnitureBroken | furniture_broken | Notable | {agent} smashed {article}{what}. / Moreya's bed / the Moreya's bed /  / the  |
 | Fought | fought | Major | {a} and {b} came to blows. |
 | StoodAgainst | stood_against | Major | {by} and {by} / {by}, {by} and {n - 2} others / {who} stood against {b} and killed it. / {who} stood against {b} and drove it off. |
@@ -1127,10 +1126,10 @@ Narratives:
 
 | where | narrative |
 |---|---|
-| systems/culture.rs:489 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
-| systems/culture.rs:509 | We sow and cook more than we need, because {who} starved. |
-| systems/culture.rs:525 | We take in no strangers, since {who} led people away: {cause}. |
-| systems/culture.rs:561 | We do not eat {k}, because {who} fell ill of it and went hungry. |
+| systems/culture.rs:498 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
+| systems/culture.rs:518 | We sow and cook more than we need, because {who} starved. |
+| systems/culture.rs:534 | We take in no strangers, since {who} led people away: {cause}. |
+| systems/culture.rs:570 | We do not eat {k}, because {who} fell ill of it and went hungry. |
 
 #### The Engine (`engine.rs`)
 
@@ -1395,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3103 strings (click to open)</summary>
+<details><summary>3105 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3232,23 +3231,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/crafts.rs:227 | gone |
 | systems/crafts.rs:334 | refused to learn {} from {} |
 | systems/crafts.rs:342 | taught by {} |
-| systems/culture.rs:149 | how their people tell it: {telling} |
-| systems/culture.rs:205 | told by {tname} at the hearth |
-| systems/culture.rs:213 | the tale that {} |
-| systems/culture.rs:234 | how they came to hold that {} |
-| systems/culture.rs:237 | what they remember of the other side of the portal |
-| systems/culture.rs:282 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
-| systems/culture.rs:313 | hold that {} |
-| systems/culture.rs:482 | first |
-| systems/culture.rs:483 | second |
-| systems/culture.rs:484 | third |
-| systems/culture.rs:485 | fourth |
-| systems/culture.rs:486 | fifth |
-| systems/culture.rs:487 | {n}th |
-| systems/culture.rs:505 | starvation |
-| systems/culture.rs:772 | ale |
-| systems/culture.rs:774 | berry wine |
-| systems/culture.rs:777 | drunk |
+| systems/culture.rs:158 | how their people tell it: {telling} |
+| systems/culture.rs:214 | told by {tname} at the hearth |
+| systems/culture.rs:222 | the tale that {} |
+| systems/culture.rs:243 | how they came to hold that {} |
+| systems/culture.rs:246 | what they remember of the other side of the portal |
+| systems/culture.rs:291 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
+| systems/culture.rs:322 | hold that {} |
+| systems/culture.rs:491 | first |
+| systems/culture.rs:492 | second |
+| systems/culture.rs:493 | third |
+| systems/culture.rs:494 | fourth |
+| systems/culture.rs:495 | fifth |
+| systems/culture.rs:496 | {n}th |
+| systems/culture.rs:514 | starvation |
+| systems/culture.rs:781 | ale |
+| systems/culture.rs:783 | berry wine |
+| systems/culture.rs:786 | drunk |
 | systems/decide.rs:99 | someone |
 | systems/decide.rs:103 | search_for_the_lost |
 | systems/decide.rs:104 | go looking for one of the lost near {at} |
@@ -3589,19 +3588,18 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:324 | cold |
 | systems/strain.rs:325 | loneliness |
 | systems/strain.rs:326 | discomfort |
-| systems/strain.rs:531 | from {} |
-| systems/strain.rs:532 | because they were {} |
-| systems/strain.rs:533 | from {n} |
-| systems/strain.rs:534 | for no reason anyone could name |
-| systems/strain.rs:570 | {}'s {} |
-| systems/strain.rs:603 | breaking the {label} |
-| systems/strain.rs:631 | eaten in a binge |
-| systems/strain.rs:665 | set by {name} in a rage |
-| systems/strain.rs:745 | wondered where {who} is |
-| systems/strain.rs:746 | the rest of the party is not here |
-| systems/strain.rs:769 | starting a fight |
-| systems/strain.rs:817 | in a fight |
-| systems/strain.rs:842 | in a fight |
+| systems/strain.rs:513 | from {} |
+| systems/strain.rs:517 | because they were {} |
+| systems/strain.rs:521 | from {n} |
+| systems/strain.rs:573 | {}'s {} |
+| systems/strain.rs:606 | breaking the {label} |
+| systems/strain.rs:634 | eaten in a binge |
+| systems/strain.rs:668 | set by {name} in a rage |
+| systems/strain.rs:748 | wondered where {who} is |
+| systems/strain.rs:749 | the rest of the party is not here |
+| systems/strain.rs:772 | starting a fight |
+| systems/strain.rs:820 | in a fight |
+| systems/strain.rs:845 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
@@ -4081,7 +4079,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/history.rs:36 | Y{} day {} {:02}:{:02} |
 | view/history.rs:50 | ,         crate::view::known::rows_told_sql(w)     );     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(             rusqlite::params![TICKS_PER_YEAR as i64, w.meta.epoch as i64],             \|r\| {                 Ok((                     r.get::<_, i64>(0)?,                     r.get::<_, String>(1)?,                     r.get::<_, i64>(2)?,                 ))             },         )?         .collect::<std::result::Result<Vec<_>, _>>()?;     let mut out: Vec<Era> = Vec::new();     for (y, k, n) in rows {         match out.last_mut() {             Some(e) if e.year == y => e.counts.push((k, n)),             _ => out.push(Era {                 year: y,                 label: era_label(y),                 counts: vec![(k, n)],             }),         }     }     Ok(out) }  fn era_label(year: i64) -> String {     if year >= 0 {         return format!( |
 | view/history.rs:82 | , year + 1);     }     let ago = crate::deep::ago((-1 - year) as u64);     let mut ch = ago.chars();     match ch.next() {         Some(f) => f.to_uppercase().chain(ch).collect(),         None => ago,     } }  /// A recorded event rebuilt from its row: the text is produced from the stored fields. pub fn event_from_row(id: i64, tick: u64, detail: &str) -> Option<Event> {     let kind: EventKind = serde_json::from_str(detail).ok()?;     Some(Event {         id: EventId(id as u32),         tick,         at: None,         severity: Severity::Major,         kind,     }) }  /// (history id, tick, headline, detail) for the most recent notable rows the viewer may be /// told of (view::known), latest first by when they happened: the valley's past sits below /// the arrival however late in the making of the world it was written. pub fn major(w: &World, c: &Chronicle, limit: usize) -> Result<Vec<MajorLine>> {     let sql = format!(          |
-| view/history.rs:110 | ,         crate::view::known::rows_told_sql(w)     );     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(             rusqlite::params![Severity::Notable as i64, limit as i64],             \|r\| {                 Ok((                     r.get::<_, i64>(0)?,                     r.get::<_, i64>(1)? as u64,                     r.get::<_, String>(2)?,                 ))             },         )?         .collect::<std::result::Result<Vec<_>, _>>()?;     Ok(rows         .into_iter()         .filter_map(\|(id, tick, detail)\| {             let e = event_from_row(id, tick, &detail)?;             Some((                 id,                 tick,                 crate::view::narrate::line(w, &e),                 crate::view::narrate::detail(&e),             ))         })         .collect()) }  #[derive(Clone, Debug)] pub struct CustomOrigin {     pub community: String,     pub label: String,     pub narrative: String,     pub intensity: f32,     pub holders: usize,     pub origin_tick: u64,     /// The real event's own line, from its stored row; None only if the row is missing,     /// which the audit test treats as a defect.     pub origin_line: Option<String>, }  ///  |
+| view/history.rs:110 | ,         crate::view::known::rows_told_sql(w)     );     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(             rusqlite::params![Severity::Notable as i64, limit as i64],             \|r\| {                 Ok((                     r.get::<_, i64>(0)?,                     r.get::<_, i64>(1)? as u64,                     r.get::<_, String>(2)?,                 ))             },         )?         .collect::<std::result::Result<Vec<_>, _>>()?;     Ok(rows         .into_iter()         .filter_map(\|(id, tick, detail)\| {             let e = event_from_row(id, tick, &detail)?;             Some((                 id,                 tick,                 crate::view::narrate::line(w, &e),                 crate::view::narrate::contextual_detail(w, &e),             ))         })         .collect()) }  #[derive(Clone, Debug)] pub struct CustomOrigin {     pub community: String,     pub label: String,     pub narrative: String,     pub intensity: f32,     pub holders: usize,     pub origin_tick: u64,     /// The real event's own line, from its stored row; None only if the row is missing,     /// which the audit test treats as a defect.     pub origin_line: Option<String>, }  ///  |
 | view/history.rs:225 | ));         if !valley.is_empty() {             o.valley.push(Era {                 year: e.year,                 label: e.label.clone(),                 counts: valley,             });         }         if world.is_empty() {             continue;         }         let cy = century_of(e.year);         if o.world.last().map(\|c\| century_of(c.year)) != Some(cy) {             o.world.push(Century {                 year: e.year,                 label: if cy == 0 {                      |
 | view/history.rs:241 | .to_string()                 } else {                     format!( |
 | view/history.rs:243 | , cy * 100, cy * 100 + 99)                 },                 counts: Vec::new(),                 named: Vec::new(),                 more: 0,             });         }         let cen = o.world.last_mut().expect( |
@@ -4338,20 +4336,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:59 | An |
 | view/narrate.rs:60 | {article} {n} |
 | view/narrate.rs:71 | community {} |
-| view/narrate.rs:1856 | some {} |
-| view/narrate.rs:1857 | a torch |
-| view/narrate.rs:1858 | a sheaf of grain |
-| view/narrate.rs:1859 | a stone block |
-| view/narrate.rs:1878 | aeiouAEIOU |
-| view/narrate.rs:1879 | {} {what} |
-| view/narrate.rs:1879 | an |
-| view/narrate.rs:1879 | a |
-| view/narrate.rs:1885 | first |
-| view/narrate.rs:1886 | second |
-| view/narrate.rs:1887 | third |
-| view/narrate.rs:1888 | fourth |
-| view/narrate.rs:1889 | fifth |
-| view/narrate.rs:1890 | {n}th |
+| view/narrate.rs:1829 | It was over {}. |
+| view/narrate.rs:1832 | They broke down {cause}. |
+| view/narrate.rs:1834 | No one could name the cause. |
+| view/narrate.rs:1866 | some {} |
+| view/narrate.rs:1867 | a torch |
+| view/narrate.rs:1868 | a sheaf of grain |
+| view/narrate.rs:1869 | a stone block |
+| view/narrate.rs:1888 | aeiouAEIOU |
+| view/narrate.rs:1889 | {} {what} |
+| view/narrate.rs:1889 | an |
+| view/narrate.rs:1889 | a |
+| view/narrate.rs:1895 | first |
+| view/narrate.rs:1896 | second |
+| view/narrate.rs:1897 | third |
+| view/narrate.rs:1898 | fourth |
+| view/narrate.rs:1899 | fifth |
+| view/narrate.rs:1900 | {n}th |
 | view/summary.rs:61 | died |
 | view/summary.rs:62 | born |
 | view/summary.rs:63 | paired |

@@ -70,7 +70,7 @@ fn main() {
                         };
                         *rows.entry(format!("quarrel, {band}")).or_default() += 1;
                     }
-                    EventKind::Broke { agent, kind } => {
+                    EventKind::Broke { agent, kind, .. } => {
                         *rows.entry(format!("broke as {kind}")).or_default() += 1;
                         let Some(a) = w.agents.iter().find(|a| a.id == *agent) else {
                             continue;

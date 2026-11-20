@@ -703,8 +703,8 @@ struct Seen<'a> {
 /// arrival are history, not news: they go to the chronicle and the inspect panel, never to the
 /// feed or the director. Nor does anything about the lost nobody has found yet (view::known).
 /// The simulation-backed causal note for a feed event (#413 A5): the recorded cause or origin
-/// event in the chronicle, or `narrate::detail`, or the primary participant's mood `why`/`feeling`
-/// on notable events whose headline does not already state a `because`.
+/// event in the chronicle, a contextual event detail, or the primary participant's mood
+/// `why`/`feeling` on notable events whose headline does not already state a `because`.
 fn event_because(
     w: &World,
     chronicle: &Chronicle,
@@ -734,8 +734,18 @@ fn event_because(
             }
         }
     }
-    if let Some(det) = narrate::detail(e) {
-        return det;
+    let detail = narrate::contextual_detail(w, e);
+    // A hidden recorded explanation is not permission to substitute the actor's current mood.
+    if detail.is_some()
+        || matches!(
+            &e.kind,
+            K::Broke {
+                explanation: Some(_),
+                ..
+            }
+        )
+    {
+        return detail.unwrap_or_default();
     }
     // The participant's mood is the cause only of what mood drives: a mind giving way, a quarrel,
     // a fight, leaving. On anything else ("finished the hearth", "tended her hurts") it read as a
@@ -4468,6 +4478,7 @@ mod tests {
             hf_sim::events::EventKind::Broke {
                 agent: id,
                 kind: "a daze".into(),
+                explanation: None,
             },
         );
         w.events.push(

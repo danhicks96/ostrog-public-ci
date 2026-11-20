@@ -131,7 +131,7 @@ pub fn major(w: &World, c: &Chronicle, limit: usize) -> Result<Vec<MajorLine>> {
                 id,
                 tick,
                 crate::view::narrate::line(w, &e),
-                crate::view::narrate::detail(&e),
+                crate::view::narrate::contextual_detail(w, &e),
             ))
         })
         .collect())

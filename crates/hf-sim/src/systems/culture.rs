@@ -13,7 +13,16 @@ use crate::world_state::World;
 pub fn observe(w: &mut World) {
     for e in &w.last_events {
         if e.severity >= Severity::Major {
-            w.culture_log.push((e.id, e.tick, e.kind.clone()));
+            // The culture log keeps the simulation event, not the viewer's explanation.
+            let kind = match &e.kind {
+                EventKind::Broke { agent, kind, .. } => EventKind::Broke {
+                    agent: *agent,
+                    kind: kind.clone(),
+                    explanation: None,
+                },
+                other => other.clone(),
+            };
+            w.culture_log.push((e.id, e.tick, kind));
         }
     }
     if w.culture_log.len() > 200 {
