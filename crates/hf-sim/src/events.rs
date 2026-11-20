@@ -17,6 +17,17 @@ pub enum Severity {
     Major,
 }
 
+/// What weighed on the person at the time of a breakdown. This is narration metadata,
+/// not a second simulation event or a list of its participants.
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+pub enum BreakExplanation {
+    Unknown,
+    Known {
+        about: Option<AgentId>,
+        cause: String,
+    },
+}
+
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum EventKind {
     WorldCreated {
@@ -760,6 +771,9 @@ pub enum EventKind {
     Broke {
         agent: AgentId,
         kind: String,
+        /// Absent in events recorded before explanations were captured.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        explanation: Option<BreakExplanation>,
     },
     FurnitureBroken {
         agent: AgentId,

@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-20: show what a breakdown was over
+
+- Symptom: the feed stated the breakdown type without saying what weighed on the person.
+- Cause: strain chose and recorded the breakdown without recording its apparent cause.
+- Fix: record the explanation on the original breakdown event. A second event shifted later
+  event IDs, which can change simulation draws. Old events without an explanation still use
+  the original line, and an unfound subject does not appear in the viewer's explanation.
+- Guards: named and unknown causes, event-ID and observer parity, legacy event decoding,
+  and visibility in the feed and history.
+- Evidence: [the paired 60-day runs](https://github.com/danhicks96/ostrog-public-ci/actions/runs/44790774365)
+  compared `35c0bff2` with `0204b9d7` across four seeds. All eight soaks passed;
+  normalized chronicle and endpoint world hashes matched for every seed. All 59 breakdowns
+  in the candidate recorded a known cause.
+
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
 - Symptom: removing media left asset-dependent Rust and documentation checks without inputs.
