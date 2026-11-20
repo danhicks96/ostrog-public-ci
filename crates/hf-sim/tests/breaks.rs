@@ -239,7 +239,14 @@ fn an_explanation_preserves_event_ids_and_observer_state() {
         hf_sim::systems::learn::observe(&mut w);
         assert!(matches!(
             w.culture_log.as_slice(),
-            [(_, _, EventKind::Broke { explanation: None, .. })]
+            [(
+                _,
+                _,
+                EventKind::Broke {
+                    explanation: None,
+                    ..
+                }
+            )]
         ));
         let learned = w
             .agents
