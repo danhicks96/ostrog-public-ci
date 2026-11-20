@@ -8,6 +8,13 @@
 - Guards: source_assets_test.py rejects missing/changed/linked inputs, missing/extra/changed outputs and malformed manifests. check_source_only.py rejects committed media or unapproved binary blobs. Existing Rust tests, enum/bridge/docs checks and cross-platform digest comparison are preserved.
 - Commit: this source-only CI root; local proof is not hosted CI or publication approval.
 
+## 2026-11-20: remove the camera’s presence penalty for major personal events
+
+- Symptom: a death in an empty camera cell scored below one busy worker in another cell.
+- Cause: fewer people in the event cell reduced its score.
+- Fix: give major deaths, captures, breakdowns and exiles full presence weight. Other scoring and shot timing are unchanged.
+- Guard: a major death in an empty cell outranks a busy worker in a separate cell.
+
 ## 2026-11-19: eight text-template defaults had legacy folder provenance
 
 - Symptom: eight large item icons cited the excluded sheet pipeline.
