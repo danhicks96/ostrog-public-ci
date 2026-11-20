@@ -704,6 +704,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Flooded | flooded | Major | The water has risen over {tiles} tiles. |
 | Receded | receded | Notable | The flood has drawn back. |
 | Broke | broke | Major | {agent} broke down: {kind}. |
+| BrokeOver | broke_over | Notable | {agent} broke down over {o}. / {agent} broke down {cause}. |
 | FurnitureBroken | furniture_broken | Notable | {agent} smashed {article}{what}. / Moreya's bed / the Moreya's bed /  / the  |
 | Fought | fought | Major | {a} and {b} came to blows. |
 | StoodAgainst | stood_against | Major | {by} and {by} / {by}, {by} and {n - 2} others / {who} stood against {b} and killed it. / {who} stood against {b} and drove it off. |
@@ -1394,7 +1395,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3093 strings (click to open)</summary>
+<details><summary>3103 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3582,15 +3583,25 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/society.rs:853 | trade |
 | systems/spoil.rs:87 | rotted |
 | systems/spoil.rs:99 | {n} {k} |
-| systems/strain.rs:498 | {}'s {} |
-| systems/strain.rs:531 | breaking the {label} |
-| systems/strain.rs:559 | eaten in a binge |
-| systems/strain.rs:593 | set by {name} in a rage |
-| systems/strain.rs:673 | wondered where {who} is |
-| systems/strain.rs:674 | the rest of the party is not here |
-| systems/strain.rs:697 | starting a fight |
-| systems/strain.rs:745 | in a fight |
-| systems/strain.rs:770 | in a fight |
+| systems/strain.rs:321 | hunger |
+| systems/strain.rs:322 | thirst |
+| systems/strain.rs:323 | weariness |
+| systems/strain.rs:324 | cold |
+| systems/strain.rs:325 | loneliness |
+| systems/strain.rs:326 | discomfort |
+| systems/strain.rs:531 | from {} |
+| systems/strain.rs:532 | because they were {} |
+| systems/strain.rs:533 | from {n} |
+| systems/strain.rs:534 | for no reason anyone could name |
+| systems/strain.rs:570 | {}'s {} |
+| systems/strain.rs:603 | breaking the {label} |
+| systems/strain.rs:631 | eaten in a binge |
+| systems/strain.rs:665 | set by {name} in a rage |
+| systems/strain.rs:745 | wondered where {who} is |
+| systems/strain.rs:746 | the rest of the party is not here |
+| systems/strain.rs:769 | starting a fight |
+| systems/strain.rs:817 | in a fight |
+| systems/strain.rs:842 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
@@ -4327,20 +4338,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:59 | An |
 | view/narrate.rs:60 | {article} {n} |
 | view/narrate.rs:71 | community {} |
-| view/narrate.rs:1844 | some {} |
-| view/narrate.rs:1845 | a torch |
-| view/narrate.rs:1846 | a sheaf of grain |
-| view/narrate.rs:1847 | a stone block |
-| view/narrate.rs:1866 | aeiouAEIOU |
-| view/narrate.rs:1867 | {} {what} |
-| view/narrate.rs:1867 | an |
-| view/narrate.rs:1867 | a |
-| view/narrate.rs:1873 | first |
-| view/narrate.rs:1874 | second |
-| view/narrate.rs:1875 | third |
-| view/narrate.rs:1876 | fourth |
-| view/narrate.rs:1877 | fifth |
-| view/narrate.rs:1878 | {n}th |
+| view/narrate.rs:1856 | some {} |
+| view/narrate.rs:1857 | a torch |
+| view/narrate.rs:1858 | a sheaf of grain |
+| view/narrate.rs:1859 | a stone block |
+| view/narrate.rs:1878 | aeiouAEIOU |
+| view/narrate.rs:1879 | {} {what} |
+| view/narrate.rs:1879 | an |
+| view/narrate.rs:1879 | a |
+| view/narrate.rs:1885 | first |
+| view/narrate.rs:1886 | second |
+| view/narrate.rs:1887 | third |
+| view/narrate.rs:1888 | fourth |
+| view/narrate.rs:1889 | fifth |
+| view/narrate.rs:1890 | {n}th |
 | view/summary.rs:61 | died |
 | view/summary.rs:62 | born |
 | view/summary.rs:63 | paired |

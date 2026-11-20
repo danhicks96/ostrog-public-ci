@@ -280,6 +280,60 @@ pub const STEADY: f32 = 0.002;
 /// person.
 const WONDER_KEY: u32 = 0x7200_0000;
 
+/// What a breakdown was over: the strongest hard feeling (fear, grief, anger, shame) at
+/// 0.3 or more, with its object; else the heaviest bad thought; else a need near empty; else
+/// nothing anyone can name. Read-only: it changes nothing about how a person breaks.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Cause {
+    Feeling(crate::mind::feelings::FeelingKind, Subject),
+    Thought(ThoughtKind, Subject),
+    Need(&'static str),
+    Unknown,
+}
+
+pub fn break_cause(a: &crate::agents::Agent, now: u64) -> Cause {
+    use crate::mind::feelings::FeelingKind as F;
+    let hard = a
+        .feelings
+        .list
+        .iter()
+        .filter(|f| matches!(f.kind, F::Fear | F::Grief | F::Anger | F::Shame) && f.strength >= 0.3)
+        .max_by(|x, y| x.strength.total_cmp(&y.strength));
+    if let Some(f) = hard {
+        let subject = f.about.map_or(Subject::None, Subject::Person);
+        return Cause::Feeling(f.kind, subject);
+    }
+    let heaviest = a
+        .thoughts
+        .list
+        .iter()
+        .filter(|t| t.weight < 0.0 && t.kind != ThoughtKind::Arrival && t.until > now)
+        .min_by(|x, y| {
+            a.thoughts
+                .sum_of(x.kind, now)
+                .total_cmp(&a.thoughts.sum_of(y.kind, now))
+        });
+    if let Some(t) = heaviest {
+        return Cause::Thought(t.kind, Subject::None);
+    }
+    let n = &a.needs;
+    let low = [
+        (n.hunger, "hunger"),
+        (n.thirst, "thirst"),
+        (n.rest, "weariness"),
+        (n.warmth, "cold"),
+        (n.social, "loneliness"),
+        (n.comfort, "discomfort"),
+    ]
+    .into_iter()
+    .filter(|(v, _)| *v < 0.2)
+    .min_by(|x, y| x.0.total_cmp(&y.0));
+    match low {
+        Some((_, name)) => Cause::Need(name),
+        None => Cause::Unknown,
+    }
+}
+
 pub fn step(w: &mut World) {
     let tick = w.meta.tick;
     if tick % TICKS_PER_HOUR != 900 {
@@ -449,6 +503,7 @@ pub fn step(w: &mut World) {
             Break::WalkOut => "walking out",
             Break::Firestart => "setting a fire",
         };
+        let cause = break_cause(&w.agents[i], tick);
         {
             let a = &mut w.agents[i];
             a.stress = 0.15;
@@ -469,6 +524,23 @@ pub fn step(w: &mut World) {
             EventKind::Broke {
                 agent: who,
                 kind: label.into(),
+            },
+        );
+        let (about, cause) = match &cause {
+            Cause::Feeling(k, Subject::Person(o)) => (Some(*o), k.word().to_string()),
+            Cause::Feeling(k, _) => (None, format!("from {}", k.word())),
+            Cause::Thought(k, _) => (None, format!("because they were {}", k.label())),
+            Cause::Need(n) => (None, format!("from {n}")),
+            Cause::Unknown => (None, "for no reason anyone could name".to_string()),
+        };
+        w.events.push(
+            tick,
+            Some(here),
+            Severity::Notable,
+            EventKind::BrokeOver {
+                agent: who,
+                about,
+                cause,
             },
         );
         w.agents[i].remember(tick, MemKind::Hardship, Subject::None, -0.6, 0.8, Some(eid));

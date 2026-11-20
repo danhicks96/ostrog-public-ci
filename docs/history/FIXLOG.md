@@ -1,5 +1,15 @@
 # Fix log
 
+## 2026-11-20: show what a breakdown was over
+
+- Symptom: the feed stated the breakdown type without saying what weighed on the person.
+- Cause: strain chose and recorded the breakdown without recording its apparent cause.
+- Fix: retain the original breakdown event and append a separate explanation drawn from a
+  strong feeling, a current negative thought, or an unmet need. If there is no identifiable
+  cause, say so. The explanation does not select the breakdown type.
+- Guards: the focused breakdown tests cover a named person and an unknown cause.
+- Pending: compare breakdown counts by type over paired 60-day runs and report cause coverage.
+
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
 - Symptom: removing media left asset-dependent Rust and documentation checks without inputs.

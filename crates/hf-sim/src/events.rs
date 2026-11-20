@@ -1553,6 +1553,13 @@ pub enum EventKind {
     SaplingTrampled {
         at: TilePos,
     },
+    /// Appended: what a breakdown was over, pushed right after its `Broke` at the same
+    /// tick. `about` is the person it was about, if any; `cause` is a few words.
+    BrokeOver {
+        agent: AgentId,
+        about: Option<AgentId>,
+        cause: String,
+    },
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
@@ -1623,6 +1630,7 @@ impl Event {
             | Died { agent, .. } => vec![*agent],
             Tended { healer, patient } => vec![*healer, *patient],
             Broke { agent, .. } | FurnitureBroken { agent, .. } => vec![*agent],
+            BrokeOver { agent, about, .. } => std::iter::once(*agent).chain(*about).collect(),
             LaidToRest { agent, by, .. } => vec![*agent, *by],
             Fought { a, b } => vec![*a, *b],
             StoodAgainst { beast, by, .. } => {
@@ -2092,6 +2100,7 @@ impl Event {
             Doused { .. } => "doused",
             Flooded { .. } => "flooded",
             Receded => "receded",
+            BrokeOver { .. } => "broke_over",
         }
     }
 }

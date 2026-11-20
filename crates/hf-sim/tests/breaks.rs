@@ -92,3 +92,81 @@ fn a_binge_eats_what_lies_near() {
     assert!(binged);
     assert!(food(&w) < before, "the food went");
 }
+
+/// A lone, settled pair; `a` is at the end of their rope with nothing else against them.
+fn pair_at_the_end_of_a_rope(seed: u64) -> World {
+    let mut w = World::generate(seed, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.rebuild_caches();
+    w.found_party(2);
+    w.meta.autoplan = false;
+    w.meta.tick = 3 * TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 900;
+    w.events.pending.clear();
+    let a = &mut w.agents[0];
+    a.stress = 1.0;
+    a.last_break = 0;
+    a.thoughts.list.clear();
+    a.feelings.list.clear();
+    a.needs = hf_sim::mind::needs::Needs {
+        hunger: 1.0,
+        rest: 1.0,
+        warmth: 1.0,
+        social: 1.0,
+        comfort: 1.0,
+        thirst: 1.0,
+        parched_ticks: 0,
+    };
+    a.activity = hf_sim::mind::Activity::Idle;
+    w.agents[1].stress = 0.0;
+    w
+}
+
+fn broke_over(w: &World, who: hf_sim::ids::AgentId) -> Vec<(Option<hf_sim::ids::AgentId>, String)> {
+    let mut seen_broke = false;
+    let mut out = Vec::new();
+    for e in &w.events.pending {
+        match &e.kind {
+            EventKind::Broke { agent, .. } if *agent == who => seen_broke = true,
+            EventKind::BrokeOver {
+                agent,
+                about,
+                cause,
+            } if *agent == who => {
+                assert!(seen_broke, "BrokeOver must follow Broke");
+                out.push((*about, cause.clone()));
+            }
+            _ => {}
+        }
+    }
+    out
+}
+
+#[test]
+fn a_break_names_the_person_it_is_over() {
+    let mut w = pair_at_the_end_of_a_rope(3323);
+    let (a, b) = (w.agents[0].id, w.agents[1].id);
+    let tick = w.meta.tick;
+    w.agents[0].feelings.feel(
+        hf_sim::mind::feelings::FeelingKind::Anger,
+        Some(b),
+        0.7,
+        tick,
+        None,
+    );
+    hf_sim::systems::strain::step(&mut w);
+    let rows = broke_over(&w, a);
+    assert_eq!(rows.len(), 1, "one BrokeOver: {rows:?}");
+    assert_eq!(rows[0].0, Some(b));
+}
+
+#[test]
+fn a_break_with_no_cause_says_so() {
+    let mut w = pair_at_the_end_of_a_rope(3324);
+    let a = w.agents[0].id;
+    hf_sim::systems::strain::step(&mut w);
+    let rows = broke_over(&w, a);
+    assert_eq!(rows.len(), 1, "one BrokeOver: {rows:?}");
+    assert_eq!(rows[0].0, None);
+    assert!(rows[0].1.contains("no reason"), "{rows:?}");
+}

@@ -1080,6 +1080,18 @@ pub fn line(w: &World, e: &Event) -> String {
         Flooded { tiles } => format!("The water has risen over {tiles} tiles."),
         Receded => "The flood has drawn back.".to_string(),
         Broke { agent, kind } => format!("{} broke down: {}.", named_as(w, e.tick, *agent), kind),
+        BrokeOver {
+            agent,
+            about,
+            cause,
+        } => match about {
+            Some(o) => format!(
+                "{} broke down over {}.",
+                named_as(w, e.tick, *agent),
+                named_as(w, e.tick, *o)
+            ),
+            None => format!("{} broke down {}.", named_as(w, e.tick, *agent), cause),
+        },
         FurnitureBroken { agent, what } => {
             // #1791: an owned piece is named theirs ("Moreya's bed"), not "the Moreya's bed".
             let article = if what.contains('\'') { "" } else { "the " };
