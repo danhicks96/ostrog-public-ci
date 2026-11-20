@@ -212,12 +212,17 @@ impl Director {
             };
             let present = awake.get(&c).copied().unwrap_or(0);
             // A fire is something happening whether or not anyone stands in it (#219: a
-            // strike, the spread and the beating-out all went by off camera).
-            let presence = if matches!(*kind, "caravan_left" | "fire_started" | "burned") {
-                1.0
-            } else {
-                0.25 + 0.75 * (present.min(3) as f32 / 3.0)
-            };
+            // strike, the spread and the beating-out all went by off camera). So is a Major
+            // event about a person: dying alone is the saddest death and the common one, and
+            // it must not score less than one person at work.
+            let about_person = matches!(sev, Severity::Major)
+                && matches!(*kind, "died" | "captured" | "broke" | "exiled");
+            let presence =
+                if about_person || matches!(*kind, "caravan_left" | "fire_started" | "burned") {
+                    1.0
+                } else {
+                    0.25 + 0.75 * (present.min(3) as f32 / 3.0)
+                };
             let repeat_discount = if matches!(sev, Severity::Minor) {
                 let n = kind_count.entry((c, *kind)).or_insert(0);
                 *n += 1;
