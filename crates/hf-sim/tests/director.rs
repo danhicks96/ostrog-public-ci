@@ -94,3 +94,30 @@ fn busy_people_still_draw_the_camera() {
         "three busy people should draw the camera over an empty fallback cell, got {suggestion:?}"
     );
 }
+
+/// A death with nobody beside it still draws the camera over one busy person
+/// elsewhere (Major events about a person take full presence).
+#[test]
+fn a_death_alone_in_the_woods_is_shown() {
+    let death = TilePos::new(0, 0, 0);
+    let worker = TilePos::new(30, 0, 0);
+    let mut director = Director::default();
+    director.observe(
+        100,
+        &[mk(
+            1,
+            100,
+            death,
+            Severity::Major,
+            EventKind::Died {
+                agent: AgentId(1),
+                cause: "thirst".into(),
+            },
+        )],
+    );
+    let suggestion = director.suggest(100, TilePos::new(1000, 1000, 0), &[(worker, true)]);
+    assert_eq!(
+        suggestion.at, death,
+        "a lonely death should outscore one busy person, got {suggestion:?}"
+    );
+}

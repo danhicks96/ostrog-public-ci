@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3105 strings (click to open)</summary>
+<details><summary>3109 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -4004,17 +4004,21 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/director.rs:205 | collapse |
 | view/director.rs:205 | fire_started |
 | view/director.rs:205 | burned |
-| view/director.rs:216 | caravan_left |
-| view/director.rs:216 | fire_started |
-| view/director.rs:216 | burned |
-| view/director.rs:242 | people |
-| view/director.rs:246 | people at work |
-| view/director.rs:252 | settlement |
-| view/director.rs:266 | {} ({} events) |
-| view/director.rs:269 | caravan_left |
-| view/director.rs:269 | caravan_returned |
-| view/director.rs:277 | settlement |
-| view/director.rs:278 | settlement |
+| view/director.rs:219 | died |
+| view/director.rs:219 | captured |
+| view/director.rs:219 | broke |
+| view/director.rs:219 | exiled |
+| view/director.rs:221 | caravan_left |
+| view/director.rs:221 | fire_started |
+| view/director.rs:221 | burned |
+| view/director.rs:247 | people |
+| view/director.rs:251 | people at work |
+| view/director.rs:257 | settlement |
+| view/director.rs:271 | {} ({} events) |
+| view/director.rs:274 | caravan_left |
+| view/director.rs:274 | caravan_returned |
+| view/director.rs:282 | settlement |
+| view/director.rs:283 | settlement |
 | view/experience.rs:181 | pending |
 | view/experience.rs:204 | water depth |
 | view/experience.rs:205 | water current |

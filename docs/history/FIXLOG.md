@@ -9,7 +9,10 @@
   the original line, and an unfound subject does not appear in the viewer's explanation.
 - Guards: named and unknown causes, event-ID and observer parity, legacy event decoding,
   and visibility in the feed and history.
-- Pending: rerun the paired 60-day comparison and report cause coverage.
+- Evidence: [the paired 60-day runs](https://github.com/danhicks96/ostrog-public-ci/actions/runs/44790774365)
+  compared `35c0bff2` with `0204b9d7` across four seeds. All eight soaks passed;
+  normalized chronicle and endpoint world hashes matched for every seed. All 59 breakdowns
+  in the candidate recorded a known cause.
 
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
@@ -18,6 +21,13 @@
 - Fix: ci_source_assets.py validates included recipe inputs, creates output directories, generates pinned fallback inputs first and then the full procedural inventory. The Rust job owns generation and provenance; other jobs retain their original checks. No rendered media is committed or uploaded.
 - Guards: source_assets_test.py rejects missing/changed/linked inputs, missing/extra/changed outputs and malformed manifests. check_source_only.py rejects committed media or unapproved binary blobs. Existing Rust tests, enum/bridge/docs checks and cross-platform digest comparison are preserved.
 - Commit: this source-only CI root; local proof is not hosted CI or publication approval.
+
+## 2026-11-20: remove the camera’s presence penalty for major personal events
+
+- Symptom: a death in an empty camera cell scored below one busy worker in another cell.
+- Cause: fewer people in the event cell reduced its score.
+- Fix: give major deaths, captures, breakdowns and exiles full presence weight. Other scoring and shot timing are unchanged.
+- Guard: a major death in an empty cell outranks a busy worker in a separate cell.
 
 ## 2026-11-19: eight text-template defaults had legacy folder provenance
 
