@@ -13,7 +13,7 @@ This is the public backlog for developers working on Ostrog. `OST-` IDs are stab
 
 ## Milestones and parallel work
 
-The milestone labels group related work; they do not promise a release date. Camera instrumentation and workstation investigation can proceed independently of the drafts already in review.
+The milestone labels group related work; they do not promise a release date. Workstation investigation can proceed independently of the drafts already in review. Camera instrumentation is a separate slice and should not be started twice.
 
 ### OST-001 · Keep major events visible when nobody is nearby
 
@@ -33,9 +33,9 @@ The Smelter and Kiln already have station recipes. `Furnace` exists in the struc
 
 ### OST-004 · Measure major events the camera misses
 
-**State:** Ready · **Owner:** None · **Public PR:** None
+**State:** Claim pending · **Owner:** Pending · **Public PR:** Pending
 
-Add a read-only headless measurement for whether the camera showed a major event, split by event kind. This can be developed independently of the scoring change in OST-001; coordinate if a fixture touches the same test file.
+An implementation is being reconciled; do not start another. Add a read-only headless measurement for whether the camera showed a major event, split by event kind. This can be developed independently of the scoring change in OST-001; coordinate if a fixture touches the same test file.
 
 **Acceptance:** Define the sampling interval, time window and same-level distance used to mark an event as shown. Test one major death within view and one outside view, and state how events without a location are counted. Report raw counts and shares by kind without changing simulation state.
 
