@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3109 strings (click to open)</summary>
+<details><summary>3110 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -4371,6 +4371,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/summary.rs:72 | role |
 | view/summary.rs:91 | '{k}' |
 | view/summary.rs:96 | ,         kinds.join( |
+| view/summary.rs:97 | ),         crate::view::known::rows_told_sql(w)     );     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(rusqlite::params![from as i64, to as i64], \|r\| {             Ok((                 r.get::<_, i64>(0)?,                 r.get::<_, i64>(1)? as u64,                 r.get::<_, String>(2)?,                 r.get::<_, String>(3)?,             ))         })?         .collect::<std::result::Result<Vec<_>, _>>()?;     let mut out: Vec<(usize, Change)> = rows         .into_iter()         .filter_map(\|(id, tick, kind, detail)\| {             let e = crate::view::history::event_from_row(id, tick, &detail)?;             let rank = CHANGE_KINDS.iter().position(\|k\| *k == kind)?;             Some((                 rank,                 Change {                     agent: e.participants().first().copied(),                     history_id: id,                     tick,                     line: crate::view::narrate::line(w, &e),                 },             ))         })         .collect();     out.sort_by_key(\|(rank, ch)\| (*rank, ch.tick, ch.history_id));     Ok(out.into_iter().map(\|(_, ch)\| ch).collect()) }  /// One notable detail in Catch Up. The line and anchor come from the newest history row; /// the span records the event times, which can be out of order relative to history IDs. #[derive(Debug, PartialEq, Eq)] pub struct CatchUpDetail {     pub history_id: i64,     pub anchor_tick: u64,     pub earliest_tick: u64,     pub latest_tick: u64,     pub count: usize,     pub line: String, }  /// Read the viewer-visible Notable+ rows in `(from, to]` for Catch Up, folding repeat keys /// before limiting the number of distinct details. Named changes and raw markers are separate. pub fn catch_up_details(     w: &World,     c: &Chronicle,     from: u64,     to: u64,     limit: usize, ) -> Result<Vec<CatchUpDetail>> {     if limit == 0 {         return Ok(Vec::new());     }      let mut st = c.conn.prepare(&format!(          |
 | view/waiting.rs:20 | Planned: {} ({}) |
 | view/waiting.rs:30 | {n} has taken it |
 | view/waiting.rs:33 | set aside after {} failed tries |
