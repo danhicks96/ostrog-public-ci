@@ -26,13 +26,12 @@ You watch; you do not command. Everything built after the colonists arrive is as
 tile from their needs, from materials they gathered and worked, and every line of history the game
 shows comes from a recorded event. The simulation never calls a language model.
 
-The project was developed on the author's local AI-assisted workstation.
-
 ## Status
 
 Pre-release and under active development. The simulation, the Godot client and a Windows
-launcher exist; the work is tracked in docs/STATUS.md (not included in this source snapshot) and
-the repository's Issues tab.
+launcher exist. Ongoing development and CI take place in this repository. See the
+[development backlog](docs/BACKLOG.md) for current work and the
+[release and development history](docs/RELEASE-HISTORY.md) for how the project got here.
 
 ## Build and run
 
