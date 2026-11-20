@@ -13,7 +13,7 @@ This is the public backlog for developers working on Ostrog. `OST-` IDs are stab
 
 ## Milestones and parallel work
 
-The milestone labels group related work; they do not promise a release date. Workstation investigation can proceed independently of the drafts already in review. Camera instrumentation is a separate slice and should not be started twice.
+The milestone labels group related work; they do not promise a release date. Workstation investigation and camera instrumentation are separate from the drafts already in review. Do not start duplicate work.
 
 ### OST-001 · Keep major events visible when nobody is nearby
 
@@ -25,9 +25,9 @@ An unwitnessed major event can be discounted enough that one busy person elsewhe
 
 ### OST-002 · Clarify what the furnace would add
 
-**Milestone:** Clarify workstation roles · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Clarify workstation roles · **State:** Claim pending · **Developer:** Pending · **Public PR:** Pending
 
-The Smelter and Kiln already have station recipes. `Furnace` exists in the structure model and is read by the world view and house logic, but the current recipe table assigns it no recipes. Document whether it has a distinct use instead of adding a station that duplicates the existing two.
+A source review is available for reconciliation; do not start a duplicate investigation. The Smelter and Kiln already have station recipes. `Furnace` exists in the structure model and is read by the world view and house logic, but the current recipe table assigns it no recipes. Document whether it has a distinct use instead of adding a station that duplicates the existing two.
 
 **Acceptance:** Check recipes, building placement and compatibility references. Record the decision with concrete source evidence. If there is a distinct use, describe a separate build slice and its tests. Otherwise propose reserving the unused variant without deleting or renumbering it. No recipe, gameplay or save-format change is needed for this investigation.
 
