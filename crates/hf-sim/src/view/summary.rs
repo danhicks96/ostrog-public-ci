@@ -127,3 +127,76 @@ pub fn changes(w: &World, c: &Chronicle, from: u64, to: u64) -> Result<Vec<Chang
     out.sort_by_key(|(rank, ch)| (*rank, ch.tick, ch.history_id));
     Ok(out.into_iter().map(|(_, ch)| ch).collect())
 }
+
+/// One notable detail in Catch Up. The line and anchor come from the newest history row;
+/// the span records the event times, which can be out of order relative to history IDs.
+#[derive(Debug, PartialEq, Eq)]
+pub struct CatchUpDetail {
+    pub history_id: i64,
+    pub anchor_tick: u64,
+    pub earliest_tick: u64,
+    pub latest_tick: u64,
+    pub count: usize,
+    pub line: String,
+}
+
+/// Read the viewer-visible Notable+ rows in `(from, to]` for Catch Up, folding repeat keys
+/// before limiting the number of distinct details. Named changes and raw markers are separate.
+pub fn catch_up_details(
+    w: &World,
+    c: &Chronicle,
+    from: u64,
+    to: u64,
+    limit: usize,
+) -> Result<Vec<CatchUpDetail>> {
+    if limit == 0 {
+        return Ok(Vec::new());
+    }
+
+    let mut st = c.conn.prepare(&format!(
+        "SELECT id, tick, detail FROM real_history WHERE tick > ?1 AND tick <= ?2 \
+         AND severity >= ?3{} ORDER BY id DESC",
+        crate::view::known::rows_told_sql(w)
+    ))?;
+    let mut rows = st.query(rusqlite::params![
+        from as i64,
+        to as i64,
+        Severity::Notable as i64
+    ])?;
+    let mut details: Vec<CatchUpDetail> = Vec::new();
+    let mut by_key = std::collections::BTreeMap::<String, usize>::new();
+    while let Some(row) = rows.next()? {
+        let id = row.get::<_, i64>(0)?;
+        let tick = row.get::<_, i64>(1)? as u64;
+        let detail: String = row.get(2)?;
+        let Some(event) = crate::view::history::event_from_row(id, tick, &detail) else {
+            continue;
+        };
+        let key = crate::view::fold::key(&event);
+        if let Some(&index) = key.as_ref().and_then(|key| by_key.get(key)) {
+            let detail = &mut details[index];
+            detail.earliest_tick = detail.earliest_tick.min(tick);
+            detail.latest_tick = detail.latest_tick.max(tick);
+            detail.count += 1;
+            continue;
+        }
+
+        // New keys below the cap cannot displace an earlier group: rows arrive in descending
+        // ID order. Keep scanning so every repeat of a retained key contributes to its span.
+        if details.len() == limit {
+            continue;
+        }
+        if let Some(key) = key {
+            by_key.insert(key, details.len());
+        }
+        details.push(CatchUpDetail {
+            history_id: id,
+            anchor_tick: tick,
+            earliest_tick: tick,
+            latest_tick: tick,
+            count: 1,
+            line: crate::view::narrate::line(w, &event),
+        });
+    }
+    Ok(details)
+}
