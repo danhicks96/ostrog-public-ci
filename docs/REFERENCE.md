@@ -583,7 +583,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | OldFounded | old_founded | Notable | {by}, of the {people}, founded {site}. |
 | OldTrouble | old_trouble | Notable | what.clone() |
 | OldAnswered | old_answered | Trace | {deity} answered {trigger} at {site} by leaning on {lever}. |
-| SetupChosen | setup_chosen | Notable | in common that {held} / {n} years of the valley's past behind it /  In this world: {peoples}. / nothing in common beyond what each had lived / no past to find |
+| SetupChosen | setup_chosen | Notable | in common that {held} / {n} years of the valley's past behind it /  In this world: {peoples}. / The portal opened on {valley}, watched by {deity}, with {past}. The three held {held}.{world} / nothing in common beyond what each had lived / no past to find |
 | OldDied | old_died | Notable | {who} of {site} died old. / {who} of {site} was killed in the raid. / {who} of {site} died in the fire. / {who} of {site} died of {c}. / old age / the raid / the fire |
 | OldEnded | old_ended | Notable | {site} stood empty: {why}. |
 | RoofFell | roof_fell | Major | {what} came down {because}. /  It caught {names}. / The roof / Part of a roof /  Nobody was under it. |
@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3110 strings (click to open)</summary>
+<details><summary>3147 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1740,14 +1740,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | deity.rs:145 | who tests the strong |
 | deity.rs:149 | Mirre |
 | deity.rs:150 | who is amused |
-| deity.rs:161 |          }         Engine::Relentless => {              |
-| deity.rs:165 |          }         Engine::Whimsical => {              |
-| deity.rs:169 |          }     } }  /// How hard the deity currently leans `lever` over `scope`: the product of active multipliers /// (1.0 when none), or for Cold the sum of degrees (0.0 when none). pub fn lean(w: &World, lever: Lever, scope: Scope) -> f32 {     let now = w.meta.tick;     let active = w         .deity_answers         .iter()         .filter(\|a\| a.lever == lever && a.scope == scope && a.from <= now && now < a.until);     if lever.additive() {         active.map(\|a\| a.strength).sum()     } else {         active.map(\|a\| a.strength).product()     } }  /// Every tick: notice what happened (cheap). At 04:00: decide. pub fn step(w: &mut World) {     let tick = w.meta.tick;     for e in &w.last_events {         if e.severity >= Severity::Major {             w.deity_watch.last_major = e.tick;         }         if let EventKind::Died { cause, agent } = &e.kind {             if cause.contains( |
-| deity.rs:197 | ) \|\| cause.contains( |
-| deity.rs:197 | ) \|\| cause.contains( |
-| deity.rs:197 | ) {                 w.deity_watch.last_killing = e.tick;                 // The one whose blow it was, if a wound of the dead names them.                 let by = w                     .agents                     .iter()                     .find(\|a\| a.id == *agent)                     .and_then(\|a\| a.body.wounds.iter().rev().find_map(\|wd\| wd.by));                 if let Some(by) = by {                     w.deity_watch.last_killer = Some((by, *agent));                 }             }         }     }     if tick % TICKS_PER_DAY != 4 * TICKS_PER_HOUR + 11 \|\| w.since_arrival() < TICKS_PER_DAY {         return;     }     // Forget answers long over.     w.deity_answers         .retain(\|a\| a.until + 60 * TICKS_PER_DAY > tick);     let day = tick / TICKS_PER_DAY;     let mut r = stream(w.meta.seed, &[purpose::DEITY, day]);     let deity = of(w.meta.engine);     let noticed = notice(w);     for (trigger, scope) in noticed {         answer(w, &deity, trigger, scope, &mut r);     } }  /// What is true today that a deity might answer. fn notice(w: &mut World) -> Vec<(Trigger, Scope)> {     let tick = w.meta.tick;     let mut out = Vec::new();     let people: Vec<&crate::agents::Agent> = w         .agents         .iter()         .filter(\|a\| a.alive && a.community.is_some())         .collect();     if !people.is_empty() {         let n = people.len() as f32;         let food: u32 = w             .items             .iter()             .filter(\|it\| it.kind.is_food())             .map(\|it\| it.count)             .sum();         let starving = people.iter().filter(\|a\| a.needs.hunger < 0.15).count();         let sick = people.iter().filter(\|a\| a.body.illness.is_some()).count();         let t = crate::engine::tension(w);         // Plenty is about food and how people are, not about building still to do.         let plenty = food as f32 / n >= 6.0             && crate::engine::strain(w) < 0.3             && starving * 10 <= people.len()             && sick == 0;         let hard = t > 0.5 \|\| starving * 4 >= people.len() \|\| sick * 3 >= people.len();         let wt = &mut w.deity_watch;         wt.plenty_days = if plenty { wt.plenty_days + 1 } else { 0 };         wt.hard_days = if hard { wt.hard_days + 1 } else { 0 };         if wt.plenty_days >= 3 {             out.push((Trigger::Plenty, Scope::Valley));         }         if wt.hard_days >= 2 {             out.push((Trigger::Hardship, Scope::Valley));         }         if wt.last_killing > wt.killing_seen {             wt.killing_seen = wt.last_killing;             out.push((Trigger::Killing, Scope::Valley));         }         if tick.saturating_sub(wt.last_major.max(w.meta.epoch)) > 5 * TICKS_PER_DAY {             out.push((Trigger::LongQuiet, Scope::Valley));         }     }     for s in &w.overworld.sites {         if s.people == 0 {             continue;         }         if s.hungry_days >= 3 {             out.push((Trigger::SiteHunger, Scope::Site(s.id)));         } else if s.food > s.people as f32 * 25.0 {             out.push((Trigger::SiteFat, Scope::Site(s.id)));         }     }     out }  /// Is this trigger already being answered, or was it answered in the last three days (so the /// deity does not pile on)? Valley triggers are answered over other scopes too (Hask answers /// the valley's plenty over a neighbour's harvest), so for them any scope counts. fn answering(w: &World, trigger: Trigger, scope: Scope) -> bool {     let now = w.meta.tick;     let valley = matches!(         trigger,         Trigger::Plenty \| Trigger::Hardship \| Trigger::Killing \| Trigger::LongQuiet     );     w.deity_answers.iter().any(\|a\| {         a.trigger == trigger && (valley \|\| a.scope == scope) && now < a.until + 3 * TICKS_PER_DAY     }) }  fn answer(     w: &mut World,     d: &Deity,     trigger: Trigger,     scope: Scope,     r: &mut rand_chacha::ChaCha8Rng, ) {     if answering(w, trigger, scope) {         return;     }     let winter = w.calendar().season == Season::Winter;     // (lever, scope, strength, days)     let mut acts: Vec<(Lever, Scope, f32, u64)> = Vec::new();     match (d.motive, trigger) {         // Aun lifts what is low and lowers what is high.         (Motive::Balance, Trigger::Hardship) => {             acts.push((Lever::Herds, Scope::Valley, 1.8, 8));             acts.push((Lever::Sickness, Scope::Valley, 0.5, 6));         }         (Motive::Balance, Trigger::Plenty) if w.deity_watch.plenty_days >= 6 => {             acts.push((Lever::DryStorms, Scope::Valley, 2.0, 4));         }         (Motive::Balance, Trigger::SiteHunger) => acts.push((Lever::Harvest, scope, 1.5, 10)),         (Motive::Balance, Trigger::SiteFat) => acts.push((Lever::Harvest, scope, 0.8, 8)),         (Motive::Balance, Trigger::Killing) => acts.push((Lever::Cold, Scope::Valley, -3.0, 5)),         // Hask presses the strong: when the valley has plenty, a neighbour's harvest fails (and         // hungry people come), the cold bites, and in winter the wolves grow bold. When the valley         // is broken it lets go of everything it was pressing.         (Motive::Test, Trigger::Plenty) => {             if let Some(site) = nearest_inhabited(w, r) {                 acts.push((Lever::Harvest, Scope::Site(site), 0.3, 12));             }             acts.push((Lever::Cold, Scope::Valley, -4.0, 4));             if winter {                 acts.push((Lever::WolfHunger, Scope::Valley, 2.0, 5));             }         }         (Motive::Test, Trigger::Hardship) => {             let now = w.meta.tick;             for a in w.deity_answers.iter_mut() {                 if a.trigger == Trigger::Plenty && a.until > now {                     a.until = now;                 }             }             acts.push((Lever::Sickness, Scope::Valley, 0.7, 5));         }         (Motive::Test, Trigger::Killing) => {             acts.push((Lever::Cold, Scope::Valley, -5.0, 6));             acts.push((Lever::WolfHunger, Scope::Valley, 2.0, 6));             // And the killer is cursed with the Beast-hunger (P11).             if let Some((by, of)) = w.deity_watch.last_killer.take() {                 let dead = w                     .agents                     .iter()                     .find(\|a\| a.id == of)                     .map(\|a\| a.name.clone())                     .unwrap_or_default();                 if let Some(i) = w.agents.iter().position(\|a\| {                     a.id == by && a.alive && a.species == crate::agents::Species::Person                 }) {                     crate::conditions::take(                         w,                         i,                         crate::conditions::ConditionKind::BeastHunger,                         &format!( |
-| deity.rs:360 | , d.name),                         None,                     );                 }             }         }         (Motive::Test, Trigger::SiteFat) => acts.push((Lever::Harvest, scope, 0.7, 10)),         // Mirre likes a long quiet least, and answers anything with whatever comes to hand.         (Motive::Amusement, Trigger::LongQuiet \| Trigger::Plenty \| Trigger::Hardship)             if trigger == Trigger::LongQuiet \|\| r.gen_bool(0.4) =>         {             let days = r.gen_range(2..7);             match r.gen_range(0..5) {                 0 => acts.push((Lever::DryStorms, Scope::Valley, 3.0, days)),                 1 => acts.push((Lever::Cold, Scope::Valley, -6.0, days)),                 2 => acts.push((Lever::Herds, Scope::Valley, 2.0, days)),                 3 => acts.push((Lever::Sickness, Scope::Valley, 1.8, days)),                 _ => {                     if let Some(site) = nearest_inhabited(w, r) {                         acts.push((Lever::Harvest, Scope::Site(site), 0.4, days + 4));                     }                 }             }         }         (Motive::Amusement, Trigger::SiteHunger \| Trigger::SiteFat) if r.gen_bool(0.3) => {             acts.push((                 Lever::Harvest,                 scope,                 r.gen_range(0.4..1.6),                 r.gen_range(3..10),             ));         }         _ => {}     }     let tick = w.meta.tick;     for (lever, scope, strength, days) in acts {         let place = match scope {             Scope::Valley =>  |
-| deity.rs:397 | .to_string(),             Scope::Site(id) => w                 .overworld                 .sites                 .iter()                 .find(\|s\| s.id == id)                 .map(\|s\| s.name.clone())                 .unwrap_or_else(\|\|  |
+| deity.rs:160 | Notices a place grown fat, or one stuck in a long hard stretch, and leans its harvest the other way. Valleys under Aun even out over the years. |
+| deity.rs:164 | Notices whoever is doing well, a place well peopled or long untroubled, and answers with dry storms and fever. The strong are tested; the broken are let be. |
+| deity.rs:168 | Notices a place where nothing has happened for too long, and leans on whatever would be interesting, kind or cruel. |
+| deity.rs:197 | fight |
+| deity.rs:197 | killed |
+| deity.rs:197 | stranger |
+| deity.rs:360 | for the killing of {dead}, by {}'s will |
+| deity.rs:397 | the valley |
+| deity.rs:404 | a far place |
 | delving.rs:67 | iron and copper for the smelter |
 | delving.rs:68 | tin to make bronze |
 | delving.rs:69 | silver or gold to set a gem in |
@@ -2898,19 +2899,21 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | realm/chronicle.rs:333 | two realms |
 | realm/chronicle.rs:334 | The war between {names} ended: {cause}. |
 | realm/chronicle.rs:345 | a people |
-| realm/chronicle.rs:349 | ,                 site(r, *s),                 name(*culture),                 name(*from)             )         }         Traded {             a,             b,             caravans,             goods,             cultures: (ca, cb),         } => {             let culture = \|c: u32\| {                 r.cultures                     .get(c as usize)                     .map(\|c\| c.name.clone())                     .unwrap_or_else(\|\|  |
-| realm/chronicle.rs:366 | .into())             };             format!(                  |
-| realm/chronicle.rs:370 | ,                 culture(*ca),                 culture(*cb),                 site(r, *a),                 site(r, *b)             )         }         Married { a, b, at } => format!(              |
-| realm/chronicle.rs:378 | ,             figure(r, *b),             figure(r, *a),             site(r, *at)         ),         Allied { a, b, against, .. } => format!(              |
-| realm/chronicle.rs:384 | ,             polity(r, *a),             polity(r, *b),             polity(r, *against)         ),         Fled {             from,             to,             people,             count,             cause,         } => {             let who = r                 .peoples                 .get(*people as usize)                 .map(\|p\| p.name.clone())                 .unwrap_or_else(\|\|  |
-| realm/chronicle.rs:400 | .into());             match to {                 Some(t) => format!(                      |
-| realm/chronicle.rs:403 | ,                     site(r, *from),                     site(r, *t)                 ),                 None => format!(                      |
-| realm/chronicle.rs:408 | ,                     site(r, *from)                 ),             }         }         BeastWoke { beast, .. } => {             let b = r.beasts.get(*beast as usize);             format!(                  |
-| realm/chronicle.rs:416 | ,                 b.map(\|b\| b.name.clone())                     .unwrap_or_else(\|\|  |
-| realm/chronicle.rs:418 | .into()),                 b.map(\|b\| b.made_of.clone()).unwrap_or_default(),                 if b.is_some_and(\|b\| b.layer ==  |
-| realm/chronicle.rs:421 |                  } else {                      |
-| realm/chronicle.rs:423 |                  }             )         }         BeastAttacked {             beast,             site: x,             dead,         } => format!(              |
-| realm/chronicle.rs:432 | ,             r.beasts                 .get(*beast as usize)                 .map(\|b\| b.name.clone())                 .unwrap_or_else(\|\|  |
+| realm/chronicle.rs:348 | Far from their homeland, the people of {} grew ways of their own: {}, from {}. |
+| realm/chronicle.rs:366 | a people |
+| realm/chronicle.rs:369 | Over ten years {caravans} caravans went between {} and {}, most between {} and {}: {goods}. |
+| realm/chronicle.rs:378 | {} married {} and went to live at {}. |
+| realm/chronicle.rs:384 | {} and {} made common cause against {}. |
+| realm/chronicle.rs:400 | people |
+| realm/chronicle.rs:403 | {count} of the {who} fled {} for {} ({cause}). |
+| realm/chronicle.rs:408 | {count} of the {who} fled {} and were scattered ({cause}). |
+| realm/chronicle.rs:416 | Something woke in the deep: {}, a thing of {} {}. |
+| realm/chronicle.rs:418 | a beast |
+| realm/chronicle.rs:420 | underworld |
+| realm/chronicle.rs:421 | from the underworld |
+| realm/chronicle.rs:423 | in the deep caverns |
+| realm/chronicle.rs:432 | {} fell on {}: {dead} died. |
+| realm/chronicle.rs:436 | a beast |
 | realm/culture.rs:29 | put in the ground |
 | realm/culture.rs:30 | burned |
 | realm/culture.rs:31 | laid out under the sky |
@@ -3111,7 +3114,6 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | save/migrate.rs:14 | format 1 saves come from the pre-release build and cannot be loaded |
 | save/migrate.rs:19 | cannot migrate downward from {from} to {to} |
 | save/migrate.rs:25 | no migration step from format {v} to {} |
-| save/mod.rs:58 | BEGIN; SELECT count(*) FROM real_history; |
 | save/mod.rs:82 | {}.tmp |
 | save/mod.rs:87 | world.bin |
 | save/mod.rs:88 | chronicle.sqlite |
@@ -4081,18 +4083,68 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/fold.rs:94 | , over {hours} hour{} |
 | view/fold.rs:94 | s |
 | view/history.rs:36 | Y{} day {} {:02}:{:02} |
-| view/history.rs:50 | ,         crate::view::known::rows_told_sql(w)     );     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(             rusqlite::params![TICKS_PER_YEAR as i64, w.meta.epoch as i64],             \|r\| {                 Ok((                     r.get::<_, i64>(0)?,                     r.get::<_, String>(1)?,                     r.get::<_, i64>(2)?,                 ))             },         )?         .collect::<std::result::Result<Vec<_>, _>>()?;     let mut out: Vec<Era> = Vec::new();     for (y, k, n) in rows {         match out.last_mut() {             Some(e) if e.year == y => e.counts.push((k, n)),             _ => out.push(Era {                 year: y,                 label: era_label(y),                 counts: vec![(k, n)],             }),         }     }     Ok(out) }  fn era_label(year: i64) -> String {     if year >= 0 {         return format!( |
-| view/history.rs:82 | , year + 1);     }     let ago = crate::deep::ago((-1 - year) as u64);     let mut ch = ago.chars();     match ch.next() {         Some(f) => f.to_uppercase().chain(ch).collect(),         None => ago,     } }  /// A recorded event rebuilt from its row: the text is produced from the stored fields. pub fn event_from_row(id: i64, tick: u64, detail: &str) -> Option<Event> {     let kind: EventKind = serde_json::from_str(detail).ok()?;     Some(Event {         id: EventId(id as u32),         tick,         at: None,         severity: Severity::Major,         kind,     }) }  /// (history id, tick, headline, detail) for the most recent notable rows the viewer may be /// told of (view::known), latest first by when they happened: the valley's past sits below /// the arrival however late in the making of the world it was written. pub fn major(w: &World, c: &Chronicle, limit: usize) -> Result<Vec<MajorLine>> {     let sql = format!(          |
-| view/history.rs:110 | ,         crate::view::known::rows_told_sql(w)     );     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(             rusqlite::params![Severity::Notable as i64, limit as i64],             \|r\| {                 Ok((                     r.get::<_, i64>(0)?,                     r.get::<_, i64>(1)? as u64,                     r.get::<_, String>(2)?,                 ))             },         )?         .collect::<std::result::Result<Vec<_>, _>>()?;     Ok(rows         .into_iter()         .filter_map(\|(id, tick, detail)\| {             let e = event_from_row(id, tick, &detail)?;             Some((                 id,                 tick,                 crate::view::narrate::line(w, &e),                 crate::view::narrate::contextual_detail(w, &e),             ))         })         .collect()) }  #[derive(Clone, Debug)] pub struct CustomOrigin {     pub community: String,     pub label: String,     pub narrative: String,     pub intensity: f32,     pub holders: usize,     pub origin_tick: u64,     /// The real event's own line, from its stored row; None only if the row is missing,     /// which the audit test treats as a defect.     pub origin_line: Option<String>, }  ///  |
-| view/history.rs:225 | ));         if !valley.is_empty() {             o.valley.push(Era {                 year: e.year,                 label: e.label.clone(),                 counts: valley,             });         }         if world.is_empty() {             continue;         }         let cy = century_of(e.year);         if o.world.last().map(\|c\| century_of(c.year)) != Some(cy) {             o.world.push(Century {                 year: e.year,                 label: if cy == 0 {                      |
-| view/history.rs:241 | .to_string()                 } else {                     format!( |
-| view/history.rs:243 | , cy * 100, cy * 100 + 99)                 },                 counts: Vec::new(),                 named: Vec::new(),                 more: 0,             });         }         let cen = o.world.last_mut().expect( |
-| view/history.rs:266 | ,         crate::view::known::rows_told_sql(w)     );     let epoch = w.meta.epoch;     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(             rusqlite::params![epoch as i64, Severity::Major as i64],             \|r\| {                 Ok((                     r.get::<_, i64>(0)?,                     r.get::<_, i64>(1)? as u64,                     r.get::<_, String>(2)?,                 ))             },         )?         .collect::<std::result::Result<Vec<_>, _>>()?;     for (id, tick, detail) in rows {         let year = -1 - ((epoch - tick) / TICKS_PER_YEAR) as i64;         let cy = century_of(year);         let Some(cen) = o.world.iter_mut().find(\|c\| century_of(c.year) == cy) else {             continue;         };         if cen.named.len() >= NAMED {             cen.more += 1;             continue;         }         if let Some(e) = event_from_row(id, tick, &detail) {             cen.named.push(crate::view::narrate::line(w, &e));         }     }     o.colony.reverse();     o.valley.reverse();     o.world.reverse();     Ok(o) }  /// A year's or a century's counts in words, the kinds worth a line only ( |
-| view/history.rs:330 | ,             // The wider world's years (realm/, M3); its many births and deaths             // are in the Legends browser, not here.              |
-| view/history.rs:339 | ,             _ => continue,         };         match parts.iter_mut().find(\|(w, _)\| *w == word) {             Some(p) => p.1 += n,             None => parts.push((word, *n)),         }     }     let parts: Vec<String> = parts.iter().map(\|(w, n)\| format!( |
-| view/history.rs:347 | )).collect();     parts.join( |
-| view/history.rs:348 | ) }  /// #322: a person's story as the chronicle has it, oldest first: every recorded line that /// names them, narrated from its row. For a child taken below this reads the pact, the night, /// the taking, the finding, the going down after them and how it ended, in that order. pub fn story_of(w: &World, c: &Chronicle, agent: crate::ids::AgentId) -> Result<Vec<String>> {     let mut st = c.conn.prepare_cached(          |
-| view/history.rs:357 | ,     )?;     let rows = st         .query_map(rusqlite::params![agent.0 as i64], \|r\| {             Ok((                 r.get::<_, i64>(0)?,                 r.get::<_, i64>(1)? as u64,                 r.get::<_, String>(2)?,             ))         })?         .collect::<std::result::Result<Vec<_>, _>>()?;     Ok(rows         .into_iter()         .filter_map(\|(id, tick, detail)\| {             let e = event_from_row(id, tick, &detail)?;             Some(crate::view::narrate::line(w, &e))         })         .collect()) }  /// The world's history before the portal year by year, for the reel at a new game's start /// (#561): (realm year, that year's notable lines, oldest first), only years with a line. The /// same rows the History panel and Legends read (real_history before the arrival, notable and /// above, what the viewer may be told); a realm year is counted back from the arrival as the /// realm's own events were written (realm/chronicle.rs `tick_of`). pub fn reel(w: &World, c: &Chronicle) -> Result<Vec<(i64, Vec<String>)>> {     let sql = format!(          |
+| view/history.rs:82 | Year {} |
+| view/history.rs:225 | realm_ |
+| view/history.rs:241 | Up to 99 years before the portal |
+| view/history.rs:243 | {} to {} years before the portal |
+| view/history.rs:310 | born |
+| view/history.rs:310 | born |
+| view/history.rs:311 | died |
+| view/history.rs:311 | old_died |
+| view/history.rs:311 | died |
+| view/history.rs:312 | arrived |
+| view/history.rs:312 | arrived |
+| view/history.rs:313 | left |
+| view/history.rs:313 | left |
+| view/history.rs:314 | joined |
+| view/history.rs:314 | joined |
+| view/history.rs:315 | turned_away |
+| view/history.rs:315 | turned away |
+| view/history.rs:316 | built |
+| view/history.rs:316 | built |
+| view/history.rs:317 | split |
+| view/history.rs:317 | split |
+| view/history.rs:318 | trade |
+| view/history.rs:318 | trade |
+| view/history.rs:319 | custom_formed |
+| view/history.rs:319 | custom formed |
+| view/history.rs:320 | caravan_returned |
+| view/history.rs:320 | caravan returned |
+| view/history.rs:321 | caravan_lost |
+| view/history.rs:321 | caravan lost |
+| view/history.rs:322 | hunted |
+| view/history.rs:322 | hunted |
+| view/history.rs:323 | cave_in |
+| view/history.rs:323 | cave in |
+| view/history.rs:324 | collapse |
+| view/history.rs:324 | collapse |
+| view/history.rs:325 | paired |
+| view/history.rs:325 | paired |
+| view/history.rs:326 | old_founded |
+| view/history.rs:326 | founded |
+| view/history.rs:327 | old_trouble |
+| view/history.rs:327 | trouble |
+| view/history.rs:328 | old_ended |
+| view/history.rs:328 | left empty |
+| view/history.rs:329 | old_answered |
+| view/history.rs:329 | answered |
+| view/history.rs:330 | lived |
+| view/history.rs:330 | lives lived |
+| view/history.rs:333 | realm_founded |
+| view/history.rs:333 | settlements founded |
+| view/history.rs:334 | realm_ended |
+| view/history.rs:334 | settlements emptied |
+| view/history.rs:335 | realm_polity_founded |
+| view/history.rs:335 | realms rose |
+| view/history.rs:336 | realm_polity_ended |
+| view/history.rs:336 | realms fell |
+| view/history.rs:337 | realm_succeeded |
+| view/history.rs:337 | new rulers |
+| view/history.rs:338 | realm_plague |
+| view/history.rs:338 | plague |
+| view/history.rs:339 | realm_famine |
+| view/history.rs:339 | famine |
+| view/history.rs:347 | {w} {n} |
 | view/knowing.rs:28 | talk |
 | view/knowing.rs:29 | tend |
 | view/knowing.rs:30 | forage |
@@ -4101,17 +4153,13 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/knowing.rs:120 | they left |
 | view/knowing.rs:130 | talk {:.2} ({}/{}), tend {:.2} ({}/{}), forage {:.2} ({}/{}), eat_item {:.2} ({}/{}); nothing to gather {}, they left {} |
 | view/known.rs:62 |  AND NOT (kind LIKE 'realm\\_%' ESCAPE '\\' AND tick >= {}) |
-| view/known.rs:72 | ,         ids.join( |
-| view/known.rs:73 | )     ) }  /// May the viewer see this thing: not if its story ties it to one of the unfound lost (the /// tool a lost person dropped where they died names them, and lying on the map it would tell /// the viewer of a death nobody at the landing knows of, #107). pub fn item_told(w: &World, it: &Item) -> bool {     let Some(s) = it.story.as_ref() else {         return true;     };     let hidden = unfound(w);     if hidden.is_empty() {         return true;     }     let last_owner = s.owners.last().map(\|o\| o.0);     !(last_owner.is_some_and(\|o\| hidden.contains(&o))         \|\| s.maker.is_some_and(\|m\| hidden.contains(&m))) }  /// One thing a person keeps in mind, in a viewer's words for the inspect panel:  |
-| view/known.rs:101 | .into(),         },         Known::FoodPlant(_) =>  |
-| view/known.rs:103 | .into(),         Known::Structure(id) => match w.structures.iter().find(\|s\| s.id == *id) {             Some(s) => format!( |
-| view/known.rs:105 | , words(&format!( |
-| view/known.rs:105 | , s.kind))),             None =>  |
-| view/known.rs:106 | .into(),         },         Known::Agent(id) => match w.agents.iter().find(\|a\| a.id == *id) {             Some(a) if a.species == crate::agents::Species::Person => a.name.clone(),             Some(a) => format!( |
-| view/known.rs:110 | , words(&format!( |
-| view/known.rs:110 | , a.species))),             None =>  |
-| view/known.rs:111 | .into(),         },         Known::Water(_) =>  |
-| view/known.rs:113 | .into(),     } }  /// `CookingPot` as  |
+| view/known.rs:101 | something since moved |
+| view/known.rs:103 | a food plant |
+| view/known.rs:105 | a {} |
+| view/known.rs:106 | a place since gone |
+| view/known.rs:110 | a {} |
+| view/known.rs:111 | someone |
+| view/known.rs:113 | water |
 | view/known_world.rs:12 | a village |
 | view/known_world.rs:13 | a ruin |
 | view/known_world.rs:14 | a mine |
@@ -4125,26 +4173,27 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/known_world.rs:33 | a few |
 | view/known_world.rs:34 | a dozen or so |
 | view/known_world.rs:35 | many |
-| view/known_world.rs:44 | ,     );     let known: Vec<_> = ow.sites.iter().filter(\|x\| !x.known_by.is_empty()).collect();     if known.is_empty() {         s +=  |
-| view/known_world.rs:48 | ;     }     for site in &known {         let who: Vec<String> = site             .known_by             .iter()             .filter_map(\|c\| w.communities.iter().find(\|x\| x.id == *c))             .map(\|c\| c.name.clone())             .collect();         s += &format!(              |
-| view/known_world.rs:58 | ,             site.name,             kind(site.kind),             site.days,             edge(site.edge),             who.join( |
-| view/known_world.rs:63 | )         );     }     s +=  |
-| view/known_world.rs:66 | ;     let seen: Vec<_> = w.bands.iter().filter(\|b\| b.sighted).collect();     if seen.is_empty() {         s +=  |
-| view/known_world.rs:69 | ;     }     for b in seen {         let state = match b.state {             crate::threat::BandState::Approaching =>  |
-| view/known_world.rs:73 | ,             crate::threat::BandState::Camped(_) =>  |
-| view/known_world.rs:74 | ,             crate::threat::BandState::Leaving =>  |
-| view/known_world.rs:75 | ,         };         // Named by their home only when the valley knows that place (review of #739).         let known_home = ow             .sites             .iter()             .any(\|x\| x.id == b.site && !x.known_by.is_empty());         let who = if known_home {             format!( |
-| view/known_world.rs:83 | , b.site_name)         } else {              |
-| view/known_world.rs:85 | .to_string()         };         s += &format!( |
-| view/known_world.rs:87 | , how_many(b.size));     }     s +=  |
-| view/known_world.rs:89 | ;     let mut road = 0;     // A caravan the sim has marked lost is still on the road to the valley, which has no word of     // it yet (review of #739); only one come home (Done) is not.     for c in &ow.caravans {         if matches!(c.state, CaravanState::Done) {             continue;         }         let site = match c.purpose {             Purpose::Trade { site, .. } \| Purpose::Scout { site } \| Purpose::Fetch { site, .. } => {                 site             }         };         let to = ow             .sites             .iter()             .find(\|x\| x.id == site)             .map(\|x\| x.name.clone())             .unwrap_or_else(\|\|  |
-| view/known_world.rs:107 | .into());         let what = match c.purpose {             Purpose::Trade { .. } =>  |
-| view/known_world.rs:109 | ,             Purpose::Scout { .. } =>  |
-| view/known_world.rs:110 | ,             Purpose::Fetch { .. } =>  |
-| view/known_world.rs:111 | ,         };         s += &format!( |
-| view/known_world.rs:113 | , c.members.len());         road += 1;     }     // Nor does the valley know of a death on the road: they are still away (review of #739).     for a in ow.away.iter().filter(\|a\| a.community.is_some()) {         if let Some((_, to, why)) = &a.journey {             s += &format!( |
-| view/known_world.rs:119 | , a.name);             road += 1;         }     }     if road == 0 {         s +=  |
-| view/known_world.rs:124 | ;     }     let lost = crate::view::known::unfound(w).len();     if lost > 0 {         s += &format!(              |
+| view/known_world.rs:43 | [b]What the valley knows[/b] / Not the world as it is: what the people of the valley have seen, heard and been told. /  / [b]Places beyond the valley[/b] /  |
+| view/known_world.rs:48 | None. Nobody here has been past the valley's edge or met anyone who has. /  |
+| view/known_world.rs:58 | {}, {}, {} days out to the {}; known in {} /  |
+| view/known_world.rs:63 |  and  |
+| view/known_world.rs:66 | Of anywhere else, nothing is known. /  / [b]Strangers[/b] /  |
+| view/known_world.rs:69 | No strangers are about that anyone has seen. /  |
+| view/known_world.rs:73 | coming |
+| view/known_world.rs:74 | camped near |
+| view/known_world.rs:75 | leaving |
+| view/known_world.rs:83 | A band from {} |
+| view/known_world.rs:85 | A band of strangers |
+| view/known_world.rs:87 | {who}, {}, {state} /  |
+| view/known_world.rs:89 |  / [b]On the road[/b] /  |
+| view/known_world.rs:107 | somewhere not named |
+| view/known_world.rs:109 | to trade |
+| view/known_world.rs:110 | to look |
+| view/known_world.rs:111 | to fetch what is wanted |
+| view/known_world.rs:113 | A caravan of {} gone to {to} {what} /  |
+| view/known_world.rs:119 | {} gone to {to}, {why} /  |
+| view/known_world.rs:124 | Nobody is away. /  |
+| view/known_world.rs:129 |  / [b]The lost[/b] / {lost} of those who came through have not been found. Whether they live, nobody here knows. /  |
 | view/legends.rs:15 | the year before the portal |
 | view/legends.rs:16 | after the portal |
 | view/legends.rs:17 | {n} years before the portal |
@@ -4158,155 +4207,152 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/legends.rs:48 | a people |
 | view/legends.rs:54 | polity |
 | view/legends.rs:55 | a realm |
-| view/legends.rs:62 | ,     ) else {         return Vec::new();     };     let rows = st.query_map(rusqlite::params![kind, id as i64, limit as i64], \|row\| {         Ok((             row.get::<_, i64>(0)?,             row.get::<_, i64>(1)?,             row.get::<_, String>(2)?,         ))     });     let Ok(rows) = rows else { return Vec::new() };     let year_of = \|tick: u64\| -> i64 {         // Ticks before the arrival map back to realm years (realm/chronicle.rs tick_of).         let epoch = w.meta.epoch;         let back = epoch             .saturating_sub(tick)             .div_ceil(crate::time::TICKS_PER_YEAR) as i64;         w.realm.year - back + 1     };     rows.filter_map(\|r\| r.ok())         .filter_map(\|(hid, tick, detail)\| {             let e = crate::view::history::event_from_row(hid, tick as u64, &detail)?;             Some(format!(                  |
-| view/legends.rs:86 | ,                 when(&w.realm, year_of(tick as u64)),                 crate::view::narrate::line(w, &e)             ))         })         .collect() }  /// One page:  |
-| view/legends.rs:98 | .into();     }     let (kind, id) = target.split_once(':').unwrap_or((target,  |
-| view/legends.rs:100 | ));     let id: u32 = id.parse().unwrap_or(0);     match kind {          |
-| view/legends.rs:103 |  => people_page(w, c, id),          |
-| view/legends.rs:104 |  => site_page(w, c, id),          |
-| view/legends.rs:105 |  => figure_page(w, c, id),          |
-| view/legends.rs:106 |  => polity_page(w, c, id),          |
-| view/legends.rs:107 |  => war_page(w, c, id),          |
-| view/legends.rs:108 |  => species_page(w, id),          |
-| view/legends.rs:109 |  => culture_page(w, id),          |
-| view/legends.rs:110 |  => beast_page(w, c, id),         // What the valley knows now, not the world's history (#351, WP-08 8.5).          |
-| view/legends.rs:112 |  => crate::view::known_world::page(w),         _ => world_page(w),     } }  /// A beast of the deep (P10): what it is, when it woke, and every settlement it fell on. fn beast_page(w: &World, c: &Chronicle, id: u32) -> String {     let r = &w.realm;     let Some(b) = r.beasts.get(id as usize) else {         return world_page(w);     };     let plan = crate::plan::plan(&b.plan)         .map(\|p\| {             p.parts                 .iter()                 .map(\|d\| d.id.label())                 .collect::<Vec<_>>()                 .join( |
-| view/legends.rs:129 | )         })         .unwrap_or_default();     let mut s = format!(          |
-| view/legends.rs:133 | ,         b.name,         b.made_of,         crate::plan::plan(&b.plan)             .map(\|p\| p.parts.len())             .unwrap_or(0),         if b.layer ==  |
-| view/legends.rs:140 |          } else {              |
-| view/legends.rs:142 |          },         when(r, b.woke)     );     if !b.ruined.is_empty() {         let places: Vec<String> = b.ruined.iter().map(\|x\| site_link(r, *x)).collect();         s += &format!( |
-| view/legends.rs:148 | , places.join( |
-| view/legends.rs:148 | ));     }     let lines = record(w, c,  |
-| view/legends.rs:150 | , id, 60);     if !lines.is_empty() {         s +=  |
-| view/legends.rs:152 | ;         s += &lines.join( |
-| view/legends.rs:153 | );         s +=  |
-| view/legends.rs:154 | ;     }     s +=  |
-| view/legends.rs:156 | ;     s }  /// A culture (P7): whose it is, where it grew, how its dead are kept, and what it holds firmly. fn culture_page(w: &World, id: u32) -> String {     let r = &w.realm;     let Some(c) = r.cultures.get(id as usize) else {         return world_page(w);     };     let mut s = format!(          |
-| view/legends.rs:167 | ,         c.name,         people_link(r, c.people)     );     match (c.from, c.site) {         (Some(f), Some(site)) => {             s += &format!(                  |
-| view/legends.rs:174 | ,                 site_link(r, site),                 when(r, c.founded),                 link( |
-| view/legends.rs:177 | , f, &r.cultures[f as usize].name)             )         }         _ => s +=  |
-| view/legends.rs:180 | ,     }     s += &format!( |
-| view/legends.rs:182 | , c.rite.name());     let mut firm: Vec<_> = c.stances.iter().filter(\|(_, v)\| v.abs() >= 0.4).collect();     firm.sort_by(\|a, b\| b.1.abs().total_cmp(&a.1.abs()).then(a.0.cmp(&b.0)));     if firm.is_empty() {         s +=  |
-| view/legends.rs:186 | ;     }     for (t, v) in firm.iter().take(8) {         s += &format!( |
-| view/legends.rs:189 | , crate::mind::beliefs::phrase(*t, *v));     }     let sites = r         .sites         .iter()         .filter(\|x\| x.culture == c.id && x.alive())         .count();     s += &format!( |
-| view/legends.rs:196 | );     // P8: the gods it named, its grudges, and the stories it tells most lately.     for g in &c.gods {         s += &format!( |
-| view/legends.rs:199 | , g.name, g.domain);     }     for g in &c.grudges {         s += &format!(              |
-| view/legends.rs:203 | ,             people_link(r, g.against)         );     }     // P9: the cultures they have traded and married with most.     let mut rel: Vec<&crate::realm::relations::Relation> = r         .relations         .iter()         .filter(\|x\| (x.a == c.id \|\| x.b == c.id) && (x.trade > 0 \|\| x.marriages > 0))         .collect();     rel.sort_by_key(\|x\| (std::cmp::Reverse(x.trade + 20 * x.marriages), x.a, x.b));     if !rel.is_empty() {         s +=  |
-| view/legends.rs:215 | ;         for x in rel.iter().take(5) {             let other = if x.a == c.id { x.b } else { x.a };             let married = match x.marriages {                 0 => String::new(),                 1 =>  |
-| view/legends.rs:220 | .to_string(),                 n => format!( |
-| view/legends.rs:221 | ),             };             s += &format!(                  |
-| view/legends.rs:224 | ,                 link( |
-| view/legends.rs:225 | , other, &r.cultures[other as usize].name),                 x.trade,                 when(r, x.last_trade)             );         }     }     let told: Vec<_> = r         .stories         .iter()         .rev()         .filter(\|x\| x.culture == c.id)         .take(6)         .collect();     if !told.is_empty() {         s +=  |
-| view/legends.rs:239 | ;         for st in told {             let later = if st.version > 0 {                  |
-| view/legends.rs:242 |              } else {                  |
-| view/legends.rs:244 |              };             s += &format!(                  |
-| view/legends.rs:247 | ,                 crate::realm::stories::telling(r, st),                 when(r, st.year)             );         }     }     s }  /// A kind of people (P3): its body, senses, life and the world's peoples of that kind. fn species_page(w: &World, id: u32) -> String {     let Some(sp) = w         .kinds()         .into_iter()         .find(\|(k, _)\| k.0 as u32 == id)         .map(\|(_, d)\| d)     else {         return world_page(w);     };     let plan = sp.body_plan();     let mut s = format!(          |
-| view/legends.rs:269 | ,         sp.plural,         sp.describe(),         plan.parts.len(),         plan.parts             .iter()             .map(\|d\| d.id.label())             .collect::<Vec<_>>()             .join( |
-| view/legends.rs:277 | ),         sp.size.height_cm[0],         sp.size.height_cm[1],         sp.size.mass_kg[0],         sp.size.mass_kg[1],         sp.climate.comfort_c[0],         sp.climate.comfort_c[1],         match sp.climate.coat.as_str() {              |
-| view/legends.rs:285 | .to_string(),             c => format!( |
-| view/legends.rs:286 | ),         },         match sp.social.structure.as_str() {              |
-| view/legends.rs:289 | .to_string(),             o => format!( |
-| view/legends.rs:290 | ),         },         sp.habitat.builds,         match sp.social.bonding.as_str() {              |
-| view/legends.rs:296 | ,         }     );     let peoples: Vec<String> = w         .realm         .peoples         .iter()         .filter(\|p\| p.species.0 as u32 == id)         .map(\|p\| people_link(&w.realm, p.id))         .collect();     s +=  |
-| view/legends.rs:306 | ;     if peoples.is_empty() {         s +=  |
-| view/legends.rs:308 | ;     } else {         s += &(peoples.join( |
-| view/legends.rs:310 | );     }     s }  fn world_page(w: &World) -> String {     let r = &w.realm;     let alive = r.sites.iter().filter(\|s\| s.alive()).count();     let mut s = format!(          |
-| view/legends.rs:320 | ,         link( |
-| view/legends.rs:321 | ),         r.year + 1,         r.peoples.len(),         r.sites.len(),         alive,         r.figures.len(),         r.polities.len()     );     for p in &r.peoples {         let n = r             .sites             .iter()             .filter(\|x\| x.people == p.id && x.alive())             .count();         s += &format!(              |
-| view/legends.rs:336 | ,             people_link(r, p.id),             species_link(w, p.species),             p.living.label()         );     }     s +=  |
-| view/legends.rs:342 | ;     for p in &r.polities {         let state = match &p.ended {             Some((y, cause)) => format!( |
-| view/legends.rs:345 | , when(r, *y)),             None => format!( |
-| view/legends.rs:346 | , when(r, p.founded)),         };         s += &format!(              |
-| view/legends.rs:349 | ,             polity_link(r, p.id),             people_link(r, p.people),             site_link(r, p.seat)         );     }     if !r.wars.is_empty() {         s +=  |
-| view/legends.rs:356 | ;         for x in r.wars.iter().rev().take(10) {             let state = match &x.ended {                 Some((y, cause)) => format!( |
-| view/legends.rs:359 | , when(r, *y)),                 None =>  |
-| view/legends.rs:360 | .to_string(),             };             s += &format!(                  |
-| view/legends.rs:363 | ,                 link(                      |
-| view/legends.rs:365 | ,                     x.id,                     &format!(                          |
-| view/legends.rs:368 | ,                         r.polities[x.a as usize].name, r.polities[x.b as usize].name                     )                 )             );         }     }     if !r.beasts.is_empty() {         s +=  |
-| view/legends.rs:376 | ;         for b in &r.beasts {             s += &format!(                  |
-| view/legends.rs:379 | ,                 link( |
-| view/legends.rs:380 | , b.id, &b.name),                 when(r, b.woke)             );         }     }     if let Some(region) = w.meta.setup.as_ref().and_then(\|x\| x.region) {         if let Some(p) = r.nearest_people(region) {             s += &format!( |
-| view/legends.rs:387 | , people_link(r, p.id));         }     }     s }  fn people_page(w: &World, c: &Chronicle, id: u32) -> String {     let r = &w.realm;     let Some(p) = r.peoples.get(id as usize) else {         return world_page(w);     };     let _ = c;     let mine: Vec<_> = r.sites.iter().filter(\|s\| s.people == id).collect();     let alive = mine.iter().filter(\|s\| s.alive()).count();     let home = match mine.first() {         // A people of the deep (P10) lives in the caverns under the land.         Some(first) if p.deep => format!(              |
-| view/legends.rs:404 | ,             site_link(r, first.id)         ),         Some(first) => format!( |
-| view/legends.rs:407 | , site_link(r, first.id)),         None => {             // A rare people (P5) never had a land of its own.             let among: Vec<String> = r                 .sites                 .iter()                 .filter(\|x\| x.minority == Some(id))                 .take(4)                 .map(\|x\| site_link(r, x.id))                 .collect();             if among.is_empty() {                  |
-| view/legends.rs:418 | .to_string()             } else {                 format!(                      |
-| view/legends.rs:421 | ,                     among.join( |
-| view/legends.rs:422 | )                 )             }         }     };     let mut s = format!(          |
-| view/legends.rs:428 | ,         p.name,         species_link(w, p.species),         p.living.label(),     );     let mut conv = p.convictions.clone();     conv.sort_by(\|a, b\| {         b.1.abs()             .partial_cmp(&a.1.abs())             .unwrap_or(std::cmp::Ordering::Equal)     });     for (t, v) in conv.iter().take(4).filter(\|c\| c.1.abs() >= 0.2) {         s += &format!( |
-| view/legends.rs:440 | , crate::setup::held_words(*t, *v));     }     // Their cultures (P7): the first, and any grown at far settlements.     let cultures: Vec<String> = r         .cultures         .iter()         .filter(\|c\| c.people == id)         .map(\|c\| link( |
-| view/legends.rs:447 | , c.id, &c.name))         .collect();     if !cultures.is_empty() {         s += &format!( |
-| view/legends.rs:450 | , cultures.join( |
-| view/legends.rs:450 | ));     }     s += &format!(          |
-| view/legends.rs:453 | ,         mine.len()     );     let mut big: Vec<_> = mine.iter().filter(\|s\| s.alive()).collect();     big.sort_by(\|a, b\| {         b.population             .partial_cmp(&a.population)             .unwrap_or(std::cmp::Ordering::Equal)     });     for x in big.iter().take(8) {         s += &format!(              |
-| view/legends.rs:464 | ,             site_link(r, x.id),             x.kind.label(),             x.population         );     }     let realms: Vec<_> = r.polities.iter().filter(\|q\| q.people == id).collect();     if !realms.is_empty() {         s +=  |
-| view/legends.rs:472 | ;         for q in realms {             s += &format!( |
-| view/legends.rs:474 | , polity_link(r, q.id));         }     }     s +=  |
-| view/legends.rs:477 | ;     let mut figs: Vec<_> = r.figures.iter().filter(\|f\| f.people == id).collect();     figs.sort_by_key(\|f\| {         (             std::cmp::Reverse(                 f.died                     .as_ref()                     .map(\|d\| d.0 - f.born)                     .unwrap_or(r.year - f.born),             ),             f.id,         )     });     for f in figs.iter().take(8) {         s += &format!( |
-| view/legends.rs:491 | , figure_link(r, f.id), f.role.label());     }     s +=  |
-| view/legends.rs:493 | ;     s }  fn site_page(w: &World, c: &Chronicle, id: u32) -> String {     let r = &w.realm;     let Some(x) = r.sites.get(id as usize) else {         return world_page(w);     };     let mut s = format!(          |
-| view/legends.rs:503 | ,         x.name,         if x.kind == SiteKind::Mine {              |
-| view/legends.rs:506 |          } else if x.alive() {             x.kind.label()         } else {              |
-| view/legends.rs:510 |          },         people_link(r, x.people),         when(r, x.founded)     );     if let Some(p) = x.parent {         s += &format!( |
-| view/legends.rs:516 | , site_link(r, p));     }     s +=  |
-| view/legends.rs:518 | ;     match &x.ended {         Some((y, cause)) => {             s += &format!(                  |
-| view/legends.rs:522 | ,                 when(r, *y),                 x.peak             )         }         None => s += &format!( |
-| view/legends.rs:527 | , x.population, x.peak),     }     // What it trades with the valley (C36), if the valley knows it: what it holds and the     // last exchanges.     if let Some(site) = w         .overworld         .sites         .iter()         .find(\|o\| o.realm_site == Some(id) && !o.known_by.is_empty())     {         let held: Vec<String> = site             .stores             .iter()             .filter(\|(_, v)\| **v >= 1.0)             .map(\|(k, v)\| format!( |
-| view/legends.rs:541 | , v, k.label()))             .collect();         if !held.is_empty() {             s += &format!( |
-| view/legends.rs:544 | , held.join( |
-| view/legends.rs:544 | ));         }         for t in site.trades.iter().rev().take(3) {             let side = \|v: &Vec<(crate::items::ItemKind, u32)>\| {                 v.iter()                     .map(\|(k, n)\| format!( |
-| view/legends.rs:549 | , k.label()))                     .collect::<Vec<_>>()                     .join( |
-| view/legends.rs:551 | )             };             s += &format!(                  |
-| view/legends.rs:554 | ,                 side(&t.gave),                 if t.got.is_empty() {                      |
-| view/legends.rs:557 | .to_string()                 } else {                     side(&t.got)                 },                 crate::legend::when(w, t.tick)             );         }         // With other settlements beyond the valley (P9).         for x in site.exchanges.iter().rev().take(3) {             let with = w                 .overworld                 .sites                 .iter()                 .find(\|o\| o.id == x.with)                 .map(\|o\| o.name.clone())                 .unwrap_or_else(\|\|  |
-| view/legends.rs:572 | .into());             s += &format!(                  |
-| view/legends.rs:574 | ,                 x.gave.1,                 x.gave.0.label(),                 x.got.1,                 x.got.0.label(),                 crate::legend::when(w, x.tick)             );         }     }     if let Some(q) = r         .polities         .iter()         .find(\|q\| q.members.contains(&id) \|\| q.seat == id)     {         let role = if q.seat == id {              |
-| view/legends.rs:589 |          } else {              |
-| view/legends.rs:591 |          };         s += &format!( |
-| view/legends.rs:593 | , polity_link(r, q.id));     }     // What each culture tells of what happened here (P8): the same battle told two ways.     let here: Vec<_> = r.stories.iter().filter(\|x\| x.site == Some(id)).collect();     if !here.is_empty() {         s +=  |
-| view/legends.rs:598 | ;         // Each with its year, and never the same sentence twice (#222).         let mut told: Vec<String> = Vec::new();         for st in here.iter().rev() {             if told.len() >= 6 {                 break;             }             let who = r                 .cultures                 .get(st.culture as usize)                 .map(\|c\| link( |
-| view/legends.rs:608 | , c.id, &c.name))                 .unwrap_or_default();             let later = if st.version > 0 {                  |
-| view/legends.rs:611 |              } else {                  |
-| view/legends.rs:613 |              };             let line = format!(                  |
-| view/legends.rs:616 | ,                 crate::realm::stories::telling(r, st),                 when(r, st.year)             );             if !told.contains(&line) {                 told.push(line);             }         }         for line in told {             s += &line;         }     }     let born: Vec<_> = r.figures.iter().filter(\|f\| f.born_at == id).collect();     if !born.is_empty() {         s += &format!( |
-| view/legends.rs:630 | , born.len());         for f in born.iter().take(10) {             s += &format!( |
-| view/legends.rs:632 | , figure_link(r, f.id), f.role.label());         }     }     let lines = record(w, c,  |
-| view/legends.rs:635 | , id, 40);     if !lines.is_empty() {         s +=  |
-| view/legends.rs:637 | ;         s += &lines.join( |
-| view/legends.rs:638 | );         s +=  |
-| view/legends.rs:639 | ;     }     s += &format!(          |
-| view/legends.rs:642 | ,         people_link(r, x.people)     );     s }  fn figure_page(w: &World, c: &Chronicle, id: u32) -> String {     let r = &w.realm;     let Some(f) = r.figures.get(id as usize) else {         return world_page(w);     };     let mut s = format!(          |
-| view/legends.rs:654 | ,         f.name,         f.role.label(),         people_link(r, f.people),         when(r, f.born),         site_link(r, f.born_at)     );     if let Some(p) = f.parent {         s += &format!( |
-| view/legends.rs:662 | , figure_link(r, p));     }     s +=  |
-| view/legends.rs:664 | ;     match &f.died {         Some((y, cause)) => s += &format!( |
-| view/legends.rs:666 | , when(r, *y), y - f.born),         None => {             s += &format!(                  |
-| view/legends.rs:669 | ,                 site_link(r, f.site),                 r.year - f.born             )         }     }     let children: Vec<_> = r.figures.iter().filter(\|k\| k.parent == Some(id)).collect();     if !children.is_empty() {         s +=  |
-| view/legends.rs:677 | ;         for k in children.iter().take(10) {             s += &format!( |
-| view/legends.rs:679 | , figure_link(r, k.id));         }     }     let lines = record(w, c,  |
-| view/legends.rs:682 | , id, 40);     if !lines.is_empty() {         s +=  |
-| view/legends.rs:684 | ;         s += &lines.join( |
-| view/legends.rs:685 | );         s +=  |
-| view/legends.rs:686 | ;     }     s += &format!(          |
-| view/legends.rs:689 | ,         people_link(r, f.people)     );     s }  fn polity_page(w: &World, c: &Chronicle, id: u32) -> String {     let r = &w.realm;     let Some(q) = r.polities.get(id as usize) else {         return world_page(w);     };     let mut s = format!(          |
-| view/legends.rs:701 | ,         q.name,         people_link(r, q.people),         site_link(r, q.seat),         when(r, q.founded)     );     match (&q.ended, q.ruler) {         (Some((y, cause)), _) => s += &format!( |
-| view/legends.rs:708 | , when(r, *y)),         (None, Some(f)) => s += &format!( |
-| view/legends.rs:709 | , figure_link(r, f)),         (None, None) => s +=  |
-| view/legends.rs:710 | ,     }     s += &format!( |
-| view/legends.rs:712 | , q.members.len());     // P9: common cause made with other realms.     for x in r.alliances.iter().filter(\|x\| x.a == id \|\| x.b == id) {         let other = if x.a == id { x.b } else { x.a };         let ended = match &x.ended {             Some((y, why)) => format!( |
-| view/legends.rs:717 | , when(r, *y)),             None => String::new(),         };         s += &format!(              |
-| view/legends.rs:721 | ,             polity_link(r, other),             polity_link(r, x.against),             when(r, x.since)         );     }     let lines = record(w, c,  |
-| view/legends.rs:727 | , id, 60);     if !lines.is_empty() {         s +=  |
-| view/legends.rs:729 | ;         s += &lines.join( |
-| view/legends.rs:730 | );         s +=  |
-| view/legends.rs:731 | ;     }     s += &format!(          |
-| view/legends.rs:734 | ,         people_link(r, q.people)     );     s }  /// The world map as RGB bytes (size x size x 3): country by biome, rivers, and the settlements /// living in `year` coloured by their people (ruins of that year dark); the valley in white. pub fn map_rgb(w: &World, m: &RealmMap, year: i64) -> Vec<u8> {     let r = &w.realm;     let n = m.size;     let mut out = crate::realm::map::rgb(m);     // The deep's settlements (P10) first, darker, so a settlement on the land above wins.     for x in r         .sites         .iter()         .filter(\|x\| x.deep)         .chain(r.sites.iter().filter(\|x\| !x.deep))     {         if x.founded > year {             continue;         }         let gone = x.ended.as_ref().is_some_and(\|(y, _)\| *y <= year);         let col = if gone {             [20, 18, 24]         } else {             let c = r                 .peoples                 .get(x.people as usize)                 .map(\|p\| p.colour)                 .unwrap_or([255, 255, 255]);             if x.deep {                 [c[0] / 2, c[1] / 2, c[2] / 2]             } else {                 c             }         };         let k = x.region * 3;         out[k..k + 3].copy_from_slice(&col);     }     if let Some(region) = w.meta.setup.as_ref().and_then(\|s\| s.region) {         if region < n * n {             // Trade routes (C36): a line from the valley to every settlement its caravans             // have traded with, in pale gold, drawn under the valley's mark. Only on the map             // of the present: every trade is after the portal.             for site in w                 .overworld                 .sites                 .iter()                 .filter(\|s\| !s.trades.is_empty() && year >= r.year)             {                 let Some(to) = site                     .realm_site                     .and_then(\|rs\| r.sites.get(rs as usize))                     .map(\|x\| x.region)                 else {                     continue;                 };                 let (x0, y0) = ((region % n) as i32, (region / n) as i32);                 let (x1, y1) = ((to % n) as i32, (to / n) as i32);                 let steps = (x1 - x0).abs().max((y1 - y0).abs()).max(1);                 for t in 1..steps {                     let x = x0 + (x1 - x0) * t / steps;                     let y = y0 + (y1 - y0) * t / steps;                     let k = (y as usize * n + x as usize) * 3;                     out[k..k + 3].copy_from_slice(&[232, 196, 120]);                 }             }             out[region * 3..region * 3 + 3].copy_from_slice(&[255, 255, 255]);         }     }     out }  fn war_page(w: &World, c: &Chronicle, id: u32) -> String {     let r = &w.realm;     let Some(x) = r.wars.get(id as usize) else {         return world_page(w);     };     let mut s = format!(          |
-| view/legends.rs:814 | ,         polity_link(r, x.a),         polity_link(r, x.b),         when(r, x.began),         x.cause     );     match &x.ended {         Some((y, cause)) => {             s += &format!(                  |
-| view/legends.rs:823 | ,                 when(r, *y),                 x.battles             )         }         None => s += &format!( |
-| view/legends.rs:828 | , x.battles),     }     let lines = record(w, c,  |
-| view/legends.rs:830 | , id, 60);     if !lines.is_empty() {         s +=  |
-| view/legends.rs:832 | ;         s += &lines.join( |
-| view/legends.rs:833 | );         s +=  |
-| view/legends.rs:834 | ;     }     s +=  |
+| view/legends.rs:86 | [color=#9a9a9a]{}[/color]  {} |
+| view/legends.rs:98 | [b]Legends[/b] /  / This valley's world has no recorded history beyond it. |
+| view/legends.rs:103 | people |
+| view/legends.rs:104 | site |
+| view/legends.rs:105 | figure |
+| view/legends.rs:106 | polity |
+| view/legends.rs:107 | war |
+| view/legends.rs:108 | species |
+| view/legends.rs:109 | culture |
+| view/legends.rs:110 | beast |
+| view/legends.rs:112 | known |
+| view/legends.rs:133 | [b]{}[/b] / A huge thing of {}, of {} parts ({plan}). It woke {} {}. /  |
+| view/legends.rs:139 | underworld |
+| view/legends.rs:140 | in the underworld |
+| view/legends.rs:142 | in the deep caverns |
+| view/legends.rs:148 | It left {} empty. /  |
+| view/legends.rs:150 | beast |
+| view/legends.rs:152 |  / [b]The record[/b] /  |
+| view/legends.rs:153 |  /  |
+| view/legends.rs:154 |  /  |
+| view/legends.rs:156 |  / [url=world:0]The world[/url] |
+| view/legends.rs:167 | [b]{}[/b], a culture of {}. /  |
+| view/legends.rs:174 | It grew at {}, far from the homeland, {} (from {}). /  |
+| view/legends.rs:177 | culture |
+| view/legends.rs:180 | The culture of their homeland. /  |
+| view/legends.rs:182 | They {}. /  / [b]What they hold[/b] /  |
+| view/legends.rs:186 | Nothing more firmly than their neighbours. /  |
+| view/legends.rs:189 | That {}. /  |
+| view/legends.rs:196 |  / Held in {sites} settlements now. /  |
+| view/legends.rs:199 | They name {} for {}. /  |
+| view/legends.rs:203 | They hold a grudge against {}. /  |
+| view/legends.rs:215 |  / [b]Who they deal with[/b] /  |
+| view/legends.rs:220 | , and one marriage |
+| view/legends.rs:221 | , and {n} marriages |
+| view/legends.rs:224 | {}: {} caravans{married}, the last {}. /  |
+| view/legends.rs:225 | culture |
+| view/legends.rs:239 |  / [b]What they tell[/b] /  |
+| view/legends.rs:242 |  (a later telling) |
+| view/legends.rs:247 | {}{later}, {}. /  |
+| view/legends.rs:268 | [b]{}[/b] / {}. /  / A body of {} parts ({}), {:.0} to {:.0} cm tall and {:.0} to {:.0} kg; comfortable from {:.0} to {:.0} degrees, {}. They live in {}, build {}, and pair {}. /  |
+| view/legends.rs:285 | bare |
+| view/legends.rs:285 | bare-skinned |
+| view/legends.rs:286 | in {c} |
+| view/legends.rs:289 | household |
+| view/legends.rs:289 | households |
+| view/legends.rs:290 | {o}s |
+| view/legends.rs:294 | pair |
+| view/legends.rs:294 | for life |
+| view/legends.rs:295 | group |
+| view/legends.rs:295 | in groups |
+| view/legends.rs:296 | rarely |
+| view/legends.rs:306 |  / [b]Peoples of this kind[/b] /  |
+| view/legends.rs:308 | None in this world. /  |
+| view/legends.rs:310 |  /  |
+| view/legends.rs:319 | {} /  / [b]The world[/b] / {} years remembered before the portal. {} peoples, {} settlements ({} still lived in), {} named figures, {} realms. /  / [b]Peoples[/b] /  |
+| view/legends.rs:321 | known |
+| view/legends.rs:321 | What the valley knows (not the world as it is) |
+| view/legends.rs:336 | {}, {} {}: {n} settlements /  |
+| view/legends.rs:342 |  / [b]Realms[/b] /  |
+| view/legends.rs:345 | ended {} ({cause}) |
+| view/legends.rs:346 | since {} |
+| view/legends.rs:349 | {} of the {}, seat {}: {state} /  |
+| view/legends.rs:356 |  / [b]Wars[/b] (the latest) /  |
+| view/legends.rs:359 | ended {} ({cause}) |
+| view/legends.rs:360 | still fought |
+| view/legends.rs:363 | {}: {state} /  |
+| view/legends.rs:365 | war |
+| view/legends.rs:368 | {} against {} |
+| view/legends.rs:376 |  / [b]Beasts of the deep[/b] /  |
+| view/legends.rs:379 | {}, woke {} /  |
+| view/legends.rs:380 | beast |
+| view/legends.rs:387 |  / The valley lies among the {}. /  |
+| view/legends.rs:404 | They live in the caverns under the land. Their first home was {}. |
+| view/legends.rs:407 | Their first home was {}. |
+| view/legends.rs:418 | They have no land of their own. |
+| view/legends.rs:421 | They have no land of their own; households of them live in {}. |
+| view/legends.rs:428 | [b]The {}[/b], {} {}. {home} /  / [b]What they hold[/b] /  |
+| view/legends.rs:440 | That {}. /  |
+| view/legends.rs:447 | culture |
+| view/legends.rs:450 |  / [b]Cultures[/b] {} /  |
+| view/legends.rs:453 |  / [b]Settlements[/b] {} founded, {alive} still lived in. The largest: /  |
+| view/legends.rs:464 | {}, a {} of {:.0} /  |
+| view/legends.rs:472 |  / [b]Their realms[/b] /  |
+| view/legends.rs:474 | {} /  |
+| view/legends.rs:477 |  / [b]Remembered among them[/b] /  |
+| view/legends.rs:491 | {}, {} /  |
+| view/legends.rs:493 |  / [url=world:0]The world[/url] |
+| view/legends.rs:503 | [b]{}[/b], a {} of the {}. / Founded {} |
+| view/legends.rs:506 | mine |
+| view/legends.rs:510 | ruin |
+| view/legends.rs:516 |  by settlers from {} |
+| view/legends.rs:518 | . /  |
+| view/legends.rs:522 | Left empty {}: {cause}. At its height {:.0} lived there. /  |
+| view/legends.rs:527 | {:.0} live there (at most {:.0}). /  |
+| view/legends.rs:544 | They hold for trade: {}. /  |
+| view/legends.rs:549 | {n} {} |
+| view/legends.rs:554 | A caravan from the valley traded {} for {} ({}). /  |
+| view/legends.rs:557 | nothing |
+| view/legends.rs:572 | a neighbour |
+| view/legends.rs:574 | Traded {} {} to {with} for {} {} ({}). /  |
+| view/legends.rs:589 | the seat of |
+| view/legends.rs:591 | part of |
+| view/legends.rs:593 | It is {role} the realm of {}. /  |
+| view/legends.rs:598 |  / [b]What is told of it[/b] /  |
+| view/legends.rs:608 | culture |
+| view/legends.rs:611 |  (a later telling) |
+| view/legends.rs:616 | {who} say: {}{later}, {}. /  |
+| view/legends.rs:630 |  / [b]Born here[/b] ({}) /  |
+| view/legends.rs:632 | {}, {} /  |
+| view/legends.rs:635 | site |
+| view/legends.rs:637 |  / [b]The record[/b] /  |
+| view/legends.rs:638 |  /  |
+| view/legends.rs:639 |  /  |
+| view/legends.rs:642 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:654 | [b]{}[/b], {} of the {}. / Born {} at {} |
+| view/legends.rs:662 | , child of {} |
+| view/legends.rs:664 | . /  |
+| view/legends.rs:666 | Died {} ({cause}), aged {}. /  |
+| view/legends.rs:669 | Lives at {}, aged {}. /  |
+| view/legends.rs:677 |  / [b]Children[/b] /  |
+| view/legends.rs:679 | {} /  |
+| view/legends.rs:682 | figure |
+| view/legends.rs:684 |  / [b]The record[/b] /  |
+| view/legends.rs:685 |  /  |
+| view/legends.rs:686 |  /  |
+| view/legends.rs:689 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:701 | [b]The realm of {}[/b], of the {}. / Its seat is {}, since {}. /  |
+| view/legends.rs:708 | It came to an end {}: {cause}. /  |
+| view/legends.rs:709 | Ruled now by {}. /  |
+| view/legends.rs:710 | Nobody rules it now. /  |
+| view/legends.rs:712 | {} settlements belong to it. /  |
+| view/legends.rs:717 | , until {} ({why}) |
+| view/legends.rs:721 | Allied with {} against {}, {}{ended}. /  |
+| view/legends.rs:727 | polity |
+| view/legends.rs:729 |  / [b]The record[/b] /  |
+| view/legends.rs:730 |  /  |
+| view/legends.rs:731 |  /  |
+| view/legends.rs:734 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:814 | [b]The war between {} and {}[/b] / Begun {}: {}. /  |
+| view/legends.rs:823 | Ended {}: {cause}. {} battles were fought. /  |
+| view/legends.rs:828 | Still fought; {} battles so far. /  |
+| view/legends.rs:830 | war |
+| view/legends.rs:832 |  / [b]The record[/b] /  |
+| view/legends.rs:833 |  /  |
+| view/legends.rs:834 |  /  |
+| view/legends.rs:836 |  / [url=world:0]The world[/url] |
 | view/look.rs:12 | tunic |
 | view/look.rs:13 | dress |
 | view/look.rs:14 | apron |
@@ -4370,8 +4416,6 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/summary.rs:71 | craft_lost |
 | view/summary.rs:72 | role |
 | view/summary.rs:91 | '{k}' |
-| view/summary.rs:96 | ,         kinds.join( |
-| view/summary.rs:97 | ),         crate::view::known::rows_told_sql(w)     );     let mut st = c.conn.prepare(&sql)?;     let rows = st         .query_map(rusqlite::params![from as i64, to as i64], \|r\| {             Ok((                 r.get::<_, i64>(0)?,                 r.get::<_, i64>(1)? as u64,                 r.get::<_, String>(2)?,                 r.get::<_, String>(3)?,             ))         })?         .collect::<std::result::Result<Vec<_>, _>>()?;     let mut out: Vec<(usize, Change)> = rows         .into_iter()         .filter_map(\|(id, tick, kind, detail)\| {             let e = crate::view::history::event_from_row(id, tick, &detail)?;             let rank = CHANGE_KINDS.iter().position(\|k\| *k == kind)?;             Some((                 rank,                 Change {                     agent: e.participants().first().copied(),                     history_id: id,                     tick,                     line: crate::view::narrate::line(w, &e),                 },             ))         })         .collect();     out.sort_by_key(\|(rank, ch)\| (*rank, ch.tick, ch.history_id));     Ok(out.into_iter().map(\|(_, ch)\| ch).collect()) }  /// One notable detail in Catch Up. The line and anchor come from the newest history row; /// the span records the event times, which can be out of order relative to history IDs. #[derive(Debug, PartialEq, Eq)] pub struct CatchUpDetail {     pub history_id: i64,     pub anchor_tick: u64,     pub earliest_tick: u64,     pub latest_tick: u64,     pub count: usize,     pub line: String, }  /// Read the viewer-visible Notable+ rows in `(from, to]` for Catch Up, folding repeat keys /// before limiting the number of distinct details. Named changes and raw markers are separate. pub fn catch_up_details(     w: &World,     c: &Chronicle,     from: u64,     to: u64,     limit: usize, ) -> Result<Vec<CatchUpDetail>> {     if limit == 0 {         return Ok(Vec::new());     }      let mut st = c.conn.prepare(&format!(          |
 | view/waiting.rs:20 | Planned: {} ({}) |
 | view/waiting.rs:30 | {n} has taken it |
 | view/waiting.rs:33 | set aside after {} failed tries |
@@ -4417,70 +4461,63 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | world/gen/biome.rs:120 | fell |
 | world/gen/biome.rs:121 | snowfield |
 | world/gen/biome.rs:122 | bone forest |
-| world/gen/biome.rs:132 |              }             Biome::Meadow =>  |
-| world/gen/biome.rs:134 | ,             Biome::Woodland =>  |
-| world/gen/biome.rs:135 | ,             Biome::Fen =>  |
-| world/gen/biome.rs:136 | ,             Biome::Heath =>  |
-| world/gen/biome.rs:137 | ,             Biome::Stony =>  |
-| world/gen/biome.rs:138 | ,             Biome::Fell =>  |
-| world/gen/biome.rs:139 | ,             Biome::Snowfield =>  |
-| world/gen/biome.rs:140 | ,             Biome::BoneForest => {                  |
-| world/gen/biome.rs:142 |              }         }     }      /// The surface ground materials this biome may choose (the generator never puts any other     /// on a column of this biome; tests hold it to that).     pub fn grounds(self) -> &'static [Material] {         match self {             Biome::Grassland => &[                 Material::GRASS,                 Material::MEADOW,                 Material::SAND,                 Material::SCREE,                 // the world's character showing through (character_patch)                 Material::GRAVEL,                 Material::PACKED_EARTH,                 Material::WET_SOIL,                 Material::MOSS,                 Material::FROZEN_SOIL,             ],             Biome::Meadow => &[Material::MEADOW, Material::GRASS, Material::SAND],             Biome::Woodland => &[Material::GRASS, Material::MOSS, Material::SOIL],             Biome::Fen => &[                 Material::PEAT,                 Material::WET_SOIL,                 Material::MUD,                 Material::MOSS,                 Material::GRASS,             ],             Biome::Heath => &[                 Material::PACKED_EARTH,                 Material::SAND,                 Material::GRASS,                 Material::SCREE,             ],             Biome::Stony => &[                 Material::SCREE,                 Material::GRAVEL,                 Material::PACKED_EARTH,                 Material::GRASS,             ],             Biome::Fell => &[                 Material::FROZEN_SOIL,                 Material::GRAVEL,                 Material::SCREE,                 Material::GRASS,             ],             Biome::Snowfield => &[Material::SNOW, Material::FROZEN_SOIL],             Biome::BoneForest => &[Material::BONE_MOSS, Material::SCREE, Material::MOSS],         }     }      /// Low plants per biome and their chance per open column (after trees, reeds and vines).     /// A kind is placed only within its warmth range and the world's flora draw (#486)     /// (plants.rs `Lore::climate`, #286), so a     /// warm valley's meadow has madder and a cold one's has none.     pub fn flora(self) -> &'static [(PlantKind, f32)] {         use PlantKind::*;         match self {             Biome::Grassland => &[                 (BerryBush, 0.025),                 (Shrub, 0.02),                 (RootCrops, 0.006),                 (Root, 0.004),                 (FloweringPlant, 0.006),                 (Herbs, 0.004),                 (Wildflowers, 0.004),                 (Fern, 0.002),                 // #286                 (Bramble, 0.008),                 (Hazel, 0.005),                 (WildStrawberry, 0.004),                 (Yarrow, 0.004),                 (Woad, 0.003),                 (Madder, 0.002),                 (Nettle, 0.003),                 (Hemlock, 0.002),                 (Nightshade, 0.002),             ],             Biome::Meadow => &[                 (Wildflowers, 0.06),                 (FloweringPlant, 0.04),                 (Root, 0.012),                 (Herbs, 0.012),                 (BerryBush, 0.03),                 (Shrub, 0.01),                 (RootCrops, 0.006),                 (WildStrawberry, 0.012),                 (Yarrow, 0.01),                 (Madder, 0.006),                 (Woad, 0.004),                 (Hemlock, 0.003),             ],             Biome::Woodland => &[                 (Fern, 0.055),                 (BerryBush, 0.025),                 (Shrub, 0.03),                 (Herbs, 0.012),                 (Vine, 0.012),                 (FallenLog, 0.01),                 (FloweringPlant, 0.004),                 (Hazel, 0.012),                 (WildGarlic, 0.01),                 (Bramble, 0.008),                 (Chanterelle, 0.006),                 (Bilberry, 0.006),                 (Nettle, 0.005),                 (LilyOfTheValley, 0.004),                 (DeathCap, 0.003),                 (Nightshade, 0.003),                 (Comfrey, 0.003),             ],             Biome::Fen => &[                 (Fern, 0.03),                 (BerryBush, 0.015),                 (Herbs, 0.01),                 (Shrub, 0.01),                 (FloweringPlant, 0.006),                 (Cattail, 0.03),                 (Comfrey, 0.008),                 (Nettle, 0.006),                 (Hemlock, 0.005),             ],             Biome::Heath => &[                 (Shrub, 0.04),                 (Herbs, 0.03),                 (BerryBush, 0.01),                 (RootCrops, 0.012),                 (Wildflowers, 0.004),                 (Bilberry, 0.015),                 (Weld, 0.006),                 (Yarrow, 0.006),                 (Woad, 0.004),             ],             Biome::Stony => &[                 (Shrub, 0.02),                 (Herbs, 0.012),                 (BerryBush, 0.012),                 (Vine, 0.01),                 (Fern, 0.003),                 (Weld, 0.008),                 (Bilberry, 0.006),                 (Yarrow, 0.003),             ],             Biome::Fell => &[                 (Shrub, 0.025),                 (BerryBush, 0.008),                 (Fern, 0.006),                 (Herbs, 0.004),                 (Bilberry, 0.012),             ],             Biome::Snowfield => &[(Shrub, 0.01), (BerryBush, 0.004), (Bilberry, 0.003)],             Biome::BoneForest => &[                 (Fern, 0.02),                 (Herbs, 0.01),                 (FallenLog, 0.008),                 (Shrub, 0.006),             ],         }     }      /// The trees of each biome and their weights (#286): `Tree` is oak, birch or pine by     /// `tree_species`; alder and willow grow only within three tiles of water, and each kind     /// only within its warmth range and the world's flora draw (#486)     /// (world/gen/flora.rs falls back to `Tree`).     pub fn trees(self) -> &'static [(PlantKind, u32)] {         use PlantKind::*;         match self {             Biome::Grassland => &[(Tree, 72), (Ash, 12), (CrabApple, 8), (Willow, 8)],             Biome::Meadow => &[(Tree, 62), (CrabApple, 18), (Ash, 10), (Willow, 10)],             Biome::Woodland => &[(Tree, 66), (Ash, 16), (Yew, 8), (Alder, 5), (Willow, 5)],             Biome::Fen => &[(Tree, 40), (Alder, 36), (Willow, 24)],             Biome::Heath => &[(Tree, 82), (Yew, 12), (Ash, 6)],             Biome::Stony => &[(Tree, 74), (Yew, 26)],             Biome::Fell \| Biome::Snowfield => &[(Tree, 100)],             Biome::BoneForest => &[(BoneTree, 100)],         }     }      /// Multiplier on the forest field's tree chance.     pub fn tree_factor(self) -> f32 {         match self {             Biome::Woodland => 1.4,             Biome::Grassland => 1.0,             Biome::Meadow => 0.6,             Biome::Fell => 0.6,             Biome::Heath => 0.5,             Biome::Fen => 0.35,             Biome::Stony => 0.35,             Biome::Snowfield => 0.25,             Biome::BoneForest => 1.3,         }     }      /// Tree species weights (oak, birch, pine): the client draws `variant % 3` in that order.     pub fn tree_species(self) -> [u32; 3] {         match self {             Biome::Grassland \| Biome::Meadow => [50, 35, 15],             Biome::Woodland => [45, 35, 20],             Biome::Fen => [20, 70, 10],             Biome::Heath => [40, 20, 40],             Biome::Stony => [15, 30, 55],             Biome::Fell => [0, 15, 85],             Biome::Snowfield => [0, 0, 100],             // Bone trees grow there instead (world/gen/flora.rs); these never apply.             Biome::BoneForest => [0, 0, 0],         }     } }  /// The climate fields and the biome of every column (index `grid.col(x, y)`). #[derive(Clone, Debug)] pub struct Climate {     pub character: Character,     pub temperature: Vec<f32>,     pub moisture: Vec<f32>,     pub stoniness: Vec<f32>,     /// The forest field (also what flora.rs reads for tree density).     pub forest: Vec<f32>,     /// Chebyshev distance to the nearest water column, capped at 5.     pub water_dist: Vec<u8>,     /// True where a 4-neighbour's ground is higher: the foot of a rise.     pub rise: Vec<bool>,     pub biome: Vec<Biome>, }  /// Compute the climate after relief and water are in place. pub fn climate(seed: u64, p: &GenParams, grid: &WorldGrid, water: &[bool]) -> Climate {     let ch = Character::resolve(seed, p);     let base = hash64(&[seed, purpose::WORLDGEN_CLIMATE]);     let (st, sm, ss, smd) = (base ^ 0x7e1, base ^ 0x3015, base ^ 0x5701, base ^ 0x3ead);     let sf = hash64(&[seed, purpose::WORLDGEN_FLORA]);     let scale = 1.0 / (p.width.max(p.height) as f32 * 0.5);     let n = (p.width * p.height) as usize;     let relief = p.relief.max(1) as f32;     let mut c = Climate {         character: ch,         temperature: Vec::with_capacity(n),         moisture: Vec::with_capacity(n),         stoniness: Vec::with_capacity(n),         forest: Vec::with_capacity(n),         water_dist: Vec::with_capacity(n),         rise: Vec::with_capacity(n),         biome: Vec::with_capacity(n),     };     for y in 0..p.height {         for x in 0..p.width {             let g = grid.ground_z(x, y);             let e = (g as f32 / relief).clamp(0.0, 1.0);             let (fx, fy) = (x as f32 * scale, y as f32 * scale);             let mut d = 5u8;             'search: for r in 0..5i32 {                 for dy in -r..=r {                     for dx in -r..=r {                         if dx.abs() != r && dy.abs() != r {                             continue;                         }                         let (qx, qy) = (x + dx, y + dy);                         if qx >= 0                             && qy >= 0                             && qx < p.width                             && qy < p.height                             && water[grid.col(qx, qy)]                         {                             d = r as u8;                             break 'search;                         }                     }                 }             }             let rise = [(0, -1), (1, 0), (0, 1), (-1, 0)].iter().any(\|(dx, dy)\| {                 let (qx, qy) = (x + dx, y + dy);                 qx >= 0 && qy >= 0 && qx < p.width && qy < p.height && grid.ground_z(qx, qy) > g             });             let tn = fbm2(st, fx * 2.0, fy * 2.0, 3, 2.0, 0.5);             let mn = fbm2(sm, fx * 2.5 + 11.0, fy * 2.5, 4, 2.0, 0.5);             let sn = fbm2(ss, fx * 3.0, fy * 3.0 + 5.0, 3, 2.0, 0.5);             let forest = fbm2(sf, fx * 4.0, fy * 4.0, 4, 2.0, 0.5);             let meadow = fbm2(smd, fx * 3.5, fy * 3.5, 3, 2.0, 0.5);             let near_water = if d <= 4 {                 0.12 * (1.0 - d as f32 / 5.0)             } else {                 0.0             };             let temp = 0.62 + 0.25 * ch.warmth - 0.35 * e + (tn - 0.5) * 0.9;             let moist = 0.55 + 0.22 * ch.wetness - 0.1 * e + (mn - 0.5) * 1.4 + near_water;             let stony = 0.3                 + 0.35 * ch.stoniness                 + 0.45 * e                 + (sn - 0.5) * 1.2                 + if rise { 0.08 } else { 0.0 };             let b = classify(temp, moist, stony, forest, meadow, e);             c.temperature.push(temp);             c.moisture.push(moist);             c.stoniness.push(stony);             c.forest.push(forest);             c.water_dist.push(d);             c.rise.push(rise);             c.biome.push(b);         }     }     // The bone forest (C59, D28): over a deep cavern where the underworld's stone shows, the     // land above turns pale, a little wider than the cavern beneath it. Nowhere else.     // Its edge wanders (a ragged noise on the radius), so it is a stand of wood, not a circle.     let sb = base ^ 0xB0E;     for cv in grid.caverns.iter().filter(\|cv\| cv.underworld) {         let (rx, ry) = (cv.rx as f32 + 6.0, cv.ry as f32 + 6.0);         for y in (cv.centre.y - cv.ry - 6).max(0)..(cv.centre.y + cv.ry + 7).min(p.height) {             for x in (cv.centre.x - cv.rx - 6).max(0)..(cv.centre.x + cv.rx + 7).min(p.width) {                 let (dx, dy) = ((x - cv.centre.x) as f32 / rx, (y - cv.centre.y) as f32 / ry);                 let edge = 0.55 + 0.6 * fbm2(sb, x as f32 * 0.18, y as f32 * 0.18, 3, 2.0, 0.5);                 if dx * dx + dy * dy <= edge * edge && !water[grid.col(x, y)] {                     c.biome[grid.col(x, y)] = Biome::BoneForest;                 }             }         }     }     c }  fn classify(temp: f32, moist: f32, stony: f32, forest: f32, meadow: f32, e: f32) -> Biome {     if temp < 0.14 && e >= 0.6 {         Biome::Snowfield     } else if temp < 0.27 {         Biome::Fell     } else if moist > 0.7 && e <= 0.5 {         Biome::Fen     } else if stony > 0.78 && moist < 0.62 {         Biome::Stony     } else if moist < 0.3 {         Biome::Heath     } else if forest > 0.55 && moist > 0.4 {         Biome::Woodland     } else if meadow > 0.53 && temp > 0.38 {         Biome::Meadow     } else {         Biome::Grassland     } }  /// Lay the surface ground by biome: the top tile of every dry column that is still the /// undisturbed soil the strata left there. pub fn surface(seed: u64, grid: &mut WorldGrid, water: &[bool], c: &Climate) {     let s = hash64(&[seed, purpose::WORLDGEN_SURFACE]);     for y in 0..grid.height {         for x in 0..grid.width {             let i = grid.col(x, y);             if water[i] {                 continue;             }             let top = TilePos::new(x, y, grid.ground_z(x, y));             let t = grid.get(top);             if t.shape != Shape::Wall \|\| t.material != Material::SOIL {                 continue;             }             // Patches a few tiles across, plus a per-tile jitter for scattered picks.             let pn = fbm2(s, x as f32 * 0.3, y as f32 * 0.3, 2, 2.0, 0.5);             let j = (hash64(&[s, x as u64, y as u64]) >> 40) as f32 / (1u64 << 24) as f32;             let mut m = ground_for(c.biome[i], pn, j, c.moisture[i], c.water_dist[i], c.rise[i]);             if c.biome[i] == Biome::Grassland && m == Material::GRASS {                 let q = fbm2(s ^ 0x99, x as f32 * 0.16, y as f32 * 0.16, 2, 2.0, 0.5);                 m = character_patch(&c.character, q, j).unwrap_or(m);             }             debug_assert!(c.biome[i].grounds().contains(&m));             let mut nt = t;             nt.material = m;             nt.flags = TileFlags::NONE;             grid.set(top, nt);             // Under the bone forest the rock is milkstone, eight levels down (C59).             if c.biome[i] == Biome::BoneForest {                 for z in (top.z - 8)..top.z {                     let q = TilePos::new(x, y, z);                     let rt = grid.get(q);                     if rt.shape == Shape::Wall                         && grid.materials.get(rt.material).kind                             == crate::world::material::MaterialKind::Stone                     {                         let mut mt = rt;                         mt.material = Material::MILKSTONE;                         grid.set(q, mt);                     }                 }             }         }     } }  /// Which leaning makes grassland take this family as a character patch, if any. fn character_patch_leaning(family: &str) -> Option<&'static str> {     match family {          |
-| world/gen/biome.rs:533 |  => Some( |
-| world/gen/biome.rs:534 |  => Some( |
-| world/gen/biome.rs:535 |  => Some( |
-| world/gen/biome.rs:536 |  => Some( |
-| world/gen/biome.rs:536 | ),         _ => None,     } }  /// Bare patches in open grassland that show the world's character: the strongest leaning /// axis decides the ground, its strength how much of the grass it takes (none when the world /// leans no way). fn character_patch(ch: &Character, q: f32, j: f32) -> Option<Material> {     let axes = [         (             ch.stoniness,             if j < 0.5 {                 Material::GRAVEL             } else {                 Material::SCREE             },         ),         (             -ch.wetness,             if j < 0.7 {                 Material::PACKED_EARTH             } else {                 Material::SAND             },         ),         (             ch.wetness,             if j < 0.6 {                 Material::WET_SOIL             } else {                 Material::MOSS             },         ),         (-ch.warmth, Material::FROZEN_SOIL),     ];     let (amount, m) =         axes.iter().copied().fold(             (0.0f32, Material::GRASS),             \|a, b\| if b.0 > a.0 { b } else { a },         );     let amount = (amount - 0.25).max(0.0) / 0.75;     (amount > 0.0 && q < 0.33 + 0.14 * amount).then_some(m) }  fn ground_for(b: Biome, pn: f32, j: f32, moist: f32, d: u8, rise: bool) -> Material {     use Material as M;     match b {         Biome::Grassland => {             if rise && j < 0.25 {                 M::SCREE             } else if d == 1 && pn > 0.6 {                 M::SAND             } else if pn > 0.68 {                 M::MEADOW             } else {                 M::GRASS             }         }         Biome::Meadow => {             if d == 1 && pn > 0.62 {                 M::SAND             } else if pn < 0.36 {                 M::GRASS             } else {                 M::MEADOW             }         }         Biome::Woodland => {             if (moist > 0.5 && pn > 0.48) \|\| d == 1 {                 M::MOSS             } else if pn < 0.3 {                 M::SOIL             } else {                 M::GRASS             }         }         Biome::Fen => {             if d == 1 {                 M::MUD             } else if pn < 0.36 {                 M::PEAT             } else if pn < 0.47 {                 M::WET_SOIL             } else if pn < 0.53 {                 M::MUD             } else if pn < 0.6 \|\| j < 0.08 {                 M::MOSS             } else {                 M::GRASS             }         }         Biome::Heath => {             if rise && j < 0.4 {                 M::SCREE             } else if pn < 0.4 {                 M::PACKED_EARTH             } else if pn < 0.5 \|\| d == 1 {                 M::SAND             } else {                 M::GRASS             }         }         Biome::Stony => {             if rise {                 M::SCREE             } else if pn < 0.38 {                 M::GRAVEL             } else if pn < 0.52 {                 M::SCREE             } else if pn < 0.66 {                 M::PACKED_EARTH             } else {                 M::GRASS             }         }         Biome::Fell => {             if rise && j < 0.6 {                 M::SCREE             } else if pn < 0.5 {                 M::FROZEN_SOIL             } else if pn < 0.6 {                 M::GRAVEL             } else {                 M::GRASS             }         }         Biome::Snowfield => {             if pn < 0.38 {                 M::FROZEN_SOIL             } else {                 M::SNOW             }         }         Biome::BoneForest => {             if rise && j < 0.3 {                 M::SCREE             } else if moist > 0.7 && pn > 0.6 {                 M::MOSS             } else {                 M::BONE_MOSS             }         }     } }  /// Counts that say what a generated world holds and why. #[derive(Clone, Debug, Default)] pub struct Census {     /// Land columns per biome (Biome::ALL order).     pub biomes: Vec<(Biome, usize)>,     /// Surface families on land columns plus  |
-| world/gen/biome.rs:723 | .to_string()                 } else {                      |
-| world/gen/biome.rs:725 | .to_string()                 }             } else {                 if let Some(b) = grid.biome.get(grid.col(x, y)) {                     biomes[*b as usize] += 1;                 }                 let t = grid.get(TilePos::new(x, y, g));                 grid.materials.get(t.material).family.clone()             };             *grounds.entry(fam).or_default() += 1;         }     }     let mut pk = vec![0usize; PlantKind::ALL.len()];     for p in plants.iter().filter(\|p\| p.alive) {         pk[p.kind as usize] += 1;     }     Census {         biomes: Biome::ALL             .iter()             .map(\|b\| (*b, biomes[*b as usize]))             .collect(),         grounds: grounds.into_iter().collect(),         plants: PlantKind::ALL             .iter()             .map(\|k\| (*k, pk[*k as usize]))             .collect(),     } }  /// The surface families the generator can choose, and the biomes that choose each. pub fn ground_sources() -> Vec<(String, Vec<Biome>)> {     let table = crate::world::MaterialTable::default();     let mut out: Vec<(String, Vec<Biome>)> = Vec::new();     for b in Biome::ALL {         for m in b.grounds() {             let fam = table.get(*m).family.clone();             match out.iter_mut().find(\|(f, _)\| *f == fam) {                 Some((_, v)) => v.push(b),                 None => out.push((fam, vec![b])),             }         }     }     out }  /// Lines for `ostrog describe`: the character, the biome mix, and every ground and plant /// family with its count, or the reason it is absent. The flora report uses the world's actual /// record; `None` is a legacy world whose draw is unknown. pub fn describe(     seed: u64,     p: &GenParams,     grid: &WorldGrid,     plants: &[Plant],     flora_draw: Option<&super::flora::FloraDraw>, ) -> Vec<String> {     let ch = Character::resolve(seed, p);     let cs = census(grid, plants);     let land: usize = cs.biomes.iter().map(\|(_, n)\| n).sum::<usize>().max(1);     let mut out = vec![format!(          |
-| world/gen/biome.rs:784 | ,         ch.wetness,         ch.warmth,         ch.stoniness,         ch.label(),         if p.character.is_some() {              |
-| world/gen/biome.rs:790 |          } else {              |
-| world/gen/biome.rs:792 |          }     )];     let mut mix: Vec<(Biome, usize)> = cs.biomes.clone();     mix.sort_by(\|a, b\| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));     out.push(format!(          |
-| world/gen/biome.rs:798 | ,         mix.iter()             .filter(\|(_, n)\| *n > 0)             .map(\|(b, n)\| {                 let pc = (n * 100 + land / 2) / land;                 if pc == 0 {                     format!( |
-| world/gen/biome.rs:804 | , b.label())                 } else {                     format!( |
-| world/gen/biome.rs:806 | , b.label(), pc)                 }             })             .collect::<Vec<_>>()             .join( |
-| world/gen/biome.rs:810 | )     ));     for (b, n) in &mix {         if *n > 0 {             out.push(format!( |
-| world/gen/biome.rs:814 | , b.label(), n, b.why()));         }     }     let absent_b: Vec<&str> = mix         .iter()         .filter(\|(_, n)\| *n == 0)         .map(\|(b, _)\| b.label())         .collect();     if !absent_b.is_empty() {         out.push(format!(              |
-| world/gen/biome.rs:824 | ,             absent_b.join( |
-| world/gen/biome.rs:825 | )         ));     }     out.push( |
-| world/gen/biome.rs:828 | .to_string());     let mut sources = ground_sources();     sources.push(( |
-| world/gen/biome.rs:830 | .into(), vec![]));     sources.push(( |
-| world/gen/biome.rs:831 | .into(), vec![]));     for (fam, from) in sources {         let n = cs.ground(&fam);         let names: Vec<&str> = from.iter().map(\|b\| b.label()).collect();         let why = match fam.as_str() {              |
-| world/gen/biome.rs:836 | .to_string(),              |
-| world/gen/biome.rs:837 | .to_string(),             _ => format!( |
-| world/gen/biome.rs:838 | , names.join( |
-| world/gen/biome.rs:838 | )),         };         let present: Vec<&str> = from             .iter()             .filter(\|b\| cs.biome(**b) > 0)             .map(\|b\| b.label())             .collect();         let patch = character_patch_leaning(&fam);         if n > 0 {             out.push(format!( |
-| world/gen/biome.rs:847 | , fam, n, why));         } else if from.is_empty() {             out.push(format!(                  |
-| world/gen/biome.rs:850 | ,                 fam, why             ));         } else if present.is_empty() {             out.push(format!(                  |
-| world/gen/biome.rs:855 | ,                 fam,                 names.join( |
-| world/gen/biome.rs:857 | )             ));         } else if present == [ |
-| world/gen/biome.rs:859 | ] && patch.is_some() {             out.push(format!(                  |
-| world/gen/biome.rs:861 | ,                 fam,                 names                     .iter()                     .filter(\|n\| **n !=  |
-| world/gen/biome.rs:865 | )                     .copied()                     .collect::<Vec<_>>()                     .join( |
-| world/gen/biome.rs:868 | ),                 patch.unwrap_or( |
-| world/gen/biome.rs:869 | ),                 ch.label()             ));         } else {             out.push(format!(                  |
-| world/gen/biome.rs:874 | ,                 fam,                 present.join( |
-| world/gen/biome.rs:876 | )             ));         }     }     if let Some(draw) = flora_draw {         let drawn: Vec<&str> = super::flora::FLORA_CANDIDATES             .iter()             .filter(\|k\| draw.allows(**k))             .map(\|k\| k.label())             .collect();         let not_drawn: Vec<&str> = super::flora::FLORA_CANDIDATES             .iter()             .filter(\|k\| !draw.allows(**k))             .map(\|k\| k.label())             .collect();         out.push(format!(              |
-| world/gen/biome.rs:892 | ,             drawn.len(),             super::flora::FLORA_CANDIDATES.len(),             drawn.join( |
-| world/gen/biome.rs:895 | )         ));         out.push(format!( |
-| world/gen/biome.rs:897 | , not_drawn.join( |
-| world/gen/biome.rs:897 | )));     } else {         out.push( |
-| world/gen/biome.rs:899 | .to_string());     }     out.push( |
-| world/gen/biome.rs:901 | .to_string());     for (k, n) in &cs.plants {         if *n == 0             && flora_draw                 .is_some_and(\|draw\| super::flora::FLORA_CANDIDATES.contains(k) && !draw.allows(*k))         {             out.push(format!(                  |
-| world/gen/biome.rs:908 | ,                 k.label()             ));             continue;         }         let from: Vec<&str> = Biome::ALL             .iter()             .filter(\|b\| b.flora().iter().any(\|(f, _)\| f == k))             .map(\|b\| b.label())             .collect();         let why = match k {             PlantKind::Tree =>  |
-| world/gen/biome.rs:919 | .to_string(),             PlantKind::Reed =>  |
-| world/gen/biome.rs:920 | .to_string(),             PlantKind::Mushroom =>  |
-| world/gen/biome.rs:921 | .to_string(),             k if k.is_crop() =>  |
-| world/gen/biome.rs:922 | .to_string(),             PlantKind::Stump =>  |
-| world/gen/biome.rs:923 | .to_string(),             PlantKind::FungusTree =>  |
-| world/gen/biome.rs:924 | .to_string(),             PlantKind::Vine => format!( |
-| world/gen/biome.rs:925 | , from.join( |
-| world/gen/biome.rs:925 | )),             k if k.is_green_tree() => {                 let woods: Vec<&str> = Biome::ALL                     .iter()                     .filter(\|b\| b.trees().iter().any(\|(f, _)\| f == k))                     .map(\|b\| b.label())                     .collect();                 format!( |
-| world/gen/biome.rs:932 | , woods.join( |
-| world/gen/biome.rs:932 | ))             }             // Placed by something other than a surface biome's flora (#108): say so rather             // than print an empty list.             _ if from.is_empty() =>  |
-| world/gen/biome.rs:936 | .to_string(),             _ => format!( |
-| world/gen/biome.rs:937 | , from.join( |
-| world/gen/biome.rs:937 | )),         };         out.push(format!( |
+| world/gen/biome.rs:130 | temperate and moderately moist, nothing stronger; its bare patches follow the world's character (gravel if stony, packed earth if dry, wet soil if wet, frozen soil if cold) |
+| world/gen/biome.rs:134 | mild and moist ground in the meadow patches |
+| world/gen/biome.rs:135 | moist ground under the forest field |
+| world/gen/biome.rs:136 | wet lowland: high moisture on low ground |
+| world/gen/biome.rs:137 | dry ground: low moisture |
+| world/gen/biome.rs:138 | stony uplands: high stoniness, not wet |
+| world/gen/biome.rs:139 | cold: low temperature |
+| world/gen/biome.rs:140 | cold heights: very low temperature on high ground |
+| world/gen/biome.rs:142 | above the underworld's stone: a deep cavern where it shows lies under this ground |
+| world/gen/biome.rs:533 | gravel |
+| world/gen/biome.rs:533 | scree |
+| world/gen/biome.rs:533 | stony |
+| world/gen/biome.rs:534 | packed_earth |
+| world/gen/biome.rs:534 | sand |
+| world/gen/biome.rs:534 | dry |
+| world/gen/biome.rs:535 | wet_soil |
+| world/gen/biome.rs:535 | mossy |
+| world/gen/biome.rs:535 | wet |
+| world/gen/biome.rs:536 | frozen_soil |
+| world/gen/biome.rs:536 | cold |
+| world/gen/biome.rs:723 | deep_water |
+| world/gen/biome.rs:725 | water |
+| world/gen/biome.rs:784 | character: wetness {:+.2} warmth {:+.2} stoniness {:+.2} ({}){} |
+| world/gen/biome.rs:790 | , set by parameter |
+| world/gen/biome.rs:792 | , from the seed |
+| world/gen/biome.rs:798 | biome mix: {} |
+| world/gen/biome.rs:814 |   {:<13} {:>5} columns: {} |
+| world/gen/biome.rs:824 |   absent biomes: {} (the climate never reaches them here) |
+| world/gen/biome.rs:828 | ground families: |
+| world/gen/biome.rs:830 | water |
+| world/gen/biome.rs:831 | deep_water |
+| world/gen/biome.rs:836 | water |
+| world/gen/biome.rs:836 | streams and lakes on low ground |
+| world/gen/biome.rs:837 | deep_water |
+| world/gen/biome.rs:837 | lake centres two or more tiles from any shore |
+| world/gen/biome.rs:838 | chosen in {} |
+| world/gen/biome.rs:850 |   {:<13}     0  absent: {}, and there are none |
+| world/gen/biome.rs:855 |   {:<13}     0  absent: none of {} in this seed |
+| world/gen/biome.rs:859 | grassland |
+| world/gen/biome.rs:861 |   {:<13}     0  absent: none of {} here, and grassland takes it only when the valley leans most to {}; this is {} |
+| world/gen/biome.rs:865 | grassland |
+| world/gen/biome.rs:874 |   {:<13}     0  absent: {} are here but the patch noise never picked it |
+| world/gen/biome.rs:892 | flora draw: {} of {} wild kinds: {} |
+| world/gen/biome.rs:897 | flora not drawn: {} |
+| world/gen/biome.rs:899 | flora draw: not recorded in this world (legacy save) |
+| world/gen/biome.rs:901 | plants: |
+| world/gen/biome.rs:908 |   {:<17}     0  not drawn for this world |
+| world/gen/biome.rs:919 | the forest field, scaled by biome |
+| world/gen/biome.rs:920 | near water, most in fen |
+| world/gen/biome.rs:921 | cave floors |
+| world/gen/biome.rs:922 | sown by settlers |
+| world/gen/biome.rs:923 | left where a tree is felled |
+| world/gen/biome.rs:924 | in caverns, under the surface |
+| world/gen/biome.rs:925 | the foot of rises, and {} |
+| world/gen/biome.rs:932 | trees of {} |
+| world/gen/biome.rs:936 | placed outside the surface biomes |
+| world/gen/biome.rs:937 | in {} |
 | world/gen/caverns.rs:65 | Glimmering |
 | world/gen/caverns.rs:66 | Pale |
 | world/gen/caverns.rs:67 | Echoing |
