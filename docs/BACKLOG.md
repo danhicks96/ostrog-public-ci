@@ -42,11 +42,11 @@ An implementation is being reconciled; do not start another. Add a read-only hea
 
 ### OST-005 · Record what a breakdown was over
 
-**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI (OC) · **Public PR:** [#3](https://github.com/danhicks96/ostrog-public-ci/pull/3)
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Ostrog CI (OC) · **Public PR:** [#3](https://github.com/danhicks96/ostrog-public-ci/pull/3)
 
-The chronicle records the kind of breakdown but not what the person was under strain about. Append a separate notable cause event immediately after the original breakdown, at the same tick. Prefer the strongest fear, grief, anger or shame at strength 0.3 or higher, then the heaviest negative thought, then a need below 0.2. If none qualifies, record that the cause is unknown. Name another person only when the recorded feeling identifies them. Do not invent a subject for a thought.
+The existing breakdown event now carries an optional explanation, not a second event. Choose the strongest qualifying fear, grief, anger or shame (strength 0.3 or higher), then the heaviest active negative thought other than arrival, then the lowest need below 0.2. A new breakdown with no qualifying cause is unknown; old records can lack the field. Only a recorded feeling can identify another person, and the viewer must already know them for the explanation to name them.
 
-**Acceptance:** A staged breakdown with a known person as the cause names that person; a staged breakdown without a cause reports it as unknown. Preserve the original event and behavior, and keep existing event discriminants in order. Compare break kinds and counts before and after on matched seeds 1–4 over 60 game-days, and report the number and share with a known cause. Focused tests alone do not establish the long-run comparison.
+**Acceptance:** Preserve the original headline, event ID, participants and simulation behavior. Focused tests cover known and unknown explanations, undiscovered subjects and old records. The pre-merge comparison for the corrected implementation matched the baseline on seeds 1–4 over 60 game-days, with 59 of 59 breakdowns recording a known cause (100%).
 
 ### OST-006 · Reconstruct on-map bodies from saved state
 
@@ -74,9 +74,9 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 ### OST-014 · Fold repeated Catch Up details before limiting the list
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Mara (MR) · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Mara (MR) · **Public PR:** [#7](https://github.com/danhicks96/ostrog-public-ci/pull/7)
 
-Use the existing named-change read model and repeat keys. Fold viewer-visible events of Notable severity or higher before applying the display cap to the details list. Do not fold or cap the named changes, or change raw counts or timelapse markers.
+The Catch Up read model folds viewer-visible events of Notable severity or higher by existing repeat keys before applying the detail cap. Named changes, raw counts and timelapse markers stay separate and unchanged. This does not wire the panel (OST-011) or complete the census (OST-013). Measure latency on a large chronicle before wiring the panel.
 
 **Acceptance:** In a summary with many repeated suspicions and several distinct raids, the suspicions group without crowding the raids out before folding. Each folded line keeps the newest history ID as its navigation anchor, and stores its earliest and latest event ticks separately. Verify those ticks with out-of-order input, preserve distinct named changes, and check that the timelapse still receives the same raw markers.
 

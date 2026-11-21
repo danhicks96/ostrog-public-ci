@@ -52,7 +52,9 @@ def read(p):
 
 
 # ------------------------------------------------------------------ Rust scanning
-LIT = re.compile(r'"((?:\\.|[^"\\])*)"')
+# Rust's backslash-newline continuation is one escape, just like an escaped quote.
+# Failing at a continuation lets the closing quote masquerade as the next opening quote.
+LIT = re.compile(r'"((?:\\[\s\S]|[^"\\])*)"')
 
 
 def strip_tests(src):
@@ -374,6 +376,32 @@ def severities():
 ORDER = ['Trace', 'Minor', 'Notable', 'Major']
 
 
+SQL_LITERAL = re.compile(
+    r'^\s*(?:\{[A-Za-z_]\w*\}\s+)?'
+    r'(?:SELECT\b|PRAGMA\b|BEGIN[ \t]*;|(?:AND|OR|WHERE)\b[\s\S]*\bSELECT\b)'
+)
+
+
+def inventory_literals(src, covered=()):
+    """Yield line number and display text for otherwise uncatalogued Rust literals."""
+    for k in LIT.finditer(src):
+        s = k.group(1)
+        if not re.search(r'[a-z]', s) or any(a <= k.start() <= b for a, b in covered):
+            continue
+        line_start = src.rfind('\n', 0, k.start()) + 1
+        line_end = src.find('\n', k.start())
+        line = src[line_start:line_end if line_end >= 0 else len(src)]
+        if re.search(r'^\s*(//|#\[)|expect\(|assert|debug_assert|panic!|unreachable!', line):
+            continue
+        if re.search(r'\b(eprintln|println)!', line):
+            continue
+        if SQL_LITERAL.match(s) or re.match(
+            r'^[A-Z][A-Z-]{3,}\??\s|^\{\w*:\?\}$|\.(bin|sqlite|json|hfsave|tmp|old)$', s
+        ):
+            continue  # SQL, debug traces, file names, bare Debug formats
+        yield src.count('\n', 0, k.start()) + 1, unescape(s)
+
+
 def strings_sim():
     files = {}
     parts = []
@@ -653,21 +681,7 @@ def strings_sim():
                 continue
             src = strip_tests(read(p))
             cov = covered.get(os.path.normpath(p), [])
-            for k in LIT.finditer(src):
-                s = k.group(1)
-                if not re.search(r'[a-z]', s) or any(a <= k.start() <= b for a, b in cov):
-                    continue
-                line_start = src.rfind('\n', 0, k.start()) + 1
-                line_end = src.find('\n', k.start())
-                line = src[line_start:line_end]
-                if re.search(r'^\s*(//|#\[)|expect\(|assert|debug_assert|panic!|unreachable!', line):
-                    continue
-                if re.search(r'\b(eprintln|println)!', line):
-                    continue
-                if re.match(r'^(SELECT|PRAGMA|[A-Z][A-Z-]{3,}\??\s)|^\{\w*:\?\}$|\.(bin|sqlite|json|hfsave|tmp|old)$', s):
-                    continue  # SQL, debug traces, file names, bare Debug formats
-                ln = src.count('\n', 0, k.start()) + 1
-                rows.append((f'{r}:{ln}', unescape(s)))
+            rows.extend((f'{r}:{ln}', display) for ln, display in inventory_literals(src, cov))
     parts.append('#### Every other string in the simulation\n\nAll remaining string literals in '
                  '`crates/hf-sim/src` outside tests, panics and the tables above: death causes, '
                  'fire causes, plan-failure reasons, caravan purposes and road stories, choices, '
