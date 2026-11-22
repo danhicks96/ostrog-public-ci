@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3147 strings (click to open)</summary>
+<details><summary>3155 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3866,6 +3866,13 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/block.rs:723 | Body of {} ({how}) |
 | view/built.rs:22 | someone no longer remembered |
 | view/built.rs:24 | Built by {name}, {} |
+| view/causes.rs:98 | [b]Why it happened[/b] / Nothing is recorded here. |
+| view/causes.rs:101 | [b]Why it happened[/b] / {}: {first} /  |
+| view/causes.rs:106 |   because, {}: {line} /  |
+| view/causes.rs:111 | The record names no cause for it. /  |
+| view/causes.rs:113 |   and it goes back further than this page follows. /  |
+| view/causes.rs:114 |   and the record of what caused that is missing. /  |
+| view/causes.rs:115 |   and before that, nothing the valley knows. /  |
 | view/day_shape.rs:61 | unknown |
 | view/day_shape.rs:62 | {name}:{goal} |
 | view/director.rs:84 | settlement |
@@ -4208,151 +4215,152 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/legends.rs:54 | polity |
 | view/legends.rs:55 | a realm |
 | view/legends.rs:86 | [color=#9a9a9a]{}[/color]  {} |
-| view/legends.rs:98 | [b]Legends[/b] /  / This valley's world has no recorded history beyond it. |
-| view/legends.rs:103 | people |
-| view/legends.rs:104 | site |
-| view/legends.rs:105 | figure |
-| view/legends.rs:106 | polity |
-| view/legends.rs:107 | war |
-| view/legends.rs:108 | species |
-| view/legends.rs:109 | culture |
-| view/legends.rs:110 | beast |
-| view/legends.rs:112 | known |
-| view/legends.rs:133 | [b]{}[/b] / A huge thing of {}, of {} parts ({plan}). It woke {} {}. /  |
-| view/legends.rs:139 | underworld |
-| view/legends.rs:140 | in the underworld |
-| view/legends.rs:142 | in the deep caverns |
-| view/legends.rs:148 | It left {} empty. /  |
-| view/legends.rs:150 | beast |
-| view/legends.rs:152 |  / [b]The record[/b] /  |
-| view/legends.rs:153 |  /  |
-| view/legends.rs:154 |  /  |
-| view/legends.rs:156 |  / [url=world:0]The world[/url] |
-| view/legends.rs:167 | [b]{}[/b], a culture of {}. /  |
-| view/legends.rs:174 | It grew at {}, far from the homeland, {} (from {}). /  |
-| view/legends.rs:177 | culture |
-| view/legends.rs:180 | The culture of their homeland. /  |
-| view/legends.rs:182 | They {}. /  / [b]What they hold[/b] /  |
-| view/legends.rs:186 | Nothing more firmly than their neighbours. /  |
-| view/legends.rs:189 | That {}. /  |
-| view/legends.rs:196 |  / Held in {sites} settlements now. /  |
-| view/legends.rs:199 | They name {} for {}. /  |
-| view/legends.rs:203 | They hold a grudge against {}. /  |
-| view/legends.rs:215 |  / [b]Who they deal with[/b] /  |
-| view/legends.rs:220 | , and one marriage |
-| view/legends.rs:221 | , and {n} marriages |
-| view/legends.rs:224 | {}: {} caravans{married}, the last {}. /  |
-| view/legends.rs:225 | culture |
-| view/legends.rs:239 |  / [b]What they tell[/b] /  |
-| view/legends.rs:242 |  (a later telling) |
-| view/legends.rs:247 | {}{later}, {}. /  |
-| view/legends.rs:268 | [b]{}[/b] / {}. /  / A body of {} parts ({}), {:.0} to {:.0} cm tall and {:.0} to {:.0} kg; comfortable from {:.0} to {:.0} degrees, {}. They live in {}, build {}, and pair {}. /  |
-| view/legends.rs:285 | bare |
-| view/legends.rs:285 | bare-skinned |
-| view/legends.rs:286 | in {c} |
-| view/legends.rs:289 | household |
-| view/legends.rs:289 | households |
-| view/legends.rs:290 | {o}s |
-| view/legends.rs:294 | pair |
-| view/legends.rs:294 | for life |
-| view/legends.rs:295 | group |
-| view/legends.rs:295 | in groups |
-| view/legends.rs:296 | rarely |
-| view/legends.rs:306 |  / [b]Peoples of this kind[/b] /  |
-| view/legends.rs:308 | None in this world. /  |
-| view/legends.rs:310 |  /  |
-| view/legends.rs:319 | {} /  / [b]The world[/b] / {} years remembered before the portal. {} peoples, {} settlements ({} still lived in), {} named figures, {} realms. /  / [b]Peoples[/b] /  |
-| view/legends.rs:321 | known |
-| view/legends.rs:321 | What the valley knows (not the world as it is) |
-| view/legends.rs:336 | {}, {} {}: {n} settlements /  |
-| view/legends.rs:342 |  / [b]Realms[/b] /  |
-| view/legends.rs:345 | ended {} ({cause}) |
-| view/legends.rs:346 | since {} |
-| view/legends.rs:349 | {} of the {}, seat {}: {state} /  |
-| view/legends.rs:356 |  / [b]Wars[/b] (the latest) /  |
-| view/legends.rs:359 | ended {} ({cause}) |
-| view/legends.rs:360 | still fought |
-| view/legends.rs:363 | {}: {state} /  |
-| view/legends.rs:365 | war |
-| view/legends.rs:368 | {} against {} |
-| view/legends.rs:376 |  / [b]Beasts of the deep[/b] /  |
-| view/legends.rs:379 | {}, woke {} /  |
-| view/legends.rs:380 | beast |
-| view/legends.rs:387 |  / The valley lies among the {}. /  |
-| view/legends.rs:404 | They live in the caverns under the land. Their first home was {}. |
-| view/legends.rs:407 | Their first home was {}. |
-| view/legends.rs:418 | They have no land of their own. |
-| view/legends.rs:421 | They have no land of their own; households of them live in {}. |
-| view/legends.rs:428 | [b]The {}[/b], {} {}. {home} /  / [b]What they hold[/b] /  |
-| view/legends.rs:440 | That {}. /  |
-| view/legends.rs:447 | culture |
-| view/legends.rs:450 |  / [b]Cultures[/b] {} /  |
-| view/legends.rs:453 |  / [b]Settlements[/b] {} founded, {alive} still lived in. The largest: /  |
-| view/legends.rs:464 | {}, a {} of {:.0} /  |
-| view/legends.rs:472 |  / [b]Their realms[/b] /  |
-| view/legends.rs:474 | {} /  |
-| view/legends.rs:477 |  / [b]Remembered among them[/b] /  |
-| view/legends.rs:491 | {}, {} /  |
-| view/legends.rs:493 |  / [url=world:0]The world[/url] |
-| view/legends.rs:503 | [b]{}[/b], a {} of the {}. / Founded {} |
-| view/legends.rs:506 | mine |
-| view/legends.rs:510 | ruin |
-| view/legends.rs:516 |  by settlers from {} |
-| view/legends.rs:518 | . /  |
-| view/legends.rs:522 | Left empty {}: {cause}. At its height {:.0} lived there. /  |
-| view/legends.rs:527 | {:.0} live there (at most {:.0}). /  |
-| view/legends.rs:544 | They hold for trade: {}. /  |
-| view/legends.rs:549 | {n} {} |
-| view/legends.rs:554 | A caravan from the valley traded {} for {} ({}). /  |
-| view/legends.rs:557 | nothing |
-| view/legends.rs:572 | a neighbour |
-| view/legends.rs:574 | Traded {} {} to {with} for {} {} ({}). /  |
-| view/legends.rs:589 | the seat of |
-| view/legends.rs:591 | part of |
-| view/legends.rs:593 | It is {role} the realm of {}. /  |
-| view/legends.rs:598 |  / [b]What is told of it[/b] /  |
-| view/legends.rs:608 | culture |
-| view/legends.rs:611 |  (a later telling) |
-| view/legends.rs:616 | {who} say: {}{later}, {}. /  |
-| view/legends.rs:630 |  / [b]Born here[/b] ({}) /  |
-| view/legends.rs:632 | {}, {} /  |
-| view/legends.rs:635 | site |
-| view/legends.rs:637 |  / [b]The record[/b] /  |
-| view/legends.rs:638 |  /  |
-| view/legends.rs:639 |  /  |
-| view/legends.rs:642 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:654 | [b]{}[/b], {} of the {}. / Born {} at {} |
-| view/legends.rs:662 | , child of {} |
-| view/legends.rs:664 | . /  |
-| view/legends.rs:666 | Died {} ({cause}), aged {}. /  |
-| view/legends.rs:669 | Lives at {}, aged {}. /  |
-| view/legends.rs:677 |  / [b]Children[/b] /  |
-| view/legends.rs:679 | {} /  |
-| view/legends.rs:682 | figure |
-| view/legends.rs:684 |  / [b]The record[/b] /  |
-| view/legends.rs:685 |  /  |
-| view/legends.rs:686 |  /  |
-| view/legends.rs:689 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:701 | [b]The realm of {}[/b], of the {}. / Its seat is {}, since {}. /  |
-| view/legends.rs:708 | It came to an end {}: {cause}. /  |
-| view/legends.rs:709 | Ruled now by {}. /  |
-| view/legends.rs:710 | Nobody rules it now. /  |
-| view/legends.rs:712 | {} settlements belong to it. /  |
-| view/legends.rs:717 | , until {} ({why}) |
-| view/legends.rs:721 | Allied with {} against {}, {}{ended}. /  |
-| view/legends.rs:727 | polity |
-| view/legends.rs:729 |  / [b]The record[/b] /  |
-| view/legends.rs:730 |  /  |
-| view/legends.rs:731 |  /  |
-| view/legends.rs:734 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:814 | [b]The war between {} and {}[/b] / Begun {}: {}. /  |
-| view/legends.rs:823 | Ended {}: {cause}. {} battles were fought. /  |
-| view/legends.rs:828 | Still fought; {} battles so far. /  |
-| view/legends.rs:830 | war |
-| view/legends.rs:832 |  / [b]The record[/b] /  |
-| view/legends.rs:833 |  /  |
-| view/legends.rs:834 |  /  |
-| view/legends.rs:836 |  / [url=world:0]The world[/url] |
+| view/legends.rs:97 | why: |
+| view/legends.rs:102 | [b]Legends[/b] /  / This valley's world has no recorded history beyond it. |
+| view/legends.rs:107 | people |
+| view/legends.rs:108 | site |
+| view/legends.rs:109 | figure |
+| view/legends.rs:110 | polity |
+| view/legends.rs:111 | war |
+| view/legends.rs:112 | species |
+| view/legends.rs:113 | culture |
+| view/legends.rs:114 | beast |
+| view/legends.rs:116 | known |
+| view/legends.rs:137 | [b]{}[/b] / A huge thing of {}, of {} parts ({plan}). It woke {} {}. /  |
+| view/legends.rs:143 | underworld |
+| view/legends.rs:144 | in the underworld |
+| view/legends.rs:146 | in the deep caverns |
+| view/legends.rs:152 | It left {} empty. /  |
+| view/legends.rs:154 | beast |
+| view/legends.rs:156 |  / [b]The record[/b] /  |
+| view/legends.rs:157 |  /  |
+| view/legends.rs:158 |  /  |
+| view/legends.rs:160 |  / [url=world:0]The world[/url] |
+| view/legends.rs:171 | [b]{}[/b], a culture of {}. /  |
+| view/legends.rs:178 | It grew at {}, far from the homeland, {} (from {}). /  |
+| view/legends.rs:181 | culture |
+| view/legends.rs:184 | The culture of their homeland. /  |
+| view/legends.rs:186 | They {}. /  / [b]What they hold[/b] /  |
+| view/legends.rs:190 | Nothing more firmly than their neighbours. /  |
+| view/legends.rs:193 | That {}. /  |
+| view/legends.rs:200 |  / Held in {sites} settlements now. /  |
+| view/legends.rs:203 | They name {} for {}. /  |
+| view/legends.rs:207 | They hold a grudge against {}. /  |
+| view/legends.rs:219 |  / [b]Who they deal with[/b] /  |
+| view/legends.rs:224 | , and one marriage |
+| view/legends.rs:225 | , and {n} marriages |
+| view/legends.rs:228 | {}: {} caravans{married}, the last {}. /  |
+| view/legends.rs:229 | culture |
+| view/legends.rs:243 |  / [b]What they tell[/b] /  |
+| view/legends.rs:246 |  (a later telling) |
+| view/legends.rs:251 | {}{later}, {}. /  |
+| view/legends.rs:272 | [b]{}[/b] / {}. /  / A body of {} parts ({}), {:.0} to {:.0} cm tall and {:.0} to {:.0} kg; comfortable from {:.0} to {:.0} degrees, {}. They live in {}, build {}, and pair {}. /  |
+| view/legends.rs:289 | bare |
+| view/legends.rs:289 | bare-skinned |
+| view/legends.rs:290 | in {c} |
+| view/legends.rs:293 | household |
+| view/legends.rs:293 | households |
+| view/legends.rs:294 | {o}s |
+| view/legends.rs:298 | pair |
+| view/legends.rs:298 | for life |
+| view/legends.rs:299 | group |
+| view/legends.rs:299 | in groups |
+| view/legends.rs:300 | rarely |
+| view/legends.rs:310 |  / [b]Peoples of this kind[/b] /  |
+| view/legends.rs:312 | None in this world. /  |
+| view/legends.rs:314 |  /  |
+| view/legends.rs:323 | {} /  / [b]The world[/b] / {} years remembered before the portal. {} peoples, {} settlements ({} still lived in), {} named figures, {} realms. /  / [b]Peoples[/b] /  |
+| view/legends.rs:325 | known |
+| view/legends.rs:325 | What the valley knows (not the world as it is) |
+| view/legends.rs:340 | {}, {} {}: {n} settlements /  |
+| view/legends.rs:346 |  / [b]Realms[/b] /  |
+| view/legends.rs:349 | ended {} ({cause}) |
+| view/legends.rs:350 | since {} |
+| view/legends.rs:353 | {} of the {}, seat {}: {state} /  |
+| view/legends.rs:360 |  / [b]Wars[/b] (the latest) /  |
+| view/legends.rs:363 | ended {} ({cause}) |
+| view/legends.rs:364 | still fought |
+| view/legends.rs:367 | {}: {state} /  |
+| view/legends.rs:369 | war |
+| view/legends.rs:372 | {} against {} |
+| view/legends.rs:380 |  / [b]Beasts of the deep[/b] /  |
+| view/legends.rs:383 | {}, woke {} /  |
+| view/legends.rs:384 | beast |
+| view/legends.rs:391 |  / The valley lies among the {}. /  |
+| view/legends.rs:408 | They live in the caverns under the land. Their first home was {}. |
+| view/legends.rs:411 | Their first home was {}. |
+| view/legends.rs:422 | They have no land of their own. |
+| view/legends.rs:425 | They have no land of their own; households of them live in {}. |
+| view/legends.rs:432 | [b]The {}[/b], {} {}. {home} /  / [b]What they hold[/b] /  |
+| view/legends.rs:444 | That {}. /  |
+| view/legends.rs:451 | culture |
+| view/legends.rs:454 |  / [b]Cultures[/b] {} /  |
+| view/legends.rs:457 |  / [b]Settlements[/b] {} founded, {alive} still lived in. The largest: /  |
+| view/legends.rs:468 | {}, a {} of {:.0} /  |
+| view/legends.rs:476 |  / [b]Their realms[/b] /  |
+| view/legends.rs:478 | {} /  |
+| view/legends.rs:481 |  / [b]Remembered among them[/b] /  |
+| view/legends.rs:495 | {}, {} /  |
+| view/legends.rs:497 |  / [url=world:0]The world[/url] |
+| view/legends.rs:507 | [b]{}[/b], a {} of the {}. / Founded {} |
+| view/legends.rs:510 | mine |
+| view/legends.rs:514 | ruin |
+| view/legends.rs:520 |  by settlers from {} |
+| view/legends.rs:522 | . /  |
+| view/legends.rs:526 | Left empty {}: {cause}. At its height {:.0} lived there. /  |
+| view/legends.rs:531 | {:.0} live there (at most {:.0}). /  |
+| view/legends.rs:548 | They hold for trade: {}. /  |
+| view/legends.rs:553 | {n} {} |
+| view/legends.rs:558 | A caravan from the valley traded {} for {} ({}). /  |
+| view/legends.rs:561 | nothing |
+| view/legends.rs:576 | a neighbour |
+| view/legends.rs:578 | Traded {} {} to {with} for {} {} ({}). /  |
+| view/legends.rs:593 | the seat of |
+| view/legends.rs:595 | part of |
+| view/legends.rs:597 | It is {role} the realm of {}. /  |
+| view/legends.rs:602 |  / [b]What is told of it[/b] /  |
+| view/legends.rs:612 | culture |
+| view/legends.rs:615 |  (a later telling) |
+| view/legends.rs:620 | {who} say: {}{later}, {}. /  |
+| view/legends.rs:634 |  / [b]Born here[/b] ({}) /  |
+| view/legends.rs:636 | {}, {} /  |
+| view/legends.rs:639 | site |
+| view/legends.rs:641 |  / [b]The record[/b] /  |
+| view/legends.rs:642 |  /  |
+| view/legends.rs:643 |  /  |
+| view/legends.rs:646 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:658 | [b]{}[/b], {} of the {}. / Born {} at {} |
+| view/legends.rs:666 | , child of {} |
+| view/legends.rs:668 | . /  |
+| view/legends.rs:670 | Died {} ({cause}), aged {}. /  |
+| view/legends.rs:673 | Lives at {}, aged {}. /  |
+| view/legends.rs:681 |  / [b]Children[/b] /  |
+| view/legends.rs:683 | {} /  |
+| view/legends.rs:686 | figure |
+| view/legends.rs:688 |  / [b]The record[/b] /  |
+| view/legends.rs:689 |  /  |
+| view/legends.rs:690 |  /  |
+| view/legends.rs:693 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:705 | [b]The realm of {}[/b], of the {}. / Its seat is {}, since {}. /  |
+| view/legends.rs:712 | It came to an end {}: {cause}. /  |
+| view/legends.rs:713 | Ruled now by {}. /  |
+| view/legends.rs:714 | Nobody rules it now. /  |
+| view/legends.rs:716 | {} settlements belong to it. /  |
+| view/legends.rs:721 | , until {} ({why}) |
+| view/legends.rs:725 | Allied with {} against {}, {}{ended}. /  |
+| view/legends.rs:731 | polity |
+| view/legends.rs:733 |  / [b]The record[/b] /  |
+| view/legends.rs:734 |  /  |
+| view/legends.rs:735 |  /  |
+| view/legends.rs:738 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:818 | [b]The war between {} and {}[/b] / Begun {}: {}. /  |
+| view/legends.rs:827 | Ended {}: {cause}. {} battles were fought. /  |
+| view/legends.rs:832 | Still fought; {} battles so far. /  |
+| view/legends.rs:834 | war |
+| view/legends.rs:836 |  / [b]The record[/b] /  |
+| view/legends.rs:837 |  /  |
+| view/legends.rs:838 |  /  |
+| view/legends.rs:840 |  / [url=world:0]The world[/url] |
 | view/look.rs:12 | tunic |
 | view/look.rs:13 | dress |
 | view/look.rs:14 | apron |
@@ -4375,10 +4383,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/look.rs:35 | coat |
 | view/look.rs:36 | workshirt |
 | view/look.rs:37 | vest |
-| view/mod.rs:32 | douse |
-| view/mod.rs:33 | by lightning |
-| view/mod.rs:33 | lightning |
-| view/mod.rs:34 | flare |
+| view/mod.rs:33 | douse |
+| view/mod.rs:34 | by lightning |
+| view/mod.rs:34 | lightning |
+| view/mod.rs:35 | flare |
 | view/music.rs:20 | mourn |
 | view/music.rs:22 | welcome |
 | view/narrate.rs:39 | {} and {} |
@@ -4602,155 +4610,155 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:949 | _build_ui | Close help [? or Esc] |
 | godot/scripts/main.gd:980 | _build_ui | Close [Esc] |
 | godot/scripts/main.gd:980 | _build_ui | Close history / summary [H or Esc] |
-| godot/scripts/main.gd:1002 | _build_ui | ← Back [Backspace] |
-| godot/scripts/main.gd:1002 | _build_ui | Return to the previous Legends page [Backspace] |
-| godot/scripts/main.gd:1009 | _build_ui | World overview |
-| godot/scripts/main.gd:1009 | _build_ui | Open the top-level world page |
-| godot/scripts/main.gd:1010 | _build_ui | world:0 |
-| godot/scripts/main.gd:1011 | _build_ui | world:0 |
+| godot/scripts/main.gd:1004 | _build_ui | ← Back [Backspace] |
+| godot/scripts/main.gd:1004 | _build_ui | Return to the previous Legends page [Backspace] |
+| godot/scripts/main.gd:1011 | _build_ui | World overview |
+| godot/scripts/main.gd:1011 | _build_ui | Open the top-level world page |
 | godot/scripts/main.gd:1012 | _build_ui | world:0 |
-| godot/scripts/main.gd:1018 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:1018 | _build_ui | Close Legends [L or Esc] |
-| godot/scripts/main.gd:1091 | _show_waiting | Nothing is waiting: every order has been taken, or was posted within the hour. |
-| godot/scripts/main.gd:1104 | _show_waiting | Go to |
-| godot/scripts/main.gd:1104 | _show_waiting | Look where it waits |
-| godot/scripts/main.gd:1135 | _build_bottom_bar | ▼ Bar |
-| godot/scripts/main.gd:1135 | _build_bottom_bar | Hide or show the bottom button bar [B] |
-| godot/scripts/main.gd:1168 | _build_bottom_bar | Keep playing [Esc] |
-| godot/scripts/main.gd:1168 | _build_bottom_bar | Keep the valley as it is |
-| godot/scripts/main.gd:1172 | _build_bottom_bar | Load |
-| godot/scripts/main.gd:1172 | _build_bottom_bar | Load the saved valley |
-| godot/scripts/main.gd:1189 | _build_bottom_bar | Camera bookmarks (F1–F8) |
-| godot/scripts/main.gd:1193 | _build_bottom_bar | Close |
-| godot/scripts/main.gd:1193 | _build_bottom_bar | Close bookmarks |
-| godot/scripts/main.gd:1206 | _build_bottom_bar | Go F%d |
-| godot/scripts/main.gd:1206 | _build_bottom_bar | Jump to bookmark F%d [F%d] |
-| godot/scripts/main.gd:1214 | _build_bottom_bar | bookmark %d not set yet (click Set) |
-| godot/scripts/main.gd:1216 | _build_bottom_bar | Set |
-| godot/scripts/main.gd:1216 | _build_bottom_bar | Save current camera to bookmark F%d [Ctrl+F%d] |
-| godot/scripts/main.gd:1218 | _build_bottom_bar | bookmark %d set |
-| godot/scripts/main.gd:1230 | _set_bar_visible | ▼ Bar |
-| godot/scripts/main.gd:1230 | _set_bar_visible | ▲ Bar |
-| godot/scripts/main.gd:1248 | _set_feed_rate | Feed rate:  |
-| godot/scripts/main.gd:1271 | _cycle_name_tags | Name tags:  |
-| godot/scripts/main.gd:1272 | _cycle_name_tags | name tags:  |
-| godot/scripts/main.gd:1277 | _cycle_feed_rate | feed rate:  |
-| godot/scripts/main.gd:1289 | _on_bar_pressed | spd1 |
-| godot/scripts/main.gd:1291 | _on_bar_pressed | spd2 |
-| godot/scripts/main.gd:1293 | _on_bar_pressed | spd3 |
-| godot/scripts/main.gd:1333 | _on_bar_pressed | world:0 |
-| godot/scripts/main.gd:1334 | _on_bar_pressed | world:0 |
-| godot/scripts/main.gd:1338 | _on_bar_pressed | view: %s |
-| godot/scripts/main.gd:1338 | _on_bar_pressed | what the community has seen |
-| godot/scripts/main.gd:1344 | _on_bar_pressed | announce:  |
-| godot/scripts/main.gd:1348 | _on_bar_pressed | pause on major events:  |
-| godot/scripts/main.gd:1354 | _on_bar_pressed | saving… |
-| godot/scripts/main.gd:1377 | _update_bar_buttons | ▶ Play |
-| godot/scripts/main.gd:1377 | _update_bar_buttons | ⏸ Pause |
-| godot/scripts/main.gd:1381 | _update_bar_buttons | Director: on |
-| godot/scripts/main.gd:1381 | _update_bar_buttons | Director: off |
-| godot/scripts/main.gd:1382 | _update_bar_buttons | Known: on |
-| godot/scripts/main.gd:1382 | _update_bar_buttons | Known: all |
-| godot/scripts/main.gd:1384 | _update_bar_buttons | Feed:  |
-| godot/scripts/main.gd:1385 | _update_bar_buttons | Alerts:  |
-| godot/scripts/main.gd:1386 | _update_bar_buttons | Pause!: on |
-| godot/scripts/main.gd:1386 | _update_bar_buttons | Pause!: off |
-| godot/scripts/main.gd:1388 | _update_bar_buttons | ★ Favs (%d) |
-| godot/scripts/main.gd:1388 | _update_bar_buttons | ★ Favs |
-| godot/scripts/main.gd:1394 | _update_inspect_buttons | Following [F] |
-| godot/scripts/main.gd:1394 | _update_inspect_buttons | Follow [F] |
-| godot/scripts/main.gd:1396 | _update_inspect_buttons | Why? (on) |
-| godot/scripts/main.gd:1396 | _update_inspect_buttons | Why? |
-| godot/scripts/main.gd:1398 | _update_inspect_buttons | ★ Favourited |
-| godot/scripts/main.gd:1398 | _update_inspect_buttons | ☆ Favourite |
-| godot/scripts/main.gd:1451 | _fill_people | Inspect |
-| godot/scripts/main.gd:1451 | _fill_people | Open %s's inspect panel |
-| godot/scripts/main.gd:1466 | _fill_people | Following |
-| godot/scripts/main.gd:1466 | _fill_people | Follow |
-| godot/scripts/main.gd:1466 | _fill_people | Keep the camera on %s (dragging stops follow) |
-| godot/scripts/main.gd:1481 | _fill_people | Remove %s from favourites |
-| godot/scripts/main.gd:1493 | _update_hud | director: %s |
-| godot/scripts/main.gd:1493 | _update_hud | on, watching %s |
-| godot/scripts/main.gd:1496 | _update_hud | pop %d |
-| godot/scripts/main.gd:1588 | _push_feed | paused:  |
-| godot/scripts/main.gd:1661 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
-| godot/scripts/main.gd:1673 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
-| godot/scripts/main.gd:1673 | _update_inspect | ; who  |
-| godot/scripts/main.gd:1682 | _update_inspect |  / surface: %s /  |
-| godot/scripts/main.gd:1690 | _update_inspect | skills: %s /  |
-| godot/scripts/main.gd:1691 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
-| godot/scripts/main.gd:1692 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
-| godot/scripts/main.gd:1694 | _update_inspect |  / equipped / wearing: /  |
-| godot/scripts/main.gd:1698 | _update_inspect | inventory: /  |
-| godot/scripts/main.gd:1702 | _update_inspect | knows how: /  |
-| godot/scripts/main.gd:1707 | _update_inspect | has heard: /  |
-| godot/scripts/main.gd:1710 | _update_inspect | partner: %s /  |
-| godot/scripts/main.gd:1711 | _update_inspect | parents: %s /  |
-| godot/scripts/main.gd:1712 | _update_inspect | children: %s /  |
-| godot/scripts/main.gd:1714 | _update_inspect | customs: /  |
-| godot/scripts/main.gd:1718 | _update_inspect | mood: %s |
-| godot/scripts/main.gd:1720 | _update_inspect | , because: %s |
-| godot/scripts/main.gd:1722 | _update_inspect | feels: %s /  |
-| godot/scripts/main.gd:1726 | _update_inspect | people: %s /  |
-| godot/scripts/main.gd:1728 | _update_inspect | believes: /  |
-| godot/scripts/main.gd:1732 | _update_inspect | before the portal, in %s: /  |
-| godot/scripts/main.gd:1732 | _update_inspect | the old village |
-| godot/scripts/main.gd:1736 | _update_inspect | remembers: /  |
-| godot/scripts/main.gd:1741 | _update_inspect | knows %d things /  |
-| godot/scripts/main.gd:1764 | _show_summary | [b]While you were away[/b]  (%.1f game-hours) /  /  |
-| godot/scripts/main.gd:1772 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
-| godot/scripts/main.gd:1777 | _show_legends | world:0 |
-| godot/scripts/main.gd:1781 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
-| godot/scripts/main.gd:1799 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1808 | _on_legends_year | This world has no map beyond the valley. |
-| godot/scripts/main.gd:1818 | _on_legends_year | the year before the portal |
-| godot/scripts/main.gd:1818 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1821 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
-| godot/scripts/main.gd:1821 | _on_legends_year | , ringed: where those away are |
-| godot/scripts/main.gd:1829 | _show_history | [b]History[/b] /  /  |
-| godot/scripts/main.gd:1832 | _show_history |  / [b]The record[/b] /  |
-| godot/scripts/main.gd:1836 | _show_history |  / [b]Why they do what they do[/b] /  |
-| godot/scripts/main.gd:1840 | _show_history |  / [b]The valley before the portal[/b] /  |
-| godot/scripts/main.gd:1844 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
-| godot/scripts/main.gd:1849 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
-| godot/scripts/main.gd:1879 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
-| godot/scripts/main.gd:1987 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
-| godot/scripts/main.gd:2027 | _capture_timelapse | png_sha256 |
-| godot/scripts/main.gd:2060 | _capture_timelapse | timelapse snapshot failed (error %d) |
-| godot/scripts/main.gd:2061 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
-| godot/scripts/main.gd:2102 | _process | saved (%.0f ms capture) |
-| godot/scripts/main.gd:2120 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
-| godot/scripts/main.gd:2224 | _do_load_manual | loaded manual save |
-| godot/scripts/main.gd:2225 | _do_load_manual | load failed:  |
-| godot/scripts/main.gd:2265 | _unhandled_input | pause on major events:  |
-| godot/scripts/main.gd:2268 | _unhandled_input | announce:  |
-| godot/scripts/main.gd:2279 | _unhandled_input | relationship lines:  |
-| godot/scripts/main.gd:2307 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2308 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2318 | _unhandled_input | view: %s |
-| godot/scripts/main.gd:2318 | _unhandled_input | what the community has seen |
-| godot/scripts/main.gd:2320 | _unhandled_input | saving… |
-| godot/scripts/main.gd:2333 | _unhandled_input | bookmark %d set |
-| godot/scripts/main.gd:2424 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
-| godot/scripts/main.gd:2483 | _do_shot | SHOT_FAILED %s (error %d) |
-| godot/scripts/main.gd:2556 | _build_settings | Settings |
-| godot/scripts/main.gd:2557 | _build_settings | Close [Esc] |
-| godot/scripts/main.gd:2557 | _build_settings | Close settings [O or Esc] |
-| godot/scripts/main.gd:2561 | _build_settings | Master volume |
-| godot/scripts/main.gd:2562 | _build_settings | Ambient volume |
-| godot/scripts/main.gd:2563 | _build_settings | Effects volume |
-| godot/scripts/main.gd:2564 | _build_settings | Music volume |
-| godot/scripts/main.gd:2565 | _build_settings | Autosave |
-| godot/scripts/main.gd:2566 | _build_settings | Feed rate:  |
-| godot/scripts/main.gd:2566 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
-| godot/scripts/main.gd:2570 | _build_settings | Name tags:  |
-| godot/scripts/main.gd:2570 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
-| godot/scripts/main.gd:2575 | _build_settings | Camera director |
-| godot/scripts/main.gd:2579 | _build_settings | Debug decision log (writes every decision to a file) |
-| godot/scripts/main.gd:2583 | _build_settings | Decision log:  |
-| godot/scripts/main.gd:2585 | _build_settings | Saves:  |
-| godot/scripts/main.gd:2588 | _build_settings | Your files and data |
-| godot/scripts/main.gd:2588 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
+| godot/scripts/main.gd:1013 | _build_ui | world:0 |
+| godot/scripts/main.gd:1014 | _build_ui | world:0 |
+| godot/scripts/main.gd:1020 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:1020 | _build_ui | Close Legends [L or Esc] |
+| godot/scripts/main.gd:1093 | _show_waiting | Nothing is waiting: every order has been taken, or was posted within the hour. |
+| godot/scripts/main.gd:1106 | _show_waiting | Go to |
+| godot/scripts/main.gd:1106 | _show_waiting | Look where it waits |
+| godot/scripts/main.gd:1137 | _build_bottom_bar | ▼ Bar |
+| godot/scripts/main.gd:1137 | _build_bottom_bar | Hide or show the bottom button bar [B] |
+| godot/scripts/main.gd:1170 | _build_bottom_bar | Keep playing [Esc] |
+| godot/scripts/main.gd:1170 | _build_bottom_bar | Keep the valley as it is |
+| godot/scripts/main.gd:1174 | _build_bottom_bar | Load |
+| godot/scripts/main.gd:1174 | _build_bottom_bar | Load the saved valley |
+| godot/scripts/main.gd:1191 | _build_bottom_bar | Camera bookmarks (F1–F8) |
+| godot/scripts/main.gd:1195 | _build_bottom_bar | Close |
+| godot/scripts/main.gd:1195 | _build_bottom_bar | Close bookmarks |
+| godot/scripts/main.gd:1208 | _build_bottom_bar | Go F%d |
+| godot/scripts/main.gd:1208 | _build_bottom_bar | Jump to bookmark F%d [F%d] |
+| godot/scripts/main.gd:1216 | _build_bottom_bar | bookmark %d not set yet (click Set) |
+| godot/scripts/main.gd:1218 | _build_bottom_bar | Set |
+| godot/scripts/main.gd:1218 | _build_bottom_bar | Save current camera to bookmark F%d [Ctrl+F%d] |
+| godot/scripts/main.gd:1220 | _build_bottom_bar | bookmark %d set |
+| godot/scripts/main.gd:1232 | _set_bar_visible | ▼ Bar |
+| godot/scripts/main.gd:1232 | _set_bar_visible | ▲ Bar |
+| godot/scripts/main.gd:1250 | _set_feed_rate | Feed rate:  |
+| godot/scripts/main.gd:1273 | _cycle_name_tags | Name tags:  |
+| godot/scripts/main.gd:1274 | _cycle_name_tags | name tags:  |
+| godot/scripts/main.gd:1279 | _cycle_feed_rate | feed rate:  |
+| godot/scripts/main.gd:1291 | _on_bar_pressed | spd1 |
+| godot/scripts/main.gd:1293 | _on_bar_pressed | spd2 |
+| godot/scripts/main.gd:1295 | _on_bar_pressed | spd3 |
+| godot/scripts/main.gd:1335 | _on_bar_pressed | world:0 |
+| godot/scripts/main.gd:1336 | _on_bar_pressed | world:0 |
+| godot/scripts/main.gd:1340 | _on_bar_pressed | view: %s |
+| godot/scripts/main.gd:1340 | _on_bar_pressed | what the community has seen |
+| godot/scripts/main.gd:1346 | _on_bar_pressed | announce:  |
+| godot/scripts/main.gd:1350 | _on_bar_pressed | pause on major events:  |
+| godot/scripts/main.gd:1356 | _on_bar_pressed | saving… |
+| godot/scripts/main.gd:1379 | _update_bar_buttons | ▶ Play |
+| godot/scripts/main.gd:1379 | _update_bar_buttons | ⏸ Pause |
+| godot/scripts/main.gd:1383 | _update_bar_buttons | Director: on |
+| godot/scripts/main.gd:1383 | _update_bar_buttons | Director: off |
+| godot/scripts/main.gd:1384 | _update_bar_buttons | Known: on |
+| godot/scripts/main.gd:1384 | _update_bar_buttons | Known: all |
+| godot/scripts/main.gd:1386 | _update_bar_buttons | Feed:  |
+| godot/scripts/main.gd:1387 | _update_bar_buttons | Alerts:  |
+| godot/scripts/main.gd:1388 | _update_bar_buttons | Pause!: on |
+| godot/scripts/main.gd:1388 | _update_bar_buttons | Pause!: off |
+| godot/scripts/main.gd:1390 | _update_bar_buttons | ★ Favs (%d) |
+| godot/scripts/main.gd:1390 | _update_bar_buttons | ★ Favs |
+| godot/scripts/main.gd:1396 | _update_inspect_buttons | Following [F] |
+| godot/scripts/main.gd:1396 | _update_inspect_buttons | Follow [F] |
+| godot/scripts/main.gd:1398 | _update_inspect_buttons | Why? (on) |
+| godot/scripts/main.gd:1398 | _update_inspect_buttons | Why? |
+| godot/scripts/main.gd:1400 | _update_inspect_buttons | ★ Favourited |
+| godot/scripts/main.gd:1400 | _update_inspect_buttons | ☆ Favourite |
+| godot/scripts/main.gd:1453 | _fill_people | Inspect |
+| godot/scripts/main.gd:1453 | _fill_people | Open %s's inspect panel |
+| godot/scripts/main.gd:1468 | _fill_people | Following |
+| godot/scripts/main.gd:1468 | _fill_people | Follow |
+| godot/scripts/main.gd:1468 | _fill_people | Keep the camera on %s (dragging stops follow) |
+| godot/scripts/main.gd:1483 | _fill_people | Remove %s from favourites |
+| godot/scripts/main.gd:1495 | _update_hud | director: %s |
+| godot/scripts/main.gd:1495 | _update_hud | on, watching %s |
+| godot/scripts/main.gd:1498 | _update_hud | pop %d |
+| godot/scripts/main.gd:1590 | _push_feed | paused:  |
+| godot/scripts/main.gd:1663 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
+| godot/scripts/main.gd:1675 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
+| godot/scripts/main.gd:1675 | _update_inspect | ; who  |
+| godot/scripts/main.gd:1684 | _update_inspect |  / surface: %s /  |
+| godot/scripts/main.gd:1692 | _update_inspect | skills: %s /  |
+| godot/scripts/main.gd:1693 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
+| godot/scripts/main.gd:1694 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
+| godot/scripts/main.gd:1696 | _update_inspect |  / equipped / wearing: /  |
+| godot/scripts/main.gd:1700 | _update_inspect | inventory: /  |
+| godot/scripts/main.gd:1704 | _update_inspect | knows how: /  |
+| godot/scripts/main.gd:1709 | _update_inspect | has heard: /  |
+| godot/scripts/main.gd:1712 | _update_inspect | partner: %s /  |
+| godot/scripts/main.gd:1713 | _update_inspect | parents: %s /  |
+| godot/scripts/main.gd:1714 | _update_inspect | children: %s /  |
+| godot/scripts/main.gd:1716 | _update_inspect | customs: /  |
+| godot/scripts/main.gd:1720 | _update_inspect | mood: %s |
+| godot/scripts/main.gd:1722 | _update_inspect | , because: %s |
+| godot/scripts/main.gd:1724 | _update_inspect | feels: %s /  |
+| godot/scripts/main.gd:1728 | _update_inspect | people: %s /  |
+| godot/scripts/main.gd:1730 | _update_inspect | believes: /  |
+| godot/scripts/main.gd:1734 | _update_inspect | before the portal, in %s: /  |
+| godot/scripts/main.gd:1734 | _update_inspect | the old village |
+| godot/scripts/main.gd:1738 | _update_inspect | remembers: /  |
+| godot/scripts/main.gd:1743 | _update_inspect | knows %d things /  |
+| godot/scripts/main.gd:1766 | _show_summary | [b]While you were away[/b]  (%.1f game-hours) /  /  |
+| godot/scripts/main.gd:1774 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
+| godot/scripts/main.gd:1779 | _show_legends | world:0 |
+| godot/scripts/main.gd:1783 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
+| godot/scripts/main.gd:1801 | _on_legends_link | world:0 |
+| godot/scripts/main.gd:1810 | _on_legends_year | This world has no map beyond the valley. |
+| godot/scripts/main.gd:1820 | _on_legends_year | the year before the portal |
+| godot/scripts/main.gd:1820 | _on_legends_year | %d years before the portal |
+| godot/scripts/main.gd:1823 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
+| godot/scripts/main.gd:1823 | _on_legends_year | , ringed: where those away are |
+| godot/scripts/main.gd:1841 | _show_history | [b]History[/b] /  /  |
+| godot/scripts/main.gd:1844 | _show_history |  / [b]The record[/b] /  |
+| godot/scripts/main.gd:1848 | _show_history |  / [b]Why they do what they do[/b] /  |
+| godot/scripts/main.gd:1852 | _show_history |  / [b]The valley before the portal[/b] /  |
+| godot/scripts/main.gd:1856 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
+| godot/scripts/main.gd:1861 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
+| godot/scripts/main.gd:1891 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
+| godot/scripts/main.gd:1999 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
+| godot/scripts/main.gd:2039 | _capture_timelapse | png_sha256 |
+| godot/scripts/main.gd:2072 | _capture_timelapse | timelapse snapshot failed (error %d) |
+| godot/scripts/main.gd:2073 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
+| godot/scripts/main.gd:2114 | _process | saved (%.0f ms capture) |
+| godot/scripts/main.gd:2132 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
+| godot/scripts/main.gd:2236 | _do_load_manual | loaded manual save |
+| godot/scripts/main.gd:2237 | _do_load_manual | load failed:  |
+| godot/scripts/main.gd:2277 | _unhandled_input | pause on major events:  |
+| godot/scripts/main.gd:2280 | _unhandled_input | announce:  |
+| godot/scripts/main.gd:2291 | _unhandled_input | relationship lines:  |
+| godot/scripts/main.gd:2319 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2320 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2330 | _unhandled_input | view: %s |
+| godot/scripts/main.gd:2330 | _unhandled_input | what the community has seen |
+| godot/scripts/main.gd:2332 | _unhandled_input | saving… |
+| godot/scripts/main.gd:2345 | _unhandled_input | bookmark %d set |
+| godot/scripts/main.gd:2436 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
+| godot/scripts/main.gd:2495 | _do_shot | SHOT_FAILED %s (error %d) |
+| godot/scripts/main.gd:2568 | _build_settings | Settings |
+| godot/scripts/main.gd:2569 | _build_settings | Close [Esc] |
+| godot/scripts/main.gd:2569 | _build_settings | Close settings [O or Esc] |
+| godot/scripts/main.gd:2573 | _build_settings | Master volume |
+| godot/scripts/main.gd:2574 | _build_settings | Ambient volume |
+| godot/scripts/main.gd:2575 | _build_settings | Effects volume |
+| godot/scripts/main.gd:2576 | _build_settings | Music volume |
+| godot/scripts/main.gd:2577 | _build_settings | Autosave |
+| godot/scripts/main.gd:2578 | _build_settings | Feed rate:  |
+| godot/scripts/main.gd:2578 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
+| godot/scripts/main.gd:2582 | _build_settings | Name tags:  |
+| godot/scripts/main.gd:2582 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
+| godot/scripts/main.gd:2587 | _build_settings | Camera director |
+| godot/scripts/main.gd:2591 | _build_settings | Debug decision log (writes every decision to a file) |
+| godot/scripts/main.gd:2595 | _build_settings | Decision log:  |
+| godot/scripts/main.gd:2597 | _build_settings | Saves:  |
+| godot/scripts/main.gd:2600 | _build_settings | Your files and data |
+| godot/scripts/main.gd:2600 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
 | godot/scripts/setup.gd:16 |  | The valley |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
@@ -4852,13 +4860,13 @@ What the client prints; scripts and testers grep for these (SHOT_SAVED, SHOT_FAI
 | godot/scripts/main.gd:517 | _world_ready | BANDS %s |
 | godot/scripts/main.gd:554 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
 | godot/scripts/main.gd:654 | _save_and_quit | SAVED ON CLOSE tick %d |
-| godot/scripts/main.gd:2040 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
-| godot/scripts/main.gd:2428 | _write_automation_json | AUTOMATION_JSON %s |
-| godot/scripts/main.gd:2455 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
-| godot/scripts/main.gd:2474 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
-| godot/scripts/main.gd:2486 | _do_shot | SHOT_SAVED %s |
-| godot/scripts/main.gd:2514 | _do_footage | FOOTAGE_FRAME %d %s |
-| godot/scripts/main.gd:2516 | _do_footage | FOOTAGE_DONE |
+| godot/scripts/main.gd:2052 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
+| godot/scripts/main.gd:2440 | _write_automation_json | AUTOMATION_JSON %s |
+| godot/scripts/main.gd:2467 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
+| godot/scripts/main.gd:2486 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
+| godot/scripts/main.gd:2498 | _do_shot | SHOT_SAVED %s |
+| godot/scripts/main.gd:2526 | _do_footage | FOOTAGE_FRAME %d %s |
+| godot/scripts/main.gd:2528 | _do_footage | FOOTAGE_DONE |
 
 <!-- END GENERATED: strings-client -->
 
