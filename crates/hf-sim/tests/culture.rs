@@ -148,7 +148,7 @@ fn custom_changes_behavior() {
     );
 }
 
-/// #1324: a custom formed for a community that then leaves the valley should not be formed and
+/// OST-907: a custom formed for a community that then leaves the valley should not be formed and
 /// lapsed over and over from the same Split, every dawn, until the event ages out of the log.
 #[test]
 fn a_custom_is_not_reborn_from_the_same_cause() {
@@ -212,7 +212,7 @@ fn a_custom_is_not_reborn_from_the_same_cause() {
     );
 }
 
-/// #1324: once a rest-day custom lapses (its holders gone), a later death can still found a new
+/// OST-907: once a rest-day custom lapses (its holders gone), a later death can still found a new
 /// one — the fix against re-forming from the same cause must not block a genuinely new cause.
 #[test]
 fn a_new_death_can_found_a_new_rest_day() {

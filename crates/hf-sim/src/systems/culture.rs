@@ -405,7 +405,7 @@ fn has_custom(w: &World, cid: CommunityId, pred: impl Fn(&CustomKind) -> bool) -
 }
 
 /// Whether a custom of this kind, lapsed or not, was already formed from this `origin` event:
-/// a lapsed custom needs a new cause, not the same one re-read from the 30-day log (#1324).
+/// a lapsed custom needs a new cause, not the same one re-read from the 30-day log (OST-907).
 fn formed_from(
     w: &World,
     cid: CommunityId,
