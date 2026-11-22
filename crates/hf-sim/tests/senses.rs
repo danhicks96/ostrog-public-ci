@@ -138,6 +138,44 @@ fn hearing_and_smell_reach_through_walls() {
     assert!(!knows(&w, h, Known::Item(meat)));
 }
 
+/// #1257: `SawFire` required only distance (6 tiles), so a fire behind a wall was "seen"
+/// without sight. Burning tiles 4 tiles away: a wall between blocks the thought, the open
+/// does not.
+#[test]
+fn a_fire_behind_a_wall_is_not_seen() {
+    let mut w = flat(4205);
+    wall(&mut w, 25, 20, 40);
+    let blocked = person(&mut w, SpeciesId::HUMAN, TilePos::new(22, 30, 2));
+    let open = person(&mut w, SpeciesId::HUMAN, TilePos::new(34, 30, 2));
+    w.fires.push(hf_sim::systems::hazards::Fire {
+        pos: TilePos::new(26, 30, 2),
+        left: 1000,
+        since: 0,
+    });
+    w.fires.push(hf_sim::systems::hazards::Fire {
+        pos: TilePos::new(30, 30, 2),
+        left: 1000,
+        since: 0,
+    });
+    w.meta.tick = 0;
+    hf_sim::systems::hazards::step(&mut w);
+    let saw_fire = |w: &World, i: usize| {
+        w.agents[i]
+            .thoughts
+            .list
+            .iter()
+            .any(|x| x.kind == hf_sim::mind::ThoughtKind::SawFire)
+    };
+    assert!(
+        !saw_fire(&w, blocked),
+        "a fire behind a wall, 4 tiles away, is not seen"
+    );
+    assert!(
+        saw_fire(&w, open),
+        "the same fire in the open, 4 tiles away, is seen"
+    );
+}
+
 #[test]
 fn a_nocturnal_people_sleeps_by_day() {
     let noon = 3 * TICKS_PER_DAY + 12 * TICKS_PER_HOUR;

@@ -508,8 +508,13 @@ fn fire_step(w: &mut World) {
             let p = w.agents[i].pos;
             crate::systems::work::displace_from(w, p);
         }
-        let near = burning.iter().any(|b| b.dist(w.agents[i].pos) <= 6);
-        if near {
+        // Within 6 tiles is not enough on its own: a fire behind a wall is not seen, so an
+        // unobstructed line of sight is required too (FIXLOG 2026-11-16 #1257).
+        let seen = burning.iter().any(|b| {
+            b.dist(w.agents[i].pos) <= 6
+                && crate::mind::perception::line_of_sight(&w.grid, w.agents[i].pos, *b)
+        });
+        if seen {
             w.agents[i].thoughts.add(ThoughtKind::SawFire, tick, None);
         }
     }
