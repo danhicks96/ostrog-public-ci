@@ -3391,20 +3391,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:437 | by lightning |
 | systems/hazards.rs:475 | spread |
 | systems/hazards.rs:505 | in the fire |
-| systems/hazards.rs:706 | made for higher ground |
-| systems/hazards.rs:706 | the water was rising |
-| systems/hazards.rs:708 | responded to dangerous water by moving to safety |
-| systems/hazards.rs:709 | they noticed dangerous water |
-| systems/hazards.rs:826 | drowned in the flood |
-| systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1070 | from the cold |
-| systems/hazards.rs:1078 | froze |
-| systems/hazards.rs:1097 | below ground |
-| systems/hazards.rs:1102 | hearth |
-| systems/hazards.rs:1104 | roofed, no hearth |
-| systems/hazards.rs:1108 | roofed, open side |
-| systems/hazards.rs:1114 | tent/nest |
-| systems/hazards.rs:1116 | open |
+| systems/hazards.rs:711 | made for higher ground |
+| systems/hazards.rs:711 | the water was rising |
+| systems/hazards.rs:713 | responded to dangerous water by moving to safety |
+| systems/hazards.rs:714 | they noticed dangerous water |
+| systems/hazards.rs:831 | drowned in the flood |
+| systems/hazards.rs:833 | drowned in the flooded workings |
+| systems/hazards.rs:1075 | from the cold |
+| systems/hazards.rs:1083 | froze |
+| systems/hazards.rs:1102 | below ground |
+| systems/hazards.rs:1107 | hearth |
+| systems/hazards.rs:1109 | roofed, no hearth |
+| systems/hazards.rs:1113 | roofed, open side |
+| systems/hazards.rs:1119 | tent/nest |
+| systems/hazards.rs:1121 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
