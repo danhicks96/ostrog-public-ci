@@ -103,7 +103,7 @@ fn rain_wets_those_out_in_it_and_a_roof_dries_them() {
     assert_eq!(w.agents[i_fire].wet, 0.0, "dried by the hearth");
 }
 
-/// #1262: wet clothes and fur strip heat faster than a dry cold does.
+/// wet clothes and fur strip heat faster than a dry cold does.
 #[test]
 fn soaked_in_the_cold_chills_faster() {
     let mut w = World::generate(1262, GenParams::small());

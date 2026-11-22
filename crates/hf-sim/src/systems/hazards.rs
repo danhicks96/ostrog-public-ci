@@ -1006,8 +1006,8 @@ pub fn cold_step(w: &mut World) {
         let raining = w.weather.sky.wet();
         let rainfall = w.weather.rainfall();
         let a = &mut w.agents[i];
-        // Wetness (#1261): rain soaks whoever is out in it; a roof dries, a hearth dries faster, the open air does not.
-        // No rng. (The ground's own wetness, #1401, is separate.)
+        // Wetness (OST-903): rain soaks whoever is out in it; a roof dries, a hearth dries faster, the open air does not.
+        // No rng.
         if raining && !inside {
             a.wet = (a.wet + 0.35 * rainfall).min(1.0);
         } else if inside || warm_near {
@@ -1025,7 +1025,7 @@ pub fn cold_step(w: &mut World) {
                 (true, false) => 0.5,
                 _ => 1.5,
             };
-            // Wet clothes and fur strip heat faster (#1262): soaked through (wet 1.0) loses
+            // Wet clothes and fur strip heat faster: soaked through (wet 1.0) loses
             // heat at 1.8x the dry rate.
             loss *= 1.0 + 0.8 * a.wet;
             if temp < cold_below - 7.0 {
