@@ -508,3 +508,119 @@ fn limited_flora_preserves_realized_density_against_full_catalogue() {
         );
     }
 }
+
+/// Wild plants read the site as crops do: a berry bush grows fastest
+/// by water on meadow, slower in a crowd, slower still under a mature oak, and slowest dry on
+/// scree.
+#[test]
+fn wild_growth_reads_the_ground() {
+    use hf_sim::world::{Shape, TileFlags};
+    #[derive(Clone, Copy, PartialEq)]
+    enum Site {
+        WetMeadow,
+        Scree,
+        UnderOak,
+        Crowd,
+        Logs,
+    }
+    fn growth_of(kind: PlantKind, site: Site) -> f32 {
+        let mut w = World::generate(3461, GenParams::small());
+        w.flatten(4, 4, 56, 56, 1);
+        w.plants.clear();
+        w.weather.growth_factor = 1.0;
+        let at = w.grid.surface(30, 30);
+        let col = w.grid.col(at.x, at.y);
+        w.grid.biome[col] = Biome::Grassland;
+        let ground = if site == Site::Scree {
+            Material::SCREE
+        } else {
+            Material::MEADOW
+        };
+        w.grid.set(at.offset(0, 0, -1), Tile::solid(ground));
+        w.plants.push(Plant::new(at, kind, 0.1, 0));
+        match site {
+            Site::WetMeadow => {
+                w.grid.set(
+                    at.offset(2, 0, -1),
+                    Tile {
+                        material: Material::WATER,
+                        shape: Shape::Open,
+                        flags: TileFlags(TileFlags::WATER),
+                    },
+                );
+            }
+            Site::UnderOak => {
+                w.plants
+                    .push(Plant::new(at.offset(1, 0, 0), PlantKind::Tree, 1.0, 0))
+            }
+            Site::Crowd => {
+                for (dx, dy) in [(0, 1), (0, -1), (-1, 0), (-1, 1)] {
+                    w.plants
+                        .push(Plant::new(at.offset(dx, dy, 0), PlantKind::Reed, 0.1, 0));
+                }
+            }
+            Site::Logs => {
+                for (dx, dy) in [(0, 1), (0, -1), (-1, 0), (-1, 1)] {
+                    w.plants.push(Plant::new(
+                        at.offset(dx, dy, 0),
+                        PlantKind::FallenLog,
+                        1.0,
+                        0,
+                    ));
+                }
+            }
+            Site::Scree => {}
+        }
+        let before = w.plants[0].growth;
+        for stripe in 0..(5 * TICKS_PER_DAY / 60) {
+            w.meta.tick = stripe * 60;
+            hf_sim::systems::plants::step(&mut w);
+        }
+        w.plants[0].growth - before
+    }
+    let growth_at = |site| growth_of(PlantKind::BerryBush, site);
+    // Dead wood is no crowd: logs around a bush leave it as the bare meadow does.
+    let bare = growth_of(PlantKind::BerryBush, Site::Logs);
+    // A wild carrot reads the ground too: dry scree is slower than dry meadow.
+    let root_scree = growth_of(PlantKind::Root, Site::Scree);
+    let root_logs = growth_of(PlantKind::Root, Site::Logs);
+    assert!(
+        root_logs > root_scree * 1.5,
+        "root {root_logs} vs {root_scree}"
+    );
+    let wet = growth_at(Site::WetMeadow);
+    let crowd = growth_at(Site::Crowd);
+    let oak = growth_at(Site::UnderOak);
+    let scree = growth_at(Site::Scree);
+    assert!(
+        wet > crowd && crowd > oak && oak > scree,
+        "wet {wet}, crowd {crowd}, oak {oak}, scree {scree}"
+    );
+    assert!(bare > crowd * 1.2, "logs {bare} vs crowd {crowd}");
+    assert!(wet >= scree * 1.5, "wet {wet} vs scree {scree}");
+}
+
+/// The chunk-wise water search answers exactly what a tile-by-tile scan of the same window does:
+/// water within three tiles on the plant's level or the one below.
+#[test]
+fn water_near_matches_a_tile_by_tile_scan() {
+    let w = World::generate(1671, GenParams::small());
+    let mut wet = 0;
+    for y in (0..w.grid.height).step_by(3) {
+        for x in (0..w.grid.width).step_by(3) {
+            let p = TilePos::new(x, y, w.grid.ground_z(x, y) + 1);
+            let mut brute = false;
+            for dz in [0, -1] {
+                for dy in -3..=3 {
+                    for dx in -3..=3 {
+                        let q = p.offset(dx, dy, dz);
+                        brute |= w.grid.in_bounds(q) && w.grid.get(q).is_water();
+                    }
+                }
+            }
+            assert_eq!(w.grid.water_near(p, 3), brute, "at {p:?}");
+            wet += usize::from(brute);
+        }
+    }
+    assert!(wet > 0, "the test world has some water to find");
+}

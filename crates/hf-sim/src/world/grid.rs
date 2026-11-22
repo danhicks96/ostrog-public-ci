@@ -197,6 +197,36 @@ impl WorldGrid {
         }
     }
 
+    /// Whether any tile within `r` tiles of `p` on its level or the one below is water. A tile
+    /// in no allocated chunk is synthesized as rock or air, never water, so only the chunks
+    /// that exist are read: a handful of map lookups, not one per tile.
+    pub fn water_near(&self, p: TilePos, r: i32) -> bool {
+        let cs = CHUNK_SIZE as i32;
+        for z in [p.z, p.z - 1] {
+            for cy in (p.y - r).div_euclid(cs)..=(p.y + r).div_euclid(cs) {
+                for cx in (p.x - r).div_euclid(cs)..=(p.x + r).div_euclid(cs) {
+                    let Some(c) = self.chunks.get(&(cx, cy, z)) else {
+                        continue;
+                    };
+                    let x0 = (p.x - r).max(cx * cs);
+                    let x1 = (p.x + r).min(cx * cs + cs - 1);
+                    let y0 = (p.y - r).max(cy * cs);
+                    let y1 = (p.y + r).min(cy * cs + cs - 1);
+                    for y in y0..=y1 {
+                        for x in x0..=x1 {
+                            if c.get((x - cx * cs) as usize, (y - cy * cs) as usize)
+                                .is_water()
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
     /// Allocate the chunk holding `p` (filled from synthesis) if it does not exist.
     pub fn chunk_mut(&mut self, p: TilePos) -> &mut Chunk {
         let (k, _, _) = Self::key(p);
