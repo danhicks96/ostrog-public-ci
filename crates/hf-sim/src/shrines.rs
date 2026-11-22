@@ -237,8 +237,39 @@ fn wear(w: &mut World) {
         };
         st.condition = (st.condition - WEAR_A_DAY).max(0.0);
         if st.condition <= 0.0 {
+            let mat = st.material;
             w.structures
                 .retain(|x| !(x.pos == s.pos && x.kind == StructureKind::Shrine));
+            // OST-1302: a shrine that falls leaves its stone or timber lying on
+            // its tile (a burned one leaves nothing, see `burn`).
+            let (kind, n) = if mat == Material::STONE_BLOCK {
+                (crate::items::ItemKind::RoughStone, 2)
+            } else {
+                (crate::items::ItemKind::Log, 1)
+            };
+            let from = w
+                .communities
+                .iter()
+                .find(|c| c.id == s.community)
+                .map(|c| c.name.clone())
+                .unwrap_or_default();
+            let id = w.create_lone_item(
+                kind,
+                n,
+                crate::items::ItemPlace::Ground(s.pos),
+                0.5,
+                "shrine rubble",
+            );
+            if let Some(it) = w.items.iter_mut().find(|it| it.id == id) {
+                it.material = mat;
+                it.story = Some(Box::new(crate::legend::Story {
+                    maker_name: from.clone(),
+                    made: w.meta.tick,
+                    wear: 1.0,
+                    origin: format!("from the shrine of {from}"),
+                    ..Default::default()
+                }));
+            }
             lose(w, s.community, s.pos, "it fell to ruin, untended");
         }
     }
