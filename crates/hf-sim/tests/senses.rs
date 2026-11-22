@@ -138,7 +138,7 @@ fn hearing_and_smell_reach_through_walls() {
     assert!(!knows(&w, h, Known::Item(meat)));
 }
 
-/// #1257: `SawFire` required only distance (6 tiles), so a fire behind a wall was "seen"
+/// OST-906: `SawFire` required only distance (6 tiles), so a fire behind a wall was "seen"
 /// without sight. Burning tiles 4 tiles away: a wall between blocks the thought, the open
 /// does not.
 #[test]
