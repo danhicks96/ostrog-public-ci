@@ -93,7 +93,12 @@ pub fn choose(w: &World, i: usize) -> Option<(EventId, u64, String)> {
         .map(|x| x.id)
         .collect();
     let carved: std::collections::BTreeSet<EventId> =
-        w.engravings.values().map(|e| e.event).collect();
+        // A craft carving holds a placeholder event id, not a real cause: leave it out.
+        w.engravings
+            .values()
+            .filter(|e| e.craft.is_none())
+            .map(|e| e.event)
+            .collect();
     // The deaths of the restless dead near home (P11): carving one lays them to rest.
     let home = w.communities.iter().find(|c| c.id == cid).map(|c| c.home);
     let haunting: std::collections::BTreeSet<EventId> = w

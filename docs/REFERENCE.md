@@ -1542,22 +1542,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | conditions.rs:51 | the Thirst |
 | conditions.rs:52 | the Stone-sleep |
 | conditions.rs:53 | the true-dream |
-| conditions.rs:225 | their death is carved, and remembered |
-| conditions.rs:303 | {} gave them their rite |
-| conditions.rs:351 | stone-sleep |
-| conditions.rs:360 | the stone that was {name} |
-| conditions.rs:361 | {name}, who touched the underworld's rock in {} |
-| conditions.rs:369 | turned to stone, since they touched the underworld's rock in {} |
-| conditions.rs:465 | for eating of their own dead, which their people hold abhorrent, by {d}'s will |
-| conditions.rs:498 | burned by the sun |
-| conditions.rs:565 | torn apart in the night |
-| conditions.rs:568 | they were gone on the night of the full moon |
-| conditions.rs:581 | a sleeper woke weak, with two small wounds |
-| conditions.rs:615 | for sleeping within the thin place's reach |
-| conditions.rs:655 | {} walking, unrested |
-| conditions.rs:656 | the stone that should not be |
-| conditions.rs:675 | they cry out in their sleep of things no one told them |
-| conditions.rs:718 | bitten in the night |
+| conditions.rs:228 | their death is carved, and remembered |
+| conditions.rs:306 | {} gave them their rite |
+| conditions.rs:354 | stone-sleep |
+| conditions.rs:363 | the stone that was {name} |
+| conditions.rs:364 | {name}, who touched the underworld's rock in {} |
+| conditions.rs:372 | turned to stone, since they touched the underworld's rock in {} |
+| conditions.rs:468 | for eating of their own dead, which their people hold abhorrent, by {d}'s will |
+| conditions.rs:501 | burned by the sun |
+| conditions.rs:568 | torn apart in the night |
+| conditions.rs:571 | they were gone on the night of the full moon |
+| conditions.rs:584 | a sleeper woke weak, with two small wounds |
+| conditions.rs:618 | for sleeping within the thin place's reach |
+| conditions.rs:658 | {} walking, unrested |
+| conditions.rs:659 | the stone that should not be |
+| conditions.rs:678 | they cry out in their sleep of things no one told them |
+| conditions.rs:721 | bitten in the night |
 | creatures.rs:347 | the White Hart |
 | creatures.rs:374 | trophy |
 | creatures.rs:380 | the White Hart's hide |
@@ -1774,8 +1774,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | engine.rs:29 | whimsical |
 | engine.rs:29 | mirre |
 | engine.rs:31 | no deity {other:?}: choose Aun (steady), Hask (relentless) or Mirre (whimsical) |
-| engrave.rs:235 | the way of {}, as {} did it |
-| engrave.rs:272 | Carved by {} in {when}: {} |
+| engrave.rs:240 | the way of {}, as {} did it |
+| engrave.rs:277 | Carved by {} in {when}: {} |
 | expedition.rs:158 | Greywater |
 | expedition.rs:159 | Tollmoor |
 | expedition.rs:160 | Hollin's Rest |
