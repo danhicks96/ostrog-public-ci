@@ -153,7 +153,16 @@ fn an_empty_tally_gives_every_key_as_zero() {
             "grief_days",
             "grief_n",
             "cause_repeat",
-            "lesson_ignored"
+            "lesson_ignored",
+            "glance_major_n",
+            "glance_missed_major",
+            "glance_missed_major_died",
+            "glance_missed_major_captured",
+            "glance_missed_major_broke",
+            "glance_missed_major_exiled",
+            "glance_missed_major_born",
+            "glance_missed_major_paired",
+            "glance_missed_major_returned"
         ],
         "an empty tally keeps the rows' shape"
     );
