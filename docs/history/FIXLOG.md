@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-22: retire the unreachable cave-in event arms
+
+- Symptom: a cave-in is a `Collapse`; the `CaveIn` event variant is never pushed, yet two systems carried unreachable arms for it and a test built it.
+- Fix: remove the dead `CaveIn` arms in learning and hardship, document the variant as kept only for save order, and build `Collapse` rows in the test. No variant is removed.
+- Guard: the phase-1 learning test now exercises the `Collapse` path that actually fires.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
