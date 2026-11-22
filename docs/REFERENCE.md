@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3147 strings (click to open)</summary>
+<details><summary>3163 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3677,32 +3677,48 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:1979 | hunt |
 | systems/work.rs:2112 | set about putting a lamp where they work below |
 | systems/work.rs:2113 | because it is too dark down there to see the rock |
-| view/alive.rs:50 | drowned |
-| view/alive.rs:57 | thirst |
-| view/alive.rs:58 | froze |
-| view/alive.rs:622 | mood_median |
-| view/alive.rs:623 | mood_p10 |
-| view/alive.rs:624 | mood_hi |
-| view/alive.rs:625 | mood_lo |
-| view/alive.rs:626 | mood_clamped |
-| view/alive.rs:627 | mood_spread |
-| view/alive.rs:628 | standing_share |
-| view/alive.rs:629 | unreadable_share |
-| view/alive.rs:630 | work_share |
-| view/alive.rs:631 | talk_share |
-| view/alive.rs:632 | day_distance |
-| view/alive.rs:633 | act_entropy_sd |
-| view/alive.rs:635 | ties_saturated |
-| view/alive.rs:639 | ties_hostile |
-| view/alive.rs:642 | ties_frozen |
-| view/alive.rs:643 | ties_frozen_max_days |
-| view/alive.rs:645 | ties_to_dead_share |
-| view/alive.rs:648 | grief_drop_2d |
-| view/alive.rs:649 | grief_drop_10d |
-| view/alive.rs:650 | grief_days |
-| view/alive.rs:651 | grief_n |
-| view/alive.rs:652 | cause_repeat |
-| view/alive.rs:653 | lesson_ignored |
+| view/alive.rs:46 | died |
+| view/alive.rs:46 | captured |
+| view/alive.rs:46 | broke |
+| view/alive.rs:46 | exiled |
+| view/alive.rs:46 | born |
+| view/alive.rs:46 | paired |
+| view/alive.rs:46 | returned |
+| view/alive.rs:62 | drowned |
+| view/alive.rs:69 | thirst |
+| view/alive.rs:70 | froze |
+| view/alive.rs:750 | mood_median |
+| view/alive.rs:751 | mood_p10 |
+| view/alive.rs:752 | mood_hi |
+| view/alive.rs:753 | mood_lo |
+| view/alive.rs:754 | mood_clamped |
+| view/alive.rs:755 | mood_spread |
+| view/alive.rs:756 | standing_share |
+| view/alive.rs:757 | unreadable_share |
+| view/alive.rs:758 | work_share |
+| view/alive.rs:759 | talk_share |
+| view/alive.rs:760 | day_distance |
+| view/alive.rs:761 | act_entropy_sd |
+| view/alive.rs:763 | ties_saturated |
+| view/alive.rs:767 | ties_hostile |
+| view/alive.rs:770 | ties_frozen |
+| view/alive.rs:771 | ties_frozen_max_days |
+| view/alive.rs:773 | ties_to_dead_share |
+| view/alive.rs:776 | grief_drop_2d |
+| view/alive.rs:777 | grief_drop_10d |
+| view/alive.rs:778 | grief_days |
+| view/alive.rs:779 | grief_n |
+| view/alive.rs:780 | cause_repeat |
+| view/alive.rs:781 | lesson_ignored |
+| view/alive.rs:782 | glance_major_n |
+| view/alive.rs:783 | glance_missed_major |
+| view/alive.rs:786 | glance_missed_major_died |
+| view/alive.rs:787 | glance_missed_major_captured |
+| view/alive.rs:788 | glance_missed_major_broke |
+| view/alive.rs:789 | glance_missed_major_exiled |
+| view/alive.rs:790 | glance_missed_major_born |
+| view/alive.rs:791 | glance_missed_major_paired |
+| view/alive.rs:792 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
@@ -4375,10 +4391,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/look.rs:35 | coat |
 | view/look.rs:36 | workshirt |
 | view/look.rs:37 | vest |
-| view/mod.rs:32 | douse |
-| view/mod.rs:33 | by lightning |
-| view/mod.rs:33 | lightning |
-| view/mod.rs:34 | flare |
+| view/mod.rs:33 | douse |
+| view/mod.rs:34 | by lightning |
+| view/mod.rs:34 | lightning |
+| view/mod.rs:35 | flare |
 | view/music.rs:20 | mourn |
 | view/music.rs:22 | welcome |
 | view/narrate.rs:39 | {} and {} |
