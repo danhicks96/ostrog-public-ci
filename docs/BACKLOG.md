@@ -80,6 +80,63 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 **Acceptance:** In a summary with many repeated suspicions and several distinct raids, the suspicions group without crowding the raids out before folding. Each folded line keeps the newest history ID as its navigation anchor, and stores its earliest and latest event ticks separately. Verify those ticks with out-of-order input, preserve distinct named changes, and check that the timelapse still receives the same raw markers.
 
+### OST-901 · Count births per community, not per valley
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+Raiders and strangers count toward the crowd rule that halves births. Count per community instead. Tracking issue: [#587](https://github.com/danhicks96/ostrog-public-ci/issues/587).
+
+**Acceptance:** Staged community of 30 with a band of 15 near camp: births use the uncrowded chance. Focused tests and hosted CI pass.
+
+### OST-902 · Retire the unreachable cave-in event
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+`CaveIn` is never pushed; collapses are `Collapse`. Remove its dead arms and keep the variant for save order. Tracking issue: [#588](https://github.com/danhicks96/ostrog-public-ci/issues/588).
+
+**Acceptance:** Existing tests build `Collapse` rows; only the definition, narration and two tables mention `CaveIn`; no digest change. Focused tests and hosted CI pass.
+
+### OST-903 · Rain wets people outdoors; a roof or hearth dries them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+Add a saved wetness state per person. Nothing reads it yet. Tracking issue: [#589](https://github.com/danhicks96/ostrog-public-ci/issues/589).
+
+**Acceptance:** After two game-hours of steady rain an outdoor person is at least 0.6 wet, an indoor one 0, and a soaked one beside a lit hearth returns to 0 within two hours. Save round-trip covers it. Focused tests and hosted CI pass.
+
+### OST-904 · Add mood-term keys to the alive report
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+Report what mood is made of across a colony. Report only; simulation digest unchanged. Related tracker: [#179](https://github.com/danhicks96/ostrog-public-ci/issues/179). Tracking issue: [#590](https://github.com/danhicks96/ostrog-public-ci/issues/590).
+
+**Acceptance:** A built person's four mood terms clamp to the stored mood after one needs pass; the report prints the new keys. Focused tests and hosted CI pass.
+
+### OST-905 · Let the last knower of a craft carve it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+An old or ailing sole knower of a craft their community uses carves the way of the craft before it is lost. Tracking issue: [#591](https://github.com/danhicks96/ostrog-public-ci/issues/591).
+
+**Acceptance:** A staged community with one old smelter carves a smelting engraving within five days; with two smelters, none; old saves load with no craft. Focused tests and hosted CI pass.
+
+### OST-906 · Gate fire sightings on line of sight
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+A fire behind a hill is known only by sight or by smoke already observed. Tracking issue: [#592](https://github.com/danhicks96/ostrog-public-ci/issues/592).
+
+**Acceptance:** A fire behind a wall 10 tiles off is responded to by someone with a fresh smoke observation and by no one else. This slice is gated on the smell/smoke observation being available on main. Focused tests and hosted CI pass.
+
+### OST-907 · Do not re-form a custom from the same cause
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+A custom for a dissolved community is formed and lapsed again every dawn. Skip dissolved communities and never re-form from an origin event that already produced one. Tracking issue: [#593](https://github.com/danhicks96/ostrog-public-ci/issues/593).
+
+**Acceptance:** A staged split forms one custom; after everyone leaves there is exactly one formed and one lapsed row over 30 days; a new death can still found a new rest day. Focused tests and hosted CI pass.
+
+
 ### OST-1300 · Hold duties only once grown
 
 **Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
