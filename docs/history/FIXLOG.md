@@ -1,5 +1,61 @@
 # Fix log
 
+## 2026-11-22: a read-only census of wading steps (OST-1305)
+
+- Symptom: how much people wade at fords was unmeasured, so any rule about crossings had no number
+  behind it.
+- Change: `systems::movement::wading_kind` classifies a step as entering water, stepping along
+  water, or neither (landing on dry ground is not a wade); `wading_step` is its yes/no form. The
+  simulation does not call either. `examples/crossing_census.rs` counts wading steps per living
+  person per day (denominator: living people on the map at each day start) and lists the busiest
+  water tiles with distance to the nearest community home, distinct people and days.
+- Guards: `tests/movement.rs` `a_ford_step_is_counted` (one crossing of a one-tile stream is one
+  step) and `a_wider_ford_counts_entry_and_each_step_along_but_not_the_exit`.
+- Measured: a 30-day smoke of seed 1 (about 6 steps per person per day). No multi-seed figures are
+  recorded here; they need the same stepping and denominator to be rerun on this code.
+## 2026-11-22: a read-only census of why a house has no table (OST-1304)
+
+- Symptom: most houses in some seeds never get a table, and nothing measured which test of the
+  settlement step stopped them.
+- Change: `hf_sim::table_census` (read-only, no randomness) names, per house, the first test that
+  stops the table: walls open, no table spot, spot taken or already ordered, four or more open
+  build orders, floor tiles still wanting orders, no planks, or ready to post. The example
+  `table_census <seed> <days>` prints the counts every 25 days. It runs between planner passes,
+  so it sees the orders already posted, not what the next pass will post first.
+- Guards: `tests/table_census.rs` builds a house by hand and checks walls open, floor blocks and
+  no planks, then checks the census against what `systems::settlement::step` actually posts
+  (floor tiles block the table; once the pass's own earlier orders fill the slot or the gate, no
+  table order follows, and a house is counted once).
+- Measured: a 50-day smoke of seed 5 only (one house, one table). The cause for seeds 5 and 8 over
+  200 days is not measured here; the floor-order test is a candidate cause, not a conclusion.
+
+## 2026-11-22: a child with a parent on a caravan is not fostered (OST-1303)
+
+- Symptom: a child whose parent was away on a caravan or journey was taken in as an orphan
+  ("whose parents are gone").
+- Cause: the fostering check looked for a living parent or foster only among people on the map;
+  anyone away is moved to the away list, so they counted as gone.
+- Fix: a living parent or foster who is on the away list with a caravan or journey set counts as
+  present. Someone away with neither (a leaver, a captive) and the dead still count as gone.
+- Guards: `tests/fostering.rs` `a_child_whose_mother_is_away_with_a_caravan_is_not_fostered`,
+  `a_parent_or_foster_away_on_a_journey_is_away_not_gone`, `a_parent_away_for_good_is_gone`.
+- Not measured: how often seeded runs fostered wrongly before the fix. Kin-first carer choice is a
+  separate change.
+
+## 2026-11-22: a shrine that falls to ruin leaves its material (OST-1302)
+
+- Symptom: a worn shrine was removed and its loss recorded, but nothing lay on the tile, so the
+  stone or timber it was built from simply vanished.
+- Cause: the wear step deleted the structure without creating an item.
+- Fix: when wear brings a shrine to nothing it leaves two rough stones (stone shrine) or one log
+  (timber shrine) on its tile, carrying the shrine's material and a story naming its community.
+  A shrine broken down or burned still leaves nothing (those paths are unchanged).
+- Guards: `tests/shrines.rs` `a_fallen_shrine_leaves_its_stones`,
+  `a_fallen_timber_shrine_leaves_a_log_once` (a repeated step adds nothing and the loss is
+  recorded once) and `a_shrine_broken_down_or_burned_leaves_no_rubble`.
+- Not measured: seeded long-run counts of untended losses. This adds items, so simulation digests
+  change for runs where a shrine falls.
+
 ## 2026-11-22: a grown tree's shade eases the heat
 
 - Symptom: a person standing under a grown tree lost comfort in a heat wave exactly as fast as one on bare ground.
@@ -36,6 +92,13 @@
   compared `35c0bff2` with `0204b9d7` across four seeds. All eight soaks passed;
   normalized chronicle and endpoint world hashes matched for every seed. All 59 breakdowns
   in the candidate recorded a known cause.
+
+## 2026-11-22: a good turn repaid is a real meal, and not across a feud
+
+- Symptom: Repaying a good turn moved two hunger numbers within 15 tiles without any food existing, and ignored feuds and souring opinion.
+- Cause: The daily repayment added to one person's hunger and subtracted from another's, with no item involved.
+- Fix: The repayer must be within one tile and not across a feud or in sour opinion with the recipient, and hands over a real food item they carry themselves, whole or split by one as hauling does; the recipient notes it. No food, no repayment. No save-format change.
+- Guard: crates/hf-sim/tests/social.rs covers a carried meal moved with no creation or double use, a split stack, feud and opinion blocks, and distance; it fails without the change.
 
 ## 2026-11-22: the tired no longer choose beds in a flood's way
 
