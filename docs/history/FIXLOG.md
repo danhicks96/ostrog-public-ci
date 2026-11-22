@@ -14,6 +14,29 @@
 - Not measured: seeded long-run counts of untended losses. This adds items, so simulation digests
   change for runs where a shrine falls.
 
+## 2026-11-22: a grown tree's shade eases the heat
+
+- Symptom: a person standing under a grown tree lost comfort in a heat wave exactly as fast as one on bare ground.
+- Cause: the heat branch of `cold_step` never read the plants.
+- Fix: a person at ground level in or beside the column of a living mature tree has their excess heat halved before the comfort and rest drains, and holds `Hot` only if the halved excess is still above 4 C.
+- Guard: `a_tree_shades_from_the_heat` in `tests/hazards.rs` (shaded comfort at least 0.1 higher; only the unshaded person holds `Hot`).
+## 2026-11-22: a drought also blocks storms
+
+- Symptom: A drought cleared rain from the sky but let storms through, so the feed could read that the rain had stopped coming and then report a storm before the drought lifted.
+- Cause: The drought arm of the spell weather adjustment only cleared Sky::Rain.
+- Fix: Clear a storm the same way as rain; a storm's wind without rain is not modelled, so clear is the honest stand-in. No save-format change.
+- Guard: crates/hf-sim/tests/spells.rs::a_drought_lets_no_storm_through forces a storm hour under an active drought and checks the sky reads Clear with no rainfall; it fails without the change.
+## 2026-11-22: a child holds no duty until grown (OST-1300)
+
+- Symptom: `duties::daily` documents duties as held by grown members but checked only that a
+  person was alive and in a community, so a toddler with foraging minutes was named a forager.
+- Cause: the held set was taken from the minutes tally with no age check.
+- Fix: anyone not of age holds no duties (empty held set, no role, no role-left record). Their
+  minutes keep counting and fading, so a grown member takes the role on their first morning of age.
+- Guard: `tests/duties.rs::a_child_who_forages_holds_no_duty_until_of_age` fails without the fix
+  (a six-year-old is given the role); aged to sixteen the same person is forager next morning.
+- Not measured: the long-run count of role rows held by children.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.

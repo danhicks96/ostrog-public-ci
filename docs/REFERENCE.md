@@ -1755,14 +1755,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | delving.rs:70 | harder stone for their walls |
 | delving.rs:71 | the gems and gold of the deep |
 | delving.rs:72 | water |
-| duties.rs:188 | {} ({} hours lately) |
-| duties.rs:199 | building |
-| duties.rs:200 | farming |
-| duties.rs:201 | cooking |
-| duties.rs:202 | mining |
-| duties.rs:203 | hauling |
-| duties.rs:204 | tending the hurt |
-| duties.rs:205 | foraging |
+| duties.rs:194 | {} ({} hours lately) |
+| duties.rs:205 | building |
+| duties.rs:206 | farming |
+| duties.rs:207 | cooking |
+| duties.rs:208 | mining |
+| duties.rs:209 | hauling |
+| duties.rs:210 | tending the hurt |
+| duties.rs:211 | foraging |
 | ecology.rs:96 | starved, the grazing gone |
 | ecology.rs:98 | starved, the game gone |
 | economy.rs:20 | +{cause} |
@@ -3399,14 +3399,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:709 | they noticed dangerous water |
 | systems/hazards.rs:826 | drowned in the flood |
 | systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1070 | from the cold |
-| systems/hazards.rs:1078 | froze |
-| systems/hazards.rs:1097 | below ground |
-| systems/hazards.rs:1102 | hearth |
-| systems/hazards.rs:1104 | roofed, no hearth |
-| systems/hazards.rs:1108 | roofed, open side |
-| systems/hazards.rs:1114 | tent/nest |
-| systems/hazards.rs:1116 | open |
+| systems/hazards.rs:1100 | from the cold |
+| systems/hazards.rs:1108 | froze |
+| systems/hazards.rs:1127 | below ground |
+| systems/hazards.rs:1132 | hearth |
+| systems/hazards.rs:1134 | roofed, no hearth |
+| systems/hazards.rs:1138 | roofed, open side |
+| systems/hazards.rs:1144 | tent/nest |
+| systems/hazards.rs:1146 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
