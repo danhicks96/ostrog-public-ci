@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-22: a hearth cooked at for years gets a cooking pot
+
+- Symptom: A hearth that people cooked at for years never got a cooking pot: the pot kind existed but nothing posted one.
+- Cause: The settlement planner had no path that posted a cooking pot, and the structure cost table had no entry for one.
+- Fix: When a hearth has a cook order open or freshly posted and no cooking pot (finished or ordered) within a tile, and a vessel is in store, the planner posts a pot order on a free neighbouring tile, copper if there is a copper bar in store, else clay; the vessel is its cost. No vessel in store, no order. No save-format change.
+- Guard: crates/hf-sim/tests/hearth_pot.rs covers the positive case and the no-vessel case, and de-duplicates open and finished orders; the positive case fails without the change.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
