@@ -118,3 +118,34 @@ fn a_laid_upper_floor_and_a_figurine_each_raise_beauty() {
     let laid = room_stats(&w, &upper, 2).beauty;
     assert!(laid > bare + 0.29, "{bare} -> {laid}");
 }
+
+#[test]
+fn a_body_awaiting_rites_on_the_floor_counts_as_clutter() {
+    use hf_sim::setup::WorldSetup;
+    use hf_sim::systems::rites::RiteDue;
+    let mut w = World::from_setup(&WorldSetup::new(1));
+    w.structures.clear();
+    w.items.clear();
+    let plan = plan_of(3, 2, 10);
+    assert_eq!(room_stats(&w, &plan, 2).clutter, 0.0);
+    let dead = w.agents[0].id;
+    let community = w.communities[0].id;
+    w.agents[0].pos = plan.floor[0];
+    let due = RiteDue {
+        dead,
+        community,
+        since: w.meta.tick,
+        death: hf_sim::ids::EventId(0),
+        doer: None,
+        away: false,
+    };
+    w.rites_due.push(due);
+    assert_eq!(
+        room_stats(&w, &plan, 2).clutter,
+        0.25,
+        "one body is a quarter of the clutter"
+    );
+    // A body that died away is not on this floor.
+    w.rites_due[0].away = true;
+    assert_eq!(room_stats(&w, &plan, 2).clutter, 0.0);
+}
