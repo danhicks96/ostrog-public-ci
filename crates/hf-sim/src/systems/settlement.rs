@@ -3612,7 +3612,7 @@ pub(crate) fn post(w: &mut World, kind: DesignationKind, pos: TilePos, priority:
 /// Tiles a site may not use: anything built or ordered, plus (optionally) living trees.
 /// Built once per search so the per-tile test is a set lookup, not a scan of every
 /// structure, designation and plant (that scan was 20 ms an hour in the soak).
-fn occupied(w: &World, trees: bool) -> std::collections::BTreeSet<TilePos> {
+pub(crate) fn occupied(w: &World, trees: bool) -> std::collections::BTreeSet<TilePos> {
     let mut set: std::collections::BTreeSet<TilePos> = w.structures.iter().map(|s| s.pos).collect();
     set.extend(w.designations.iter().map(|d| d.pos));
     // Every community's home and the founding site, with a little ground round them: the place

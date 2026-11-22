@@ -776,6 +776,62 @@ pub fn room_stats(w: &World, plan: &HousePlan, sleepers: u32) -> RoomStats {
     }
 }
 
+/// Where one person could put up a lean-to: the nearest tile to `home` within 12 tiles
+/// that is flat, walkable, dry (not water, mud or a flood's way), unbuilt, not ordered, not in a
+/// house plan or on or inside a palisade, and a place `who` does not fear (`place_multiplier`
+/// of 0.8 or more). Pure: scans in (y, x) order and keeps the first of the nearest, so the same
+/// world always gives the same tile. Nothing calls it yet.
+pub fn lean_to_site(w: &World, who: &crate::agents::Agent, home: TilePos) -> Option<TilePos> {
+    use crate::systems::settlement::{occupied, palisade_holds};
+    const REACH: i32 = 12;
+    let g = &w.grid;
+    let taken = occupied(w, true);
+    let now = w.meta.tick;
+    let in_plan = |p: TilePos| {
+        w.communities.iter().any(|c| {
+            c.house_plans
+                .iter()
+                .any(|h| h.floor.contains(&p) || h.doors.contains(&p) || h.upper_floor.contains(&p))
+        })
+    };
+    let on_wall = |p: TilePos| {
+        w.communities.iter().any(|c| {
+            c.palisade
+                .as_ref()
+                .is_some_and(|pal| pal.ring.contains(&p) || palisade_holds(pal, p))
+        })
+    };
+    let mut best: Option<(i32, TilePos)> = None;
+    for y in (home.y - REACH)..=(home.y + REACH) {
+        for x in (home.x - REACH)..=(home.x + REACH) {
+            if x < 1 || y < 1 || x >= g.width - 1 || y >= g.height - 1 {
+                continue;
+            }
+            let gz = g.ground_z(x, y);
+            let p = TilePos::new(x, y, gz + 1);
+            let d = home.dist(p);
+            if d > REACH || best.is_some_and(|b| b.0 <= d) {
+                continue;
+            }
+            let t = g.get(p);
+            if t.shape != Shape::Open || t.is_water() || !g.walkable(p) {
+                continue;
+            }
+            if g.get(TilePos::new(x, y, gz)).material == crate::world::Material::MUD
+                || crate::systems::decide::unsafe_ground(w, p)
+                || taken.contains(&p)
+                || in_plan(p)
+                || on_wall(p)
+                || who.place_multiplier(p, now) < 0.8
+            {
+                continue;
+            }
+            best = Some((d, p));
+        }
+    }
+    best.map(|b| b.1)
+}
+
 #[cfg(test)]
 mod tests {
     use super::{a_room_could_sleep, floor_enough, MAX_ROOM};
