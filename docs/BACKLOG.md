@@ -82,6 +82,14 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 ## Waiting on code or measurement
 
+### OST-015 · List what happened in one colony year
+
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
+
+Add a read-only history query that returns the notable-or-worse events of one colony year, in the order they happened, that the viewer is allowed to know about. Repeated events are folded the same way the history and Catch Up read models fold them. This is a Rust read model only: no bridge, client panel or media change, and no simulation change. It is separate from the Catch Up folding in OST-014 and the panel in OST-011.
+
+**Acceptance:** Stage deaths across several years plus many repeated suspicions in one year. The year query returns only that year's events, oldest first, with the repeats folded to one line, and pages deterministically. Check the first and last tick of the year, a negative year (empty), and a page past the end. Say in the result whether the total counts folded lines or raw rows, and keep rows about undiscovered people out.
+
 ### OST-003 · Compare long-run camera coverage
 
 **State:** Waiting on dependencies · **Developer:** None · **Public PR:** None
