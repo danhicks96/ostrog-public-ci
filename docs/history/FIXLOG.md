@@ -11647,3 +11647,23 @@ stops at 5,340 ticks, the same progressing worker completes all 6,000 with the n
 and continuing-but-too-slow workers fail, lost feed and delivery only after completion fail, and
 unequal duration cannot be reported as a feed parity comparison. These pure tests do not replace
 the canonical native suite. Checkpoint: separate local harness-only commit, validation pending.
+
+## 2026-11-22 OST-004: nobody counted the major events the camera never showed
+Symptom: no key in the alive report said how many Major events that name a person (a death, a
+capture, a breakdown, an exile, a birth, a pairing, a return) the camera director never showed.
+Cause: not a defect but a missing measurement, and the first form of it had two flaws. A camera
+sample taken after an event's game hour (1,200 ticks) could still mark the event shown, because
+samples were matched before old events were settled; and nothing in the tree called the
+measurement headlessly.
+Fix: `AliveTally::observe_major_events` watches each tick's Major events of those seven kinds,
+and `AliveTally::observe_glance` marks one shown only for a sample within 12 tiles of its place, on
+the same level, no more than 1,200 ticks after the event; older events then settle into per-kind
+counts (an event with no place always settles missed). `view::camera_miss::measure` is the
+headless caller: it steps a world, feeds the director the events a viewer is told of, samples its
+suggestion every 600 ticks and feeds both to the tally; `examples/camera_misses.rs` prints the
+raw counts and shares. New report keys: `glance_major_n`, `glance_missed_major` and
+`glance_missed_major_<kind>`. Camera scoring and the simulation are unchanged.
+Guard: `tests/camera_miss.rs::a_sample_after_the_hour_does_not_show_the_event` fails without the
+timing check; the same file covers a death far from and inside the frame, events with no place,
+another level or another severity, and that stepping through `measure` leaves the world digest
+unchanged.
