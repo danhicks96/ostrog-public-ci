@@ -1,5 +1,16 @@
 # Fix log
 
+## 2026-11-22: name how settled a community is (OST-1001)
+
+- Symptom: the communities line gave a cohesion number the player could not read at a glance, so
+  a settlement about to split looked the same as a close one.
+- Cause: the number was shown raw, with no word for its bands.
+- Fix: `society::cohesion_word` names the bands (close from 0.75, uneasy below 0.55, divided
+  below 0.45, nothing between) and the bridge appends the word to the communities line.
+- Guard: `tests/society.rs::cohesion_word_reads_divided_in_the_hour_of_a_split` pins the band
+  edges and reads the word in the hour a hostile-cliques community splits. No simulation draw changes.
+- Not measured: how long a community reads divided before it splits.
+
 ## 2026-11-22: a drought also blocks storms
 
 - Symptom: A drought cleared rain from the sky but let storms through, so the feed could read that the rain had stopped coming and then report a storm before the drought lifted.
