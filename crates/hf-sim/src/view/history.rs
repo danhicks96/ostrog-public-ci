@@ -137,6 +137,48 @@ pub fn major(w: &World, c: &Chronicle, limit: usize) -> Result<Vec<MajorLine>> {
         .collect())
 }
 
+/// What happened in one colony year (OST-1000): the notable-or-worse rows the viewer
+/// may be told of (view::known) between the year's first tick (`epoch + year * TICKS_PER_YEAR`,
+/// docs/TIME.md) and its last, oldest first, told once each by `view::fold::fold` (so thirty
+/// nightly suspicions of one sleeper are one line "x 30"). `year` counts as `Era::year` does
+/// (0 is the HUD's Year 1). Returns the page `offset..offset+limit` of the folded lines and the
+/// total number of folded lines in the year (not raw rows). Colony years only: a negative year is empty.
+pub fn year_record(
+    w: &World,
+    c: &Chronicle,
+    year: i64,
+    offset: usize,
+    limit: usize,
+) -> Result<(Vec<crate::view::fold::Folded>, usize)> {
+    if year < 0 {
+        return Ok((Vec::new(), 0));
+    }
+    let from = w.meta.epoch as i64 + year * TICKS_PER_YEAR as i64;
+    let to = from + TICKS_PER_YEAR as i64;
+    let sql = format!(
+        "SELECT id, tick, detail FROM real_history WHERE severity >= ?1 AND tick >= ?2 \
+         AND tick < ?3{} ORDER BY tick, id",
+        crate::view::known::rows_told_sql(w)
+    );
+    let mut st = c.conn.prepare(&sql)?;
+    let rows = st
+        .query_map(rusqlite::params![Severity::Notable as i64, from, to], |r| {
+            Ok((
+                r.get::<_, i64>(0)?,
+                r.get::<_, i64>(1)? as u64,
+                r.get::<_, String>(2)?,
+            ))
+        })?
+        .collect::<std::result::Result<Vec<_>, _>>()?;
+    let events: Vec<(i64, u64, Event)> = rows
+        .into_iter()
+        .filter_map(|(id, tick, detail)| Some((id, tick, event_from_row(id, tick, &detail)?)))
+        .collect();
+    let folded = crate::view::fold::fold(&events, w);
+    let total = folded.len();
+    Ok((folded.into_iter().skip(offset).take(limit).collect(), total))
+}
+
 #[derive(Clone, Debug)]
 pub struct CustomOrigin {
     pub community: String,
