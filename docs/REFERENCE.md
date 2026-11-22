@@ -3554,21 +3554,21 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/settlement.rs:444 | , and no rock face near to dig into nor ground to dig down |
 | systems/settlement.rs:568 | added to |
 | systems/settlement.rs:580 | marked out |
-| systems/settlement.rs:1585 | gave up on the {} |
-| systems/settlement.rs:1588 | found no place for it on their own ground |
-| systems/settlement.rs:2258 | upper room for {} |
-| systems/settlement.rs:2618 | walls up |
-| systems/settlement.rs:2619 | mended |
-| systems/settlement.rs:2620 | roofed |
-| systems/settlement.rs:2635 | roofed |
-| systems/settlement.rs:2658 | upper room roofed; a way of building upward was learned |
-| systems/settlement.rs:2944 | east |
-| systems/settlement.rs:2945 | west |
-| systems/settlement.rs:2946 | south |
-| systems/settlement.rs:2947 | north |
-| systems/settlement.rs:4264 | a need for another room |
-| systems/settlement.rs:4266 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
-| systems/settlement.rs:4331 | We {label}, as our first house was built. |
+| systems/settlement.rs:1583 | gave up on the {} |
+| systems/settlement.rs:1586 | found no place for it on their own ground |
+| systems/settlement.rs:2256 | upper room for {} |
+| systems/settlement.rs:2616 | walls up |
+| systems/settlement.rs:2617 | mended |
+| systems/settlement.rs:2618 | roofed |
+| systems/settlement.rs:2633 | roofed |
+| systems/settlement.rs:2656 | upper room roofed; a way of building upward was learned |
+| systems/settlement.rs:2942 | east |
+| systems/settlement.rs:2943 | west |
+| systems/settlement.rs:2944 | south |
+| systems/settlement.rs:2945 | north |
+| systems/settlement.rs:4262 | a need for another room |
+| systems/settlement.rs:4264 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
+| systems/settlement.rs:4329 | We {label}, as our first house was built. |
 | systems/society.rs:265 | carried off |
 | systems/society.rs:385 | they hold that other kinds are best kept apart, and most here are {plural} |
 | systems/society.rs:397 | strangers are not taken in |
