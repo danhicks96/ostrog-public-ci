@@ -101,3 +101,55 @@ fn a_cause_missing_from_the_record_is_not_called_no_cause() {
     // A row that does not exist at all.
     assert!(legends::page(&w, &c, "why:12345").contains("Nothing is recorded here."));
 }
+
+#[test]
+fn a_cause_about_an_unfound_person_ends_the_chain_without_naming_them() {
+    let w = World::opening_world(1);
+    let lost = hf_sim::view::known::unfound(&w)[0];
+    let seen = w
+        .agents
+        .iter()
+        .find(|a| {
+            a.species == hf_sim::agents::Species::Person
+                && !hf_sim::view::known::is_unfound(&w, a.id)
+        })
+        .unwrap()
+        .id;
+    let at = TilePos::new(30, 31, 2);
+    let t0 = w.meta.tick;
+    let ev = |id: u32, tick: u64, kind: EventKind| Event {
+        id: EventId(id),
+        tick,
+        at: Some(at),
+        severity: Severity::Notable,
+        kind,
+    };
+    let mut c = Chronicle::in_memory().unwrap();
+    c.record(&[
+        ev(
+            2,
+            t0,
+            EventKind::VerminBite {
+                agent: lost,
+                at,
+                cause: EventId(1),
+            },
+        ),
+        ev(
+            3,
+            t0 + 5,
+            EventKind::Festered {
+                agent: seen,
+                cause: EventId(2),
+            },
+        ),
+    ])
+    .unwrap();
+    let row = c.history_id(EventId(3)).unwrap().unwrap();
+    let (links, end) = causes::chain(&w, &c, row, 6);
+    assert_eq!((links.len(), end), (1, causes::End::Untold), "{links:?}");
+    let lost_name = &w.agents.iter().find(|a| a.id == lost).unwrap().name;
+    let page = legends::page(&w, &c, &format!("why:{row}"));
+    assert!(page.contains("nothing the valley knows"), "{page}");
+    assert!(!page.contains(lost_name.as_str()), "{page}");
+}
