@@ -3,7 +3,7 @@
 use hf_sim::agents::Species;
 use hf_sim::chronicle::Chronicle;
 use hf_sim::events::{Event, EventKind, Severity};
-use hf_sim::ids::EventId;
+use hf_sim::ids::{EventId, ItemId, TilePos};
 use hf_sim::view::summary;
 use hf_sim::World;
 
@@ -264,4 +264,57 @@ fn viewer_hidden_repeats_cannot_change_visible_groups() {
     assert_eq!(detail.earliest_tick, t0 + 30);
     assert_eq!(detail.latest_tick, t0 + 30);
     assert!(detail.line.contains("visible concern"));
+}
+
+/// OST-010: two deaths, a birth and many hauling rows read as "died 2, born 1"; the raw counts
+/// still carry the hauling.
+#[test]
+fn summary_counts_read_as_words() {
+    let w = World::opening_world(3);
+    let a = w.agents[0].id;
+    let mut evs = Vec::new();
+    let mut push = |kind: EventKind, sev: Severity| {
+        evs.push(Event {
+            id: EventId(evs.len() as u32 + 1),
+            tick: w.meta.epoch + 10,
+            at: None,
+            severity: sev,
+            kind,
+        });
+    };
+    for _ in 0..2 {
+        push(
+            EventKind::Died {
+                agent: a,
+                cause: "age".into(),
+            },
+            Severity::Major,
+        );
+    }
+    push(
+        EventKind::Born {
+            agent: a,
+            mother: a,
+            father: None,
+        },
+        Severity::Major,
+    );
+    for _ in 0..40 {
+        push(
+            EventKind::Hauled {
+                agent: a,
+                item: ItemId(1),
+                to: TilePos { x: 0, y: 0, z: 0 },
+            },
+            Severity::Minor,
+        );
+    }
+    let mut c = Chronicle::in_memory().unwrap();
+    c.record(&evs).unwrap();
+    let sum = summary::since(&w, &c, 0, w.meta.epoch + 20, 12).unwrap();
+    assert_eq!(sum.counts_in_words(), "died 2, born 1");
+    assert!(
+        sum.counts.iter().any(|(k, n)| k == "hauled" && *n == 40),
+        "raw counts keep the hauling"
+    );
 }
