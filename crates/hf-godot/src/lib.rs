@@ -711,6 +711,7 @@ fn event_because(
     e: &hf_sim::events::Event,
     line: &str,
 ) -> String {
+    use hf_sim::events::EventKind as K;
     // The recorded cause (the list lives in view::causes, shared with the "why?" chain).
     let cause_id = hf_sim::view::causes::cause_of(&e.kind);
     if let Some(cid) = cause_id {
