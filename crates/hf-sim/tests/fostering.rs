@@ -105,3 +105,37 @@ fn a_parent_away_for_good_is_gone() {
     let gone = |_: &mut hf_sim::agents::Agent| {};
     assert!(fostered_when(&gone, true, false));
 }
+
+#[test]
+fn an_orphan_goes_to_a_grandparent_first() {
+    let mut w = World::generate(1213, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.meta.tick = 40 * TICKS_PER_YEAR;
+    w.rebuild_caches();
+    let ids = w.found_party(4);
+    w.meta.autoplan = false;
+    let idx: Vec<usize> = ids
+        .iter()
+        .map(|id| w.agents.iter().position(|a| a.id == *id).unwrap())
+        .collect();
+    let (child, dead_parent, grand, neighbour) = (idx[0], idx[1], idx[2], idx[3]);
+    let t = w.meta.tick;
+    w.agents[child].born = t as i64 - 6 * TICKS_PER_YEAR as i64;
+    w.agents[child].age_scale = 1.0;
+    w.agents[child].mother = Some(w.agents[dead_parent].id);
+    w.agents[child].father = None;
+    w.agents[dead_parent].alive = false;
+    w.agents[dead_parent].mother = Some(w.agents[grand].id);
+    let (cid, gid) = (w.agents[child].id, w.agents[grand].id);
+    w.agents[grand].relate(cid, 0.3, 0.2, t);
+    w.agents[neighbour].relate(cid, 0.9, 0.5, t);
+    w.meta.tick = t - t % TICKS_PER_DAY + TICKS_PER_DAY + 10 * TICKS_PER_HOUR + 99;
+    hf_sim::fostering::step(&mut w);
+    assert_eq!(w.agents[child].foster, Some(gid));
+    assert!(w
+        .events
+        .pending
+        .iter()
+        .any(|e| matches!(e.kind, EventKind::Fostered { kin: 1, .. })));
+}

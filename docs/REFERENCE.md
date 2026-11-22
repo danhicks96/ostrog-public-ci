@@ -745,7 +745,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | CameBackUnsettled | came_back_unsettled | Notable | {agent} came back from the portal stone unsettled and could not say why. |
 | WouldNotCut | would_not_cut | (computed at the push site) | {agent} stopped at the face and would not cut it, and could not say why. |
 | Frosted | frosted | Notable | A killing frost took {plants} of {community}'s growing crop. |
-| Fostered | fostered | Notable | {by} took in {child}, whose parents are gone. |
+| Fostered | fostered | Notable | {by} took in {child}, whose parents are gone{match kin {                 1 => ", their grandparent",                 2 => ", their aunt or uncle",                 3 => ", their sibling",                 _ => "",             }}. |
 | NewStone | new_stone | Notable | {agent} cut {stone}, harder than any stone the valley has worked. |
 | SocietyFormed | society_formed | Notable | {members} who have no love for {against} have begun to meet by night, apart. |
 | Betrayed | betrayed | Major | {by} told {to} of the {members} who meet against them by night. |
@@ -4404,23 +4404,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:59 | An |
 | view/narrate.rs:60 | {article} {n} |
 | view/narrate.rs:71 | community {} |
-| view/narrate.rs:1829 | It was over {}. |
-| view/narrate.rs:1832 | They broke down {cause}. |
-| view/narrate.rs:1834 | No one could name the cause. |
-| view/narrate.rs:1866 | some {} |
-| view/narrate.rs:1867 | a torch |
-| view/narrate.rs:1868 | a sheaf of grain |
-| view/narrate.rs:1869 | a stone block |
-| view/narrate.rs:1888 | aeiouAEIOU |
-| view/narrate.rs:1889 | {} {what} |
-| view/narrate.rs:1889 | an |
-| view/narrate.rs:1889 | a |
-| view/narrate.rs:1895 | first |
-| view/narrate.rs:1896 | second |
-| view/narrate.rs:1897 | third |
-| view/narrate.rs:1898 | fourth |
-| view/narrate.rs:1899 | fifth |
-| view/narrate.rs:1900 | {n}th |
+| view/narrate.rs:1835 | It was over {}. |
+| view/narrate.rs:1838 | They broke down {cause}. |
+| view/narrate.rs:1840 | No one could name the cause. |
+| view/narrate.rs:1872 | some {} |
+| view/narrate.rs:1873 | a torch |
+| view/narrate.rs:1874 | a sheaf of grain |
+| view/narrate.rs:1875 | a stone block |
+| view/narrate.rs:1894 | aeiouAEIOU |
+| view/narrate.rs:1895 | {} {what} |
+| view/narrate.rs:1895 | an |
+| view/narrate.rs:1895 | a |
+| view/narrate.rs:1901 | first |
+| view/narrate.rs:1902 | second |
+| view/narrate.rs:1903 | third |
+| view/narrate.rs:1904 | fourth |
+| view/narrate.rs:1905 | fifth |
+| view/narrate.rs:1906 | {n}th |
 | view/summary.rs:69 | died |
 | view/summary.rs:70 | born |
 | view/summary.rs:71 | paired |
