@@ -14,6 +14,17 @@
 - Measured: a 30-day smoke of seed 1 (about 6 steps per person per day). No multi-seed figures are
   recorded here; they need the same stepping and denominator to be rerun on this code.
 
+## 2026-11-22: a child holds no duty until grown (OST-1300)
+
+- Symptom: `duties::daily` documents duties as held by grown members but checked only that a
+  person was alive and in a community, so a toddler with foraging minutes was named a forager.
+- Cause: the held set was taken from the minutes tally with no age check.
+- Fix: anyone not of age holds no duties (empty held set, no role, no role-left record). Their
+  minutes keep counting and fading, so a grown member takes the role on their first morning of age.
+- Guard: `tests/duties.rs::a_child_who_forages_holds_no_duty_until_of_age` fails without the fix
+  (a six-year-old is given the role); aged to sixteen the same person is forager next morning.
+- Not measured: the long-run count of role rows held by children.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
@@ -159,6 +170,7 @@
   in `systems/animals.rs` moved to a const `WILD_CAPS` with the same numbers, read by the new
   `pub fn wild_cap`. No sim behaviour changes.
 - **Guard**: `tests/wildlife.rs::wild_cap_reads_the_table`.
+
 ## 2026-11-16 #940: no census showed how often choices act on people the chooser could not see
 
 - **Symptom**: `spoken_for` (`systems/decide.rs`), the Talk checks and the Tend scan read other
@@ -179,6 +191,7 @@
   behind a wall tile counts as unseen (out-of-sight share 1.0); a Tend patient in plain view
   counts as seen (share 0.0).
 - **Commit**: fix-940-knowing-census, from master `88c4dcdf`.
+
 ## 2026-11-17 #1587: caravans found four berries from nowhere on any quiet day
 
 - **Symptom**: on a day with no trouble, `travel_day` pushed `(Berries, 4)` onto the cargo when the
@@ -194,6 +207,7 @@
 - **Guard**: `tests/expedition.rs::nothing_is_gathered_on_a_winter_road` (fails on the old code,
   which added berries in winter) and `a_summer_forest_road_feeds_the_party`.
 - **Not done**: the `road_census` before/after measure was not run here.
+
 ## 2026-11-16 #1020: a fine table and a crude one were the same once set
 
 - **Symptom**: benches make plain, good and fine fittings, but once set the quality was gone.
@@ -364,6 +378,7 @@
   option's `temperament` is 1.32 at industry 0.9 and 0.68 at industry 0.1, matching the
   issue's acceptance criterion).
 - **Commit**: this one.
+
 ## 2026-11-16 #906: the Why? lens could not say a disposition swayed a choice
 
 - **Symptom**: disposition weights (`work_w` in `systems/decide.rs`, `talk_weight`) are folded
@@ -850,6 +865,7 @@
   minutes at 19:00 after `Gather` was chosen for them; row 19's `"loitering:Gather"` reads 0.5
   hours, and the 24 rows sum to the 0.5 hours observed).
 - **Commit**: this one.
+
 ## 2026-11-15 #885: the Why? lens had no place to show what mood did to a choice
 
 - **Symptom**: `why::Considered` carried four score terms (base, emotion, gate, learned) and no
@@ -1570,6 +1586,7 @@
   the no-"of" prefix list.
 - **Guard**: `moving.rs::a_hardship_names_a_drowning_plainly`.
 - **Commit**: see PR for #1217.
+
 ## 2026-11-15 #1564: why a band set down far from its camp never takes a step (staged cause confirmed; seed 4's own cause not: partial)
 
 - **Symptom**: #1543's audit: on seed 4 (Relentless) after day 553, every band set down on the south
@@ -1827,6 +1844,7 @@
 - **Guard**: `test_hud_hides_debug_fields_by_default` (gd_test): off, neither "ms" nor "%"; on, both;
   the bridge gives the deity by name and the strain apart.
 - **Commit**: this branch (`fix/1740-hud-debug-fields`).
+
 ## 2026-11-14 #1505: every soak ran Steady, so no soak showed what the other engines do
 
 - **Symptom**: `ostrog soak` could only pace the soaked world with the Steady engine, so no
@@ -2367,6 +2385,7 @@
 - **Guard**: `test_world_marks_anchor_and_expire` (tile-anchor math, level carry, expiry,
   clear).
 - **Digests change**: none — pure client view.
+
 ## 2026-11-12 #197 WP-08 8.7 case 11: a night raid does not go forever unopposed
 
 - **Symptom**: #197 case 11 feared that with everyone asleep a night raid goes
@@ -2432,6 +2451,7 @@
   (fails on master; a proposer dead on the road still closes it).
 - **Digests**: change where a proposer is away at a daily project round; the four-seed 600-day
   soak on the PR is the evidence.
+
 ## 2026-11-12 #698 WP-05 5.5: the scree pass never fired, because the valleys have no steep ground
 
 - **Symptom**: #687's loose-rock pass changed no tile in generated worlds: tick-0 digests for seeds
@@ -2628,6 +2648,7 @@
   band and its site's `busy` are gone within a day).
 - **Digests**: change only where a leaving member has no path to the edge, which a normal opening
   rarely meets; the four-seed 600-day soak on the PR is the evidence.
+
 ## 2026-11-12 #197 WP-08 8.7: a community whose people were all on the road was recorded as died out
 
 - **Symptom**: #197 case 7 asked whether bands keep camping at an empty first home once the
@@ -2666,6 +2687,7 @@
   preservation. It fails without the new private state and assignment.
 - **Validation**: focused resonance tests, full workspace CI, and a fresh four-seed 600-day soak
   are required before merge; this changes `hf-sim` behavior.
+
 ## 2026-11-12 #715 follow-up: restore additive chronicle tables after loading old saves
 
 - **Symptom**: the #715 built-record view loaded the v2 fixture successfully, then failed on the
@@ -2804,6 +2826,7 @@
 - **Validation**: focused source guard, Rust formatting/check/tests, Godot parser/runtime smoke,
   and exact-head CI are required before merge. The client-only slice uses the recorded four-seed
   soak evidence because it does not modify `crates/hf-sim`.
+
 ## 2026-11-10 #267 WP-05 5.6: the middle stratum splits into sub-bands a shaft can read
 
 - **Symptom**: below the soil, one middle rock (granite, slate or marble under limestone)
@@ -3153,6 +3176,7 @@
   `work/planner.rs` `stockpile_slot` still picks the nearest slot, so hauling may still use an
   outside tile while it has room. Digest effect: hf-sim behaviour changes only for a community
   with a closed wall, so the four-seed 600-day soak on the PR is the evidence it is neutral.
+
 ## 2026-11-09 #376 WP-01 1.4: nav portal edges asked the grid per tile as well
 
 - **Symptom**: after the flood-fill bitmap (#663), the freeze-wave chunk rebuild's other
@@ -3241,6 +3265,7 @@
   unchanged; `tests/threads.rs` checks 1- and 8-thread digests equal; the 12-day 500-person
   profile digest equals master's (`50dde8f7…`), and the fresh four-seed 600-day soaks plus
   exact-head box-ci gate this PR.
+
 ## 2026-11-08 #483 / #489: upper-storey viewer review and storey/inspect clarity
 
 - **Symptom**: when stepping the camera up from the ground floor (`z = 2`) to an upper storey
@@ -3262,6 +3287,7 @@
   `test_upper_storey_dimming_and_person_level_readout` in `tools/gd_test.gd` verify the upper-house
   note, upper-storey ground dimming, and person level readout; 6 review screenshots are recorded
   under `docs/reviews/483-upper-storeys/`.
+
 ## 2026-11-08 #413 (WP-04 slice 4.3): scripted click-only session on a real monitor and UI clickability fixes
 
 - **Symptom**: During the scripted click-only session (`tools/click_session.gd`) on the live 1280x720
@@ -3282,6 +3308,7 @@
   `docs/reviews/413-click-only-session/`.
 - **Guard**: `test_toaster_centering_and_mouse_passthrough` in `tools/gd_test.gd` and
   `tools/click_session.gd`.
+
 ## 2026-11-08 #413 (WP-04 slice 4.2): block inspection water/underground facts and verification screenshots
 
 - **Symptom**: `SimHost::inspect_block` in `crates/hf-godot/src/lib.rs` did not pass through
@@ -3295,6 +3322,7 @@
   without inventing any client-side classifications, and captured water, underground, and surface
   block inspection screenshots under `docs/reviews/413-block-inspect/`.
 - **Guard**: `test_block_inspect_water_and_underground_facts` in `tools/gd_test.gd`.
+
 ## 2026-11-08 #413 (WP-04 slice 4.1): because-lines on feed items and panels, feed-rate control, and first-run hints
 
 - **Symptom**: causal events in the feed (`Drenched`, `Possessed`, `Festered`, `CustomFormed`, etc.)
@@ -3317,6 +3345,7 @@
   `godot/scripts/main.gd`.
 - **Guard**: `feed_events_carry_simulation_backed_because_lines` in `crates/hf-godot/src/lib.rs`
   and `test_readability_feed_rate_because_lines_and_first_run_hints` in `tools/gd_test.gd`.
+
 ## 2026-11-08 #626: Windows release job and publish script updated for off-VPS staging and VPS mirror URLs
 
 - **Symptom**: `tools/release/publish_windows.sh` required a pre-signed manifest at upload time and
@@ -3339,6 +3368,7 @@
   asset paths, and proves that a `github.com` URL in either the manifest or portable
   `launcher.toml` is rejected before `gh release create` runs. `tools/tests/windows_package_test.py`
   verifies the default DEC-1/DEC-3 `launcher.toml` values.
+
 ## 2026-11-08 #626: launcher had no Windows status window on double-click
 
 - **Symptom**: double-clicking `ostrog-launcher.exe` ran as a console-subsystem CLI that
@@ -4493,6 +4523,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Not changed: two people of no community can pair (`life.rs`, `None == None`), which #175
   notes; that is how unaffiliated people live, not a fault.
 - Commit: C62, `git log --grep '#175'`.
+
 ## 2026-10-20 #178: the inspect panel could not be scrolled
 
 - Symptom: for anyone with a full life the panel ran past its 484 px and the lower part (family,
@@ -5384,6 +5415,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   south-west"), unless the community has since taken another name; a child does not wonder.
 - Guard: `tests/left_sites.rs` `a_newcomer_among_the_left_houses_wonders_at_them` (the tale does
   not end with the site's own name) and `a_baby_does_not_wonder_at_the_left_houses`.
+
 ## 2026-10-22 C73: the quarry's shaft was dug a level deeper every time stone was wanted (#264)
 
 - Symptom: seed 7's shaft went from z 2 to z -7 by day 7, seed 1's to z -11, a stair alone in
@@ -5553,6 +5585,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Guard: tests/justice.rs `a_liked_one_who_fights_three_times_makes_amends_and_stays`,
   `a_third_fight_by_one_nobody_likes_is_exile`,
   `two_in_the_record_against_each_other_three_times_are_in_a_feud`; the soaks.
+
 ## 2026-10-23 fix-329: nothing decided what the viewer is told (#329)
 
 - Symptom: a watchable game with no announcement layer: a toast for every major line and
@@ -5566,6 +5599,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   showing is counted into it (x N); a click on a toast looks where it happened. The digest on
   return (ask 6) was already `_show_summary` after time away.
 - Guard: tools/gd_test.gd `test_announcements_follow_the_chosen_mode`.
+
 ## 2026-10-23 fix-237: everyone broke down about every four days (#237)
 
 - Symptom: seed 1's 600-day soaks had 6,000 to 7,400 `broke` rows in a village of 50 to 70,
@@ -5585,6 +5619,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   123, one a head every 28 days.
 - Guard: tests/stress.rs `a_contented_person_with_one_trouble_does_not_break` (9 breaks in
   twenty days before, at most 1 now), `someone_with_nothing_but_trouble_still_breaks`.
+
 ## 2026-10-23 fix-324: people crossed a drop as if the map were flat (#324)
 
 - Symptom: Dan, 2026-10-22: "you don't see people climbing down when they walk across the map
@@ -5600,6 +5635,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   going down a level slips (more often when hurt).
 - Guard: tests/falls.rs `the_floor_dug_away_under_someone_drops_them_and_hurts_them`; the
   README agents() table checks the field count against AGENT_STRIDE.
+
 ## 2026-10-23 fix-369: the 500-person soak measured a famine (#369)
 
 - Symptom: `soak --seed 5 --days 20 --agents 500` ended with 169 alive and 331 laid to rest,
@@ -5615,6 +5651,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   into `provision_piles` and `provide_meals`, shared by both commands. Unprovisioned, the soak
   is unchanged.
 - Guard: the provisioned soak itself (seed 5, 20 days, 500 people: none starve).
+
 ## 2026-10-23 fix-278: nothing gripped the valley for days (#278)
 
 - Symptom: weather changed by the hour and the season; nothing set in over the whole valley
@@ -5627,6 +5664,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   day in thirty from the tenth day, by season, for three to seven days, begun and lifted on
   record (`spell_began`, `spell_lifted`); weather::current leans the day's weather by it.
 - Guard: tests/spells.rs.
+
 ## 2026-10-23 fix-353: a failing valley was not legible as one (#353, asks 3 to 5)
 
 - Symptom: a community dwindling to nothing read as a list of deaths; "died out" said nothing
@@ -5640,6 +5678,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   "died out (11 of starvation, 5 froze, 3 of old age)". Bad landings by draw (asks 1, 2) wait
   on #352's landforms; ask 6 was realm/live.rs already.
 - Guard: tests/fate.rs.
+
 ## 2026-10-23 fix-347: a member could not be away and still belong (#347)
 
 - Symptom: everyone of a community was always present; leaving was for good, except a
@@ -5901,6 +5940,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   the one betrayed 0.4 worse of them; a society lapses when its target dies or it falls under
   two. Acting against the target (the gate opened, #322's own picture) is not here.
 - Guard: tests/societies.rs.
+
 ## 2026-10-23 fix-slept-rough: every night was a night on the ground
 
 - Symptom: at the end of every 600-day soak of C77 and round 7, nearly everyone carried the
@@ -5957,6 +5997,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   and lightning, one tick in 900; both are on record as they come and go. The client draws a
   storm's rain and sounds it (sky 5); fog has no drawing of its own yet.
 - Guard: tests/weather_breadth.rs.
+
 ## 2026-10-23 fix-285: nothing was kept, only hunted (#285, epic #377)
 
 - Symptom: wild goats could be hunted and nothing else; no community kept animals.
@@ -6678,6 +6719,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Guard: `tests/moving.rs::a_completed_wall_project_is_closed_with_the_old_camp` fails on master
   because the project remains open immediately after relocation.
 - Commit: this commit.
+
 ## 2026-10-27 nowhere to keep the observances (#297, epic #376, ask 1)
 
 - Symptom: a community kept its season's observances wherever the one leading them happened to
@@ -9079,6 +9121,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   `test_effects_are_bounded_and_fact_backed`. All failed for their respective defects on the
   reviewed head and pass with the fix.
 - Commit: this PR #518 review-fix commit.
+
 ## 2026-10-30 #493: loose ground can become a desire path
 
 - Symptom: footsteps were counted on every surface, but only grass, meadow and moss could ever
@@ -9322,6 +9365,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   `setup_preview_shows_the_worlds_flora_draw`. Existing biome and habitat guards remain in
   `tests/biomes.rs`.
 - Commit: guard and fix this commit.
+
 ## 2026-10-31 #469 (c143 residual): an off-stripe sleeper notices a bed in sight
 
 - Symptom: an exhausted person with a free bed two tiles away slept on the ground if the bed was
@@ -9411,6 +9455,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   boundary. Reviewed setup and live-inspection captures are in
   `docs/reviews/dispositions-2026-10-31/`; full box-ci and the required simulation soak remain.
 - Commit: guard and fix this commit.
+
 ## 2026-10-31 #428: every dirty region union allocated a fresh parent table
 
 - Symptom: every dirty navigation update allocated and initialized a fresh 409,600-element
@@ -9482,6 +9527,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   Palette/provenance/silhouette checks and reviewed contact/strip evidence accompany the assets.
 - Commit: guard, generator, runtime integration and assets in this commit. Rust/Godot execution
   and integrated-game captures are delegated to box-ci; the full #485 acceptance remains open.
+
 ## 2026-10-31 #428: water perception read the same scan square twice
 
 - Symptom: the c142 500-human provisioned 20-day profile spent 1,900 µs in `perceive` per
@@ -9512,6 +9558,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   the useful fused scan and its guards stay. Both thread counts had preserved the digest, so
   correctness was not the reason for rejection. No further speculative optimization is claimed.
 - Commit: the fused scan and this record ship in their respective commits; the memo is reverted.
+
 ## 2026-10-31 #430: a fresh watch-copy reached Godot without registering SimHost
 
 - Symptom: the first real c145 `watch-copy.cmd` acceptance run installed the correct prebuilt DLL
@@ -9689,6 +9736,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 - Commit: this review-fix commit; focused Rust execution remains assigned to box-ci.
 
 - Commit: PR #476 `e232a46f`.
+
 ## 2026-10-30 #493: crop growth responds to surface material within a biome
 
 - Symptom: crops used only their biome, season and nearby-water factors, so two fields in the
@@ -9872,6 +9920,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   trajectory test (`tests/thin.rs` `they_study_it_and_the_wards_quiet_it`) pins the quiet
   day, which any opening change moves: it is re-measured at day 87 (was 46) and its cap
   raised 75 to 110 with a comment saying so.
+
 ## 2026-10-31 #495 (c145): size tests pin the runt/giant roll instead of inheriting it from world-gen agent ids
 
 - Symptom: on the PR #495 merge head `4d1a444b`, box-ci failed
@@ -9899,6 +9948,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   the fix with the Giant deer and passes after. Pinning `beast` also removes the same latent
   luck from every other size test that uses it (bear/hare blows, door breaking, the giant
   stag's three-wolf claim).
+
 ## 2026-11-01 #308: the curse bag grows — the true-dream
 
 - Symptom: the curse bag held three curses and the restless dead; the thin place did its
@@ -9983,6 +10033,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   hunting. Unequal sharing of one hunter's meat is a real limit and is not addressed here.
 - Fix: the test uses seed 103; its fixture and both assertions are otherwise unchanged.
 - Guard: the test itself.
+
 ## 2026-11-01 PR #501 (c147): qa_1026's arrival fixture pins its camp against worldgen drift
 
 - Symptom: on the `branch 482-cave-mouths` head `f8604d55`, box-ci triage reproduced
@@ -10254,6 +10305,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 - Fix: the test asserts the growth is at most 0.2 ("it has not grown"), not exactly 0.2.
 - Guard: the test itself; a hollow that let the shrub grow still fails it.
 - Commit: this commit.
+
 ## 2026-10-28 round-16-deep: nobody dug below the quarry's two levels (#405, #274)
 
 - Symptom: no cut deeper than two levels in an ordinary game, so the deep's stone, gold and
@@ -10502,6 +10554,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   grounds; the first place again is the same picture at once; a click on a new place returns
   within 100 ms) and the bridge's `valley_previews_are_made_off_the_caller_and_handed_over_once`.
 - Commit: branch fix-559-560-valley-wizard, the commit adding this entry.
+
 ## 2026-11-02 #564: the chosen place on the wizard's world map shows on snow and ice
 
 - Symptom: on the New game wizard's world map the chosen place was a small white square that
@@ -10519,6 +10572,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   brightness from the ground by 0.4 and that it is at least 9 regions across; the old square
   has no such pixels on ice and is 3 across.
 - Commit: this branch's #564 commit.
+
 ## 2026-11-02 #423 (part 1): bodies that are not skeletons are plan kinds
 
 - Symptom: every body plan was a skeleton with a head, a chest and limbs, so there was no way
@@ -10604,6 +10658,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   (fails on master: the `Died` row has the departure tile, and the rite is given with the
   body) and `a_person_with_no_people_dies_on_the_record_as_given_no_rite`.
 - Commit: branch fix-566-burial-records (this commit).
+
 ## 2026-11-02 #562: the Legends map of the present said "the year before the portal"
 
 - Symptom: during play, the Legends year slider at its end labelled the map "the year before
@@ -10831,6 +10886,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   for any gene, and the gene picks the pattern); `palette_check.py` and `provenance_check.py`
   over the 90 new sheets.
 - Commit: this commit (feat-485-animation).
+
 ## 2026-11-02 #582: time-budget tests measured the machine, not the code
 
 - Symptom: with eight agents building on the box (load average 120 to 230 on 32 cores),
@@ -10895,6 +10951,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 - Guard: `tests/night_sleep.rs` `one_who_lay_down_at_seven_sleeps_until_the_night_ends`
   (fails on master: up at 03:00) and `hunger_still_gets_a_rested_sleeper_up_in_the_night`.
 - Commit: branch fix-587-night-awake (this commit).
+
 ## 2026-11-02 #423 (part 2): wounds, wear and death for bodies that are not skeletons
 
 - Symptom: a wound on any body was a cut, bruise or break on a limb or organ that bled and
@@ -10927,6 +10984,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   `hunger_thins_a_swarm_and_the_dry_shrinks_a_soft_body`,
   `a_hunter_does_not_take_a_swarm_at_a_stroke`, `a_form_saves_and_old_bodies_have_none`.
 - Commit: (this commit).
+
 ## 2026-11-02 #486: the valley's food web: grazers on the browse, hunters on the game, crows on carrion
 
 - Symptom: wild kinds lived beside each other but not on each other. Breeding followed a fixed
@@ -11037,6 +11095,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   `the_later_families_are_deterministic`. The suite does not compile on master without the
   new event kinds. `examples/cascade_census.rs` counts each family's steps over 600 days.
 - Commit: this branch's #319 commits.
+
 ## 2026-11-02 #505 (first slice): built walls floated over the ground with no contact shadow
 
 - Symptom: wall tiles were drawn with their own bevels and faces, but the ground beside them was
@@ -11079,6 +11138,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   `a_soft_body_cut_deep_splits_in_two`, `a_soft_body_engulfs_small_creatures_and_not_people`,
   `regrowing_takes_food`, `a_swarm_squeezes_through_a_wooden_wall_and_not_stone`,
   `a_chain_climbs_a_rock_face`.
+
 ## 2026-11-02 #569: what a person notices depends on their skill, task and mood
 
 - Symptom: everyone with the same senses built the same observation ledger from the same scene;
@@ -11211,6 +11271,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   in-place host give the same digest at the same tick; a save through the threaded host loads
   as saved and runs on as the continuous world). Before and after: `tools/perf/main_thread_frames.gd`.
 - Commit: this branch's #603 commit.
+
 ## 2026-11-03 fix-602-duties-heal-forage: nobody became a forager or a healer (#602)
 
 - Symptom: after #454 (duties.rs) no one ever held the forager or healer role in a soak, and
@@ -11647,3 +11708,23 @@ stops at 5,340 ticks, the same progressing worker completes all 6,000 with the n
 and continuing-but-too-slow workers fail, lost feed and delivery only after completion fail, and
 unequal duration cannot be reported as a feed parity comparison. These pure tests do not replace
 the canonical native suite. Checkpoint: separate local harness-only commit, validation pending.
+
+## 2026-11-22 OST-004: nobody counted the major events the camera never showed
+Symptom: no key in the alive report said how many Major events that name a person (a death, a
+capture, a breakdown, an exile, a birth, a pairing, a return) the camera director never showed.
+Cause: not a defect but a missing measurement, and the first form of it had two flaws. A camera
+sample taken after an event's game hour (1,200 ticks) could still mark the event shown, because
+samples were matched before old events were settled; and nothing in the tree called the
+measurement headlessly.
+Fix: `AliveTally::observe_major_events` watches each tick's Major events of those seven kinds,
+and `AliveTally::observe_glance` marks one shown only for a sample within 12 tiles of its place, on
+the same level, no more than 1,200 ticks after the event; older events then settle into per-kind
+counts (an event with no place always settles missed). `view::camera_miss::measure` is the
+headless caller: it steps a world, feeds the director the events a viewer is told of, samples its
+suggestion every 600 ticks and feeds both to the tally; `examples/camera_misses.rs` prints the
+raw counts and shares. New report keys: `glance_major_n`, `glance_missed_major` and
+`glance_missed_major_<kind>`. Camera scoring and the simulation are unchanged.
+Guard: `tests/camera_miss.rs::a_sample_after_the_hour_does_not_show_the_event` fails without the
+timing check; the same file covers a death far from and inside the frame, events with no place,
+another level or another severity, and that stepping through `measure` leaves the world digest
+unchanged.
