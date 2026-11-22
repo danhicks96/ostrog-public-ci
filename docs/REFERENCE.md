@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3147 strings (click to open)</summary>
+<details><summary>3149 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2396,7 +2396,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | shrines.rs:186 | it burned |
 | shrines.rs:188 | it was broken down |
 | shrines.rs:191 | it was left behind at the old camp |
-| shrines.rs:242 | it fell to ruin, untended |
+| shrines.rs:261 | shrine rubble |
+| shrines.rs:269 | from the shrine of {from} |
+| shrines.rs:273 | it fell to ruin, untended |
 | siege.rs:148 | by the besiegers |
 | siege.rs:151 | fighting the besiegers |
 | siege.rs:245 | battered |
