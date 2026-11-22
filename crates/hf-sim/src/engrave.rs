@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::events::{Event, EventKind, Severity};
 use crate::ids::{AgentId, EventId, TilePos};
+use crate::mind::techniques::{Technique, CRAFTS};
 use crate::world::{Material, Shape};
 use crate::world_state::World;
 
@@ -25,6 +26,11 @@ pub struct Engraving {
     pub carved: u64,
     /// 0..1, from the carver's skill.
     pub quality: f32,
+    /// The craft this carving sets down (D37, #1395): set when the carver was the only one
+    /// left who knew it, carving the way of it so it outlasts them. `None` for an ordinary
+    /// event carving, and for every engraving an old save loads with.
+    #[serde(default)]
+    pub craft: Option<Technique>,
 }
 
 /// How much an event is worth carving: what changes a people, not what fills a day. 0: not
@@ -152,6 +158,30 @@ pub fn choose(w: &World, i: usize) -> Option<(EventId, u64, String)> {
     Some((id, tick, crate::view::narrate::line(w, &e)))
 }
 
+/// The craft agent `i` would rather carve than any event (D37, #1395): they alone, of their
+/// community, still know it, their community's own ground uses it, and they are past their
+/// ailing years or already needing care — old enough that the craft could die with them
+/// tonight. The last knower carves the way of it while they still can.
+pub fn craft_to_carve(w: &World, i: usize) -> Option<Technique> {
+    let a = &w.agents[i];
+    let cid = a.community?;
+    let old = a.age_years(w.meta.tick) >= a.ailing_years().0 || a.body.needs_care();
+    if !old {
+        return None;
+    }
+    CRAFTS.iter().copied().find(|&t| {
+        a.techniques.knows(t)
+            && crate::systems::crafts::knowers(w, cid, t) == [i]
+            && crate::systems::crafts::craft_used(w, cid, t)
+    })
+}
+
+/// Whether agent `i` has anything worth carving at all: a craft of their own that would
+/// otherwise die with them, or an event, so a project can be proposed for either.
+pub fn can_carve(w: &World, i: usize) -> bool {
+    craft_to_carve(w, i).is_some() || choose(w, i).is_some()
+}
+
 /// A wall of a house that can take a carving: built of timber or block, standing beside a
 /// floor someone can stand on, not already carved.
 pub fn wall_to_carve(w: &World, near: TilePos, radius: i32) -> Option<TilePos> {
@@ -192,8 +222,18 @@ pub fn wall_to_carve(w: &World, near: TilePos, radius: i32) -> Option<TilePos> {
 
 /// Agent `i` has finished carving the wall at `p`.
 pub fn carve(w: &mut World, i: usize, p: TilePos) {
-    let Some((event, tick, line)) = choose(w, i) else {
+    let craft = craft_to_carve(w, i);
+    let chosen = choose(w, i);
+    if craft.is_none() && chosen.is_none() {
         return;
+    }
+    let (event, tick) = chosen
+        .as_ref()
+        .map(|(e, t, _)| (*e, *t))
+        .unwrap_or((EventId(0), w.meta.tick));
+    let line = match craft {
+        Some(t) => format!("the way of {}, as {} did it", t.name(), w.agents[i].name),
+        None => chosen.map(|(_, _, line)| line).unwrap_or_default(),
     };
     let skill = w.agents[i].skills.level(crate::mind::Skill::Construction);
     let e = Engraving {
@@ -204,6 +244,7 @@ pub fn carve(w: &mut World, i: usize, p: TilePos) {
         carver_name: w.agents[i].name.clone(),
         carved: w.meta.tick,
         quality: (0.3 + skill / 20.0).clamp(0.1, 1.0),
+        craft,
     };
     w.engravings.insert(p, e);
     let now = w.meta.tick;

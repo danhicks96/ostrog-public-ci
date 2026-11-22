@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-22: the last knower carves the way of their craft
+
+- Symptom: when the last knower of a craft died, the craft was lost with nothing left behind.
+- Fix: an old or ailing sole knower of a craft their community uses prefers to carve it. Engravings gain an optional craft field that old saves load as none.
+- Guard: `the_last_smith_carves_the_way_of_smelting` in `tests/engrave.rs`.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.

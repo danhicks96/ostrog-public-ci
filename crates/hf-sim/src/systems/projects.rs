@@ -281,19 +281,36 @@ fn carve(w: &mut World, cid: CommunityId) {
         .filter(|(skill, _)| *skill >= 4.0)
         .collect();
     able.sort_by(|a, b| b.0.total_cmp(&a.0));
-    let best: Option<(f32, usize, EventId, String)> = able.into_iter().find_map(|(skill, i)| {
-        crate::engrave::choose(w, i).map(|(event, _, line)| (skill, i, event, line))
-    });
-    if let Some((_, i, event, line)) = best {
+    // The last knower of a craft their own ground uses, old enough it could die with them,
+    // carves the way of it before anything else (D37, #1395): the craft outlives them.
+    let craft: Option<(usize, crate::mind::Technique)> = able
+        .iter()
+        .find_map(|&(_, i)| crate::engrave::craft_to_carve(w, i).map(|t| (i, t)));
+    let best: Option<(usize, Option<EventId>, String)> = if let Some((i, t)) = craft {
+        Some((
+            i,
+            None,
+            format!("the way of {}, as {} did it", t.name(), w.agents[i].name),
+        ))
+    } else {
+        able.into_iter().find_map(|(_, i)| {
+            crate::engrave::choose(w, i).map(|(event, _, line)| (i, Some(event), line))
+        })
+    };
+    if let Some((i, event, line)) = best {
         let line = line.trim_end_matches('.').to_string();
+        let because = match event {
+            Some(_) => format!("remembers it: {line}"),
+            None => format!("is the last who knows it: {line}"),
+        };
         propose(
             w,
             i,
             cid,
             ProjectKind::Carve,
             "to carve it into a wall".into(),
-            format!("remembers it: {line}"),
-            Some(event),
+            because,
+            event,
         );
     }
 }
