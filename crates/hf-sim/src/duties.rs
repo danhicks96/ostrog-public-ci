@@ -154,7 +154,13 @@ pub fn daily(w: &mut World) {
         for m in a.duties.minutes.iter_mut() {
             *m = *m * KEEPS / 100;
         }
-        let held = of(&a.duties.minutes);
+        // A duty is held only by a grown member: a child's minutes go on counting and fading,
+        // and they take the role on their first morning of age.
+        let held = if a.of_age(tick) {
+            of(&a.duties.minutes)
+        } else {
+            Vec::new()
+        };
         let role = held.first().copied();
         a.duties.held = held;
         if a.role == role {

@@ -1,5 +1,16 @@
 # Fix log
 
+## 2026-11-22: a child holds no duty until grown (OST-1300)
+
+- Symptom: `duties::daily` documents duties as held by grown members but checked only that a
+  person was alive and in a community, so a toddler with foraging minutes was named a forager.
+- Cause: the held set was taken from the minutes tally with no age check.
+- Fix: anyone not of age holds no duties (empty held set, no role, no role-left record). Their
+  minutes keep counting and fading, so a grown member takes the role on their first morning of age.
+- Guard: `tests/duties.rs::a_child_who_forages_holds_no_duty_until_of_age` fails without the fix
+  (a six-year-old is given the role); aged to sixteen the same person is forager next morning.
+- Not measured: the long-run count of role rows held by children.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
