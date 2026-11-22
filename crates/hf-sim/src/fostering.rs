@@ -12,7 +12,13 @@ pub fn step(w: &mut World) {
         return;
     }
     let alive = |w: &World, id: Option<crate::ids::AgentId>| {
-        id.is_some_and(|x| w.agents.iter().any(|a| a.id == x && a.alive))
+        id.is_some_and(|x| {
+            w.agents.iter().any(|a| a.id == x && a.alive)
+                // OST-1303: on a caravan or a journey is away, not gone.
+                || w.overworld.away.iter().any(|a| {
+                    a.id == x && a.alive && (a.caravan.is_some() || a.journey.is_some())
+                })
+        })
     };
     for i in 0..w.agents.len() {
         let a = &w.agents[i];

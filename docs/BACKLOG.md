@@ -74,7 +74,7 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 ### OST-1206 · Repay a good turn with a real meal, and not across a feud
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Sage (SG) · **Public PR:** [#633](https://github.com/danhicks96/ostrog-public-ci/pull/633)
 
 Repaying a good turn moves hunger numbers, not food. Hand over a real meal. Tracking issue: [#610](https://github.com/danhicks96/ostrog-public-ci/issues/610).
 
