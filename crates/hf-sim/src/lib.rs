@@ -81,6 +81,7 @@ pub mod spells;
 pub mod stirring;
 pub mod structures;
 pub mod systems;
+pub mod table_census;
 pub mod taken;
 pub mod thermal;
 pub mod thin;

@@ -120,7 +120,7 @@ pub fn lean(w: &World, wx: &mut crate::systems::weather::Weather) {
         Some(SpellKind::HeatWave) => wx.temperature_c += 9.0,
         Some(SpellKind::ColdSnap) => wx.temperature_c -= 10.0,
         Some(SpellKind::Drought) => {
-            if wx.sky == Sky::Rain {
+            if wx.sky == Sky::Rain || wx.sky == Sky::Storm {
                 wx.sky = Sky::Clear;
             }
             wx.growth_factor *= 0.4;
