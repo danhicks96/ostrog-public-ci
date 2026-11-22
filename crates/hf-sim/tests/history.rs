@@ -326,3 +326,70 @@ fn history_opens_on_the_colony_and_names_the_world() {
         assert!(!words.contains('_'), "{words}");
     }
 }
+
+/// OST-1000: one colony year's record, oldest first, folded, paged.
+#[test]
+fn year_record_pages_one_colony_year() {
+    use hf_sim::events::{Event, EventKind};
+    use hf_sim::ids::{AgentId, EventId};
+    use hf_sim::time::TICKS_PER_YEAR;
+    let w = hf_sim::World::opening_world(7);
+    let epoch = w.meta.epoch;
+    let mut c = Chronicle::in_memory().unwrap();
+    let mut id = 0u32;
+    let mut evs = Vec::new();
+    let mut push = |tick: u64, kind: EventKind| {
+        id += 1;
+        evs.push(Event {
+            id: EventId(id),
+            tick,
+            at: None,
+            severity: Severity::Notable,
+            kind,
+        });
+    };
+    let died = |n: u32| EventKind::Died {
+        agent: AgentId(1000 + n),
+        cause: "age".into(),
+    };
+    for y in [0u64, 1, 2] {
+        push(epoch + y * TICKS_PER_YEAR + 10, died(y as u32));
+    }
+    // Year 1: three more deaths and twenty suspicions of one sleeper (one line when folded).
+    for n in 0..3u32 {
+        push(epoch + TICKS_PER_YEAR + 100 + n as u64 * 10, died(10 + n));
+    }
+    for n in 0..20u64 {
+        push(
+            epoch + TICKS_PER_YEAR + 50 + n,
+            EventKind::Suspected {
+                by: AgentId(2000 + n as u32),
+                of: AgentId(1),
+                because: "x".into(),
+            },
+        );
+    }
+    c.record(&evs).unwrap();
+    let (all, total) = history::year_record(&w, &c, 1, 0, 100).unwrap();
+    assert_eq!(total, 5, "1 + 3 deaths and one folded suspicion line");
+    assert_eq!(all.len(), 5);
+    assert!(all.windows(2).all(|p| p[0].first_tick <= p[1].first_tick));
+    assert!(all.iter().all(
+        |f| f.first_tick >= epoch + TICKS_PER_YEAR && f.last_tick < epoch + 2 * TICKS_PER_YEAR
+    ));
+    assert_eq!(all.iter().filter(|f| f.count == 20).count(), 1, "folded");
+    let (page, t2) = history::year_record(&w, &c, 1, 1, 2).unwrap();
+    assert_eq!((page.len(), t2), (2, 5));
+    assert_eq!(page[0], all[1]);
+    assert_eq!(history::year_record(&w, &c, 1, 4, 10).unwrap().0.len(), 1);
+    assert_eq!(history::year_record(&w, &c, 0, 0, 10).unwrap().1, 1);
+    // Past the end of the year: no lines, the total unchanged; a negative year is empty.
+    assert_eq!(
+        history::year_record(&w, &c, 1, 5, 10).unwrap(),
+        (Vec::new(), 5)
+    );
+    assert_eq!(
+        history::year_record(&w, &c, -1, 0, 10).unwrap(),
+        (Vec::new(), 0)
+    );
+}
