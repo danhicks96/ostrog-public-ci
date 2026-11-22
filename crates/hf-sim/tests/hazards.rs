@@ -232,7 +232,7 @@ fn cold_without_clothes_hurts() {
 
 #[test]
 fn a_tree_shades_from_the_heat() {
-    // #1728: a person under a mature oak's canopy should bake less than one on open grass.
+    // OST-900: a person under a mature oak's canopy should bake less than one on open grass.
     let mut w = meadow(1728);
     let ids = w.found_party(2);
     w.meta.autoplan = false;

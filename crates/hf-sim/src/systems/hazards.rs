@@ -981,7 +981,7 @@ pub fn cold_step(w: &mut World) {
         .filter(|a| a.alive && a.species == Species::Person)
         .map(|a| a.pos)
         .collect();
-    // Shade: the columns of living mature trees (#1728). A person stood on the ground under
+    // Shade: the columns of living mature trees (OST-900). A person stood on the ground under
     // one of these, or its eight neighbours, is out of the sun even outdoors.
     let tree_columns: std::collections::BTreeSet<(i32, i32)> = w
         .plants
@@ -1043,7 +1043,7 @@ pub fn cold_step(w: &mut World) {
         }
         if temp > hot_above && !inside && !a.activity.is_asleep() {
             // Heat wears them down: comfort goes, and far above their comfort, rest too.
-            // A grown tree's canopy is shade, even outdoors (#1728, 2026-11-15): halve the
+            // A grown tree's canopy is shade, even outdoors (OST-900): halve the
             // degrees over comfort when standing on the ground under one.
             let shaded = p.z == w.grid.ground_z(p.x, p.y) + 1
                 && [
