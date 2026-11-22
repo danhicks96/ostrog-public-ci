@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3163 strings (click to open)</summary>
+<details><summary>3165 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2396,7 +2396,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | shrines.rs:186 | it burned |
 | shrines.rs:188 | it was broken down |
 | shrines.rs:191 | it was left behind at the old camp |
-| shrines.rs:242 | it fell to ruin, untended |
+| shrines.rs:261 | shrine rubble |
+| shrines.rs:269 | from the shrine of {from} |
+| shrines.rs:273 | it fell to ruin, untended |
 | siege.rs:148 | by the besiegers |
 | siege.rs:151 | fighting the besiegers |
 | siege.rs:245 | battered |
@@ -3391,20 +3393,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:437 | by lightning |
 | systems/hazards.rs:475 | spread |
 | systems/hazards.rs:505 | in the fire |
-| systems/hazards.rs:711 | made for higher ground |
-| systems/hazards.rs:711 | the water was rising |
-| systems/hazards.rs:713 | responded to dangerous water by moving to safety |
-| systems/hazards.rs:714 | they noticed dangerous water |
-| systems/hazards.rs:831 | drowned in the flood |
-| systems/hazards.rs:833 | drowned in the flooded workings |
-| systems/hazards.rs:1075 | from the cold |
-| systems/hazards.rs:1083 | froze |
-| systems/hazards.rs:1102 | below ground |
-| systems/hazards.rs:1107 | hearth |
-| systems/hazards.rs:1109 | roofed, no hearth |
-| systems/hazards.rs:1113 | roofed, open side |
-| systems/hazards.rs:1119 | tent/nest |
-| systems/hazards.rs:1121 | open |
+| systems/hazards.rs:706 | made for higher ground |
+| systems/hazards.rs:706 | the water was rising |
+| systems/hazards.rs:708 | responded to dangerous water by moving to safety |
+| systems/hazards.rs:709 | they noticed dangerous water |
+| systems/hazards.rs:826 | drowned in the flood |
+| systems/hazards.rs:828 | drowned in the flooded workings |
+| systems/hazards.rs:1100 | from the cold |
+| systems/hazards.rs:1108 | froze |
+| systems/hazards.rs:1127 | below ground |
+| systems/hazards.rs:1132 | hearth |
+| systems/hazards.rs:1134 | roofed, no hearth |
+| systems/hazards.rs:1138 | roofed, open side |
+| systems/hazards.rs:1144 | tent/nest |
+| systems/hazards.rs:1146 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
