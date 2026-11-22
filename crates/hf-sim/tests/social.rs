@@ -2,10 +2,27 @@
 //! make it up.
 
 use hf_sim::events::{EventKind, Severity};
-use hf_sim::ids::TilePos;
+use hf_sim::ids::{AgentId, TilePos};
+use hf_sim::items::{Item, ItemKind, ItemPlace};
 use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::world::gen::GenParams;
 use hf_sim::World;
+
+/// A meal `who` carries, for the real-food-sharing tests.
+fn carry_meal(w: &mut World, who: AgentId) -> hf_sim::ids::ItemId {
+    let id = w.alloc_item_id();
+    w.items.push(Item {
+        id,
+        kind: ItemKind::Meal,
+        count: 1,
+        place: ItemPlace::Carried(who),
+        quality: 0.8,
+        material: hf_sim::world::Material::AIR,
+        story: None,
+        rot: 0.0,
+    });
+    id
+}
 
 fn party(n: usize) -> (World, Vec<usize>) {
     let mut w = World::generate(2951, GenParams::small());
@@ -84,21 +101,116 @@ fn a_bad_name_travels_by_talk() {
 }
 
 #[test]
-fn a_good_turn_is_repaid_when_the_one_owed_goes_hungry() {
+fn repaying_a_good_turn_moves_a_real_meal() {
     let (mut w, p) = party(3);
     let (healer, patient) = (w.agents[p[0]].id, w.agents[p[1]].id);
     happen(&mut w, EventKind::Tended { healer, patient });
     assert!(w.agents[p[1]].owes.iter().any(|x| x.0 == healer));
     w.agents[p[0]].needs.hunger = 0.1;
     w.agents[p[1]].needs.hunger = 0.9;
+    w.agents[p[0]].pos = w.agents[p[1]].pos;
+    w.items.clear();
+    let meal = carry_meal(&mut w, patient);
     w.meta.tick = TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 41;
     hf_sim::social::step(&mut w);
-    assert!(w.agents[p[0]].needs.hunger > 0.3);
+    assert_eq!(
+        w.items.iter().find(|it| it.id == meal).map(|it| it.place),
+        Some(ItemPlace::Carried(healer)),
+        "the meal moved from the giver to the one who was owed"
+    );
+    assert_eq!(
+        w.agents[p[1]].needs.hunger, 0.9,
+        "no hunger number is set directly"
+    );
+    assert_eq!(
+        w.agents[p[0]].needs.hunger, 0.1,
+        "no hunger number is set directly"
+    );
     assert!(w
         .events
         .pending
         .iter()
         .any(|e| matches!(e.kind, EventKind::Repaid { by, to } if by == patient && to == healer)));
+}
+
+#[test]
+fn no_good_turn_is_repaid_across_a_feud() {
+    let (mut w, p) = party(3);
+    let (healer, patient) = (w.agents[p[0]].id, w.agents[p[1]].id);
+    happen(&mut w, EventKind::Tended { healer, patient });
+    hf_sim::feuds::begin(&mut w, healer, patient);
+    w.agents[p[0]].needs.hunger = 0.1;
+    w.agents[p[1]].needs.hunger = 0.9;
+    w.agents[p[0]].pos = w.agents[p[1]].pos;
+    w.items.clear();
+    let meal = carry_meal(&mut w, patient);
+    w.meta.tick = TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 41;
+    hf_sim::social::step(&mut w);
+    assert_eq!(
+        w.items.iter().find(|it| it.id == meal).map(|it| it.place),
+        Some(ItemPlace::Carried(patient)),
+        "nothing is shared across a feud"
+    );
+    assert!(!w
+        .events
+        .pending
+        .iter()
+        .any(|e| matches!(e.kind, EventKind::Repaid { .. })));
+}
+
+#[test]
+fn with_no_food_to_hand_nothing_is_repaid() {
+    let (mut w, p) = party(3);
+    let (healer, patient) = (w.agents[p[0]].id, w.agents[p[1]].id);
+    happen(&mut w, EventKind::Tended { healer, patient });
+    w.agents[p[0]].needs.hunger = 0.1;
+    w.agents[p[1]].needs.hunger = 0.9;
+    w.agents[p[0]].pos = w.agents[p[1]].pos;
+    w.items.clear();
+    w.meta.tick = TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 41;
+    hf_sim::social::step(&mut w);
+    assert!(
+        w.agents[p[1]].owes.iter().any(|x| x.0 == healer),
+        "the debt stands"
+    );
+    assert!(!w
+        .events
+        .pending
+        .iter()
+        .any(|e| matches!(e.kind, EventKind::Repaid { .. })));
+}
+
+#[test]
+fn no_meal_jumps_across_the_camp() {
+    let (mut w, p) = party(3);
+    let (healer, patient) = (w.agents[p[0]].id, w.agents[p[1]].id);
+    happen(&mut w, EventKind::Tended { healer, patient });
+    w.agents[p[0]].needs.hunger = 0.1;
+    w.agents[p[1]].needs.hunger = 0.9;
+    let here = w.agents[p[1]].pos;
+    w.agents[p[0]].pos = TilePos::new(here.x + 10, here.y, here.z);
+    w.items.clear();
+    let meal = carry_meal(&mut w, patient);
+    w.meta.tick = TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 41;
+    hf_sim::social::step(&mut w);
+    assert_eq!(
+        w.items.iter().find(|it| it.id == meal).map(|it| it.place),
+        Some(ItemPlace::Carried(patient)),
+        "no meal jumps 10 tiles across the camp"
+    );
+    assert!(!w
+        .events
+        .pending
+        .iter()
+        .any(|e| matches!(e.kind, EventKind::Repaid { .. })));
+    // At 1 tile, the same debt is repaid with a real meal.
+    w.agents[p[0]].pos = TilePos::new(here.x + 1, here.y, here.z);
+    hf_sim::social::step(&mut w);
+    assert_eq!(
+        w.items.iter().find(|it| it.id == meal).map(|it| it.place),
+        Some(ItemPlace::Carried(healer)),
+        "at 1 tile the meal is shared"
+    );
 }
 
 #[test]
