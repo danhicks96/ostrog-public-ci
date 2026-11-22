@@ -14,6 +14,14 @@ pub struct Summary {
     pub major: Vec<(i64, u64, String)>,
 }
 
+impl Summary {
+    /// The counts in words, the kinds worth a line only ("died 2, born 1"); routine work kinds
+    /// (hauled, harvested) are left out. `counts` itself is unchanged for existing consumers.
+    pub fn counts_in_words(&self) -> String {
+        crate::view::history::summary(&self.counts)
+    }
+}
+
 /// Only rows the viewer may be told of (view::known).
 pub fn since(
     w: &World,

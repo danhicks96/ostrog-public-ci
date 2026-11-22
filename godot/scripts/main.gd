@@ -1764,11 +1764,10 @@ func _show_summary(from_tick: int) -> void:
 		return
 	var ticks: int = int(d["to"]) - int(d["from"])
 	var s := "[b]While you were away[/b]  (%.1f game-hours)\n\n" % (ticks / 1200.0)
-	var counts: Dictionary = d["counts"]
-	var parts := []
-	for k in counts.keys():
-		parts.append("%s %d" % [k, counts[k]])
-	s += ", ".join(parts) + "\n\n"
+	# Counts in words, routine work left out; `counts` stays for the timelapse.
+	var words: String = d.get("counts_words", "")
+	if words != "":
+		s += words + "\n\n"
 	for l in d["lines"]:
 		s += l + "\n"
 	s += "\n[color=#9a9a9a]H or Esc to close[/color]"

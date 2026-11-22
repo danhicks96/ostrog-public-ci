@@ -3689,6 +3689,7 @@ impl SimHost {
             max_major,
         ) {
             Ok(sum) => {
+                let counts_words = sum.counts_in_words();
                 let mut counts = VarDictionary::new();
                 for (k, n) in sum.counts {
                     counts.set(&GString::from(k.as_str()), n);
@@ -3717,6 +3718,7 @@ impl SimHost {
                     }
                 }
                 d.set("counts", &counts);
+                d.set("counts_words", &GString::from(counts_words.as_str()));
                 d.set("lines", &lines);
                 d.set("from", from_tick);
                 d.set("to", to as i64);
