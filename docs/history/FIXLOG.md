@@ -13,7 +13,7 @@
   is a floor (upper levels) and when the tile below it is built solid (ground-level houses). Only
   lit lamps and hearths (`active`) count as light.
 - Guards: `tests/rooms.rs`: bare hut below furnished house with clutter lowering the score, laid
-  ground floor, laid upper floor and figurine, and an unlit lamp giving no light.
+  ground floor, laid upper floor and figurine, a body awaiting rites counting as clutter, and an unlit lamp giving no light.
 
 ## 2026-11-22: a child holds no duty until grown (OST-1300)
 
