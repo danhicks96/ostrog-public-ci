@@ -269,3 +269,25 @@ fn a_child_who_forages_holds_no_duty_until_of_age() {
     duties::daily(&mut w);
     assert_eq!(w.agents[i].role, Some(Role::Forager));
 }
+
+/// Saves are named-field MessagePack, so a save written before the role-switch counter existed
+/// (no `challenger` key) loads with the counter empty.
+#[test]
+fn an_older_save_without_the_challenger_counter_loads() {
+    #[derive(serde::Serialize)]
+    struct Before {
+        minutes: Vec<u32>,
+        held: Vec<Role>,
+    }
+    let old = Before {
+        minutes: vec![300, 0, 0, 0, 0, 0, 0],
+        held: vec![Role::Forager],
+    };
+    let mut bytes = Vec::new();
+    let mut ser = rmp_serde::Serializer::new(&mut bytes).with_struct_map();
+    serde::Serialize::serialize(&old, &mut ser).unwrap();
+    let d: duties::Duties = rmp_serde::from_slice(&bytes).unwrap();
+    assert_eq!(d.minutes, old.minutes);
+    assert_eq!(d.held, old.held);
+    assert_eq!(d.challenger, None);
+}
