@@ -1455,9 +1455,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:503 | someone |
 | accounts.rs:513 | {} and {} more |
 | accounts.rs:517 |  Said: {words} ({by}). |
-| agents.rs:448 | fur |
-| agents.rs:449 | feathers |
-| agents.rs:450 | scales |
+| agents.rs:449 | fur |
+| agents.rs:450 | feathers |
+| agents.rs:451 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -3397,14 +3397,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:709 | they noticed dangerous water |
 | systems/hazards.rs:826 | drowned in the flood |
 | systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1070 | from the cold |
-| systems/hazards.rs:1078 | froze |
-| systems/hazards.rs:1097 | below ground |
-| systems/hazards.rs:1102 | hearth |
-| systems/hazards.rs:1104 | roofed, no hearth |
-| systems/hazards.rs:1108 | roofed, open side |
-| systems/hazards.rs:1114 | tent/nest |
-| systems/hazards.rs:1116 | open |
+| systems/hazards.rs:1080 | from the cold |
+| systems/hazards.rs:1088 | froze |
+| systems/hazards.rs:1107 | below ground |
+| systems/hazards.rs:1112 | hearth |
+| systems/hazards.rs:1114 | roofed, no hearth |
+| systems/hazards.rs:1118 | roofed, open side |
+| systems/hazards.rs:1124 | tent/nest |
+| systems/hazards.rs:1126 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
