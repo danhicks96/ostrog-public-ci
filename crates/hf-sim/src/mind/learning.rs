@@ -17,21 +17,27 @@ pub const MAX_ORIGINS: usize = 6;
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum ObservationKind {
     WaterDepth,
+    /// Reserved: never written; wire when currents exist as simulation state (rule 10).
     WaterCurrent,
     Flooding,
     Wetness,
     Saturation,
+    /// Reserved: never written; wire when pressure exists as simulation state (rule 10).
     Pressure,
     Heat,
     Cold,
     Fire,
     Smoke,
     Spoilage,
+    /// Reserved: never written; wire when food exposure is tracked as state.
     FoodExposure,
     ResourceDepletion,
+    /// Reserved: never written; wire when plant regrowth is read from state.
     Regrowth,
     StructuralWeakness,
+    /// Reserved: never written; wire when shelter quality is read from state.
     Shelter,
+    /// Reserved: never written; wire when a cue needs a catch-all.
     Other,
     /// What the ground would do for crops, read by one who knows farming (#569).
     Soil,
@@ -40,6 +46,17 @@ pub enum ObservationKind {
     /// Why a building site is stuck, read by one who knows building (#569).
     Joint,
 }
+
+/// Cues no code writes yet. Each wiring slice removes its kind here and from the test's
+/// hand-kept list of written kinds.
+pub const RESERVED: &[ObservationKind] = &[
+    ObservationKind::WaterCurrent,
+    ObservationKind::Pressure,
+    ObservationKind::FoodExposure,
+    ObservationKind::Regrowth,
+    ObservationKind::Shelter,
+    ObservationKind::Other,
+];
 
 /// What expertise read into a cue (#569): detection alone says a cue was there; a reading says
 /// what the person made of it. Only the noticing person's own reading, from the world as it is.
@@ -242,6 +259,31 @@ fn add_origin(lesson: &mut Lesson, id: EventId) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn reserved_cues_are_listed() {
+        // Hand-kept: the kinds that perception or learning write. Update with each wiring slice.
+        let written = [
+            ObservationKind::WaterDepth,
+            ObservationKind::Flooding,
+            ObservationKind::Wetness,
+            ObservationKind::Saturation,
+            ObservationKind::Heat,
+            ObservationKind::Cold,
+            ObservationKind::Fire,
+            ObservationKind::Smoke,
+            ObservationKind::Spoilage,
+            ObservationKind::ResourceDepletion,
+            ObservationKind::StructuralWeakness,
+            ObservationKind::Soil,
+            ObservationKind::Tracks,
+            ObservationKind::Joint,
+        ];
+        assert_eq!(RESERVED.len(), 6);
+        for k in RESERVED {
+            assert!(!written.contains(k), "{k:?} is written but listed reserved");
+        }
+    }
 
     fn at(x: i32) -> TilePos {
         TilePos::new(x, 2, 1)
