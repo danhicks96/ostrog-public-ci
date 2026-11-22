@@ -4084,67 +4084,67 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/fold.rs:94 | s |
 | view/history.rs:36 | Y{} day {} {:02}:{:02} |
 | view/history.rs:82 | Year {} |
-| view/history.rs:225 | realm_ |
-| view/history.rs:241 | Up to 99 years before the portal |
-| view/history.rs:243 | {} to {} years before the portal |
-| view/history.rs:310 | born |
-| view/history.rs:310 | born |
-| view/history.rs:311 | died |
-| view/history.rs:311 | old_died |
-| view/history.rs:311 | died |
-| view/history.rs:312 | arrived |
-| view/history.rs:312 | arrived |
-| view/history.rs:313 | left |
-| view/history.rs:313 | left |
-| view/history.rs:314 | joined |
-| view/history.rs:314 | joined |
-| view/history.rs:315 | turned_away |
-| view/history.rs:315 | turned away |
-| view/history.rs:316 | built |
-| view/history.rs:316 | built |
-| view/history.rs:317 | split |
-| view/history.rs:317 | split |
-| view/history.rs:318 | trade |
-| view/history.rs:318 | trade |
-| view/history.rs:319 | custom_formed |
-| view/history.rs:319 | custom formed |
-| view/history.rs:320 | caravan_returned |
-| view/history.rs:320 | caravan returned |
-| view/history.rs:321 | caravan_lost |
-| view/history.rs:321 | caravan lost |
-| view/history.rs:322 | hunted |
-| view/history.rs:322 | hunted |
-| view/history.rs:323 | cave_in |
-| view/history.rs:323 | cave in |
-| view/history.rs:324 | collapse |
-| view/history.rs:324 | collapse |
-| view/history.rs:325 | paired |
-| view/history.rs:325 | paired |
-| view/history.rs:326 | old_founded |
-| view/history.rs:326 | founded |
-| view/history.rs:327 | old_trouble |
-| view/history.rs:327 | trouble |
-| view/history.rs:328 | old_ended |
-| view/history.rs:328 | left empty |
-| view/history.rs:329 | old_answered |
-| view/history.rs:329 | answered |
-| view/history.rs:330 | lived |
-| view/history.rs:330 | lives lived |
-| view/history.rs:333 | realm_founded |
-| view/history.rs:333 | settlements founded |
-| view/history.rs:334 | realm_ended |
-| view/history.rs:334 | settlements emptied |
-| view/history.rs:335 | realm_polity_founded |
-| view/history.rs:335 | realms rose |
-| view/history.rs:336 | realm_polity_ended |
-| view/history.rs:336 | realms fell |
-| view/history.rs:337 | realm_succeeded |
-| view/history.rs:337 | new rulers |
-| view/history.rs:338 | realm_plague |
-| view/history.rs:338 | plague |
-| view/history.rs:339 | realm_famine |
-| view/history.rs:339 | famine |
-| view/history.rs:347 | {w} {n} |
+| view/history.rs:267 | realm_ |
+| view/history.rs:283 | Up to 99 years before the portal |
+| view/history.rs:285 | {} to {} years before the portal |
+| view/history.rs:352 | born |
+| view/history.rs:352 | born |
+| view/history.rs:353 | died |
+| view/history.rs:353 | old_died |
+| view/history.rs:353 | died |
+| view/history.rs:354 | arrived |
+| view/history.rs:354 | arrived |
+| view/history.rs:355 | left |
+| view/history.rs:355 | left |
+| view/history.rs:356 | joined |
+| view/history.rs:356 | joined |
+| view/history.rs:357 | turned_away |
+| view/history.rs:357 | turned away |
+| view/history.rs:358 | built |
+| view/history.rs:358 | built |
+| view/history.rs:359 | split |
+| view/history.rs:359 | split |
+| view/history.rs:360 | trade |
+| view/history.rs:360 | trade |
+| view/history.rs:361 | custom_formed |
+| view/history.rs:361 | custom formed |
+| view/history.rs:362 | caravan_returned |
+| view/history.rs:362 | caravan returned |
+| view/history.rs:363 | caravan_lost |
+| view/history.rs:363 | caravan lost |
+| view/history.rs:364 | hunted |
+| view/history.rs:364 | hunted |
+| view/history.rs:365 | cave_in |
+| view/history.rs:365 | cave in |
+| view/history.rs:366 | collapse |
+| view/history.rs:366 | collapse |
+| view/history.rs:367 | paired |
+| view/history.rs:367 | paired |
+| view/history.rs:368 | old_founded |
+| view/history.rs:368 | founded |
+| view/history.rs:369 | old_trouble |
+| view/history.rs:369 | trouble |
+| view/history.rs:370 | old_ended |
+| view/history.rs:370 | left empty |
+| view/history.rs:371 | old_answered |
+| view/history.rs:371 | answered |
+| view/history.rs:372 | lived |
+| view/history.rs:372 | lives lived |
+| view/history.rs:375 | realm_founded |
+| view/history.rs:375 | settlements founded |
+| view/history.rs:376 | realm_ended |
+| view/history.rs:376 | settlements emptied |
+| view/history.rs:377 | realm_polity_founded |
+| view/history.rs:377 | realms rose |
+| view/history.rs:378 | realm_polity_ended |
+| view/history.rs:378 | realms fell |
+| view/history.rs:379 | realm_succeeded |
+| view/history.rs:379 | new rulers |
+| view/history.rs:380 | realm_plague |
+| view/history.rs:380 | plague |
+| view/history.rs:381 | realm_famine |
+| view/history.rs:381 | famine |
+| view/history.rs:389 | {w} {n} |
 | view/knowing.rs:28 | talk |
 | view/knowing.rs:29 | tend |
 | view/knowing.rs:30 | forage |
