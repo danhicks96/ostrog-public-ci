@@ -147,7 +147,7 @@ A custom for a dissolved community is formed and lapsed again every dawn. Skip d
 
 ### OST-1300 · Hold duties only once grown
 
-**Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Keep daily life believable · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#625](https://github.com/danhicks96/ostrog-public-ci/pull/625)
 
 `duties::daily` names a role for anyone with enough recorded minutes, so a child who forages can be listed as a forager. Hold no duty for a member who is not of age; keep counting and fading their minutes so the role arrives on their first morning of age. Observance leadership is a separate entry (OST-1301).
 
@@ -155,7 +155,7 @@ A custom for a dissolved community is formed and lapsed again every dawn. Skip d
 
 ### OST-1301 · Let only someone of age lead an observance
 
-**Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Keep daily life believable · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#626](https://github.com/danhicks96/ostrog-public-ci/pull/626)
 
 An observance leader can currently be a child, whether chosen as the followed leader or as the devout fallback. Require the leader to be of age in both paths. Do not combine with duty gating (OST-1300) or with the burial-observance entry.
 
@@ -163,7 +163,7 @@ An observance leader can currently be a child, whether chosen as the followed le
 
 ### OST-1302 · Leave a fallen shrine's material on its tile
 
-**Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Keep daily life believable · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#627](https://github.com/danhicks96/ostrog-public-ci/pull/627)
 
 When a worn shrine is removed the loss is recorded but no material item remains. Leave the stone or timber of the shrine on its tile. Keep the change inside the wear step.
 
@@ -171,7 +171,7 @@ When a worn shrine is removed the loss is recorded but no material item remains.
 
 ### OST-1303 · Do not foster a child whose parent is away with a caravan
 
-**Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Keep daily life believable · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#628](https://github.com/danhicks96/ostrog-public-ci/pull/628)
 
 The fostering check recognises only a parent living on the map, so a parent away with a caravan or journey is treated as gone. Count a living parent or foster who is away on a trip as present. Keep this separate from childhood age gates and from kin-first fostering.
 
@@ -179,7 +179,7 @@ The fostering check recognises only a parent living on the map, so a parent away
 
 ### OST-1304 · Count why a house is waiting for a table
 
-**Milestone:** Measure the simulation · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Measure the simulation · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#629](https://github.com/danhicks96/ostrog-public-ci/pull/629)
 
 Add a read-only example that reports, for each house waiting for a table, the first settlement decision that blocks it (open walls, floor-order pressure, no planks). The probe must mirror the live posting branch and change no simulation state.
 
@@ -187,7 +187,7 @@ Add a read-only example that reports, for each house waiting for a table, the fi
 
 ### OST-1305 · Census of wading steps at crossings
 
-**Milestone:** Measure the simulation · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Measure the simulation · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#630](https://github.com/danhicks96/ostrog-public-ci/pull/630)
 
 Add a read-only census of steps taken through water, per tile and per person, using the live stepping rule and an eligible person-day denominator. It informs the crossing decision (tracked separately) and changes no movement.
 
