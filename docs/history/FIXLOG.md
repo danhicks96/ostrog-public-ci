@@ -1,5 +1,21 @@
 # Fix log
 
+## 2026-11-22: a read-only census of why a house has no table (OST-1304)
+
+- Symptom: most houses in some seeds never get a table, and nothing measured which test of the
+  settlement step stopped them.
+- Change: `hf_sim::table_census` (read-only, no randomness) names, per house, the first test that
+  stops the table: walls open, no table spot, spot taken or already ordered, four or more open
+  build orders, floor tiles still wanting orders, no planks, or ready to post. The example
+  `table_census <seed> <days>` prints the counts every 25 days. It runs between planner passes,
+  so it sees the orders already posted, not what the next pass will post first.
+- Guards: `tests/table_census.rs` builds a house by hand and checks walls open, floor blocks and
+  no planks, then checks the census against what `systems::settlement::step` actually posts
+  (floor tiles block the table; once the pass's own earlier orders fill the slot or the gate, no
+  table order follows, and a house is counted once).
+- Measured: a 50-day smoke of seed 5 only (one house, one table). The cause for seeds 5 and 8 over
+  200 days is not measured here; the floor-order test is a candidate cause, not a conclusion.
+
 ## 2026-11-22: a child with a parent on a caravan is not fostered (OST-1303)
 
 - Symptom: a child whose parent was away on a caravan or journey was taken in as an orphan
