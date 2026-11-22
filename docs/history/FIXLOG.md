@@ -1,5 +1,14 @@
 # Fix log
 
+## 2026-11-22: the away card's first line was a chore tally in internal names
+
+- Symptom: "While you were away" opened with `hauled 122, harvested 166, suspected 21`.
+- Cause: the client printed every `counts` key raw.
+- Fix: `Summary::counts_in_words` (over `view::history::summary`) gives "died 2, born 1"; the
+  Godot bridge sends it as `counts_words` and the away card prints it. `counts` is unchanged for
+  the timelapse and other consumers.
+- Guard: `tests/catch_up.rs::summary_counts_read_as_words` (2 died, 1 born, 40 hauled rows).
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
