@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3147 strings (click to open)</summary>
+<details><summary>3150 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2410,6 +2410,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | society.rs:76 | a cramped site |
 | society.rs:77 | a grown household |
 | society.rs:78 | their cultural preference |
+| society.rs:256 | close |
+| society.rs:258 | divided |
+| society.rs:260 | uneasy |
 | species.rs:40 | diurnal |
 | species.rs:145 | deep |
 | species.rs:146 | dark |
