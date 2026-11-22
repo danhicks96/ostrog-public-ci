@@ -1,5 +1,17 @@
 # Fix log
 
+## 2026-11-22: only someone of age leads an observance (OST-1301)
+
+- Symptom: a nine-year-old could lead the season's observance, whether as the person followed in
+  the spirit or as the most devout of those gathered.
+- Cause: the leader choice checked only that a person was awake and (for the fallback) devout.
+- Fix: both paths require the leader to be of age. A gathering of children alone lapses with
+  "nobody led it".
+- Guards: `tests/shrines.rs` `a_child_does_not_lead_the_observance`,
+  `the_youngest_person_of_age_may_lead_and_one_a_year_short_may_not` and
+  `an_observance_with_only_children_gathered_lapses`; all three fail without the fix.
+- Not measured: a long-run census of observance leaders' ages. Duty gating is OST-1300.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
