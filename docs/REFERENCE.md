@@ -2090,8 +2090,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | observances.rs:30 | summer |
 | observances.rs:31 | autumn |
 | observances.rs:32 | winter |
-| observances.rs:225 | nobody led it |
-| observances.rs:227 | nobody came |
+| observances.rs:230 | nobody led it |
+| observances.rs:232 | nobody came |
 | omens.rs:50 | crows coming in over the valley's rim |
 | omens.rs:66 | a kind season |
 | omens.rs:67 | the host from {site} |
