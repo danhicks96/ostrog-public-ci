@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-22: a good turn repaid is a real meal, and not across a feud
+
+- Symptom: Repaying a good turn moved two hunger numbers within 15 tiles without any food existing, and ignored feuds and souring opinion.
+- Cause: The daily repayment added to one person's hunger and subtracted from another's, with no item involved.
+- Fix: The repayer must be within one tile and not across a feud or in sour opinion with the recipient, and hands over a real food item they carry or that lies within three tiles, whole or split by one as hauling does; the recipient notes it. No food, no repayment. No save-format change.
+- Guard: crates/hf-sim/tests/social.rs covers a carried meal moved with no creation or double use, a split stack, feud and opinion blocks, and distance; it fails without the change.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.

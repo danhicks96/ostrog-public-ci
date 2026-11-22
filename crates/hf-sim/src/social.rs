@@ -341,7 +341,9 @@ fn make_up(w: &mut World, a: AgentId, b: AgentId, warmth: f32) {
     );
 }
 
-/// Once a day: a good turn owed is repaid when the one owed goes hungry.
+/// Once a day: a good turn owed is repaid when the one owed goes hungry, with a real meal,
+/// not the two hunger numbers this used to move, and not across a feud or a camp (carrying it
+/// the rest of the way is a separate piece of work).
 pub fn step(w: &mut World) {
     let tick = w.meta.tick;
     if tick % TICKS_PER_DAY != 12 * TICKS_PER_HOUR + 41 {
@@ -352,16 +354,56 @@ pub fn step(w: &mut World) {
             continue;
         }
         let me = w.agents[i].pos;
+        let by = w.agents[i].id;
         let owed: Vec<AgentId> = w.agents[i].owes.iter().map(|x| x.0).collect();
         for to in owed {
             let Some(j) = idx(w, to) else { continue };
-            if w.agents[j].needs.hunger >= 0.3 || w.agents[j].pos.dist(me) > 15 {
+            if w.agents[j].needs.hunger >= 0.3 || w.agents[j].pos.dist(me) > 1 {
                 continue;
             }
-            w.agents[j].needs.hunger = (w.agents[j].needs.hunger + 0.3).min(1.0);
-            w.agents[i].needs.hunger -= 0.15;
+            if crate::feuds::across(w, by, to) || w.agents[i].opinion_of(to) < -0.3 {
+                continue;
+            }
+            // A food item they carry, or one lying within reach, moved whole or split as
+            // hauling does (`systems/work.rs` `Step::PickUp`).
+            let Some(ix) = w.items.iter().position(|it| {
+                it.kind.is_food()
+                    && match it.place {
+                        crate::items::ItemPlace::Carried(id) => id == by,
+                        crate::items::ItemPlace::Ground(p) => p.dist(me) <= 3,
+                        _ => false,
+                    }
+            }) else {
+                continue;
+            };
+            let moved = if w.items[ix].count > 1 {
+                w.items[ix].count -= 1;
+                let (kind, quality, material, rot) = (
+                    w.items[ix].kind,
+                    w.items[ix].quality,
+                    w.items[ix].material,
+                    w.items[ix].rot,
+                );
+                let nid = w.alloc_item_id();
+                w.items.push(crate::items::Item {
+                    id: nid,
+                    kind,
+                    count: 1,
+                    place: crate::items::ItemPlace::Carried(to),
+                    quality,
+                    material,
+                    story: None,
+                    rot,
+                });
+                nid
+            } else {
+                w.items[ix].place = crate::items::ItemPlace::Carried(to);
+                w.items[ix].id
+            };
+            w.agents[j]
+                .knowledge
+                .note(crate::mind::knowledge::Known::Item(moved), me, tick, 0);
             w.agents[i].owes.retain(|x| x.0 != to);
-            let by = w.agents[i].id;
             w.agents[j].relate(by, 0.2, 0.05, tick);
             w.events.push(
                 tick,
