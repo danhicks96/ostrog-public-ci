@@ -237,8 +237,9 @@ pub struct Agent {
     /// The clothes they wear are leather or fur (C34): warmer.
     #[serde(default)]
     pub furred: bool,
-    /// How soaked they are, 0..1 (#1261 tracks the rise and dry-off; this crate only reads it
-    /// for the cold-chill factor in `cold_step`). 0 in an old save.
+    /// How soaked they are, 0..1 (#1261): rain wets those outdoors, a roof or a hearth dries
+    /// them (hazards.rs `cold_step`); it also feeds the cold-chill factor there (#1262). 0 in
+    /// an old save.
     #[serde(default)]
     pub wet: f32,
     #[serde(default)]
