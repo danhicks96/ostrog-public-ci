@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-22: score a house as a room (OST-1402)
+
+- Symptom: `houses.rs` held geometry only; the one quality check was `fine_stone`, used for a
+  single thought, so nothing could compare a bare hut with a furnished house.
+- Cause: no per-room measure existed.
+- Fix: `houses::RoomStats { space, furnish, light, beauty, clutter, dirt }` (each 0..1),
+  `houses::room_stats(w, plan, sleepers)` (pure, read-only) and `RoomStats::impressiveness()`
+  (0.3 space + 0.3 furnish + 0.15 light + 0.25 beauty - 0.3 clutter - 0.3 dirt, clamped -1..1).
+  `fine_stone` now shares `fine_stone_of(w, plan)`. `dirt` is 0 until a dirt source exists. Nothing
+  reads it yet, so no simulation behaviour changes. A floor counts as laid both when its own tile
+  is a floor (upper levels) and when the tile below it is built solid (ground-level houses). Only
+  lit lamps and hearths (`active`) count as light.
+- Guards: `tests/rooms.rs`: bare hut below furnished house with clutter lowering the score, laid
+  ground floor, laid upper floor and figurine, and an unlit lamp giving no light.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.

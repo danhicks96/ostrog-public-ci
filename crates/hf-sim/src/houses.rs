@@ -658,22 +658,122 @@ pub fn fine_stone(w: &World, p: TilePos) -> Option<crate::world::Material> {
             if !plan.floor.contains(&p) {
                 continue;
             }
-            let mut of: std::collections::BTreeMap<crate::world::Material, u32> =
-                Default::default();
-            let ring = walls(&plan.floor);
-            for (q, _) in &ring {
-                if let Some(m) = w.made_of(*q) {
-                    *of.entry(m).or_default() += 1;
-                }
-            }
-            let (m, n) = of
-                .iter()
-                .max_by(|a, b| a.1.cmp(b.1).then(b.0.cmp(a.0)))
-                .map(|(m, n)| (*m, *n))?;
-            return (n * 2 > ring.len() as u32 && crate::tiers::fine(w, m)).then_some(m);
+            return fine_stone_of(w, &plan);
         }
     }
     None
+}
+
+/// `fine_stone` for a known plan.
+fn fine_stone_of(w: &World, plan: &HousePlan) -> Option<crate::world::Material> {
+    let mut of: BTreeMap<crate::world::Material, u32> = BTreeMap::new();
+    let ring = walls(&plan.floor);
+    for (q, _) in &ring {
+        if let Some(m) = w.made_of(*q) {
+            *of.entry(m).or_default() += 1;
+        }
+    }
+    let (m, n) = of
+        .iter()
+        .max_by(|a, b| a.1.cmp(b.1).then(b.0.cmp(a.0)))
+        .map(|(m, n)| (*m, *n))?;
+    (n * 2 > ring.len() as u32 && crate::tiers::fine(w, m)).then_some(m)
+}
+
+/// How good a room is, a few honest numbers each from something physical, each 0..1.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct RoomStats {
+    pub space: f32,
+    pub furnish: f32,
+    pub light: f32,
+    pub beauty: f32,
+    pub clutter: f32,
+    /// Zero until a dirt source exists.
+    pub dirt: f32,
+}
+
+impl RoomStats {
+    /// One number, -1..1: what the room is worth to be in.
+    pub fn impressiveness(&self) -> f32 {
+        (0.3 * self.space + 0.3 * self.furnish + 0.15 * self.light + 0.25 * self.beauty
+            - 0.3 * self.clutter
+            - 0.3 * self.dirt)
+            .clamp(-1.0, 1.0)
+    }
+}
+
+/// Whether `p` has constructed flooring: a laid floor tile on its own level (upper floors), or a
+/// built solid tile directly below an open room tile (ground floors, as `BuildFloor` makes them).
+fn laid_floor(w: &World, p: TilePos) -> bool {
+    use crate::world::{Shape, TileFlags};
+    if w.grid.get(p).shape == Shape::Floor {
+        return true;
+    }
+    let below = p.offset(0, 0, -1);
+    let t = w.grid.get(below);
+    t.shape == Shape::Wall && !t.flags.has(TileFlags::DOOR) && w.built_of.contains_key(&below)
+}
+
+/// The room stats of the house `plan`, for `sleepers` people. Pure: reads the world only.
+pub fn room_stats(w: &World, plan: &HousePlan, sleepers: u32) -> RoomStats {
+    use crate::items::{ItemKind, ItemPlace};
+    use crate::structures::StructureKind as K;
+    let floor: BTreeSet<TilePos> = plan.floor.iter().copied().collect();
+    let ring: BTreeSet<TilePos> = walls(&plan.floor).into_iter().map(|(p, _)| p).collect();
+    let n = sleepers.max(1) as f32;
+    let space = ((floor.len() as f32 / n - 3.0) / 5.0).clamp(0.0, 1.0);
+    let mut quality = 0.0;
+    let mut light = false;
+    for s in w.structures.iter().filter(|s| s.progress >= 1.0) {
+        let on_floor = floor.contains(&s.pos);
+        if on_floor && matches!(s.kind, K::Stool | K::Chair | K::Table | K::Chest | K::Shelf) {
+            quality += s.quality;
+        }
+        if s.active && (on_floor || ring.contains(&s.pos)) && matches!(s.kind, K::Lamp | K::Hearth)
+        {
+            light = true;
+        }
+    }
+    let furnish = (quality / (n * 1.5)).clamp(0.0, 1.0);
+    let laid = if floor.is_empty() {
+        0.0
+    } else {
+        floor.iter().filter(|p| laid_floor(w, **p)).count() as f32 / floor.len() as f32
+    };
+    let mut loose = 0;
+    let mut figurine = false;
+    for it in &w.items {
+        let ItemPlace::Ground(p) = it.place else {
+            continue;
+        };
+        if !floor.contains(&p) {
+            continue;
+        }
+        if it.kind == ItemKind::Figurine {
+            figurine = true;
+        } else if !it.kind.is_food() || it.rot >= 0.5 {
+            loose += 1;
+        }
+    }
+    let bodies = w
+        .rites_due
+        .iter()
+        .filter(|r| !r.away)
+        .filter_map(|r| w.agents.iter().find(|a| a.id == r.dead))
+        .filter(|a| floor.contains(&a.pos))
+        .count();
+    let carved = ring.iter().any(|p| w.engravings.contains_key(p));
+    let beauty = 0.4 * f32::from(fine_stone_of(w, plan).is_some())
+        + 0.3 * laid
+        + 0.3 * f32::from(carved || figurine);
+    RoomStats {
+        space,
+        furnish,
+        light: f32::from(light),
+        beauty,
+        clutter: ((loose + bodies) as f32 / 4.0).clamp(0.0, 1.0),
+        dirt: 0.0,
+    }
 }
 
 #[cfg(test)]
