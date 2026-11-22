@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3163 strings (click to open)</summary>
+<details><summary>3165 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1755,14 +1755,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | delving.rs:70 | harder stone for their walls |
 | delving.rs:71 | the gems and gold of the deep |
 | delving.rs:72 | water |
-| duties.rs:194 | {} ({} hours lately) |
-| duties.rs:205 | building |
-| duties.rs:206 | farming |
-| duties.rs:207 | cooking |
-| duties.rs:208 | mining |
-| duties.rs:209 | hauling |
-| duties.rs:210 | tending the hurt |
-| duties.rs:211 | foraging |
+| duties.rs:241 | {} ({} hours lately) |
+| duties.rs:252 | building |
+| duties.rs:253 | farming |
+| duties.rs:254 | cooking |
+| duties.rs:255 | mining |
+| duties.rs:256 | hauling |
+| duties.rs:257 | tending the hurt |
+| duties.rs:258 | foraging |
 | ecology.rs:96 | starved, the grazing gone |
 | ecology.rs:98 | starved, the game gone |
 | economy.rs:20 | +{cause} |
@@ -2396,7 +2396,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | shrines.rs:186 | it burned |
 | shrines.rs:188 | it was broken down |
 | shrines.rs:191 | it was left behind at the old camp |
-| shrines.rs:242 | it fell to ruin, untended |
+| shrines.rs:261 | shrine rubble |
+| shrines.rs:269 | from the shrine of {from} |
+| shrines.rs:273 | it fell to ruin, untended |
 | siege.rs:148 | by the besiegers |
 | siege.rs:151 | fighting the besiegers |
 | siege.rs:245 | battered |
