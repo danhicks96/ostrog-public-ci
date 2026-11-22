@@ -132,7 +132,7 @@ Add a read-only history query that returns the notable-or-worse events of one co
 
 ### OST-1204 · Let tools left at an abandoned camp teach their craft
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Sage (SG) · **Public PR:** [#612](https://github.com/danhicks96/ostrog-public-ci/pull/612)
 
 Left-behind tools keep their maker but not their craft. Make them teach it. Tracking issue: [#553](https://github.com/danhicks96/ostrog-public-ci/issues/553).
 
