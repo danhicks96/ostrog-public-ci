@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-22: a drought also blocks storms
+
+- Symptom: A drought cleared rain from the sky but let storms through, so the feed could read that the rain had stopped coming and then report a storm before the drought lifted.
+- Cause: The drought arm of the spell weather adjustment only cleared Sky::Rain.
+- Fix: Clear a storm the same way as rain; a storm's wind without rain is not modelled, so clear is the honest stand-in. No save-format change.
+- Guard: crates/hf-sim/tests/spells.rs::a_drought_lets_no_storm_through forces a storm hour under an active drought and checks the sky reads Clear with no rainfall; it fails without the change.
 ## 2026-11-22: a child holds no duty until grown (OST-1300)
 
 - Symptom: `duties::daily` documents duties as held by grown members but checked only that a
