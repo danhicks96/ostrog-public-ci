@@ -1,4 +1,4 @@
-//! #1395: the last smith dies and the craft dies with them. When a person is the only one
+//! OST-905: the last smith dies and the craft dies with them. When a person is the only one
 //! left who knows a craft their own community uses, and is old enough it could die with them
 //! tonight, they carve the way of it instead of an event (D37).
 

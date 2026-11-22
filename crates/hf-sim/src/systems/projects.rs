@@ -282,7 +282,7 @@ fn carve(w: &mut World, cid: CommunityId) {
         .collect();
     able.sort_by(|a, b| b.0.total_cmp(&a.0));
     // The last knower of a craft their own ground uses, old enough it could die with them,
-    // carves the way of it before anything else (D37, #1395): the craft outlives them.
+    // carves the way of it before anything else (D37, OST-905): the craft outlives them.
     let craft: Option<(usize, crate::mind::Technique)> = able
         .iter()
         .find_map(|&(_, i)| crate::engrave::craft_to_carve(w, i).map(|t| (i, t)));

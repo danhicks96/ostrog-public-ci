@@ -26,7 +26,7 @@ pub struct Engraving {
     pub carved: u64,
     /// 0..1, from the carver's skill.
     pub quality: f32,
-    /// The craft this carving sets down (D37, #1395): set when the carver was the only one
+    /// The craft this carving sets down (D37, OST-905): set when the carver was the only one
     /// left who knew it, carving the way of it so it outlasts them. `None` for an ordinary
     /// event carving, and for every engraving an old save loads with.
     #[serde(default)]
@@ -158,7 +158,7 @@ pub fn choose(w: &World, i: usize) -> Option<(EventId, u64, String)> {
     Some((id, tick, crate::view::narrate::line(w, &e)))
 }
 
-/// The craft agent `i` would rather carve than any event (D37, #1395): they alone, of their
+/// The craft agent `i` would rather carve than any event (D37, OST-905): they alone, of their
 /// community, still know it, their community's own ground uses it, and they are past their
 /// ailing years or already needing care — old enough that the craft could die with them
 /// tonight. The last knower carves the way of it while they still can.
