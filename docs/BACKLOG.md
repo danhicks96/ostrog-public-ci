@@ -18,7 +18,7 @@ The milestone labels group related work; they do not promise a release date. Eac
 
 ### OST-001 · Give major personal events more weight in camera selection
 
-**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
 
 An unwitnessed major event can be discounted enough that one busy person elsewhere draws the camera instead. Give major deaths, captures, breakdowns and exiles full presence even in an empty cell. Keep the existing weights for routine events, fires and departing caravans.
 
@@ -79,6 +79,14 @@ Reconcile the existing summary change. The opening line should summarize importa
 The Catch Up read model folds viewer-visible events of Notable severity or higher by existing repeat keys before applying the detail cap. Named changes, raw counts and timelapse markers stay separate and unchanged. This does not wire the panel (OST-011) or complete the census (OST-013). Measure latency on a large chronicle before wiring the panel.
 
 **Acceptance:** In a summary with many repeated suspicions and several distinct raids, the suspicions group without crowding the raids out before folding. Each folded line keeps the newest history ID as its navigation anchor, and stores its earliest and latest event ticks separately. Verify those ticks with out-of-order input, preserve distinct named changes, and check that the timelapse still receives the same raw markers.
+
+### OST-016 · Let keepers retrieve treasured tools
+
+**Milestone:** Make people's possessions matter · **State:** Ready · **Developer:** None · **Public PR:** None
+
+A living keeper who knows about a reachable treasured tool on the ground can walk back and pick up that exact tool without losing its story. This first slice covers tools only. Leave an equipped tool in place and defer retrieval rather than silently replacing it. Keep this separate from changes to how workers fetch ordinary tools and from inheritance or save-format changes.
+
+**Acceptance:** In a running simulation, a keeper with an empty tool slot walks to and recovers the exact known tool, retaining its keepsake and history. An unknown, unreachable, moved, or no-longer-owned item is not taken from the old target. When a treasured tool and an ordinary stack share a tile, a non-keeper hauling the stack takes only the ordinary goods and can still complete the work. Check an already-planned haul and ordinary tool selection so neither can take a living keeper's treasure. Use focused fixtures for these cases and standard CI.
 
 ## Waiting on code or measurement
 
