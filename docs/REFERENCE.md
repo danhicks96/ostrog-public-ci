@@ -1455,9 +1455,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:503 | someone |
 | accounts.rs:513 | {} and {} more |
 | accounts.rs:517 |  Said: {words} ({by}). |
-| agents.rs:448 | fur |
-| agents.rs:449 | feathers |
-| agents.rs:450 | scales |
+| agents.rs:460 | fur |
+| agents.rs:461 | feathers |
+| agents.rs:462 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
