@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3170 strings (click to open)</summary>
+<details><summary>3165 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2396,7 +2396,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | shrines.rs:186 | it burned |
 | shrines.rs:188 | it was broken down |
 | shrines.rs:191 | it was left behind at the old camp |
-| shrines.rs:242 | it fell to ruin, untended |
+| shrines.rs:261 | shrine rubble |
+| shrines.rs:269 | from the shrine of {from} |
+| shrines.rs:273 | it fell to ruin, untended |
 | siege.rs:148 | by the besiegers |
 | siege.rs:151 | fighting the besiegers |
 | siege.rs:245 | battered |
@@ -3397,14 +3399,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:709 | they noticed dangerous water |
 | systems/hazards.rs:826 | drowned in the flood |
 | systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1070 | from the cold |
-| systems/hazards.rs:1078 | froze |
-| systems/hazards.rs:1097 | below ground |
-| systems/hazards.rs:1102 | hearth |
-| systems/hazards.rs:1104 | roofed, no hearth |
-| systems/hazards.rs:1108 | roofed, open side |
-| systems/hazards.rs:1114 | tent/nest |
-| systems/hazards.rs:1116 | open |
+| systems/hazards.rs:1100 | from the cold |
+| systems/hazards.rs:1108 | froze |
+| systems/hazards.rs:1127 | below ground |
+| systems/hazards.rs:1132 | hearth |
+| systems/hazards.rs:1134 | roofed, no hearth |
+| systems/hazards.rs:1138 | roofed, open side |
+| systems/hazards.rs:1144 | tent/nest |
+| systems/hazards.rs:1146 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
@@ -3687,45 +3689,38 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/alive.rs:62 | drowned |
 | view/alive.rs:69 | thirst |
 | view/alive.rs:70 | froze |
-| view/alive.rs:780 | mood_median |
-| view/alive.rs:781 | mood_p10 |
-| view/alive.rs:782 | mood_hi |
-| view/alive.rs:783 | mood_lo |
-| view/alive.rs:784 | mood_clamped |
-| view/alive.rs:785 | mood_spread |
-| view/alive.rs:786 | mood_p25 |
-| view/alive.rs:787 | mood_p75 |
-| view/alive.rs:788 | mood_below_m03 |
-| view/alive.rs:789 | mood_term_needs |
-| view/alive.rs:790 | mood_term_recent |
-| view/alive.rs:791 | mood_term_long |
-| view/alive.rs:792 | mood_term_thoughts |
-| view/alive.rs:793 | standing_share |
-| view/alive.rs:794 | unreadable_share |
-| view/alive.rs:795 | work_share |
-| view/alive.rs:796 | talk_share |
-| view/alive.rs:797 | day_distance |
-| view/alive.rs:798 | act_entropy_sd |
-| view/alive.rs:800 | ties_saturated |
-| view/alive.rs:804 | ties_hostile |
-| view/alive.rs:807 | ties_frozen |
-| view/alive.rs:808 | ties_frozen_max_days |
-| view/alive.rs:810 | ties_to_dead_share |
-| view/alive.rs:813 | grief_drop_2d |
-| view/alive.rs:814 | grief_drop_10d |
-| view/alive.rs:815 | grief_days |
-| view/alive.rs:816 | grief_n |
-| view/alive.rs:817 | cause_repeat |
-| view/alive.rs:818 | lesson_ignored |
-| view/alive.rs:819 | glance_major_n |
-| view/alive.rs:820 | glance_missed_major |
-| view/alive.rs:823 | glance_missed_major_died |
-| view/alive.rs:824 | glance_missed_major_captured |
-| view/alive.rs:825 | glance_missed_major_broke |
-| view/alive.rs:826 | glance_missed_major_exiled |
-| view/alive.rs:827 | glance_missed_major_born |
-| view/alive.rs:828 | glance_missed_major_paired |
-| view/alive.rs:829 | glance_missed_major_returned |
+| view/alive.rs:750 | mood_median |
+| view/alive.rs:751 | mood_p10 |
+| view/alive.rs:752 | mood_hi |
+| view/alive.rs:753 | mood_lo |
+| view/alive.rs:754 | mood_clamped |
+| view/alive.rs:755 | mood_spread |
+| view/alive.rs:756 | standing_share |
+| view/alive.rs:757 | unreadable_share |
+| view/alive.rs:758 | work_share |
+| view/alive.rs:759 | talk_share |
+| view/alive.rs:760 | day_distance |
+| view/alive.rs:761 | act_entropy_sd |
+| view/alive.rs:763 | ties_saturated |
+| view/alive.rs:767 | ties_hostile |
+| view/alive.rs:770 | ties_frozen |
+| view/alive.rs:771 | ties_frozen_max_days |
+| view/alive.rs:773 | ties_to_dead_share |
+| view/alive.rs:776 | grief_drop_2d |
+| view/alive.rs:777 | grief_drop_10d |
+| view/alive.rs:778 | grief_days |
+| view/alive.rs:779 | grief_n |
+| view/alive.rs:780 | cause_repeat |
+| view/alive.rs:781 | lesson_ignored |
+| view/alive.rs:782 | glance_major_n |
+| view/alive.rs:783 | glance_missed_major |
+| view/alive.rs:786 | glance_missed_major_died |
+| view/alive.rs:787 | glance_missed_major_captured |
+| view/alive.rs:788 | glance_missed_major_broke |
+| view/alive.rs:789 | glance_missed_major_exiled |
+| view/alive.rs:790 | glance_missed_major_born |
+| view/alive.rs:791 | glance_missed_major_paired |
+| view/alive.rs:792 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
