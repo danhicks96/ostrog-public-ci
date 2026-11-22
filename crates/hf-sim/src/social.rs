@@ -364,13 +364,13 @@ pub fn step(w: &mut World) {
             if crate::feuds::across(w, by, to) || w.agents[i].opinion_of(to) < -0.3 {
                 continue;
             }
-            // A food item they carry, or one lying within reach, moved whole or split as
-            // hauling does (`systems/work.rs` `Step::PickUp`).
+            // A food item the repayer carries themselves, moved whole or split as hauling
+            // does (`systems/work.rs` `Step::PickUp`). Food lying on the ground, such as a
+            // store's, is not theirs to hand over.
             let Some(ix) = w.items.iter().position(|it| {
                 it.kind.is_food()
                     && match it.place {
                         crate::items::ItemPlace::Carried(id) => id == by,
-                        crate::items::ItemPlace::Ground(p) => p.dist(me) <= 3,
                         _ => false,
                     }
             }) else {
