@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3150 strings (click to open)</summary>
+<details><summary>3166 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1755,14 +1755,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | delving.rs:70 | harder stone for their walls |
 | delving.rs:71 | the gems and gold of the deep |
 | delving.rs:72 | water |
-| duties.rs:188 | {} ({} hours lately) |
-| duties.rs:199 | building |
-| duties.rs:200 | farming |
-| duties.rs:201 | cooking |
-| duties.rs:202 | mining |
-| duties.rs:203 | hauling |
-| duties.rs:204 | tending the hurt |
-| duties.rs:205 | foraging |
+| duties.rs:194 | {} ({} hours lately) |
+| duties.rs:205 | building |
+| duties.rs:206 | farming |
+| duties.rs:207 | cooking |
+| duties.rs:208 | mining |
+| duties.rs:209 | hauling |
+| duties.rs:210 | tending the hurt |
+| duties.rs:211 | foraging |
 | ecology.rs:96 | starved, the grazing gone |
 | ecology.rs:98 | starved, the game gone |
 | economy.rs:20 | +{cause} |
@@ -3680,32 +3680,48 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:1979 | hunt |
 | systems/work.rs:2112 | set about putting a lamp where they work below |
 | systems/work.rs:2113 | because it is too dark down there to see the rock |
-| view/alive.rs:50 | drowned |
-| view/alive.rs:57 | thirst |
-| view/alive.rs:58 | froze |
-| view/alive.rs:622 | mood_median |
-| view/alive.rs:623 | mood_p10 |
-| view/alive.rs:624 | mood_hi |
-| view/alive.rs:625 | mood_lo |
-| view/alive.rs:626 | mood_clamped |
-| view/alive.rs:627 | mood_spread |
-| view/alive.rs:628 | standing_share |
-| view/alive.rs:629 | unreadable_share |
-| view/alive.rs:630 | work_share |
-| view/alive.rs:631 | talk_share |
-| view/alive.rs:632 | day_distance |
-| view/alive.rs:633 | act_entropy_sd |
-| view/alive.rs:635 | ties_saturated |
-| view/alive.rs:639 | ties_hostile |
-| view/alive.rs:642 | ties_frozen |
-| view/alive.rs:643 | ties_frozen_max_days |
-| view/alive.rs:645 | ties_to_dead_share |
-| view/alive.rs:648 | grief_drop_2d |
-| view/alive.rs:649 | grief_drop_10d |
-| view/alive.rs:650 | grief_days |
-| view/alive.rs:651 | grief_n |
-| view/alive.rs:652 | cause_repeat |
-| view/alive.rs:653 | lesson_ignored |
+| view/alive.rs:46 | died |
+| view/alive.rs:46 | captured |
+| view/alive.rs:46 | broke |
+| view/alive.rs:46 | exiled |
+| view/alive.rs:46 | born |
+| view/alive.rs:46 | paired |
+| view/alive.rs:46 | returned |
+| view/alive.rs:62 | drowned |
+| view/alive.rs:69 | thirst |
+| view/alive.rs:70 | froze |
+| view/alive.rs:750 | mood_median |
+| view/alive.rs:751 | mood_p10 |
+| view/alive.rs:752 | mood_hi |
+| view/alive.rs:753 | mood_lo |
+| view/alive.rs:754 | mood_clamped |
+| view/alive.rs:755 | mood_spread |
+| view/alive.rs:756 | standing_share |
+| view/alive.rs:757 | unreadable_share |
+| view/alive.rs:758 | work_share |
+| view/alive.rs:759 | talk_share |
+| view/alive.rs:760 | day_distance |
+| view/alive.rs:761 | act_entropy_sd |
+| view/alive.rs:763 | ties_saturated |
+| view/alive.rs:767 | ties_hostile |
+| view/alive.rs:770 | ties_frozen |
+| view/alive.rs:771 | ties_frozen_max_days |
+| view/alive.rs:773 | ties_to_dead_share |
+| view/alive.rs:776 | grief_drop_2d |
+| view/alive.rs:777 | grief_drop_10d |
+| view/alive.rs:778 | grief_days |
+| view/alive.rs:779 | grief_n |
+| view/alive.rs:780 | cause_repeat |
+| view/alive.rs:781 | lesson_ignored |
+| view/alive.rs:782 | glance_major_n |
+| view/alive.rs:783 | glance_missed_major |
+| view/alive.rs:786 | glance_missed_major_died |
+| view/alive.rs:787 | glance_missed_major_captured |
+| view/alive.rs:788 | glance_missed_major_broke |
+| view/alive.rs:789 | glance_missed_major_exiled |
+| view/alive.rs:790 | glance_missed_major_born |
+| view/alive.rs:791 | glance_missed_major_paired |
+| view/alive.rs:792 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
@@ -4087,67 +4103,67 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/fold.rs:94 | s |
 | view/history.rs:36 | Y{} day {} {:02}:{:02} |
 | view/history.rs:82 | Year {} |
-| view/history.rs:225 | realm_ |
-| view/history.rs:241 | Up to 99 years before the portal |
-| view/history.rs:243 | {} to {} years before the portal |
-| view/history.rs:310 | born |
-| view/history.rs:310 | born |
-| view/history.rs:311 | died |
-| view/history.rs:311 | old_died |
-| view/history.rs:311 | died |
-| view/history.rs:312 | arrived |
-| view/history.rs:312 | arrived |
-| view/history.rs:313 | left |
-| view/history.rs:313 | left |
-| view/history.rs:314 | joined |
-| view/history.rs:314 | joined |
-| view/history.rs:315 | turned_away |
-| view/history.rs:315 | turned away |
-| view/history.rs:316 | built |
-| view/history.rs:316 | built |
-| view/history.rs:317 | split |
-| view/history.rs:317 | split |
-| view/history.rs:318 | trade |
-| view/history.rs:318 | trade |
-| view/history.rs:319 | custom_formed |
-| view/history.rs:319 | custom formed |
-| view/history.rs:320 | caravan_returned |
-| view/history.rs:320 | caravan returned |
-| view/history.rs:321 | caravan_lost |
-| view/history.rs:321 | caravan lost |
-| view/history.rs:322 | hunted |
-| view/history.rs:322 | hunted |
-| view/history.rs:323 | cave_in |
-| view/history.rs:323 | cave in |
-| view/history.rs:324 | collapse |
-| view/history.rs:324 | collapse |
-| view/history.rs:325 | paired |
-| view/history.rs:325 | paired |
-| view/history.rs:326 | old_founded |
-| view/history.rs:326 | founded |
-| view/history.rs:327 | old_trouble |
-| view/history.rs:327 | trouble |
-| view/history.rs:328 | old_ended |
-| view/history.rs:328 | left empty |
-| view/history.rs:329 | old_answered |
-| view/history.rs:329 | answered |
-| view/history.rs:330 | lived |
-| view/history.rs:330 | lives lived |
-| view/history.rs:333 | realm_founded |
-| view/history.rs:333 | settlements founded |
-| view/history.rs:334 | realm_ended |
-| view/history.rs:334 | settlements emptied |
-| view/history.rs:335 | realm_polity_founded |
-| view/history.rs:335 | realms rose |
-| view/history.rs:336 | realm_polity_ended |
-| view/history.rs:336 | realms fell |
-| view/history.rs:337 | realm_succeeded |
-| view/history.rs:337 | new rulers |
-| view/history.rs:338 | realm_plague |
-| view/history.rs:338 | plague |
-| view/history.rs:339 | realm_famine |
-| view/history.rs:339 | famine |
-| view/history.rs:347 | {w} {n} |
+| view/history.rs:267 | realm_ |
+| view/history.rs:283 | Up to 99 years before the portal |
+| view/history.rs:285 | {} to {} years before the portal |
+| view/history.rs:352 | born |
+| view/history.rs:352 | born |
+| view/history.rs:353 | died |
+| view/history.rs:353 | old_died |
+| view/history.rs:353 | died |
+| view/history.rs:354 | arrived |
+| view/history.rs:354 | arrived |
+| view/history.rs:355 | left |
+| view/history.rs:355 | left |
+| view/history.rs:356 | joined |
+| view/history.rs:356 | joined |
+| view/history.rs:357 | turned_away |
+| view/history.rs:357 | turned away |
+| view/history.rs:358 | built |
+| view/history.rs:358 | built |
+| view/history.rs:359 | split |
+| view/history.rs:359 | split |
+| view/history.rs:360 | trade |
+| view/history.rs:360 | trade |
+| view/history.rs:361 | custom_formed |
+| view/history.rs:361 | custom formed |
+| view/history.rs:362 | caravan_returned |
+| view/history.rs:362 | caravan returned |
+| view/history.rs:363 | caravan_lost |
+| view/history.rs:363 | caravan lost |
+| view/history.rs:364 | hunted |
+| view/history.rs:364 | hunted |
+| view/history.rs:365 | cave_in |
+| view/history.rs:365 | cave in |
+| view/history.rs:366 | collapse |
+| view/history.rs:366 | collapse |
+| view/history.rs:367 | paired |
+| view/history.rs:367 | paired |
+| view/history.rs:368 | old_founded |
+| view/history.rs:368 | founded |
+| view/history.rs:369 | old_trouble |
+| view/history.rs:369 | trouble |
+| view/history.rs:370 | old_ended |
+| view/history.rs:370 | left empty |
+| view/history.rs:371 | old_answered |
+| view/history.rs:371 | answered |
+| view/history.rs:372 | lived |
+| view/history.rs:372 | lives lived |
+| view/history.rs:375 | realm_founded |
+| view/history.rs:375 | settlements founded |
+| view/history.rs:376 | realm_ended |
+| view/history.rs:376 | settlements emptied |
+| view/history.rs:377 | realm_polity_founded |
+| view/history.rs:377 | realms rose |
+| view/history.rs:378 | realm_polity_ended |
+| view/history.rs:378 | realms fell |
+| view/history.rs:379 | realm_succeeded |
+| view/history.rs:379 | new rulers |
+| view/history.rs:380 | realm_plague |
+| view/history.rs:380 | plague |
+| view/history.rs:381 | realm_famine |
+| view/history.rs:381 | famine |
+| view/history.rs:389 | {w} {n} |
 | view/knowing.rs:28 | talk |
 | view/knowing.rs:29 | tend |
 | view/knowing.rs:30 | forage |
@@ -4378,10 +4394,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/look.rs:35 | coat |
 | view/look.rs:36 | workshirt |
 | view/look.rs:37 | vest |
-| view/mod.rs:32 | douse |
-| view/mod.rs:33 | by lightning |
-| view/mod.rs:33 | lightning |
-| view/mod.rs:34 | flare |
+| view/mod.rs:33 | douse |
+| view/mod.rs:34 | by lightning |
+| view/mod.rs:34 | lightning |
+| view/mod.rs:35 | flare |
 | view/music.rs:20 | mourn |
 | view/music.rs:22 | welcome |
 | view/narrate.rs:39 | {} and {} |
