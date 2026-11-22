@@ -3435,9 +3435,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moods.rs:95 | remembering {name}, who died of {cause} |
 | systems/moods.rs:285 | made in a fey mood, {} |
 | systems/moods.rs:287 | a figure of {}, made in a fey mood, {} |
-| systems/movement.rs:57 | fell through the floor |
-| systems/movement.rs:134 | slipped going down and fell |
-| systems/movement.rs:182 | fell |
+| systems/movement.rs:93 | fell through the floor |
+| systems/movement.rs:170 | slipped going down and fell |
+| systems/movement.rs:218 | fell |
 | systems/moving.rs:31 | old age |
 | systems/moving.rs:45 | strangers from {} took from the store |
 | systems/moving.rs:52 | the rock came down |

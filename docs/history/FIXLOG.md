@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-22: a read-only census of wading steps (OST-1305)
+
+- Symptom: how much people wade at fords was unmeasured, so any rule about crossings had no number
+  behind it.
+- Change: `systems::movement::wading_kind` classifies a step as entering water, stepping along
+  water, or neither (landing on dry ground is not a wade); `wading_step` is its yes/no form. The
+  simulation does not call either. `examples/crossing_census.rs` counts wading steps per living
+  person per day (denominator: living people on the map at each day start) and lists the busiest
+  water tiles with distance to the nearest community home, distinct people and days.
+- Guards: `tests/movement.rs` `a_ford_step_is_counted` (one crossing of a one-tile stream is one
+  step) and `a_wider_ford_counts_entry_and_each_step_along_but_not_the_exit`.
+- Measured: a 30-day smoke of seed 1 (about 6 steps per person per day). No multi-seed figures are
+  recorded here; they need the same stepping and denominator to be rerun on this code.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
