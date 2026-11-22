@@ -137,6 +137,14 @@ Heat wears people down the same whether they stand under a grown tree or on bare
 
 ## Waiting on code or measurement
 
+### OST-1200 · Count a drought as blocking storms as well as rain
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+
+A drought clears rain but lets storms through. Make it clear storms too. Tracking issue: [#545](https://github.com/danhicks96/ostrog-public-ci/issues/545).
+
+**Acceptance:** With a drought spell active on an hour the unforced weather would make a storm, the weather reads `Clear` and rainfall is 0. Focused spell tests and hosted CI pass; no save-format change.
+
 ### OST-1000 · List what happened in one colony year
 
 **Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
