@@ -97,7 +97,7 @@ const GRIEF_MARK_SLACK: u64 = TICKS_PER_DAY;
 /// rubric's "within 0.10 of baseline" (a tenth of the -1..+1 mood range's width of 2, 5%).
 const GRIEF_BACK: f32 = 0.10;
 
-/// The mood terms are read once per 10 game days (#814): 288,000 ticks at 28,800 a day.
+/// The mood terms are read once per 10 game days (OST-904): 288,000 ticks at 28,800 a day.
 const TERMS_EVERY: u64 = 10 * TICKS_PER_DAY;
 /// A mood below this counts toward `mood_below_m03`.
 const MOOD_LOW: f32 = -0.3;
@@ -172,7 +172,7 @@ pub struct AliveTally {
     /// but it was not heeded (#1823: `lesson_ignored`).
     lesson_ignored: u32,
     /// Sums of the four mood terms (`systems::needs::mood_terms`) over every sampled person at
-    /// each 10-day look, and how many person-looks that is (#814).
+    /// each 10-day look, and how many person-looks that is (OST-904).
     term_sums: [f64; 4],
     term_n: u32,
     /// The 10-day window (tick over `TERMS_EVERY`) of the latest look, so each window is read once.
@@ -568,10 +568,10 @@ impl AliveTally {
     ///   >= 0.995.
     /// - `mood_spread`: the median over the observed hours of that hour's s.d.
     /// - `mood_p25`, `mood_p75`: the 25th and 75th percentiles (rank floor(q * (n - 1))) of all
-    ///   sampled moods; `mood_below_m03`: the share below -0.3 (#814).
+    ///   sampled moods; `mood_below_m03`: the share below -0.3 (OST-904).
     /// - `mood_term_needs`, `mood_term_recent`, `mood_term_long`, `mood_term_thoughts`: the mean
     ///   of each term of `systems::needs::mood_terms` over every sampled person at the first look
-    ///   of each 10-day window (#814); 0.0 before any look.
+    ///   of each 10-day window (OST-904); 0.0 before any look.
     ///
     /// The activity keys (#1490; FIXLOG 2026-11-14 #1490) read the same sampled people. "Waking
     /// hours" are all sampled person-hours except `sleeping`.

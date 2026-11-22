@@ -162,10 +162,10 @@ pub fn step(w: &mut World) {
 }
 
 /// The four terms a person's mood is the clamped sum of, in order: needs (already weighted by
-/// 1.2), recent memories, long memories, held thoughts (#814). The mood block of `step` sums
+/// 1.2), recent memories, long memories, held thoughts (OST-904). The mood block of `step` sums
 /// these, and the alive report reads them, so the two cannot drift.
 ///
-/// #879: thirst and warmth never reached mood, so a person dying of thirst read as content as
+/// thirst and warmth never reached mood, so a person dying of thirst read as content as
 /// one who had just eaten.
 pub fn mood_terms(a: &crate::agents::Agent, now: u64) -> [f32; 4] {
     let needs = (a.needs.hunger
