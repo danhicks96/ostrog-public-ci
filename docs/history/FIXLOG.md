@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-22: a grown tree's shade eases the heat
+
+- Symptom: a person standing under a grown tree lost comfort in a heat wave exactly as fast as one on bare ground.
+- Cause: the heat branch of `cold_step` never read the plants.
+- Fix: a person at ground level in or beside the column of a living mature tree has their excess heat halved before the comfort and rest drains, and holds `Hot` only if the halved excess is still above 4 C.
+- Guard: `a_tree_shades_from_the_heat` in `tests/hazards.rs` (shaded comfort at least 0.1 higher; only the unshaded person holds `Hot`).
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.

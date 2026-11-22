@@ -981,6 +981,14 @@ pub fn cold_step(w: &mut World) {
         .filter(|a| a.alive && a.species == Species::Person)
         .map(|a| a.pos)
         .collect();
+    // Shade: the columns of living mature trees (#1728). A person stood on the ground under
+    // one of these, or its eight neighbours, is out of the sun even outdoors.
+    let tree_columns: std::collections::BTreeSet<(i32, i32)> = w
+        .plants
+        .iter()
+        .filter(|p| p.alive && p.kind.is_tree() && p.mature())
+        .map(|p| (p.pos.x, p.pos.y))
+        .collect();
     let n = w.agents.len();
     let mut dead = Vec::new();
     for i in 0..n {
@@ -1035,12 +1043,34 @@ pub fn cold_step(w: &mut World) {
         }
         if temp > hot_above && !inside && !a.activity.is_asleep() {
             // Heat wears them down: comfort goes, and far above their comfort, rest too.
-            let over = temp - hot_above;
+            // A grown tree's canopy is shade, even outdoors (#1728, 2026-11-15): halve the
+            // degrees over comfort when standing on the ground under one.
+            let shaded = p.z == w.grid.ground_z(p.x, p.y) + 1
+                && [
+                    (-1, -1),
+                    (-1, 0),
+                    (-1, 1),
+                    (0, -1),
+                    (0, 0),
+                    (0, 1),
+                    (1, -1),
+                    (1, 0),
+                    (1, 1),
+                ]
+                .iter()
+                .any(|(dx, dy)| tree_columns.contains(&(p.x + dx, p.y + dy)));
+            let mut over = temp - hot_above;
+            if shaded {
+                over /= 2.0;
+            }
             a.needs.comfort = (a.needs.comfort - 0.02 * (1.0 + over / 5.0)).max(0.0);
             if over > 8.0 {
                 a.needs.rest = (a.needs.rest - 0.01).max(0.0);
             }
-            a.thoughts.add(ThoughtKind::Hot, tick, None);
+            // Only shade quiets the thought; open ground keeps it at any heat over comfort.
+            if !shaded || over > 4.0 {
+                a.thoughts.add(ThoughtKind::Hot, tick, None);
+            }
         }
         if a.needs.warmth < 0.35 {
             a.thoughts.add(ThoughtKind::Cold, tick, None);
