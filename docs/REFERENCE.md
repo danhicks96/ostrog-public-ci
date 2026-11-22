@@ -1755,14 +1755,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | delving.rs:70 | harder stone for their walls |
 | delving.rs:71 | the gems and gold of the deep |
 | delving.rs:72 | water |
-| duties.rs:188 | {} ({} hours lately) |
-| duties.rs:199 | building |
-| duties.rs:200 | farming |
-| duties.rs:201 | cooking |
-| duties.rs:202 | mining |
-| duties.rs:203 | hauling |
-| duties.rs:204 | tending the hurt |
-| duties.rs:205 | foraging |
+| duties.rs:235 | {} ({} hours lately) |
+| duties.rs:246 | building |
+| duties.rs:247 | farming |
+| duties.rs:248 | cooking |
+| duties.rs:249 | mining |
+| duties.rs:250 | hauling |
+| duties.rs:251 | tending the hurt |
+| duties.rs:252 | foraging |
 | ecology.rs:96 | starved, the grazing gone |
 | ecology.rs:98 | starved, the game gone |
 | economy.rs:20 | +{cause} |
