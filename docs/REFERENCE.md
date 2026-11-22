@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3163 strings (click to open)</summary>
+<details><summary>3165 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1455,9 +1455,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:503 | someone |
 | accounts.rs:513 | {} and {} more |
 | accounts.rs:517 |  Said: {words} ({by}). |
-| agents.rs:449 | fur |
-| agents.rs:450 | feathers |
-| agents.rs:451 | scales |
+| agents.rs:448 | fur |
+| agents.rs:449 | feathers |
+| agents.rs:450 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2396,7 +2396,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | shrines.rs:186 | it burned |
 | shrines.rs:188 | it was broken down |
 | shrines.rs:191 | it was left behind at the old camp |
-| shrines.rs:242 | it fell to ruin, untended |
+| shrines.rs:261 | shrine rubble |
+| shrines.rs:269 | from the shrine of {from} |
+| shrines.rs:273 | it fell to ruin, untended |
 | siege.rs:148 | by the besiegers |
 | siege.rs:151 | fighting the besiegers |
 | siege.rs:245 | battered |
@@ -3397,14 +3399,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:709 | they noticed dangerous water |
 | systems/hazards.rs:826 | drowned in the flood |
 | systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1080 | from the cold |
-| systems/hazards.rs:1088 | froze |
-| systems/hazards.rs:1107 | below ground |
-| systems/hazards.rs:1112 | hearth |
-| systems/hazards.rs:1114 | roofed, no hearth |
-| systems/hazards.rs:1118 | roofed, open side |
-| systems/hazards.rs:1124 | tent/nest |
-| systems/hazards.rs:1126 | open |
+| systems/hazards.rs:1100 | from the cold |
+| systems/hazards.rs:1108 | froze |
+| systems/hazards.rs:1127 | below ground |
+| systems/hazards.rs:1132 | hearth |
+| systems/hazards.rs:1134 | roofed, no hearth |
+| systems/hazards.rs:1138 | roofed, open side |
+| systems/hazards.rs:1144 | tent/nest |
+| systems/hazards.rs:1146 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |

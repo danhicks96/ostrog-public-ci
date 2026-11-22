@@ -231,6 +231,60 @@ fn cold_without_clothes_hurts() {
 }
 
 #[test]
+fn a_tree_shades_from_the_heat() {
+    // OST-900: a person under a mature oak's canopy should bake less than one on open grass.
+    let mut w = meadow(1728);
+    let ids = w.found_party(2);
+    w.meta.autoplan = false;
+    w.meta.tick = 7 * TICKS_PER_DAY + TICKS_PER_HOUR * 12; // summer midday
+    let shaded_pos = TilePos::new(20, 20, 2);
+    let open_pos = TilePos::new(40, 40, 2);
+    w.plants.push(hf_sim::plants::Plant::new(
+        shaded_pos,
+        hf_sim::plants::PlantKind::Tree,
+        1.0,
+        0,
+    ));
+    w.rebuild_caches();
+    let i_shaded = w.agents.iter().position(|a| a.id == ids[0]).unwrap();
+    let i_open = w.agents.iter().position(|a| a.id == ids[1]).unwrap();
+    let mut hot = w.weather;
+    hot.temperature_c = 38.0;
+    hot.sky = hf_sim::systems::weather::Sky::Clear;
+    w.force_weather = Some(hot);
+    w.agents[i_shaded].needs.comfort = 1.0;
+    w.agents[i_open].needs.comfort = 1.0;
+    // `cold_step` fires once per game hour (hazards.rs: tick % TICKS_PER_HOUR == 300), so a
+    // few hours outdoors is needed for the shade's effect to add up to a visible difference.
+    for _ in 0..TICKS_PER_HOUR * 8 {
+        for (j, p) in [(i_shaded, shaded_pos), (i_open, open_pos)] {
+            w.agents[j].activity = hf_sim::mind::Activity::Loitering { ticks_left: 100 };
+            w.agents[j].pos = p;
+            w.agents[j].from = p;
+            w.agents[j].path.clear();
+            w.agents[j].needs.hunger = 0.9;
+        }
+        w.step();
+    }
+    let shaded = &w.agents[i_shaded];
+    let open = &w.agents[i_open];
+    assert!(
+        shaded.needs.comfort >= open.needs.comfort + 0.1,
+        "shaded comfort {} vs open comfort {}",
+        shaded.needs.comfort,
+        open.needs.comfort
+    );
+    assert!(
+        !shaded.thoughts.has(hf_sim::mind::ThoughtKind::Hot),
+        "the shaded one should not be marked Hot"
+    );
+    assert!(
+        open.thoughts.has(hf_sim::mind::ThoughtKind::Hot),
+        "the one on open ground should be marked Hot"
+    );
+}
+
+#[test]
 fn fire_spreads_unchecked() {
     // Nobody on the map: a grass fire in a dry summer spreads until it runs out of grass.
     let mut w = meadow(1703);
