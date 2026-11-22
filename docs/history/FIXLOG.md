@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-22: mood terms in the alive report
+
+- Symptom: nothing reported what a colony's mood is made of, only a few spread numbers.
+- Fix: extract the four mood terms into one helper used by the mood update and add the term means and spread keys to the alive report. Report only; simulation unchanged.
+- Guard: `mood_terms_sum_to_mood` in `tests/mood.rs` and the alive report tests.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.

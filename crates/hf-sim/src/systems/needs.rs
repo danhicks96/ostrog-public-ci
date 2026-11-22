@@ -157,33 +157,41 @@ pub fn step(w: &mut World) {
         if !a.alive || i % STRIPE as usize != stripe {
             continue;
         }
-        // #879: thirst and warmth never reached mood, so a person dying of thirst read as
-        // content as one who had just eaten.
-        let needs = (a.needs.hunger
-            + a.needs.rest
-            + a.needs.social
-            + a.needs.comfort
-            + a.needs.thirst
-            + a.needs.warmth)
-            / 6.0
-            - 0.5;
-        let recent: f32 = a
-            .memories
-            .short
-            .iter()
-            .rev()
-            .take(10)
-            .map(|r| r.valence * r.salience)
-            .sum::<f32>()
-            / 4.0;
-        let long: f32 = a
-            .memories
-            .long
-            .iter()
-            .map(|m| m.valence * m.strength)
-            .sum::<f32>()
-            / 8.0;
-        let thoughts = a.thoughts.sum(tick) * 0.8;
-        a.mood = (needs * 1.2 + recent + long + thoughts).clamp(-1.0, 1.0);
+        a.mood = mood_terms(a, tick).iter().sum::<f32>().clamp(-1.0, 1.0);
     }
+}
+
+/// The four terms a person's mood is the clamped sum of, in order: needs (already weighted by
+/// 1.2), recent memories, long memories, held thoughts (#814). The mood block of `step` sums
+/// these, and the alive report reads them, so the two cannot drift.
+///
+/// #879: thirst and warmth never reached mood, so a person dying of thirst read as content as
+/// one who had just eaten.
+pub fn mood_terms(a: &crate::agents::Agent, now: u64) -> [f32; 4] {
+    let needs = (a.needs.hunger
+        + a.needs.rest
+        + a.needs.social
+        + a.needs.comfort
+        + a.needs.thirst
+        + a.needs.warmth)
+        / 6.0
+        - 0.5;
+    let recent: f32 = a
+        .memories
+        .short
+        .iter()
+        .rev()
+        .take(10)
+        .map(|r| r.valence * r.salience)
+        .sum::<f32>()
+        / 4.0;
+    let long: f32 = a
+        .memories
+        .long
+        .iter()
+        .map(|m| m.valence * m.strength)
+        .sum::<f32>()
+        / 8.0;
+    let thoughts = a.thoughts.sum(now) * 0.8;
+    [needs * 1.2, recent, long, thoughts]
 }
