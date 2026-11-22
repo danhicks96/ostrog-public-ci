@@ -66,3 +66,38 @@ fn a_heat_wave_and_a_drought_lean_the_weather() {
     assert_ne!(dry.sky, hf_sim::systems::weather::Sky::Rain);
     assert!(dry.growth_factor < plain.growth_factor || plain.growth_factor == 0.0);
 }
+
+/// A drought cleared rain from the sky but let storms through, so "the rain stopped
+/// coming" ran alongside a storm overhead.
+#[test]
+fn a_drought_lets_no_storm_through() {
+    use hf_sim::systems::weather::{Sky, Weather};
+
+    let mut w = world();
+    // Scan for an hour the valley's own weather (unforced) would make a storm, as Weather::at
+    // does on some summer/autumn afternoons.
+    let storm_tick = (0..TICKS_PER_DAY * 400)
+        .find(|&t| Weather::at(w.meta.seed, t).sky == Sky::Storm)
+        .expect("no storm tick found for this seed in 400 days");
+    w.meta.tick = storm_tick;
+    let plain = hf_sim::systems::weather::current(&w);
+    assert_eq!(
+        plain.sky,
+        Sky::Storm,
+        "the picked tick is a storm without a drought"
+    );
+
+    w.spells.push(Spell {
+        kind: SpellKind::Drought,
+        began: storm_tick - 1,
+        until: storm_tick + TICKS_PER_DAY,
+    });
+
+    let dry = hf_sim::systems::weather::current(&w);
+    assert_eq!(
+        dry.sky,
+        Sky::Clear,
+        "a drought must clear a storm too, not just rain"
+    );
+    assert_eq!(dry.rainfall(), 0.0);
+}
