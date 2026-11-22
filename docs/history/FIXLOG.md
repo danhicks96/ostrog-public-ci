@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-22: tools left at an abandoned camp teach their craft
+
+- Symptom: Tools left at an abandoned camp taught nothing when studied, although the old hamlets' things did, so craft-bearing things ran out over a long game.
+- Cause: Study teaches only when an item's story names a craft; only the old hamlets' things were given one, and things a moving community leaves behind kept their maker but not their craft.
+- Fix: When a community records a move, each made item on the camp's floors whose maker is still known and knew the craft of its recipe now teaches that craft, with a 'left at' origin if it had none. Food, unmade things and items whose maker is gone or did not know the craft are unchanged. No save-format change.
+- Guard: crates/hf-sim/tests/left_sites.rs::the_tools_left_at_the_old_camp_teach_their_craft; it fails without the change.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
