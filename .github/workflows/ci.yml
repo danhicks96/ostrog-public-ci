@@ -18,8 +18,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  # PR runs are replaced by newer pushes to the same PR. Each push to main gets its own group so
+  # rapid merges no longer cancel one another and main always gets a finished result.
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CARGO_TERM_COLOR: always
