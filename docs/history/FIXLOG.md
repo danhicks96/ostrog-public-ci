@@ -16,6 +16,19 @@
 - Measured: a 50-day smoke of seed 5 only (one house, one table). The cause for seeds 5 and 8 over
   200 days is not measured here; the floor-order test is a candidate cause, not a conclusion.
 
+## 2026-11-22: a child with a parent on a caravan is not fostered (OST-1303)
+
+- Symptom: a child whose parent was away on a caravan or journey was taken in as an orphan
+  ("whose parents are gone").
+- Cause: the fostering check looked for a living parent or foster only among people on the map;
+  anyone away is moved to the away list, so they counted as gone.
+- Fix: a living parent or foster who is on the away list with a caravan or journey set counts as
+  present. Someone away with neither (a leaver, a captive) and the dead still count as gone.
+- Guards: `tests/fostering.rs` `a_child_whose_mother_is_away_with_a_caravan_is_not_fostered`,
+  `a_parent_or_foster_away_on_a_journey_is_away_not_gone`, `a_parent_away_for_good_is_gone`.
+- Not measured: how often seeded runs fostered wrongly before the fix. Kin-first carer choice is a
+  separate change.
+
 ## 2026-11-22: a shrine that falls to ruin leaves its material (OST-1302)
 
 - Symptom: a worn shrine was removed and its loss recorded, but nothing lay on the tile, so the
