@@ -72,6 +72,14 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 **Acceptance:** Build a summary with two deaths, one birth and many hauling rows. It names the births and deaths with the right counts, omits hauling in the headline, and leaves the raw summary counts available to existing consumers.
 
+### OST-1206 · Repay a good turn with a real meal, and not across a feud
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+
+Repaying a good turn moves hunger numbers, not food. Hand over a real meal. Tracking issue: [#610](https://github.com/danhicks96/ostrog-public-ci/issues/610).
+
+**Acceptance:** A carried meal changes hands with no food created or used twice; a stack splits by one; feud, opinion and distance each block the repayment; with no food in reach nothing is repaid. Existing social tests and hosted CI pass; no save-format change.
+
 ### OST-014 · Fold repeated Catch Up details before limiting the list
 
 **Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Mara (MR) · **Public PR:** [#7](https://github.com/danhicks96/ostrog-public-ci/pull/7)
@@ -87,6 +95,62 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 This is the reserved-marking slice of the tracking issue on unused problem and observation kinds (public #189). Add a `RESERVED` list and a doc comment on each variant that nothing writes yet, naming what would wire it, plus a live/reserved table in the minds design note. Do not wire any kind, delete or reorder a variant, or change a label, save or simulation behaviour. Verify each listed variant against every current producer and consumer before listing it.
 
 **Acceptance:** A test fails if a kind listed as reserved is also written by perception or learning. Existing tests, the enum-order check and the generated reference check pass. Saved state is unchanged.
+
+### OST-901 · Count births per community, not per valley
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+Raiders and strangers count toward the crowd rule that halves births. Count per community instead. Tracking issue: [#587](https://github.com/danhicks96/ostrog-public-ci/issues/587).
+
+**Acceptance:** Staged community of 30 with a band of 15 near camp: births use the uncrowded chance. Focused tests and hosted CI pass.
+
+### OST-902 · Retire the unreachable cave-in event
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+`CaveIn` is never pushed; collapses are `Collapse`. Remove its dead arms and keep the variant for save order. Tracking issue: [#588](https://github.com/danhicks96/ostrog-public-ci/issues/588).
+
+**Acceptance:** Existing tests build `Collapse` rows; only the definition, narration and two tables mention `CaveIn`; no digest change. Focused tests and hosted CI pass.
+
+### OST-903 · Rain wets people outdoors; a roof or hearth dries them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+Add a saved wetness state per person. Nothing reads it yet. Tracking issue: [#589](https://github.com/danhicks96/ostrog-public-ci/issues/589).
+
+**Acceptance:** After two game-hours of steady rain an outdoor person is at least 0.6 wet, an indoor one 0, and a soaked one beside a lit hearth returns to 0 within two hours. Save round-trip covers it. Focused tests and hosted CI pass.
+
+### OST-904 · Add mood-term keys to the alive report
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+Report what mood is made of across a colony. Report only; simulation digest unchanged. Related tracker: [#179](https://github.com/danhicks96/ostrog-public-ci/issues/179). Tracking issue: [#590](https://github.com/danhicks96/ostrog-public-ci/issues/590).
+
+**Acceptance:** A built person's four mood terms clamp to the stored mood after one needs pass; the report prints the new keys. Focused tests and hosted CI pass.
+
+### OST-905 · Let the last knower of a craft carve it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+An old or ailing sole knower of a craft their community uses carves the way of the craft before it is lost. Tracking issue: [#591](https://github.com/danhicks96/ostrog-public-ci/issues/591).
+
+**Acceptance:** A staged community with one old smelter carves a smelting engraving within five days; with two smelters, none; old saves load with no craft. Focused tests and hosted CI pass.
+
+### OST-906 · Gate fire sightings on line of sight
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+A fire behind a hill is known only by sight or by smoke already observed. Tracking issue: [#592](https://github.com/danhicks96/ostrog-public-ci/issues/592).
+
+**Acceptance:** A fire behind a wall 10 tiles off is responded to by someone with a fresh smoke observation and by no one else. This slice is gated on the smell/smoke observation being available on main. Focused tests and hosted CI pass.
+
+### OST-907 · Do not re-form a custom from the same cause
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+A custom for a dissolved community is formed and lapsed again every dawn. Skip dissolved communities and never re-form from an origin event that already produced one. Tracking issue: [#593](https://github.com/danhicks96/ostrog-public-ci/issues/593).
+
+**Acceptance:** A staged split forms one custom; after everyone leaves there is exactly one formed and one lapsed row over 30 days; a new death can still found a new rest day. Focused tests and hosted CI pass.
 
 
 ### OST-1300 · Hold duties only once grown
@@ -145,6 +209,14 @@ Heat wears people down the same whether they stand under a grown tree or on bare
 **Acceptance:** Two awake people outdoors at 38 °C, one beside a mature tree and one on open ground: the shaded one's comfort is at least 0.1 higher and only the other holds `Hot`. Focused hazard tests and hosted CI pass; no save-format change.
 
 ## Waiting on code or measurement
+
+### OST-1200 · Count a drought as blocking storms as well as rain
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+
+A drought clears rain but lets storms through. Make it clear storms too. Tracking issue: [#545](https://github.com/danhicks96/ostrog-public-ci/issues/545).
+
+**Acceptance:** With a drought spell active on an hour the unforced weather would make a storm, the weather reads `Clear` and rainfall is 0. Focused spell tests and hosted CI pass; no save-format change.
 
 ### OST-1000 · List what happened in one colony year
 
@@ -249,6 +321,14 @@ Left-behind tools keep their maker but not their craft. Make them teach it. Trac
 **Dependencies:** The independent panel in OST-011. Keep idle-return behavior and the manual control in one client lane to avoid conflicting controller edits.
 
 **Acceptance:** With the proposed 300-second default, test 299, 300 and 301 seconds: the return opens Catch Up only after more than 300 seconds and only with news, meaning a viewer-visible named change or notable line. Retain the focus trigger. A click opens the panel and selects a time span. Place qualifying rows just before, at and after midnight and a five-day season boundary, then assert which rows each span returns. Previous-day ranges exclude the new day; the current day and season include their boundary row. At tick zero, a qualifying row at tick zero is included in the current day and season, with no underflow or invented previous day. Confirm on a second-screen client without pausing play.
+
+### OST-1205 · Post a cooking pot beside a hearth that is cooked at
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+
+Hearths are cooked at but never get a pot. Post one from a stored vessel. Tracking issue: [#596](https://github.com/danhicks96/ostrog-public-ci/issues/596).
+
+**Acceptance:** A hearth with a cook order and a vessel in store gets one pot order, once; with no vessel, none; a finished or open pot order within a tile prevents another. Focused tests and hosted CI pass; no save-format change.
 
 ### OST-013 · Check that Catch Up preserves important events
 
