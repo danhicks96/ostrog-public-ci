@@ -5,6 +5,42 @@ use crate::agents::Agent;
 use crate::nav::step_cost;
 use crate::world_state::World;
 
+/// How a step related to water (OST-1305): read by `examples/crossing_census.rs` and its test;
+/// the simulation itself does not call it.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Wade {
+    /// Stepped from dry ground (or another level) onto a water tile.
+    Entered,
+    /// Stepped from one water tile onto another.
+    Along,
+}
+
+/// Whether a person who was on `before` and is now on `after` has just waded: the position
+/// changed and the new tile has water on it. Stepping out onto dry ground is not a wade.
+pub fn wading_kind(
+    before: crate::ids::TilePos,
+    after: crate::ids::TilePos,
+    grid: &crate::world::WorldGrid,
+) -> Option<Wade> {
+    if before == after || !grid.get(after).is_water() {
+        return None;
+    }
+    Some(if grid.get(before).is_water() {
+        Wade::Along
+    } else {
+        Wade::Entered
+    })
+}
+
+/// Any wading step, entered or along.
+pub fn wading_step(
+    before: crate::ids::TilePos,
+    after: crate::ids::TilePos,
+    grid: &crate::world::WorldGrid,
+) -> bool {
+    wading_kind(before, after, grid).is_some()
+}
+
 pub fn step(w: &mut World) {
     let mut trodden: Vec<(i32, i32)> = Vec::new();
     step_inner(w, &mut trodden);
