@@ -1,12 +1,17 @@
 # Fix log
 
-## 2026-11-22: a feud survives its only holder's journey
+## 2026-11-22: a grown tree's shade eases the heat
 
-- Symptom: A feud ended with 'nobody of one side is left in the valley' while its only holder of that side was away on a journey, and came back to find it gone.
-- Cause: The feud check counted only people alive in the valley's agent list; journeyers are held whole in the away list, so they never counted, despite a comment saying those away still hold the feud.
-- Fix: Count someone away on a journey who has a community as still here for the feud checks, including the heir check. Dead and disowned holders still end a feud.
-- Guard: crates/hf-sim/tests/feuds.rs::a_feud_survives_a_journey sends the only holder away for six days, checks the feud survives each morning with no end or inheritance event, and checks the head on return; it fails without the change.
+- Symptom: a person standing under a grown tree lost comfort in a heat wave exactly as fast as one on bare ground.
+- Cause: the heat branch of `cold_step` never read the plants.
+- Fix: a person at ground level in or beside the column of a living mature tree has their excess heat halved before the comfort and rest drains, and holds `Hot` only if the halved excess is still above 4 C.
+- Guard: `a_tree_shades_from_the_heat` in `tests/hazards.rs` (shaded comfort at least 0.1 higher; only the unshaded person holds `Hot`).
+## 2026-11-22: a drought also blocks storms
 
+- Symptom: A drought cleared rain from the sky but let storms through, so the feed could read that the rain had stopped coming and then report a storm before the drought lifted.
+- Cause: The drought arm of the spell weather adjustment only cleared Sky::Rain.
+- Fix: Clear a storm the same way as rain; a storm's wind without rain is not modelled, so clear is the honest stand-in. No save-format change.
+- Guard: crates/hf-sim/tests/spells.rs::a_drought_lets_no_storm_through forces a storm hour under an active drought and checks the sky reads Clear with no rainfall; it fails without the change.
 ## 2026-11-22: a child holds no duty until grown (OST-1300)
 
 - Symptom: `duties::daily` documents duties as held by grown members but checked only that a
@@ -31,6 +36,13 @@
   compared `35c0bff2` with `0204b9d7` across four seeds. All eight soaks passed;
   normalized chronicle and endpoint world hashes matched for every seed. All 59 breakdowns
   in the candidate recorded a known cause.
+
+## 2026-11-22: a feud survives its only holder's journey
+
+- Symptom: A feud ended with 'nobody of one side is left in the valley' while its only holder of that side was away on a journey, and came back to find it gone.
+- Cause: The feud check counted only people alive in the valley's agent list; journeyers are held whole in the away list, so they never counted, despite a comment saying those away still hold the feud.
+- Fix: Count someone away on a journey who has a community as still here for the feud checks, including the heir check. Dead and disowned holders still end a feud.
+- Guard: crates/hf-sim/tests/feuds.rs::a_feud_survives_a_journey sends the only holder away for six days, checks the feud survives each morning with no end or inheritance event, and checks the head on return; it fails without the change.
 
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
@@ -925,7 +937,6 @@
   (the second death, not the first) and `lesson_ignored` reads 1 (the first death, which held the
   lesson; the second victim held none).
 - No rng, no clock, `BTreeSet` order, nothing in `systems/` changes, so no digest moves.
-
 
 ## 2026-11-15 #1492 WP-10 K1d: a partner bleeds out and nobody can say how long the survivor grieved
 
@@ -11585,7 +11596,6 @@ with the cause unconfirmed; the assertion is restored as it was.
 - Guard: local `check_owner_notes.py` fails before the exclusion and passes afterward,
   also verifying that the public README still exports. Commit: pending owner integration.
 
-
 ## 2026-11-19 — private release integration boundary (local candidate)
 
 Symptom: nested operational docs and confidential policy could enter the public
@@ -11611,7 +11621,6 @@ source records still fail), explicitly skips only those two empirical tests in
 the public tree, and adds positive synthetic install/update-path coverage there.
 The existing negative/pattern tests and stub-package tree checks still run.
 
-
 ## 2026-11-19 — fallback integration rehearsal (local checkpoint pending)
 Symptom: legacy item/provenance generators could restore prior pixels and sheet attribution
 following a fallback swap. Found by entry-point review; cause confirmed in items.py,
@@ -11620,7 +11629,6 @@ item slots, disabled sheet entry points, policy-first atomic provenance and expo
 Unrelated provenance and original private refs retained. Guard: fallback_integration_test.py
 exercises actual entry points with toy bytes, missing/altered policy, restored attribution,
 protected writes and unrelated generation. The 113 fallback inputs remain unreviewed.
-
 
 ## 2026-11-19 — launch-prep digest and reference gates
 Symptom: failing/malformed digest commands could pass CI because echo hid command-substitution
@@ -11632,7 +11640,6 @@ regenerated by tools/docs/readme_tables.py. Guard: tools/tests/digest_job_test.p
 job shell with failed, malformed, missing and duplicate fake output, plus exact valid output.
 No simulation digest/golden values, comparison semantics or private CI triggers changed.
 Checkpoint: local launch-prep review commit; no hosted run or release approval.
-
 
 ## 2026-11-19 — threaded-feed guard completion budget
 Symptom: canonical feed guard compared fewer completed threaded ticks/rows against a full
