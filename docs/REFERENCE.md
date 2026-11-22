@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3163 strings (click to open)</summary>
+<details><summary>3166 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1913,16 +1913,17 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | justice.rs:707 | pardoned |
 | justice.rs:719 | exiled |
 | justice.rs:744 | the wilds |
-| left_sites.rs:182 | a wall of the old camp, fallen with the weather |
-| left_sites.rs:209 | their own fear |
-| left_sites.rs:218 | the graves there |
-| left_sites.rs:226 | the burned timbers |
-| left_sites.rs:230 | the {dir} |
-| left_sites.rs:231 | a worn path leading out |
-| left_sites.rs:234 | nothing left to read |
-| left_sites.rs:327 | food |
-| left_sites.rs:336 | took {take} {label} for the road |
-| left_sites.rs:337 | the stores were theirs to carry |
+| left_sites.rs:123 | left at {site_name} |
+| left_sites.rs:235 | a wall of the old camp, fallen with the weather |
+| left_sites.rs:262 | their own fear |
+| left_sites.rs:271 | the graves there |
+| left_sites.rs:279 | the burned timbers |
+| left_sites.rs:283 | the {dir} |
+| left_sites.rs:284 | a worn path leading out |
+| left_sites.rs:287 | nothing left to read |
+| left_sites.rs:380 | food |
+| left_sites.rs:389 | took {take} {label} for the road |
+| left_sites.rs:390 | the stores were theirs to carry |
 | legend.rs:100 | {:?} of year {} |
 | legend.rs:110 | iron tool |
 | legend.rs:111 | copper tool |
@@ -2396,7 +2397,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | shrines.rs:186 | it burned |
 | shrines.rs:188 | it was broken down |
 | shrines.rs:191 | it was left behind at the old camp |
-| shrines.rs:242 | it fell to ruin, untended |
+| shrines.rs:261 | shrine rubble |
+| shrines.rs:269 | from the shrine of {from} |
+| shrines.rs:273 | it fell to ruin, untended |
 | siege.rs:148 | by the besiegers |
 | siege.rs:151 | fighting the besiegers |
 | siege.rs:245 | battered |
