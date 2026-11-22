@@ -194,6 +194,100 @@ fn a_shrine_left_untended_falls_and_is_remembered() {
 }
 
 #[test]
+fn a_fallen_shrine_leaves_its_stones() {
+    let (mut w, _ids) = valley(2978, 6);
+    let at = raise_shrine(&mut w);
+    let cid = w.communities[0].id;
+    // Make it a stone shrine, worn to nothing at dawn.
+    let st = w.structures.iter_mut().find(|s| s.pos == at).unwrap();
+    st.material = Material::STONE_BLOCK;
+    st.condition = 0.04;
+    w.events.drain();
+    w.meta.tick = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY + 6 * TICKS_PER_HOUR + 41;
+    hf_sim::shrines::step(&mut w);
+    let lost = w
+        .events
+        .pending
+        .iter()
+        .filter(|e| matches!(&e.kind, EventKind::ShrineLost { community, .. } if *community == cid))
+        .count();
+    assert_eq!(lost, 1);
+    let rubble: Vec<_> = w
+        .items
+        .iter()
+        .filter(|i| {
+            i.kind == hf_sim::items::ItemKind::RoughStone
+                && matches!(i.place, hf_sim::items::ItemPlace::Ground(p) if p == at)
+        })
+        .collect();
+    assert_eq!(rubble.iter().map(|i| i.count).sum::<u32>(), 2);
+    assert!(rubble.iter().all(|i| i.material == Material::STONE_BLOCK));
+    assert!(rubble[0]
+        .story
+        .as_ref()
+        .unwrap()
+        .origin
+        .starts_with("from the shrine of "));
+}
+
+#[test]
+fn a_fallen_timber_shrine_leaves_a_log_once() {
+    let (mut w, _ids) = valley(2977, 6);
+    let at = raise_shrine(&mut w);
+    let cid = w.communities[0].id;
+    let st = w.structures.iter_mut().find(|s| s.pos == at).unwrap();
+    st.material = Material::WOOD;
+    st.condition = 0.04;
+    w.events.drain();
+    w.meta.tick = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY + 6 * TICKS_PER_HOUR + 41;
+    let logs = |w: &World| -> u32 {
+        w.items
+            .iter()
+            .filter(|i| {
+                i.kind == hf_sim::items::ItemKind::Log
+                    && matches!(i.place, hf_sim::items::ItemPlace::Ground(p) if p == at)
+            })
+            .map(|i| i.count)
+            .sum()
+    };
+    let before = logs(&w);
+    hf_sim::shrines::step(&mut w);
+    assert_eq!(logs(&w), before + 1);
+    // The same hour stepped again adds nothing: the shrine is gone, and lost only once.
+    hf_sim::shrines::step(&mut w);
+    assert_eq!(logs(&w), before + 1);
+    let lost = w
+        .events
+        .pending
+        .iter()
+        .filter(|e| matches!(&e.kind, EventKind::ShrineLost { community, .. } if *community == cid))
+        .count();
+    assert_eq!(lost, 1);
+}
+
+#[test]
+fn a_shrine_broken_down_or_burned_leaves_no_rubble() {
+    let (mut w, _ids) = valley(2976, 6);
+    let at = raise_shrine(&mut w);
+    w.structures
+        .retain(|s| !(s.pos == at && s.kind == StructureKind::Shrine));
+    let rubble = |w: &World| {
+        w.items
+            .iter()
+            .filter(|i| matches!(i.place, hf_sim::items::ItemPlace::Ground(p) if p == at))
+            .filter(|i| {
+                i.story
+                    .as_ref()
+                    .is_some_and(|s| s.origin.starts_with("from the shrine of "))
+            })
+            .count()
+    };
+    w.meta.tick = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY + 6 * TICKS_PER_HOUR + 41;
+    hf_sim::shrines::step(&mut w);
+    assert_eq!(rubble(&w), 0);
+}
+
+#[test]
 fn a_timber_shrine_burns_and_one_left_behind_by_a_move_is_lost() {
     let (mut w, _) = valley(2979, 6);
     let at = raise_shrine(&mut w);
