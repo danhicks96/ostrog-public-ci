@@ -13,12 +13,15 @@
   site too (its own irrigation bonus is not doubled); stumps and fallen logs are dead wood and do
   not count as a crowd. Recorded as D102.
 - Guard: `tests/flora.rs::wild_growth_reads_the_ground`.
-- Cost: the first version (sorted neighbour lists rebuilt every tick) made `plant_census 10`
-  take about 165 s a seed against 32 s on main. The neighbour counts now come from one pass into
-  a small table of the tiles beside the tick's stripe of plants, and the water test reads the
-  few chunks of its window (`WorldGrid::water_near`, same answer as the tile scan, guarded by
-  `water_near_matches_a_tile_by_tile_scan`): about 65 s a seed, identical output to the first
-  version. That is still about twice main, so the cost is not settled.
+- Cost: the first version (sorted neighbour lists rebuilt every tick) made `plant_census 10` take
+  about 165 s a seed against 32 s on main. Timers showed the pass over every plant dominating
+  (the kind tests build a lore row), so the neighbour counts now come from one pass that first
+  turns away plants by a 2 KB bitmap of tiles beside the tick's stripe, then probes a small
+  table; the stripe is walked by index, and the water test reads the few chunks of its window
+  (`WorldGrid::water_near`, same answer as the tile scan, guarded by
+  `water_near_matches_a_tile_by_tile_scan`). Output is identical to the first version. Now about
+  40-50 s a seed (seed 1, release, 60,000 ticks: 4.6 s on main, 6.7 s here). The rest is the
+  per-plant ground and water lookups of the 80 or so plants asked each tick.
 - Not measured: browse and grazer counts for seeds 1-5 at 700 days.
 
 ## 2026-11-20: show what a breakdown was over
