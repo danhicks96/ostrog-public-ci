@@ -85,7 +85,7 @@ pub fn devotion(w: &World, k: usize) -> f32 {
 
 /// Who leads it, of those gathered: the keeper or the one followed in the spirit, awake; else
 /// the most devout awake, if they lean toward the signs at all. Leading the rite is a grown
-/// person's standing: both must be of age (#1581).
+/// person's standing: both must be of age (OST-1301).
 fn leader(w: &World, cid: CommunityId, members: &[usize]) -> Option<usize> {
     // The keeper, else the one followed in the spirit (faith.rs `reader_of`).
     let followed = crate::faith::reader_of(w, cid);
