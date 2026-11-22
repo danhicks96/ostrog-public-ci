@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-22: a reproducible number for threat pacing (OST-1401)
+
+- Symptom: band, host and colony-size numbers for storyteller work were pulled by hand from a
+  probe's event dump, so no change had a before-and-after anyone could reproduce.
+- Cause: a missing report, not a behaviour bug.
+- Fix: new read-only example `crates/hf-sim/examples/threat_census.rs`
+  (`threat_census <seed> <days> <steady|relentless|whimsical>`), one CSV row per 100 days: bands
+  set out and hosts besieging counted apart, size min/mean/max, portions raided, endings by kind,
+  mean grown members of communities, food, other items and finished structures, deaths of people
+  not of old age, and the longest gap from the last ending to the next arrival (a gap counts in
+  the block where it closes). Registered with `test = true` in `crates/hf-sim/Cargo.toml`. It
+  reads only `last_events` and the world; no simulation behaviour changes.
+- Guards: `counts_sizes_endings_deaths_and_gap` and `a_gap_crossing_a_block_counts_where_it_closes`.
+- Not run: the seeds 1-8, three-engine, 600-day baseline tables.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.
