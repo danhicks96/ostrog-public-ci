@@ -404,6 +404,35 @@ fn has_custom(w: &World, cid: CommunityId, pred: impl Fn(&CustomKind) -> bool) -
         .any(|c| c.community == cid && !c.lapsed && pred(&c.kind))
 }
 
+/// Whether a custom of this kind, lapsed or not, was already formed from this `origin` event:
+/// a lapsed custom needs a new cause, not the same one re-read from the 30-day log (#1324).
+fn formed_from(
+    w: &World,
+    cid: CommunityId,
+    origin: EventId,
+    pred: impl Fn(&CustomKind) -> bool,
+) -> bool {
+    w.customs
+        .iter()
+        .any(|c| c.community == cid && c.origin == origin && pred(&c.kind))
+}
+
+/// A community still has someone to hold a custom: not dissolved, and someone of it is in the
+/// valley or on the road (the same check `moving::endings` uses to record it ended,
+/// `moving.rs:563-571`).
+fn community_alive(w: &World, cid: CommunityId) -> bool {
+    let Some(c) = w.communities.iter().find(|c| c.id == cid) else {
+        return false;
+    };
+    if c.dissolved {
+        return false;
+    }
+    w.agents
+        .iter()
+        .any(|a| a.alive && a.community == Some(cid) && a.species == crate::agents::Species::Person)
+        || w.overworld.on_the_road(cid).next().is_some()
+}
+
 pub(crate) fn add_custom(
     w: &mut World,
     cid: CommunityId,
@@ -420,7 +449,10 @@ pub(crate) fn add_custom(
         .iter()
         .find(|c| c.id == cid)
         .map(|c| c.members.clone())
-        .unwrap_or_default();
+        .unwrap_or_default()
+        .into_iter()
+        .filter(|m| w.agents.iter().any(|a| a.id == *m && a.alive))
+        .collect();
     let label = Custom {
         id,
         community: cid,
@@ -483,8 +515,13 @@ fn form(w: &mut World) {
                 let Some(cid) = community_of(w, agent) else {
                     continue;
                 };
+                if !community_alive(w, cid) {
+                    continue;
+                }
                 // A day of rest each season on the day they died, remembering them.
-                if !has_custom(w, cid, |k| matches!(k, CustomKind::RestDay { .. })) {
+                if !has_custom(w, cid, |k| matches!(k, CustomKind::RestDay { .. }))
+                    && !formed_from(w, cid, eid, |k| matches!(k, CustomKind::RestDay { .. }))
+                {
                     let day = Calendar::from_tick(etick).day_of_season;
                     let who = name(w, agent);
                     let ordinal = match day {
@@ -513,6 +550,7 @@ fn form(w: &mut World) {
                 }
                 if cause == "starvation"
                     && !has_custom(w, cid, |k| matches!(k, CustomKind::StoreFood))
+                    && !formed_from(w, cid, eid, |k| matches!(k, CustomKind::StoreFood))
                 {
                     let who = name(w, agent);
                     let narrative = format!(
@@ -527,7 +565,10 @@ fn form(w: &mut World) {
                 cause,
                 leader,
                 ..
-            } if !has_custom(w, from, |k| matches!(k, CustomKind::Welcome(_))) => {
+            } if community_alive(w, from)
+                && !has_custom(w, from, |k| matches!(k, CustomKind::Welcome(_)))
+                && !formed_from(w, from, eid, |k| matches!(k, CustomKind::Welcome(_))) =>
+            {
                 // The ones left behind close their doors; the ones who left open theirs.
                 {
                     let who = name(w, leader);
@@ -551,6 +592,9 @@ fn form(w: &mut World) {
                 let Some(cid) = community_of(w, agent) else {
                     continue;
                 };
+                if !community_alive(w, cid) {
+                    continue;
+                }
                 let a = w.agents.iter().find(|x| x.id == agent).unwrap();
                 let known: f32 = a.relationships.values().map(|r| r.familiarity).sum();
                 let sour = a
@@ -565,6 +609,12 @@ fn form(w: &mut World) {
                 if let Some(k) = sour {
                     if known > 1.5
                         && !has_custom(w, cid, |c| matches!(c, CustomKind::FoodTaboo(x) if *x == k))
+                        && !formed_from(
+                            w,
+                            cid,
+                            eid,
+                            |c| matches!(c, CustomKind::FoodTaboo(x) if *x == k),
+                        )
                     {
                         let who = name(w, agent);
                         let narrative = format!(
