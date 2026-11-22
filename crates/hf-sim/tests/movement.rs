@@ -65,3 +65,61 @@ fn blocked_tile_stops_the_path_and_flags_it() {
         .unwrap()
         .reach(a.pos, TilePos::new(15, 10, 2)));
 }
+
+#[test]
+fn a_ford_step_is_counted() {
+    use hf_sim::systems::movement::wading_step;
+    use hf_sim::world::TileFlags;
+    let mut w = flat_world();
+    // A one-tile stream across x = 10, shallow water standing on the floor.
+    for y in 0..64 {
+        let p = TilePos::new(10, y, 2);
+        let mut t = w.grid.get(p);
+        t.flags = TileFlags(t.flags.0 | TileFlags::WATER);
+        w.grid.set(p, t);
+    }
+    let id = w.spawn_agent(Species::Person, TilePos::new(5, 10, 2));
+    let idx = w.agents.iter().position(|a| a.id == id).unwrap();
+    w.agents[idx].idle_ticks = u32::MAX;
+    assert!(w.path_agent_to(idx, TilePos::new(15, 10, 2)));
+    let mut waded = 0;
+    let mut last = w.agents[idx].pos;
+    for _ in 0..400 {
+        w.step();
+        let now = w.agents[idx].pos;
+        if wading_step(last, now, &w.grid) {
+            waded += 1;
+        }
+        last = now;
+    }
+    assert_eq!(w.agents[idx].pos, TilePos::new(15, 10, 2), "crossed");
+    assert_eq!(
+        waded, 1,
+        "one crossing of a one-tile stream, one wading step"
+    );
+}
+
+#[test]
+fn a_wider_ford_counts_entry_and_each_step_along_but_not_the_exit() {
+    use hf_sim::systems::movement::{wading_kind, Wade};
+    use hf_sim::world::TileFlags;
+    let mut w = flat_world();
+    for x in 10..13 {
+        for y in 0..64 {
+            let p = TilePos::new(x, y, 2);
+            let mut t = w.grid.get(p);
+            t.flags = TileFlags(t.flags.0 | TileFlags::WATER);
+            w.grid.set(p, t);
+        }
+    }
+    let at = |x| TilePos::new(x, 10, 2);
+    assert_eq!(wading_kind(at(9), at(10), &w.grid), Some(Wade::Entered));
+    assert_eq!(wading_kind(at(10), at(11), &w.grid), Some(Wade::Along));
+    assert_eq!(wading_kind(at(11), at(12), &w.grid), Some(Wade::Along));
+    assert_eq!(
+        wading_kind(at(12), at(13), &w.grid),
+        None,
+        "out onto dry ground"
+    );
+    assert_eq!(wading_kind(at(11), at(11), &w.grid), None, "standing still");
+}
