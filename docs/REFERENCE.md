@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3166 strings (click to open)</summary>
+<details><summary>3165 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1542,22 +1542,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | conditions.rs:51 | the Thirst |
 | conditions.rs:52 | the Stone-sleep |
 | conditions.rs:53 | the true-dream |
-| conditions.rs:228 | their death is carved, and remembered |
-| conditions.rs:306 | {} gave them their rite |
-| conditions.rs:354 | stone-sleep |
-| conditions.rs:363 | the stone that was {name} |
-| conditions.rs:364 | {name}, who touched the underworld's rock in {} |
-| conditions.rs:372 | turned to stone, since they touched the underworld's rock in {} |
-| conditions.rs:468 | for eating of their own dead, which their people hold abhorrent, by {d}'s will |
-| conditions.rs:501 | burned by the sun |
-| conditions.rs:568 | torn apart in the night |
-| conditions.rs:571 | they were gone on the night of the full moon |
-| conditions.rs:584 | a sleeper woke weak, with two small wounds |
-| conditions.rs:618 | for sleeping within the thin place's reach |
-| conditions.rs:658 | {} walking, unrested |
-| conditions.rs:659 | the stone that should not be |
-| conditions.rs:678 | they cry out in their sleep of things no one told them |
-| conditions.rs:721 | bitten in the night |
+| conditions.rs:225 | their death is carved, and remembered |
+| conditions.rs:303 | {} gave them their rite |
+| conditions.rs:351 | stone-sleep |
+| conditions.rs:360 | the stone that was {name} |
+| conditions.rs:361 | {name}, who touched the underworld's rock in {} |
+| conditions.rs:369 | turned to stone, since they touched the underworld's rock in {} |
+| conditions.rs:465 | for eating of their own dead, which their people hold abhorrent, by {d}'s will |
+| conditions.rs:498 | burned by the sun |
+| conditions.rs:565 | torn apart in the night |
+| conditions.rs:568 | they were gone on the night of the full moon |
+| conditions.rs:581 | a sleeper woke weak, with two small wounds |
+| conditions.rs:615 | for sleeping within the thin place's reach |
+| conditions.rs:655 | {} walking, unrested |
+| conditions.rs:656 | the stone that should not be |
+| conditions.rs:675 | they cry out in their sleep of things no one told them |
+| conditions.rs:718 | bitten in the night |
 | creatures.rs:347 | the White Hart |
 | creatures.rs:374 | trophy |
 | creatures.rs:380 | the White Hart's hide |
@@ -1774,8 +1774,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | engine.rs:29 | whimsical |
 | engine.rs:29 | mirre |
 | engine.rs:31 | no deity {other:?}: choose Aun (steady), Hask (relentless) or Mirre (whimsical) |
-| engrave.rs:240 | the way of {}, as {} did it |
-| engrave.rs:277 | Carved by {} in {when}: {} |
+| engrave.rs:231 | Carved by {} in {when}: {} |
 | expedition.rs:158 | Greywater |
 | expedition.rs:159 | Tollmoor |
 | expedition.rs:160 | Hollin's Rest |
@@ -2397,7 +2396,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | shrines.rs:186 | it burned |
 | shrines.rs:188 | it was broken down |
 | shrines.rs:191 | it was left behind at the old camp |
-| shrines.rs:242 | it fell to ruin, untended |
+| shrines.rs:261 | shrine rubble |
+| shrines.rs:269 | from the shrine of {from} |
+| shrines.rs:273 | it fell to ruin, untended |
 | siege.rs:148 | by the besiegers |
 | siege.rs:151 | fighting the besiegers |
 | siege.rs:245 | battered |
@@ -3223,17 +3224,17 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/conscience.rs:69 | {name} was {} all along |
 | systems/conscience.rs:72 | told themselves {name} had it coming |
 | systems/conscience.rs:74 | {name} was {}, but they would not own the quarrel |
-| systems/crafts.rs:112 | worked out by trying |
-| systems/crafts.rs:149 | does not trust {teacher_name} |
-| systems/crafts.rs:156 | remembers {teacher_name} too well |
-| systems/crafts.rs:159 | would rather not be tied to a bench |
-| systems/crafts.rs:162 | will not work beside {teacher_name} all day |
-| systems/crafts.rs:232 | dead |
-| systems/crafts.rs:237 | gone to {} |
-| systems/crafts.rs:239 | gone from the valley |
-| systems/crafts.rs:242 | gone |
-| systems/crafts.rs:337 | refused to learn {} from {} |
-| systems/crafts.rs:345 | taught by {} |
+| systems/crafts.rs:97 | worked out by trying |
+| systems/crafts.rs:134 | does not trust {teacher_name} |
+| systems/crafts.rs:141 | remembers {teacher_name} too well |
+| systems/crafts.rs:144 | would rather not be tied to a bench |
+| systems/crafts.rs:147 | will not work beside {teacher_name} all day |
+| systems/crafts.rs:217 | dead |
+| systems/crafts.rs:222 | gone to {} |
+| systems/crafts.rs:224 | gone from the valley |
+| systems/crafts.rs:227 | gone |
+| systems/crafts.rs:334 | refused to learn {} from {} |
+| systems/crafts.rs:342 | taught by {} |
 | systems/culture.rs:158 | how their people tell it: {telling} |
 | systems/culture.rs:214 | told by {tname} at the hearth |
 | systems/culture.rs:222 | the tale that {} |
@@ -3398,14 +3399,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:709 | they noticed dangerous water |
 | systems/hazards.rs:826 | drowned in the flood |
 | systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1070 | from the cold |
-| systems/hazards.rs:1078 | froze |
-| systems/hazards.rs:1097 | below ground |
-| systems/hazards.rs:1102 | hearth |
-| systems/hazards.rs:1104 | roofed, no hearth |
-| systems/hazards.rs:1108 | roofed, open side |
-| systems/hazards.rs:1114 | tent/nest |
-| systems/hazards.rs:1116 | open |
+| systems/hazards.rs:1100 | from the cold |
+| systems/hazards.rs:1108 | froze |
+| systems/hazards.rs:1127 | below ground |
+| systems/hazards.rs:1132 | hearth |
+| systems/hazards.rs:1134 | roofed, no hearth |
+| systems/hazards.rs:1138 | roofed, open side |
+| systems/hazards.rs:1144 | tent/nest |
+| systems/hazards.rs:1146 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
@@ -3494,53 +3495,51 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/projects.rs:67 | channel |
 | systems/projects.rs:68 | move |
 | systems/projects.rs:165 | , as {n} taught them |
-| systems/projects.rs:293 | the way of {}, as {} did it |
-| systems/projects.rs:303 | remembers it: {line} |
-| systems/projects.rs:304 | is the last who knows it: {line} |
-| systems/projects.rs:311 | to carve it into a wall |
-| systems/projects.rs:359 | holds that {}{} |
-| systems/projects.rs:368 | to brew from the full store |
-| systems/projects.rs:408 | the carpenter |
-| systems/projects.rs:416 | the smith |
-| systems/projects.rs:423 | the smith |
-| systems/projects.rs:465 | learned the craft from {master}, {craft} |
-| systems/projects.rs:468 | is a good hand at {} |
-| systems/projects.rs:470 | building |
-| systems/projects.rs:472 | making things |
-| systems/projects.rs:488 | to build {} |
-| systems/projects.rs:557 | holds that {}{}, with strangers from {band} taking from the store |
-| systems/projects.rs:566 | to make spears |
-| systems/projects.rs:698 | {why}; {name} has {} to spare |
-| systems/projects.rs:707 | to fetch {} from {name} |
-| systems/projects.rs:725 | thinks {name} will pay for their {} |
-| systems/projects.rs:744 | wants to see what lies at {name} |
-| systems/projects.rs:773 | to lead a party out of the valley |
-| systems/projects.rs:851 | slept on the ground, {everyone} of them and {places} places to sleep |
-| systems/projects.rs:857 | to build {} |
-| systems/projects.rs:891 | took from the store |
-| systems/projects.rs:895 | strangers from  |
-| systems/projects.rs:896 |  took from the store |
-| systems/projects.rs:938 | holds that {}{}, with strangers from {band} taking from the store |
-| systems/projects.rs:946 | is a careful one, with strangers from {band} taking from the store |
-| systems/projects.rs:955 | to dig a shelter for the stores |
-| systems/projects.rs:989 | took from the store |
-| systems/projects.rs:993 | strangers from  |
-| systems/projects.rs:994 |  took from the store |
-| systems/projects.rs:1002 | strangers are a danger |
-| systems/projects.rs:1003 | beyond the valley |
-| systems/projects.rs:1038 | holds that {}{}, with strangers from {band} taking from the store |
-| systems/projects.rs:1046 | is a careful one, with strangers from {band} taking from the store |
-| systems/projects.rs:1055 | to raise a wall round the houses |
-| systems/projects.rs:1112 | remembers the shrine they had: {why} |
-| systems/projects.rs:1115 | holds that {}{}, and the observances want a place |
-| systems/projects.rs:1127 | to raise a shrine |
-| systems/projects.rs:1177 | the nearest water is {d} paces from home |
-| systems/projects.rs:1178 | there is no water within a long walk of home |
-| systems/projects.rs:1185 | to dig a well |
-| systems/projects.rs:1217 | the field is dry and water lies {} paces off |
-| systems/projects.rs:1224 | to dig a channel to the field |
-| systems/projects.rs:1274 | the walls want stone and no rock face is within reach |
-| systems/projects.rs:1279 | the building wants timber and no tree stands within reach |
+| systems/projects.rs:294 | to carve it into a wall |
+| systems/projects.rs:295 | remembers it: {line} |
+| systems/projects.rs:342 | holds that {}{} |
+| systems/projects.rs:351 | to brew from the full store |
+| systems/projects.rs:391 | the carpenter |
+| systems/projects.rs:399 | the smith |
+| systems/projects.rs:406 | the smith |
+| systems/projects.rs:448 | learned the craft from {master}, {craft} |
+| systems/projects.rs:451 | is a good hand at {} |
+| systems/projects.rs:453 | building |
+| systems/projects.rs:455 | making things |
+| systems/projects.rs:471 | to build {} |
+| systems/projects.rs:540 | holds that {}{}, with strangers from {band} taking from the store |
+| systems/projects.rs:549 | to make spears |
+| systems/projects.rs:681 | {why}; {name} has {} to spare |
+| systems/projects.rs:690 | to fetch {} from {name} |
+| systems/projects.rs:708 | thinks {name} will pay for their {} |
+| systems/projects.rs:727 | wants to see what lies at {name} |
+| systems/projects.rs:756 | to lead a party out of the valley |
+| systems/projects.rs:834 | slept on the ground, {everyone} of them and {places} places to sleep |
+| systems/projects.rs:840 | to build {} |
+| systems/projects.rs:874 | took from the store |
+| systems/projects.rs:878 | strangers from  |
+| systems/projects.rs:879 |  took from the store |
+| systems/projects.rs:921 | holds that {}{}, with strangers from {band} taking from the store |
+| systems/projects.rs:929 | is a careful one, with strangers from {band} taking from the store |
+| systems/projects.rs:938 | to dig a shelter for the stores |
+| systems/projects.rs:972 | took from the store |
+| systems/projects.rs:976 | strangers from  |
+| systems/projects.rs:977 |  took from the store |
+| systems/projects.rs:985 | strangers are a danger |
+| systems/projects.rs:986 | beyond the valley |
+| systems/projects.rs:1021 | holds that {}{}, with strangers from {band} taking from the store |
+| systems/projects.rs:1029 | is a careful one, with strangers from {band} taking from the store |
+| systems/projects.rs:1038 | to raise a wall round the houses |
+| systems/projects.rs:1095 | remembers the shrine they had: {why} |
+| systems/projects.rs:1098 | holds that {}{}, and the observances want a place |
+| systems/projects.rs:1110 | to raise a shrine |
+| systems/projects.rs:1160 | the nearest water is {d} paces from home |
+| systems/projects.rs:1161 | there is no water within a long walk of home |
+| systems/projects.rs:1168 | to dig a well |
+| systems/projects.rs:1200 | the field is dry and water lies {} paces off |
+| systems/projects.rs:1207 | to dig a channel to the field |
+| systems/projects.rs:1257 | the walls want stone and no rock face is within reach |
+| systems/projects.rs:1262 | the building wants timber and no tree stands within reach |
 | systems/rescue.rs:127 | climbed down |
 | systems/rescue.rs:128 | there was no other way home |
 | systems/rites.rs:77 | nobody of their people was left |

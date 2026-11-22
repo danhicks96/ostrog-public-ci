@@ -5,6 +5,45 @@
 - Symptom: when the last knower of a craft died, the craft was lost with nothing left behind.
 - Fix: an old or ailing sole knower of a craft their community uses prefers to carve it. Engravings gain an optional craft field that old saves load as none.
 - Guard: `the_last_smith_carves_the_way_of_smelting` in `tests/engrave.rs`.
+## 2026-11-22: a child with a parent on a caravan is not fostered (OST-1303)
+
+- Symptom: a child whose parent was away on a caravan or journey was taken in as an orphan
+  ("whose parents are gone").
+- Cause: the fostering check looked for a living parent or foster only among people on the map;
+  anyone away is moved to the away list, so they counted as gone.
+- Fix: a living parent or foster who is on the away list with a caravan or journey set counts as
+  present. Someone away with neither (a leaver, a captive) and the dead still count as gone.
+- Guards: `tests/fostering.rs` `a_child_whose_mother_is_away_with_a_caravan_is_not_fostered`,
+  `a_parent_or_foster_away_on_a_journey_is_away_not_gone`, `a_parent_away_for_good_is_gone`.
+- Not measured: how often seeded runs fostered wrongly before the fix. Kin-first carer choice is a
+  separate change.
+
+## 2026-11-22: a shrine that falls to ruin leaves its material (OST-1302)
+
+- Symptom: a worn shrine was removed and its loss recorded, but nothing lay on the tile, so the
+  stone or timber it was built from simply vanished.
+- Cause: the wear step deleted the structure without creating an item.
+- Fix: when wear brings a shrine to nothing it leaves two rough stones (stone shrine) or one log
+  (timber shrine) on its tile, carrying the shrine's material and a story naming its community.
+  A shrine broken down or burned still leaves nothing (those paths are unchanged).
+- Guards: `tests/shrines.rs` `a_fallen_shrine_leaves_its_stones`,
+  `a_fallen_timber_shrine_leaves_a_log_once` (a repeated step adds nothing and the loss is
+  recorded once) and `a_shrine_broken_down_or_burned_leaves_no_rubble`.
+- Not measured: seeded long-run counts of untended losses. This adds items, so simulation digests
+  change for runs where a shrine falls.
+
+## 2026-11-22: a grown tree's shade eases the heat
+
+- Symptom: a person standing under a grown tree lost comfort in a heat wave exactly as fast as one on bare ground.
+- Cause: the heat branch of `cold_step` never read the plants.
+- Fix: a person at ground level in or beside the column of a living mature tree has their excess heat halved before the comfort and rest drains, and holds `Hot` only if the halved excess is still above 4 C.
+- Guard: `a_tree_shades_from_the_heat` in `tests/hazards.rs` (shaded comfort at least 0.1 higher; only the unshaded person holds `Hot`).
+## 2026-11-22: a drought also blocks storms
+
+- Symptom: A drought cleared rain from the sky but let storms through, so the feed could read that the rain had stopped coming and then report a storm before the drought lifted.
+- Cause: The drought arm of the spell weather adjustment only cleared Sky::Rain.
+- Fix: Clear a storm the same way as rain; a storm's wind without rain is not modelled, so clear is the honest stand-in. No save-format change.
+- Guard: crates/hf-sim/tests/spells.rs::a_drought_lets_no_storm_through forces a storm hour under an active drought and checks the sky reads Clear with no rainfall; it fails without the change.
 ## 2026-11-22: a child holds no duty until grown (OST-1300)
 
 - Symptom: `duties::daily` documents duties as held by grown members but checked only that a
