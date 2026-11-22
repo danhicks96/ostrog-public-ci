@@ -1383,7 +1383,7 @@ fn plan_community(w: &mut World, cid: crate::ids::CommunityId) {
         // 8a'. A pot for the fire: a hearth with a Cook order open
         // or freshly posted this pass stands in for "cooked at lately" (no new state needed).
         // If it has no CookingPot, finished or ordered, within a tile, and a Vessel is in
-        // store, post one made of a copper bar when there is one, else of clay.
+        // store, post a clay pot costing that vessel.
         let cooking = cooks_open > 0
             || w.designations
                 .iter()
@@ -1398,11 +1398,9 @@ fn plan_community(w: &mut World, cid: crate::ids::CommunityId) {
                 ) && d.pos.dist(hp) <= 1
             });
             if !pot_near && count_kind(w, &here, ItemKind::Vessel) > 0 {
-                let mat = if count_kind(w, &here, ItemKind::CopperBar) > 0 {
-                    Material::COPPER
-                } else {
-                    Material::CLAY
-                };
+                // The structure's only cost is the vessel (`structure_cost`), so it is a clay
+                // pot whatever the vessel was made of; no other store item is consumed.
+                let mat = Material::CLAY;
                 let blocked = |p: TilePos| {
                     w.structures.iter().any(|s| s.pos == p)
                         || w.designations.iter().any(|d| d.pos == p)

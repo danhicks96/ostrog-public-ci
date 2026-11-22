@@ -4,7 +4,7 @@
 
 - Symptom: A hearth that people cooked at for years never got a cooking pot: the pot kind existed but nothing posted one.
 - Cause: The settlement planner had no path that posted a cooking pot, and the structure cost table had no entry for one.
-- Fix: When a hearth has a cook order open or freshly posted and no cooking pot (finished or ordered) within a tile, and a vessel is in store, the planner posts a pot order on a free neighbouring tile, copper if there is a copper bar in store, else clay; the vessel is its cost. No vessel in store, no order. No save-format change.
+- Fix: When a hearth has a cook order open or freshly posted and no cooking pot (finished or ordered) within a tile, and a vessel is in store, the planner posts a pot order on a free neighbouring tile, a clay pot whose only cost is the vessel. No vessel in store, no order. No save-format change.
 - Guard: crates/hf-sim/tests/hearth_pot.rs covers the positive case and the no-vessel case, and de-duplicates open and finished orders; the positive case fails without the change.
 
 ## 2026-11-22: a child holds no duty until grown (OST-1300)
