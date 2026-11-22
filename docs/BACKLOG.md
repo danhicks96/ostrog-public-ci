@@ -66,7 +66,7 @@ Reconcile the existing read-only frame tally rather than starting another. Count
 
 ### OST-010 · Write Catch Up counts in plain language
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Iris (IV) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Iris (IV) · **Public PR:** [#526](https://github.com/danhicks96/ostrog-public-ci/pull/526)
 
 Reconcile the existing summary change. The opening line should summarize important events in words without filling it with routine labor.
 
@@ -74,7 +74,7 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 ### OST-1206 · Repay a good turn with a real meal, and not across a feud
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Sage (SG) · **Public PR:** [#633](https://github.com/danhicks96/ostrog-public-ci/pull/633)
 
 Repaying a good turn moves hunger numbers, not food. Hand over a real meal. Tracking issue: [#610](https://github.com/danhicks96/ostrog-public-ci/issues/610).
 
@@ -356,9 +356,9 @@ Roles flip daily when two duties are close. Add a margin and a three-morning hol
 
 ### OST-011 · Give Catch Up its own panel
 
-**Milestone:** Make important events easier to follow · **State:** Waiting on dependencies · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
 
-**Dependencies:** Readable counts in OST-010 and the folded details in OST-014. Use the named-change read model already available.
+**Dependencies:** Met. Readable counts landed in OST-010 ([#526](https://github.com/danhicks96/ostrog-public-ci/pull/526)) and folded details in OST-014 ([#7](https://github.com/danhicks96/ostrog-public-ci/pull/7)). Use the named-change read model already available. Keep the raw `counts` unchanged.
 
 **Acceptance:** With two named changes and three folded lines, Catch Up renders the headline and named changes before the folded details. Opening History does not close or replace Catch Up. Check the result after an away period in the running client.
 
