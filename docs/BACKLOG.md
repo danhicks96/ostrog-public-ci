@@ -82,6 +82,14 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 ## Waiting on code or measurement
 
+### OST-1200 · Count a drought as blocking storms as well as rain
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+
+A drought clears rain but lets storms through. Make it clear storms too. Tracking issue: [#545](https://github.com/danhicks96/ostrog-public-ci/issues/545).
+
+**Acceptance:** With a drought spell active on an hour the unforced weather would make a storm, the weather reads `Clear` and rainfall is 0. Focused spell tests and hosted CI pass; no save-format change.
+
 ### OST-003 · Compare long-run camera coverage
 
 **State:** Waiting on dependencies · **Developer:** None · **Public PR:** None
