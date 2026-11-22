@@ -146,6 +146,14 @@ static func help_rect(view: Vector2, hud_bottom: float, content_h: float) -> Rec
 	var room := maxf(160.0, view.y - HELP_BAR_ROOM - top)
 	return Rect2(10.0, top, minf(HELP_W, view.x - 20.0), minf(content_h, room))
 
+## Catch Up sits at the left edge under the HUD like Mouse & Keys, as tall as its text and never
+## over the bottom bar, so History and the other centred reading panels open clear of it (OST-011).
+const CATCH_UP_W := 460.0
+static func catch_up_rect(view: Vector2, hud_bottom: float, content_h: float) -> Rect2:
+	var top := hud_bottom + 8.0
+	var room := maxf(160.0, view.y - HELP_BAR_ROOM - top)
+	return Rect2(10.0, top, minf(CATCH_UP_W, view.x - 20.0), minf(content_h, room))
+
 # People sheet columns for the dead (entity_layer.gd P_FALL, P_LYING).
 const P_FALL := 32
 const P_LYING := 33
