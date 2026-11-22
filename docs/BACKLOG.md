@@ -82,7 +82,7 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 ## Waiting on code or measurement
 
-### OST-015 · List what happened in one colony year
+### OST-1000 · List what happened in one colony year
 
 **Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
 
