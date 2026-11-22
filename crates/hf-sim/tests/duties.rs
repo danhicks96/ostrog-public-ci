@@ -5,7 +5,7 @@ use hf_sim::duties::{self, DUTY_MINUTES, KINDS};
 use hf_sim::events::EventKind;
 use hf_sim::mind::Skill;
 use hf_sim::society::Role;
-use hf_sim::time::TICKS_PER_DAY;
+use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_YEAR};
 use hf_sim::work::DesignationKind;
 use hf_sim::World;
 
@@ -240,4 +240,32 @@ fn tending_and_gathering_fade_when_they_stop() {
     }
     assert!(!w.agents[p[0]].duties.held.contains(&Role::Healer));
     assert!(!w.agents[p[1]].duties.held.contains(&Role::Forager));
+}
+
+#[test]
+fn a_child_who_forages_holds_no_duty_until_of_age() {
+    let mut w = party(1582);
+    w.meta.tick = 30 * TICKS_PER_YEAR;
+    let i = people(&w)[0];
+    w.agents[i].age_scale = 1.0;
+    w.agents[i].born = (w.meta.tick - 6 * TICKS_PER_YEAR) as i64;
+    let k = KINDS.iter().position(|r| *r == Role::Forager).unwrap();
+    w.agents[i].duties.minutes = vec![0; KINDS.len()];
+    w.agents[i].duties.minutes[k] = DUTY_MINUTES * 3;
+    duties::daily(&mut w);
+    assert_eq!(w.agents[i].role, None, "a 6-year-old holds no role");
+    assert!(w.agents[i].duties.held.is_empty());
+    assert!(!w.events.pending.iter().any(
+        |e| matches!(&e.kind, EventKind::RoleTaken { agent, .. } if *agent == w.agents[i].id)
+    ));
+    assert!(!w
+        .events
+        .pending
+        .iter()
+        .any(|e| matches!(&e.kind, EventKind::RoleLeft { agent, .. } if *agent == w.agents[i].id)));
+    // Sixteen: the minutes kept counting, so the role comes the next morning.
+    w.agents[i].born = (w.meta.tick - 16 * TICKS_PER_YEAR) as i64;
+    w.agents[i].duties.minutes.iter_mut().for_each(|m| *m *= 2);
+    duties::daily(&mut w);
+    assert_eq!(w.agents[i].role, Some(Role::Forager));
 }

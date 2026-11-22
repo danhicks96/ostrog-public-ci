@@ -11,8 +11,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::agents::{Agent, Species};
-use crate::events::{Event, EventKind};
-use crate::ids::{AgentId, CommunityId};
+use crate::events::{Event, EventKind, Severity};
+use crate::ids::{AgentId, CommunityId, TilePos};
 use crate::mind::learning::ObservationKind;
 use crate::mind::Activity;
 use crate::time::TICKS_PER_DAY;
@@ -39,6 +39,18 @@ const TIE_SATURATED: f32 = 0.995;
 /// A tie at or above this opinion is a close one, the kind that should fade without contact
 /// (#1491): 0.95 is 19/20 of the way to the clamp, the audit's cut for "close".
 const TIE_CLOSE: f32 = 0.95;
+/// The Major events that name a person, which "nothing important is missed for ever"
+/// (docs/NORTH-STAR.md) is read against (OST-004). Any other Major event (a raid, a collapse, ...)
+/// is left out here.
+const GLANCE_MAJOR_KINDS: [&str; 7] = [
+    "died", "captured", "broke", "exiled", "born", "paired", "returned",
+];
+/// How close the camera's suggestion must come to a watched event's place, in tiles, to count as
+/// having shown it: Chebyshev distance in the plane, on the same level.
+const GLANCE_MAJOR_REACH: i32 = 12;
+/// How long the camera has to show a watched event, in ticks: one game hour, counted from the
+/// event's own tick. A sample taken later than this can no longer show it.
+const GLANCE_MAJOR_WINDOW: u64 = 1_200;
 /// Which `ObservationKind`s a `cause` string's lesson would have to warn about to count as
 /// heeded (#1823, FIXLOG 2026-11-15 #1823): "drowned" (as in "drowned through the ice") reads a
 /// lesson about water depth, current or cold; "thirst" and "froze" read one about cold; any other
@@ -166,6 +178,21 @@ pub struct AliveTally {
     /// Deaths counted so far where the victim held a lesson (confidence >= 0.5) about the cause
     /// but it was not heeded (#1823: `lesson_ignored`).
     lesson_ignored: u32,
+    /// Watched Major events (OST-004) still inside `GLANCE_MAJOR_WINDOW`, in the order seen.
+    major_watch: Vec<MajorWatch>,
+    /// Per kind in `GLANCE_MAJOR_KINDS`: (missed, all) of the watched events whose hour has run
+    /// out. They are folded in here once settled, so a long run keeps no per-event record.
+    major_counts: BTreeMap<&'static str, (u32, u32)>,
+}
+
+/// One Major event being watched for `glance_missed_major`.
+#[derive(Clone, Debug, PartialEq)]
+struct MajorWatch {
+    kind: &'static str,
+    at_tick: u64,
+    /// The event's place; with `None` the event always settles as missed.
+    at: Option<TilePos>,
+    shown: bool,
 }
 
 impl Default for AliveTally {
@@ -269,6 +296,8 @@ impl AliveTally {
             causes_seen: BTreeSet::new(),
             cause_repeat: 0,
             lesson_ignored: 0,
+            major_watch: Vec::new(),
+            major_counts: BTreeMap::new(),
         }
     }
 
@@ -504,6 +533,94 @@ impl AliveTally {
         }
     }
 
+    /// Watch this tick's Major events of the kinds in `GLANCE_MAJOR_KINDS` (OST-004) for the
+    /// `glance_missed_major` keys. Call it once a tick with the events the viewer may be shown;
+    /// events of another kind or severity are ignored. The caller decides which events the camera
+    /// could have shown: the tally counts what it is given.
+    pub fn observe_major_events(&mut self, events: &[Event]) {
+        for e in events {
+            if e.severity != Severity::Major {
+                continue;
+            }
+            let kind = e.kind_name();
+            if !GLANCE_MAJOR_KINDS.contains(&kind) {
+                continue;
+            }
+            self.major_watch.push(MajorWatch {
+                kind,
+                at_tick: e.tick,
+                at: e.at,
+                shown: false,
+            });
+        }
+    }
+
+    /// Feed one camera sample (OST-004): the tick it was taken and the place the director
+    /// suggested at it. A watched event is marked shown when the sample is within
+    /// `GLANCE_MAJOR_REACH` tiles of its place on the same level **and** no more than
+    /// `GLANCE_MAJOR_WINDOW` ticks after the event; a later sample, or one taken before the event
+    /// existed, shows nothing. Then every event older than the window settles into the counts,
+    /// shown or missed. An event with no place is never marked, so it settles missed.
+    pub fn observe_glance(&mut self, tick: u64, suggestion_at: TilePos) {
+        for m in self.major_watch.iter_mut().filter(|m| !m.shown) {
+            let Some(p) = m.at else { continue };
+            let age = tick.checked_sub(m.at_tick);
+            let in_time = age.is_some_and(|a| a <= GLANCE_MAJOR_WINDOW);
+            let close = p.z == suggestion_at.z
+                && (p.x - suggestion_at.x)
+                    .abs()
+                    .max((p.y - suggestion_at.y).abs())
+                    <= GLANCE_MAJOR_REACH;
+            if in_time && close {
+                m.shown = true;
+            }
+        }
+        let (settled, watching): (Vec<_>, Vec<_>) = std::mem::take(&mut self.major_watch)
+            .into_iter()
+            .partition(|m| tick.saturating_sub(m.at_tick) > GLANCE_MAJOR_WINDOW);
+        self.major_watch = watching;
+        for m in settled {
+            let c = self.major_counts.entry(m.kind).or_default();
+            c.1 += 1;
+            c.0 += u32::from(!m.shown);
+        }
+    }
+
+    /// Per kind in `GLANCE_MAJOR_KINDS`, `(kind, missed, all)` over the settled watched events:
+    /// the raw counts behind the `glance_missed_major` shares.
+    pub fn glance_major_counts(&self) -> Vec<(&'static str, u32, u32)> {
+        GLANCE_MAJOR_KINDS
+            .iter()
+            .map(|&k| {
+                let (missed, all) = self.major_counts.get(k).copied().unwrap_or((0, 0));
+                (k, missed, all)
+            })
+            .collect()
+    }
+
+    /// Watched events still inside their hour: not in any count yet, so a run that ends now
+    /// leaves them out.
+    pub fn glance_major_pending(&self) -> usize {
+        self.major_watch.len()
+    }
+
+    /// (`glance_missed_major`, `glance_major_n`, the share per kind): see `report`.
+    fn glance_keys(&self) -> (f64, f64, Vec<f64>) {
+        let share = |missed: u32, all: u32| {
+            if all == 0 {
+                0.0
+            } else {
+                f64::from(missed) / f64::from(all)
+            }
+        };
+        let counts = self.glance_major_counts();
+        let (missed, all) = counts
+            .iter()
+            .fold((0, 0), |a, &(_, m, n)| (a.0 + m, a.1 + n));
+        let by_kind = counts.iter().map(|&(_, m, n)| share(m, n)).collect();
+        (share(missed, all), f64::from(all), by_kind)
+    }
+
     /// (`grief_drop_2d`, `grief_drop_10d`, `grief_days`, `grief_n`): see `report`.
     fn grief_keys(&self) -> (f64, f64, f64, f64) {
         let (mut early, mut mark, mut days) = (Vec::new(), Vec::new(), Vec::new());
@@ -603,6 +720,17 @@ impl AliveTally {
     ///   sampled at it), and reads 60.0 from then on, as does one who died or is away: a recent
     ///   death is not "never" yet, as `grief_drop_10d` leaves out the ones with no day-10 point.
     ///   Medians of an even count are the mean of the two middle values.
+    ///
+    /// The glance keys (OST-004) read the Major events `observe_major_events` was fed against the
+    /// samples `observe_glance` was fed, and are all 0.0 until an event has settled.
+    /// - `glance_major_n`: the watched `died`, `captured`, `broke`, `exiled`, `born`, `paired` and
+    ///   `returned` events whose hour has run out. Events still inside it are not counted
+    ///   (`glance_major_pending`).
+    /// - `glance_missed_major`: of those, the share never shown: no sample came within 12 tiles
+    ///   of the event's place, on the same level, no later than 1,200 ticks (one game hour) after
+    ///   the event. An event with no place is always missed.
+    /// - `glance_missed_major_died`, `..._captured`, `..._broke`, `..._exiled`, `..._born`,
+    ///   `..._paired`, `..._returned`: the same share for one kind.
     pub fn report(&self) -> AliveReport {
         let mut sorted = self.mood.clone();
         sorted.sort_by(f32::total_cmp);
@@ -617,42 +745,54 @@ impl AliveTally {
         let (standing, unreadable, work, talk) = self.waking_shares();
         let (day_distance, act_entropy_sd) = self.person_mix_keys();
         let (grief_2d, grief_10d, grief_days, grief_n) = self.grief_keys();
-        AliveReport {
-            rows: vec![
-                ("mood_median", median(&sorted)),
-                ("mood_p10", percentile10(&sorted)),
-                ("mood_hi", share(&|m| m >= MOOD_HIGH)),
-                ("mood_lo", share(&|m| m < 0.0)),
-                ("mood_clamped", share(&|m| m >= MOOD_CLAMPED)),
-                ("mood_spread", median(&spread)),
-                ("standing_share", standing),
-                ("unreadable_share", unreadable),
-                ("work_share", work),
-                ("talk_share", talk),
-                ("day_distance", day_distance),
-                ("act_entropy_sd", act_entropy_sd),
-                (
-                    "ties_saturated",
-                    self.ties.share(self.ties.saturated, self.ties.top),
-                ),
-                (
-                    "ties_hostile",
-                    self.ties.share(self.hostile_pool.0, self.hostile_pool.1),
-                ),
-                ("ties_frozen", f64::from(self.ties.frozen)),
-                ("ties_frozen_max_days", self.ties.close_max_days as f64),
-                (
-                    "ties_to_dead_share",
-                    self.ties.share(self.ties.to_dead, self.ties.all),
-                ),
-                ("grief_drop_2d", grief_2d),
-                ("grief_drop_10d", grief_10d),
-                ("grief_days", grief_days),
-                ("grief_n", grief_n),
-                ("cause_repeat", f64::from(self.cause_repeat)),
-                ("lesson_ignored", f64::from(self.lesson_ignored)),
-            ],
-        }
+        let (glance_missed, glance_n, glance_by_kind) = self.glance_keys();
+        let mut rows = vec![
+            ("mood_median", median(&sorted)),
+            ("mood_p10", percentile10(&sorted)),
+            ("mood_hi", share(&|m| m >= MOOD_HIGH)),
+            ("mood_lo", share(&|m| m < 0.0)),
+            ("mood_clamped", share(&|m| m >= MOOD_CLAMPED)),
+            ("mood_spread", median(&spread)),
+            ("standing_share", standing),
+            ("unreadable_share", unreadable),
+            ("work_share", work),
+            ("talk_share", talk),
+            ("day_distance", day_distance),
+            ("act_entropy_sd", act_entropy_sd),
+            (
+                "ties_saturated",
+                self.ties.share(self.ties.saturated, self.ties.top),
+            ),
+            (
+                "ties_hostile",
+                self.ties.share(self.hostile_pool.0, self.hostile_pool.1),
+            ),
+            ("ties_frozen", f64::from(self.ties.frozen)),
+            ("ties_frozen_max_days", self.ties.close_max_days as f64),
+            (
+                "ties_to_dead_share",
+                self.ties.share(self.ties.to_dead, self.ties.all),
+            ),
+            ("grief_drop_2d", grief_2d),
+            ("grief_drop_10d", grief_10d),
+            ("grief_days", grief_days),
+            ("grief_n", grief_n),
+            ("cause_repeat", f64::from(self.cause_repeat)),
+            ("lesson_ignored", f64::from(self.lesson_ignored)),
+            ("glance_major_n", glance_n),
+            ("glance_missed_major", glance_missed),
+        ];
+        const GLANCE_KEYS: [&str; 7] = [
+            "glance_missed_major_died",
+            "glance_missed_major_captured",
+            "glance_missed_major_broke",
+            "glance_missed_major_exiled",
+            "glance_missed_major_born",
+            "glance_missed_major_paired",
+            "glance_missed_major_returned",
+        ];
+        rows.extend(GLANCE_KEYS.into_iter().zip(glance_by_kind));
+        AliveReport { rows }
     }
 
     /// (standing, unreadable, work, talk) as shares of every sampled person's waking hours.
