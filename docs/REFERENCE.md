@@ -3334,14 +3334,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:1623 | someone else is already at it |
 | systems/decide.rs:1626 | off work since they broke down |
 | systems/decide.rs:1628 | weighs nothing now |
-| systems/decide.rs:2600 | hunger |
-| systems/decide.rs:2605 | thirst |
-| systems/decide.rs:2610 | tiredness |
-| systems/decide.rs:2615 | days of food in store |
-| systems/decide.rs:2620 | night near with no bed or roof |
-| systems/decide.rs:2625 | arrival urge |
-| systems/decide.rs:2630 | leisure weight |
-| systems/decide.rs:2639 | nothing |
+| systems/decide.rs:2606 | hunger |
+| systems/decide.rs:2611 | thirst |
+| systems/decide.rs:2616 | tiredness |
+| systems/decide.rs:2621 | days of food in store |
+| systems/decide.rs:2626 | night near with no bed or roof |
+| systems/decide.rs:2631 | arrival urge |
+| systems/decide.rs:2636 | leisure weight |
+| systems/decide.rs:2645 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |
