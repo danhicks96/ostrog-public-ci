@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-22: a role is kept until a challenger has led for three mornings
+
+- Symptom: A person's role flipped between forager and hauler within days, each flip a feed line; about a third of role events in long runs returned to the previous role within three days.
+- Cause: Each morning the role was set to whichever duty had the most minutes, with no margin, so one day's work could flip it.
+- Fix: Keep the current role unless a challenger's minutes are 25% ahead on three consecutive mornings; a defaulted counter on the duties record tracks the mornings. Taking a first role and dropping a faded role stay immediate. The duty list that weighs work choice is unchanged.
+- Guard: crates/hf-sim/tests/duties.rs::a_role_does_not_flip_on_one_day checks one and two mornings keep the role, the third switches it once with one role event; it fails without the change. Old saves load through the serde default.
+
 ## 2026-11-20: show what a breakdown was over
 
 - Symptom: the feed stated the breakdown type without saying what weighed on the person.

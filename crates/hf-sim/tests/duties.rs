@@ -178,6 +178,45 @@ fn those_who_gather_and_tend_hold_those_duties() {
     );
 }
 
+/// A role is identity; one day ahead does not retitle someone, but three mornings
+/// running does.
+#[test]
+fn a_role_does_not_flip_on_one_day() {
+    let mut w = party(1325);
+    let p = people(&w);
+    let i = p[0];
+    duties::credit(&mut w, i, Role::Forager, 1000);
+    duties::daily(&mut w);
+    assert_eq!(w.agents[i].role, Some(Role::Forager));
+
+    // A single day's hauling puts haul minutes well over the forage ones, but the role does
+    // not flip on the first day the margin is crossed.
+    duties::credit(&mut w, i, Role::Hauler, 2000);
+    duties::daily(&mut w);
+    assert_eq!(
+        w.agents[i].role,
+        Some(Role::Forager),
+        "one day over the margin does not retitle them"
+    );
+
+    // A second morning still running: still forager.
+    duties::daily(&mut w);
+    assert_eq!(w.agents[i].role, Some(Role::Forager));
+
+    // A third consecutive morning over the margin: the role switches, once.
+    duties::daily(&mut w);
+    assert_eq!(w.agents[i].role, Some(Role::Hauler));
+    let taken: Vec<_> = w
+        .events
+        .pending
+        .iter()
+        .filter(|e| {
+            matches!(&e.kind, EventKind::RoleTaken { agent, role } if *agent == w.agents[i].id && role == "hauler")
+        })
+        .collect();
+    assert_eq!(taken.len(), 1, "exactly one RoleTaken for the switch");
+}
+
 #[test]
 fn tending_and_gathering_fade_when_they_stop() {
     let mut w = party(4546);
