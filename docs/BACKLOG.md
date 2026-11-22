@@ -80,7 +80,23 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 **Acceptance:** In a summary with many repeated suspicions and several distinct raids, the suspicions group without crowding the raids out before folding. Each folded line keeps the newest history ID as its navigation anchor, and stores its earliest and latest event ticks separately. Verify those ticks with out-of-order input, preserve distinct named changes, and check that the timelapse still receives the same raw markers.
 
+### OST-900 · Count a grown tree's shade in the heat
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+
+Heat wears people down the same whether they stand under a grown tree or on bare ground. Halve the excess heat for someone shaded by a mature tree. Tracking issue: [#541](https://github.com/danhicks96/ostrog-public-ci/issues/541).
+
+**Acceptance:** Two awake people outdoors at 38 °C, one beside a mature tree and one on open ground: the shaded one's comfort is at least 0.1 higher and only the other holds `Hot`. Focused hazard tests and hosted CI pass; no save-format change.
+
 ## Waiting on code or measurement
+
+### OST-1000 · List what happened in one colony year
+
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
+
+Add a read-only history query that returns the notable-or-worse events of one colony year, in the order they happened, that the viewer is allowed to know about. Repeated events are folded the same way the history and Catch Up read models fold them. This is a Rust read model only: no bridge, client panel or media change, and no simulation change. It is separate from the Catch Up folding in OST-014 and the panel in OST-011.
+
+**Acceptance:** Stage deaths across several years plus many repeated suspicions in one year. The year query returns only that year's events, oldest first, with the repeats folded to one line, and pages deterministically. Check the first and last tick of the year, a negative year (empty), and a page past the end. Say in the result whether the total counts folded lines or raw rows, and keep rows about undiscovered people out.
 
 ### OST-003 · Compare long-run camera coverage
 
