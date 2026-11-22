@@ -66,7 +66,7 @@ Reconcile the existing read-only frame tally rather than starting another. Count
 
 ### OST-010 · Write Catch Up counts in plain language
 
-**Milestone:** Make important events easier to follow · **State:** Claim pending · **Developer:** Pending · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Iris (IV) · **Public PR:** Pending
 
 Reconcile the existing summary change. The opening line should summarize important events in words without filling it with routine labor.
 
