@@ -473,6 +473,7 @@ impl Identity {
             fey: None,
             tales: Vec::new(),
             accounts: Vec::new(),
+            prayed_over: Vec::new(),
             resonance: None,
             denned: false,
             fed: 0,

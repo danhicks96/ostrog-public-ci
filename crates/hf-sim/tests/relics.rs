@@ -244,3 +244,59 @@ fn in_grief_a_believer_goes_to_the_shrine_and_is_eased_but_not_while_hungry() {
     // Those not in hard times do not go.
     assert!(!set_out.contains(&ids[3]));
 }
+
+/// OST-505: one warning sends each believer to pray over it once, not every few hours for as
+/// long as it stays open; a second warning sends them again.
+#[test]
+fn one_warning_sends_each_person_to_pray_once() {
+    let (mut w, ids, _shrine) = valley(2973, 4);
+    let cid = w.communities[0].id;
+    let warn = |w: &mut World, ev: u32| {
+        let reader = ids[0];
+        let until = w.meta.tick + 5 * TICKS_PER_DAY;
+        w.faith.signs.push(hf_sim::faith::SignRead {
+            reader,
+            community: cid,
+            good: false,
+            of: "a bad omen".into(),
+            event: hf_sim::ids::EventId(ev),
+            until,
+        });
+    };
+    let goings = |w: &mut World, going: &mut Vec<AgentId>| {
+        // Nobody walks in this test: whoever set out is back, idle, by the next hour.
+        w.faith.pilgrims.clear();
+        for a in w.agents.iter_mut() {
+            a.activity = hf_sim::mind::activity::Activity::Idle;
+        }
+        for e in w.events.drain() {
+            if let EventKind::Pilgrimage { agent, why, .. } = e.kind {
+                if why.starts_with("afraid") {
+                    going.push(agent);
+                }
+            }
+        }
+    };
+    let mut going = Vec::new();
+    warn(&mut w, 900_001);
+    hours(&mut w, 5, |w| {
+        goings(w, &mut going);
+        false
+    });
+    for id in &ids {
+        let n = going.iter().filter(|a| *a == id).count();
+        assert!(n <= 1, "{id:?} went {n} times over one warning");
+    }
+    assert!(!going.is_empty(), "somebody still goes to pray");
+    let first = going.len();
+    warn(&mut w, 900_002);
+    hours(&mut w, 5, |w| {
+        goings(w, &mut going);
+        false
+    });
+    for id in &ids {
+        let n = going.iter().filter(|a| *a == id).count();
+        assert!(n <= 2, "{id:?} went {n} times over two warnings");
+    }
+    assert!(going.len() > first, "a second warning sends them again");
+}
