@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3181 strings (click to open)</summary>
+<details><summary>3185 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1455,9 +1455,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:503 | someone |
 | accounts.rs:513 | {} and {} more |
 | accounts.rs:517 |  Said: {words} ({by}). |
+<<<<<<< HEAD
 | agents.rs:460 | fur |
 | agents.rs:461 | feathers |
 | agents.rs:462 | scales |
+=======
+| agents.rs:449 | fur |
+| agents.rs:450 | feathers |
+| agents.rs:451 | scales |
+>>>>>>> 46e3b9bda8ff9ee1caeb94041bf62273434a17f3
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -3403,14 +3409,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:709 | they noticed dangerous water |
 | systems/hazards.rs:826 | drowned in the flood |
 | systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1100 | from the cold |
-| systems/hazards.rs:1108 | froze |
-| systems/hazards.rs:1127 | below ground |
-| systems/hazards.rs:1132 | hearth |
-| systems/hazards.rs:1134 | roofed, no hearth |
-| systems/hazards.rs:1138 | roofed, open side |
-| systems/hazards.rs:1144 | tent/nest |
-| systems/hazards.rs:1146 | open |
+| systems/hazards.rs:1110 | from the cold |
+| systems/hazards.rs:1118 | froze |
+| systems/hazards.rs:1137 | below ground |
+| systems/hazards.rs:1142 | hearth |
+| systems/hazards.rs:1144 | roofed, no hearth |
+| systems/hazards.rs:1148 | roofed, open side |
+| systems/hazards.rs:1154 | tent/nest |
+| systems/hazards.rs:1156 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
@@ -3431,8 +3437,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/life.rs:220 | thirst |
 | systems/life.rs:351 | of unknown make |
 | systems/life.rs:359 | was given at a pairing |
-| systems/life.rs:480 | old age |
-| systems/life.rs:613 | none of their own people |
+| systems/life.rs:489 | old age |
+| systems/life.rs:622 | none of their own people |
 | systems/moods.rs:50 | as {master}, {craft}, taught them |
 | systems/moods.rs:52 | smith |
 | systems/moods.rs:56 | remembering {child}, their child |
@@ -4446,6 +4452,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/summary.rs:79 | craft_lost |
 | view/summary.rs:80 | role |
 | view/summary.rs:99 | '{k}' |
+| view/summary.rs:228 |  /  /  |
+| view/summary.rs:231 | [b]What changed[/b] /  |
+| view/summary.rs:239 | [b]Also noted[/b] /  |
+| view/summary.rs:269 | {} (x{}) |
 | view/waiting.rs:20 | Planned: {} ({}) |
 | view/waiting.rs:30 | {n} has taken it |
 | view/waiting.rs:33 | set aside after {} failed tries |
@@ -4595,196 +4605,199 @@ Generated from `godot/scripts/` by the same script.
 
 HUD, feed, inspect panel, History, away summary, settings and the arrival screen. `%s`, `%d` and `%.2f` are filled at run time; `[b]` and `[color=...]` are BBCode.
 
-<details><summary>261 strings (click to open)</summary>
+<details><summary>264 strings (click to open)</summary>
 
 | file:line | function | string |
 |---|---|---|
 | godot/scripts/main.gd:12 |  | [b]Mouse & Keys[/b] /  / [b]Mouse[/b] / Click any person or animal to inspect them (Follow, ★ Favourite, Go to) / Click any ground, water, or rock tile to inspect what it holds / Drag with any mouse button to pan (dragging stops following) / Mouse wheel zooms toward the pointer / The bottom bar has every command (B to hide/show) / Click any feed line or top announcement to look where it happened /  / [b]Keys[/b] / [Space] pause   [1 2 3] speed   [Home] settlement / [, .] or PgUp/PgDn   level up and down / [C] camera director   [F] follow inspected   [J] ★ favourites / [P] people   [H] history   [T] timelapse   [L] legends / [V] what the community has seen   [G] feed rate   [K] waiting work / [N] alerts   [Shift+N] pause on major   [B] toggle bar / [F5] save   [F9] load   [O] settings   [?] help / [Ctrl+F1–8] set bookmark, [F1–8] go to it |
-| godot/scripts/main.gd:280 | _start_debug_log | OSTROG_DEBUG_LOG |
-| godot/scripts/main.gd:291 | _debug_log_on | command=client seed=%d ticks=%d stage=%s opening=%s load=%s |
-| godot/scripts/main.gd:306 | _on_debug_log_toggled | Decision log:  |
-| godot/scripts/main.gd:356 | _ready | autosave could not be read (%s); started a fresh valley |
-| godot/scripts/main.gd:377 | _ready | No autosave could be read; started a new valley. The old files are still in the saves folder. |
-| godot/scripts/main.gd:380 | _ready | A new valley. Watch, or press H for history and O for settings. |
-| godot/scripts/main.gd:745 | _build_ui | Follow [F] |
-| godot/scripts/main.gd:745 | _build_ui | Keep the camera on this person [F] |
-| godot/scripts/main.gd:752 | _build_ui | ☆ Favourite |
-| godot/scripts/main.gd:752 | _build_ui | Mark or unmark this person as a favourite to watch |
-| godot/scripts/main.gd:761 | _build_ui | Why? |
-| godot/scripts/main.gd:761 | _build_ui | Show why this person is doing what they do: the options they weighed and what they put off |
-| godot/scripts/main.gd:768 | _build_ui | Go to |
-| godot/scripts/main.gd:768 | _build_ui | Centre the camera on this person now |
-| godot/scripts/main.gd:779 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:779 | _build_ui | Close the inspect panel [Esc] |
-| godot/scripts/main.gd:813 | _build_ui | Block inspection |
-| godot/scripts/main.gd:817 | _build_ui | Go to |
-| godot/scripts/main.gd:817 | _build_ui | Centre the camera on this block |
-| godot/scripts/main.gd:826 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:826 | _build_ui | Close block inspection [Esc] |
-| godot/scripts/main.gd:852 | _build_ui | ★ Favourites   (click a person to inspect & star them) |
-| godot/scripts/main.gd:856 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:856 | _build_ui | Close favourites [J or Esc] |
-| godot/scripts/main.gd:868 | _build_ui | No favourites yet. Click anyone in the valley and press '☆ Favourite' on their panel to keep track of them here. |
-| godot/scripts/main.gd:887 | _build_ui | People |
-| godot/scripts/main.gd:891 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:891 | _build_ui | Close people [P or Esc] |
-| godot/scripts/main.gd:903 | _build_ui | Nobody lives in the valley. |
-| godot/scripts/main.gd:920 | _build_ui | Waiting work: what nobody has taken, and why |
-| godot/scripts/main.gd:924 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:924 | _build_ui | Close waiting work [K or Esc] |
-| godot/scripts/main.gd:949 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:949 | _build_ui | Close help [? or Esc] |
-| godot/scripts/main.gd:980 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:980 | _build_ui | Close history / summary [H or Esc] |
-| godot/scripts/main.gd:1004 | _build_ui | ← Back [Backspace] |
-| godot/scripts/main.gd:1004 | _build_ui | Return to the previous Legends page [Backspace] |
-| godot/scripts/main.gd:1011 | _build_ui | World overview |
-| godot/scripts/main.gd:1011 | _build_ui | Open the top-level world page |
-| godot/scripts/main.gd:1012 | _build_ui | world:0 |
-| godot/scripts/main.gd:1013 | _build_ui | world:0 |
-| godot/scripts/main.gd:1014 | _build_ui | world:0 |
-| godot/scripts/main.gd:1020 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:1020 | _build_ui | Close Legends [L or Esc] |
-| godot/scripts/main.gd:1093 | _show_waiting | Nothing is waiting: every order has been taken, or was posted within the hour. |
-| godot/scripts/main.gd:1106 | _show_waiting | Go to |
-| godot/scripts/main.gd:1106 | _show_waiting | Look where it waits |
-| godot/scripts/main.gd:1137 | _build_bottom_bar | ▼ Bar |
-| godot/scripts/main.gd:1137 | _build_bottom_bar | Hide or show the bottom button bar [B] |
-| godot/scripts/main.gd:1170 | _build_bottom_bar | Keep playing [Esc] |
-| godot/scripts/main.gd:1170 | _build_bottom_bar | Keep the valley as it is |
-| godot/scripts/main.gd:1174 | _build_bottom_bar | Load |
-| godot/scripts/main.gd:1174 | _build_bottom_bar | Load the saved valley |
-| godot/scripts/main.gd:1191 | _build_bottom_bar | Camera bookmarks (F1–F8) |
-| godot/scripts/main.gd:1195 | _build_bottom_bar | Close |
-| godot/scripts/main.gd:1195 | _build_bottom_bar | Close bookmarks |
-| godot/scripts/main.gd:1208 | _build_bottom_bar | Go F%d |
-| godot/scripts/main.gd:1208 | _build_bottom_bar | Jump to bookmark F%d [F%d] |
-| godot/scripts/main.gd:1216 | _build_bottom_bar | bookmark %d not set yet (click Set) |
-| godot/scripts/main.gd:1218 | _build_bottom_bar | Set |
-| godot/scripts/main.gd:1218 | _build_bottom_bar | Save current camera to bookmark F%d [Ctrl+F%d] |
-| godot/scripts/main.gd:1220 | _build_bottom_bar | bookmark %d set |
-| godot/scripts/main.gd:1232 | _set_bar_visible | ▼ Bar |
-| godot/scripts/main.gd:1232 | _set_bar_visible | ▲ Bar |
-| godot/scripts/main.gd:1250 | _set_feed_rate | Feed rate:  |
-| godot/scripts/main.gd:1273 | _cycle_name_tags | Name tags:  |
-| godot/scripts/main.gd:1274 | _cycle_name_tags | name tags:  |
-| godot/scripts/main.gd:1279 | _cycle_feed_rate | feed rate:  |
-| godot/scripts/main.gd:1291 | _on_bar_pressed | spd1 |
-| godot/scripts/main.gd:1293 | _on_bar_pressed | spd2 |
-| godot/scripts/main.gd:1295 | _on_bar_pressed | spd3 |
-| godot/scripts/main.gd:1335 | _on_bar_pressed | world:0 |
-| godot/scripts/main.gd:1336 | _on_bar_pressed | world:0 |
-| godot/scripts/main.gd:1340 | _on_bar_pressed | view: %s |
-| godot/scripts/main.gd:1340 | _on_bar_pressed | what the community has seen |
-| godot/scripts/main.gd:1346 | _on_bar_pressed | announce:  |
-| godot/scripts/main.gd:1350 | _on_bar_pressed | pause on major events:  |
-| godot/scripts/main.gd:1356 | _on_bar_pressed | saving… |
-| godot/scripts/main.gd:1379 | _update_bar_buttons | ▶ Play |
-| godot/scripts/main.gd:1379 | _update_bar_buttons | ⏸ Pause |
-| godot/scripts/main.gd:1383 | _update_bar_buttons | Director: on |
-| godot/scripts/main.gd:1383 | _update_bar_buttons | Director: off |
-| godot/scripts/main.gd:1384 | _update_bar_buttons | Known: on |
-| godot/scripts/main.gd:1384 | _update_bar_buttons | Known: all |
-| godot/scripts/main.gd:1386 | _update_bar_buttons | Feed:  |
-| godot/scripts/main.gd:1387 | _update_bar_buttons | Alerts:  |
-| godot/scripts/main.gd:1388 | _update_bar_buttons | Pause!: on |
-| godot/scripts/main.gd:1388 | _update_bar_buttons | Pause!: off |
-| godot/scripts/main.gd:1390 | _update_bar_buttons | ★ Favs (%d) |
-| godot/scripts/main.gd:1390 | _update_bar_buttons | ★ Favs |
-| godot/scripts/main.gd:1396 | _update_inspect_buttons | Following [F] |
-| godot/scripts/main.gd:1396 | _update_inspect_buttons | Follow [F] |
-| godot/scripts/main.gd:1398 | _update_inspect_buttons | Why? (on) |
-| godot/scripts/main.gd:1398 | _update_inspect_buttons | Why? |
-| godot/scripts/main.gd:1400 | _update_inspect_buttons | ★ Favourited |
-| godot/scripts/main.gd:1400 | _update_inspect_buttons | ☆ Favourite |
-| godot/scripts/main.gd:1453 | _fill_people | Inspect |
-| godot/scripts/main.gd:1453 | _fill_people | Open %s's inspect panel |
-| godot/scripts/main.gd:1468 | _fill_people | Following |
-| godot/scripts/main.gd:1468 | _fill_people | Follow |
-| godot/scripts/main.gd:1468 | _fill_people | Keep the camera on %s (dragging stops follow) |
-| godot/scripts/main.gd:1483 | _fill_people | Remove %s from favourites |
-| godot/scripts/main.gd:1495 | _update_hud | director: %s |
-| godot/scripts/main.gd:1495 | _update_hud | on, watching %s |
-| godot/scripts/main.gd:1498 | _update_hud | pop %d |
-| godot/scripts/main.gd:1590 | _push_feed | paused:  |
-| godot/scripts/main.gd:1663 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
-| godot/scripts/main.gd:1675 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
-| godot/scripts/main.gd:1675 | _update_inspect | ; who  |
-| godot/scripts/main.gd:1684 | _update_inspect |  / surface: %s /  |
-| godot/scripts/main.gd:1692 | _update_inspect | skills: %s /  |
-| godot/scripts/main.gd:1693 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
-| godot/scripts/main.gd:1694 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
-| godot/scripts/main.gd:1696 | _update_inspect |  / equipped / wearing: /  |
-| godot/scripts/main.gd:1700 | _update_inspect | inventory: /  |
-| godot/scripts/main.gd:1704 | _update_inspect | knows how: /  |
-| godot/scripts/main.gd:1709 | _update_inspect | has heard: /  |
-| godot/scripts/main.gd:1712 | _update_inspect | partner: %s /  |
-| godot/scripts/main.gd:1713 | _update_inspect | parents: %s /  |
-| godot/scripts/main.gd:1714 | _update_inspect | children: %s /  |
-| godot/scripts/main.gd:1716 | _update_inspect | customs: /  |
-| godot/scripts/main.gd:1719 | _update_inspect | mood: %s |
-| godot/scripts/main.gd:1721 | _update_inspect | , because: %s |
-| godot/scripts/main.gd:1723 | _update_inspect | feels: %s /  |
-| godot/scripts/main.gd:1727 | _update_inspect | people: %s /  |
-| godot/scripts/main.gd:1729 | _update_inspect | believes: /  |
-| godot/scripts/main.gd:1733 | _update_inspect | before the portal, in %s: /  |
-| godot/scripts/main.gd:1733 | _update_inspect | the old village |
-| godot/scripts/main.gd:1737 | _update_inspect | remembers: /  |
-| godot/scripts/main.gd:1742 | _update_inspect | knows %d things /  |
-| godot/scripts/main.gd:1765 | _show_summary | [b]While you were away[/b]  (%.1f game-hours) /  /  |
-| godot/scripts/main.gd:1772 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
-| godot/scripts/main.gd:1777 | _show_legends | world:0 |
-| godot/scripts/main.gd:1781 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
-| godot/scripts/main.gd:1799 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1808 | _on_legends_year | This world has no map beyond the valley. |
-| godot/scripts/main.gd:1818 | _on_legends_year | the year before the portal |
-| godot/scripts/main.gd:1818 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1821 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
-| godot/scripts/main.gd:1821 | _on_legends_year | , ringed: where those away are |
-| godot/scripts/main.gd:1839 | _show_history | [b]History[/b] /  /  |
-| godot/scripts/main.gd:1842 | _show_history |  / [b]The record[/b] /  |
-| godot/scripts/main.gd:1846 | _show_history |  / [b]Why they do what they do[/b] /  |
-| godot/scripts/main.gd:1850 | _show_history |  / [b]The valley before the portal[/b] /  |
-| godot/scripts/main.gd:1854 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
-| godot/scripts/main.gd:1859 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
-| godot/scripts/main.gd:1889 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
-| godot/scripts/main.gd:1997 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
-| godot/scripts/main.gd:2037 | _capture_timelapse | png_sha256 |
-| godot/scripts/main.gd:2070 | _capture_timelapse | timelapse snapshot failed (error %d) |
-| godot/scripts/main.gd:2071 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
-| godot/scripts/main.gd:2112 | _process | saved (%.0f ms capture) |
-| godot/scripts/main.gd:2130 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
-| godot/scripts/main.gd:2234 | _do_load_manual | loaded manual save |
-| godot/scripts/main.gd:2235 | _do_load_manual | load failed:  |
-| godot/scripts/main.gd:2275 | _unhandled_input | pause on major events:  |
-| godot/scripts/main.gd:2278 | _unhandled_input | announce:  |
-| godot/scripts/main.gd:2289 | _unhandled_input | relationship lines:  |
-| godot/scripts/main.gd:2317 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2318 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2328 | _unhandled_input | view: %s |
-| godot/scripts/main.gd:2328 | _unhandled_input | what the community has seen |
-| godot/scripts/main.gd:2330 | _unhandled_input | saving… |
-| godot/scripts/main.gd:2343 | _unhandled_input | bookmark %d set |
-| godot/scripts/main.gd:2434 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
-| godot/scripts/main.gd:2493 | _do_shot | SHOT_FAILED %s (error %d) |
-| godot/scripts/main.gd:2566 | _build_settings | Settings |
-| godot/scripts/main.gd:2567 | _build_settings | Close [Esc] |
-| godot/scripts/main.gd:2567 | _build_settings | Close settings [O or Esc] |
-| godot/scripts/main.gd:2571 | _build_settings | Master volume |
-| godot/scripts/main.gd:2572 | _build_settings | Ambient volume |
-| godot/scripts/main.gd:2573 | _build_settings | Effects volume |
-| godot/scripts/main.gd:2574 | _build_settings | Music volume |
-| godot/scripts/main.gd:2575 | _build_settings | Autosave |
-| godot/scripts/main.gd:2576 | _build_settings | Feed rate:  |
-| godot/scripts/main.gd:2576 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
-| godot/scripts/main.gd:2580 | _build_settings | Name tags:  |
-| godot/scripts/main.gd:2580 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
-| godot/scripts/main.gd:2585 | _build_settings | Camera director |
-| godot/scripts/main.gd:2589 | _build_settings | Debug decision log (writes every decision to a file) |
-| godot/scripts/main.gd:2593 | _build_settings | Decision log:  |
-| godot/scripts/main.gd:2595 | _build_settings | Saves:  |
-| godot/scripts/main.gd:2598 | _build_settings | Your files and data |
-| godot/scripts/main.gd:2598 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
+| godot/scripts/main.gd:286 | _start_debug_log | OSTROG_DEBUG_LOG |
+| godot/scripts/main.gd:297 | _debug_log_on | command=client seed=%d ticks=%d stage=%s opening=%s load=%s |
+| godot/scripts/main.gd:312 | _on_debug_log_toggled | Decision log:  |
+| godot/scripts/main.gd:362 | _ready | autosave could not be read (%s); started a fresh valley |
+| godot/scripts/main.gd:383 | _ready | No autosave could be read; started a new valley. The old files are still in the saves folder. |
+| godot/scripts/main.gd:386 | _ready | A new valley. Watch, or press H for history and O for settings. |
+| godot/scripts/main.gd:752 | _build_ui | Follow [F] |
+| godot/scripts/main.gd:752 | _build_ui | Keep the camera on this person [F] |
+| godot/scripts/main.gd:759 | _build_ui | ☆ Favourite |
+| godot/scripts/main.gd:759 | _build_ui | Mark or unmark this person as a favourite to watch |
+| godot/scripts/main.gd:768 | _build_ui | Why? |
+| godot/scripts/main.gd:768 | _build_ui | Show why this person is doing what they do: the options they weighed and what they put off |
+| godot/scripts/main.gd:775 | _build_ui | Go to |
+| godot/scripts/main.gd:775 | _build_ui | Centre the camera on this person now |
+| godot/scripts/main.gd:786 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:786 | _build_ui | Close the inspect panel [Esc] |
+| godot/scripts/main.gd:820 | _build_ui | Block inspection |
+| godot/scripts/main.gd:824 | _build_ui | Go to |
+| godot/scripts/main.gd:824 | _build_ui | Centre the camera on this block |
+| godot/scripts/main.gd:833 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:833 | _build_ui | Close block inspection [Esc] |
+| godot/scripts/main.gd:859 | _build_ui | ★ Favourites   (click a person to inspect & star them) |
+| godot/scripts/main.gd:863 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:863 | _build_ui | Close favourites [J or Esc] |
+| godot/scripts/main.gd:875 | _build_ui | No favourites yet. Click anyone in the valley and press '☆ Favourite' on their panel to keep track of them here. |
+| godot/scripts/main.gd:894 | _build_ui | People |
+| godot/scripts/main.gd:898 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:898 | _build_ui | Close people [P or Esc] |
+| godot/scripts/main.gd:910 | _build_ui | Nobody lives in the valley. |
+| godot/scripts/main.gd:927 | _build_ui | Waiting work: what nobody has taken, and why |
+| godot/scripts/main.gd:931 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:931 | _build_ui | Close waiting work [K or Esc] |
+| godot/scripts/main.gd:956 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:956 | _build_ui | Close help [? or Esc] |
+| godot/scripts/main.gd:987 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:987 | _build_ui | Close history / summary [H or Esc] |
+| godot/scripts/main.gd:1011 | _build_ui | While you were away |
+| godot/scripts/main.gd:1017 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:1017 | _build_ui | Close Catch Up [Esc] |
+| godot/scripts/main.gd:1039 | _build_ui | ← Back [Backspace] |
+| godot/scripts/main.gd:1039 | _build_ui | Return to the previous Legends page [Backspace] |
+| godot/scripts/main.gd:1046 | _build_ui | World overview |
+| godot/scripts/main.gd:1046 | _build_ui | Open the top-level world page |
+| godot/scripts/main.gd:1047 | _build_ui | world:0 |
+| godot/scripts/main.gd:1048 | _build_ui | world:0 |
+| godot/scripts/main.gd:1049 | _build_ui | world:0 |
+| godot/scripts/main.gd:1055 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:1055 | _build_ui | Close Legends [L or Esc] |
+| godot/scripts/main.gd:1130 | _show_waiting | Nothing is waiting: every order has been taken, or was posted within the hour. |
+| godot/scripts/main.gd:1143 | _show_waiting | Go to |
+| godot/scripts/main.gd:1143 | _show_waiting | Look where it waits |
+| godot/scripts/main.gd:1174 | _build_bottom_bar | ▼ Bar |
+| godot/scripts/main.gd:1174 | _build_bottom_bar | Hide or show the bottom button bar [B] |
+| godot/scripts/main.gd:1207 | _build_bottom_bar | Keep playing [Esc] |
+| godot/scripts/main.gd:1207 | _build_bottom_bar | Keep the valley as it is |
+| godot/scripts/main.gd:1211 | _build_bottom_bar | Load |
+| godot/scripts/main.gd:1211 | _build_bottom_bar | Load the saved valley |
+| godot/scripts/main.gd:1228 | _build_bottom_bar | Camera bookmarks (F1–F8) |
+| godot/scripts/main.gd:1232 | _build_bottom_bar | Close |
+| godot/scripts/main.gd:1232 | _build_bottom_bar | Close bookmarks |
+| godot/scripts/main.gd:1245 | _build_bottom_bar | Go F%d |
+| godot/scripts/main.gd:1245 | _build_bottom_bar | Jump to bookmark F%d [F%d] |
+| godot/scripts/main.gd:1253 | _build_bottom_bar | bookmark %d not set yet (click Set) |
+| godot/scripts/main.gd:1255 | _build_bottom_bar | Set |
+| godot/scripts/main.gd:1255 | _build_bottom_bar | Save current camera to bookmark F%d [Ctrl+F%d] |
+| godot/scripts/main.gd:1257 | _build_bottom_bar | bookmark %d set |
+| godot/scripts/main.gd:1269 | _set_bar_visible | ▼ Bar |
+| godot/scripts/main.gd:1269 | _set_bar_visible | ▲ Bar |
+| godot/scripts/main.gd:1287 | _set_feed_rate | Feed rate:  |
+| godot/scripts/main.gd:1310 | _cycle_name_tags | Name tags:  |
+| godot/scripts/main.gd:1311 | _cycle_name_tags | name tags:  |
+| godot/scripts/main.gd:1316 | _cycle_feed_rate | feed rate:  |
+| godot/scripts/main.gd:1328 | _on_bar_pressed | spd1 |
+| godot/scripts/main.gd:1330 | _on_bar_pressed | spd2 |
+| godot/scripts/main.gd:1332 | _on_bar_pressed | spd3 |
+| godot/scripts/main.gd:1372 | _on_bar_pressed | world:0 |
+| godot/scripts/main.gd:1373 | _on_bar_pressed | world:0 |
+| godot/scripts/main.gd:1377 | _on_bar_pressed | view: %s |
+| godot/scripts/main.gd:1377 | _on_bar_pressed | what the community has seen |
+| godot/scripts/main.gd:1383 | _on_bar_pressed | announce:  |
+| godot/scripts/main.gd:1387 | _on_bar_pressed | pause on major events:  |
+| godot/scripts/main.gd:1393 | _on_bar_pressed | saving… |
+| godot/scripts/main.gd:1416 | _update_bar_buttons | ▶ Play |
+| godot/scripts/main.gd:1416 | _update_bar_buttons | ⏸ Pause |
+| godot/scripts/main.gd:1420 | _update_bar_buttons | Director: on |
+| godot/scripts/main.gd:1420 | _update_bar_buttons | Director: off |
+| godot/scripts/main.gd:1421 | _update_bar_buttons | Known: on |
+| godot/scripts/main.gd:1421 | _update_bar_buttons | Known: all |
+| godot/scripts/main.gd:1423 | _update_bar_buttons | Feed:  |
+| godot/scripts/main.gd:1424 | _update_bar_buttons | Alerts:  |
+| godot/scripts/main.gd:1425 | _update_bar_buttons | Pause!: on |
+| godot/scripts/main.gd:1425 | _update_bar_buttons | Pause!: off |
+| godot/scripts/main.gd:1427 | _update_bar_buttons | ★ Favs (%d) |
+| godot/scripts/main.gd:1427 | _update_bar_buttons | ★ Favs |
+| godot/scripts/main.gd:1433 | _update_inspect_buttons | Following [F] |
+| godot/scripts/main.gd:1433 | _update_inspect_buttons | Follow [F] |
+| godot/scripts/main.gd:1435 | _update_inspect_buttons | Why? (on) |
+| godot/scripts/main.gd:1435 | _update_inspect_buttons | Why? |
+| godot/scripts/main.gd:1437 | _update_inspect_buttons | ★ Favourited |
+| godot/scripts/main.gd:1437 | _update_inspect_buttons | ☆ Favourite |
+| godot/scripts/main.gd:1490 | _fill_people | Inspect |
+| godot/scripts/main.gd:1490 | _fill_people | Open %s's inspect panel |
+| godot/scripts/main.gd:1505 | _fill_people | Following |
+| godot/scripts/main.gd:1505 | _fill_people | Follow |
+| godot/scripts/main.gd:1505 | _fill_people | Keep the camera on %s (dragging stops follow) |
+| godot/scripts/main.gd:1520 | _fill_people | Remove %s from favourites |
+| godot/scripts/main.gd:1532 | _update_hud | director: %s |
+| godot/scripts/main.gd:1532 | _update_hud | on, watching %s |
+| godot/scripts/main.gd:1535 | _update_hud | pop %d |
+| godot/scripts/main.gd:1627 | _push_feed | paused:  |
+| godot/scripts/main.gd:1700 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
+| godot/scripts/main.gd:1712 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
+| godot/scripts/main.gd:1712 | _update_inspect | ; who  |
+| godot/scripts/main.gd:1721 | _update_inspect |  / surface: %s /  |
+| godot/scripts/main.gd:1729 | _update_inspect | skills: %s /  |
+| godot/scripts/main.gd:1730 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
+| godot/scripts/main.gd:1731 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
+| godot/scripts/main.gd:1733 | _update_inspect |  / equipped / wearing: /  |
+| godot/scripts/main.gd:1737 | _update_inspect | inventory: /  |
+| godot/scripts/main.gd:1741 | _update_inspect | knows how: /  |
+| godot/scripts/main.gd:1746 | _update_inspect | has heard: /  |
+| godot/scripts/main.gd:1749 | _update_inspect | partner: %s /  |
+| godot/scripts/main.gd:1750 | _update_inspect | parents: %s /  |
+| godot/scripts/main.gd:1751 | _update_inspect | children: %s /  |
+| godot/scripts/main.gd:1753 | _update_inspect | customs: /  |
+| godot/scripts/main.gd:1756 | _update_inspect | mood: %s |
+| godot/scripts/main.gd:1758 | _update_inspect | , because: %s |
+| godot/scripts/main.gd:1760 | _update_inspect | feels: %s /  |
+| godot/scripts/main.gd:1764 | _update_inspect | people: %s /  |
+| godot/scripts/main.gd:1766 | _update_inspect | believes: /  |
+| godot/scripts/main.gd:1770 | _update_inspect | before the portal, in %s: /  |
+| godot/scripts/main.gd:1770 | _update_inspect | the old village |
+| godot/scripts/main.gd:1774 | _update_inspect | remembers: /  |
+| godot/scripts/main.gd:1779 | _update_inspect | knows %d things /  |
+| godot/scripts/main.gd:1804 | _show_summary | While you were away  (%.1f game-hours) |
+| godot/scripts/main.gd:1805 | _show_summary |  / [color=#9a9a9a]Esc to close[/color] |
+| godot/scripts/main.gd:1821 | _show_legends | world:0 |
+| godot/scripts/main.gd:1825 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
+| godot/scripts/main.gd:1843 | _on_legends_link | world:0 |
+| godot/scripts/main.gd:1852 | _on_legends_year | This world has no map beyond the valley. |
+| godot/scripts/main.gd:1862 | _on_legends_year | the year before the portal |
+| godot/scripts/main.gd:1862 | _on_legends_year | %d years before the portal |
+| godot/scripts/main.gd:1865 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
+| godot/scripts/main.gd:1865 | _on_legends_year | , ringed: where those away are |
+| godot/scripts/main.gd:1883 | _show_history | [b]History[/b] /  /  |
+| godot/scripts/main.gd:1886 | _show_history |  / [b]The record[/b] /  |
+| godot/scripts/main.gd:1890 | _show_history |  / [b]Why they do what they do[/b] /  |
+| godot/scripts/main.gd:1894 | _show_history |  / [b]The valley before the portal[/b] /  |
+| godot/scripts/main.gd:1898 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
+| godot/scripts/main.gd:1903 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
+| godot/scripts/main.gd:1933 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
+| godot/scripts/main.gd:2041 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
+| godot/scripts/main.gd:2081 | _capture_timelapse | png_sha256 |
+| godot/scripts/main.gd:2114 | _capture_timelapse | timelapse snapshot failed (error %d) |
+| godot/scripts/main.gd:2115 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
+| godot/scripts/main.gd:2158 | _process | saved (%.0f ms capture) |
+| godot/scripts/main.gd:2176 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
+| godot/scripts/main.gd:2280 | _do_load_manual | loaded manual save |
+| godot/scripts/main.gd:2281 | _do_load_manual | load failed:  |
+| godot/scripts/main.gd:2321 | _unhandled_input | pause on major events:  |
+| godot/scripts/main.gd:2324 | _unhandled_input | announce:  |
+| godot/scripts/main.gd:2335 | _unhandled_input | relationship lines:  |
+| godot/scripts/main.gd:2363 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2364 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2374 | _unhandled_input | view: %s |
+| godot/scripts/main.gd:2374 | _unhandled_input | what the community has seen |
+| godot/scripts/main.gd:2376 | _unhandled_input | saving… |
+| godot/scripts/main.gd:2389 | _unhandled_input | bookmark %d set |
+| godot/scripts/main.gd:2480 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
+| godot/scripts/main.gd:2539 | _do_shot | SHOT_FAILED %s (error %d) |
+| godot/scripts/main.gd:2612 | _build_settings | Settings |
+| godot/scripts/main.gd:2613 | _build_settings | Close [Esc] |
+| godot/scripts/main.gd:2613 | _build_settings | Close settings [O or Esc] |
+| godot/scripts/main.gd:2617 | _build_settings | Master volume |
+| godot/scripts/main.gd:2618 | _build_settings | Ambient volume |
+| godot/scripts/main.gd:2619 | _build_settings | Effects volume |
+| godot/scripts/main.gd:2620 | _build_settings | Music volume |
+| godot/scripts/main.gd:2621 | _build_settings | Autosave |
+| godot/scripts/main.gd:2622 | _build_settings | Feed rate:  |
+| godot/scripts/main.gd:2622 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
+| godot/scripts/main.gd:2626 | _build_settings | Name tags:  |
+| godot/scripts/main.gd:2626 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
+| godot/scripts/main.gd:2631 | _build_settings | Camera director |
+| godot/scripts/main.gd:2635 | _build_settings | Debug decision log (writes every decision to a file) |
+| godot/scripts/main.gd:2639 | _build_settings | Decision log:  |
+| godot/scripts/main.gd:2641 | _build_settings | Saves:  |
+| godot/scripts/main.gd:2644 | _build_settings | Your files and data |
+| godot/scripts/main.gd:2644 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
 | godot/scripts/setup.gd:16 |  | The valley |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
@@ -4869,30 +4882,30 @@ What the client prints; scripts and testers grep for these (SHOT_SAVED, SHOT_FAI
 
 | file:line | function | string |
 |---|---|---|
-| godot/scripts/main.gd:274 | _parse_args | UNKNOWN_FLAG %s (ignored) |
-| godot/scripts/main.gd:294 | _debug_log_on | DEBUG_LOG on: %s |
-| godot/scripts/main.gd:342 | _ready | opening %s -> %s |
-| godot/scripts/main.gd:346 | _ready | LOAD %s -> %s |
-| godot/scripts/main.gd:352 | _ready | loaded %s |
-| godot/scripts/main.gd:354 | _ready | load failed (%s), starting fresh |
-| godot/scripts/main.gd:378 | _ready | autosaves present but none valid; started fresh |
-| godot/scripts/main.gd:382 | _ready | HUNGRY %s |
-| godot/scripts/main.gd:396 | _fresh_world | opening failed (%s), falling back to a generated world |
-| godot/scripts/main.gd:448 | _save_viewport | WIZARD_SHOT %s FAILED (no viewport image) |
-| godot/scripts/main.gd:451 | _save_viewport | WIZARD_SHOT %s err %d size %s |
-| godot/scripts/main.gd:461 | _on_setup_chosen | BEGIN REFUSED (%s) |
-| godot/scripts/main.gd:489 | _after_begin | HUNGRY %s |
-| godot/scripts/main.gd:502 | _world_ready | IGNITE %s -> %s |
-| godot/scripts/main.gd:517 | _world_ready | BANDS %s |
-| godot/scripts/main.gd:554 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
-| godot/scripts/main.gd:654 | _save_and_quit | SAVED ON CLOSE tick %d |
-| godot/scripts/main.gd:2050 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
-| godot/scripts/main.gd:2438 | _write_automation_json | AUTOMATION_JSON %s |
-| godot/scripts/main.gd:2465 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
-| godot/scripts/main.gd:2484 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
-| godot/scripts/main.gd:2496 | _do_shot | SHOT_SAVED %s |
-| godot/scripts/main.gd:2524 | _do_footage | FOOTAGE_FRAME %d %s |
-| godot/scripts/main.gd:2526 | _do_footage | FOOTAGE_DONE |
+| godot/scripts/main.gd:280 | _parse_args | UNKNOWN_FLAG %s (ignored) |
+| godot/scripts/main.gd:300 | _debug_log_on | DEBUG_LOG on: %s |
+| godot/scripts/main.gd:348 | _ready | opening %s -> %s |
+| godot/scripts/main.gd:352 | _ready | LOAD %s -> %s |
+| godot/scripts/main.gd:358 | _ready | loaded %s |
+| godot/scripts/main.gd:360 | _ready | load failed (%s), starting fresh |
+| godot/scripts/main.gd:384 | _ready | autosaves present but none valid; started fresh |
+| godot/scripts/main.gd:388 | _ready | HUNGRY %s |
+| godot/scripts/main.gd:402 | _fresh_world | opening failed (%s), falling back to a generated world |
+| godot/scripts/main.gd:454 | _save_viewport | WIZARD_SHOT %s FAILED (no viewport image) |
+| godot/scripts/main.gd:457 | _save_viewport | WIZARD_SHOT %s err %d size %s |
+| godot/scripts/main.gd:467 | _on_setup_chosen | BEGIN REFUSED (%s) |
+| godot/scripts/main.gd:495 | _after_begin | HUNGRY %s |
+| godot/scripts/main.gd:508 | _world_ready | IGNITE %s -> %s |
+| godot/scripts/main.gd:523 | _world_ready | BANDS %s |
+| godot/scripts/main.gd:560 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
+| godot/scripts/main.gd:661 | _save_and_quit | SAVED ON CLOSE tick %d |
+| godot/scripts/main.gd:2094 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
+| godot/scripts/main.gd:2484 | _write_automation_json | AUTOMATION_JSON %s |
+| godot/scripts/main.gd:2511 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
+| godot/scripts/main.gd:2530 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
+| godot/scripts/main.gd:2542 | _do_shot | SHOT_SAVED %s |
+| godot/scripts/main.gd:2570 | _do_footage | FOOTAGE_FRAME %d %s |
+| godot/scripts/main.gd:2572 | _do_footage | FOOTAGE_DONE |
 
 <!-- END GENERATED: strings-client -->
 

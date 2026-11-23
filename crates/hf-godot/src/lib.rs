@@ -1435,6 +1435,28 @@ impl SimHost {
         self.summary_range(from_tick, to, 12)
     }
 
+    /// The Catch Up card since `from_tick`: Dictionary {text, from, to}, `text` being the card in
+    /// reading order (headline in words, named changes, folded details) as BBCode. Empty when
+    /// there is no world. `summary_since` and its raw `counts` stay as they were.
+    #[func]
+    fn catch_up_since(&mut self, from_tick: i64) -> VarDictionary {
+        self.settle();
+        let mut d = VarDictionary::new();
+        let Some(s) = self.session.as_ref() else {
+            return d;
+        };
+        let to = s.world.tick();
+        match summary::catch_up_card(&s.world, &s.chronicle, from_tick.max(0) as u64, to, 12) {
+            Ok(card) => {
+                d.set("text", &GString::from(card.bbcode().as_str()));
+                d.set("from", from_tick);
+                d.set("to", to as i64);
+            }
+            Err(e) => godot_error!("catch up failed: {e}"),
+        }
+        d
+    }
+
     /// The record the viewer has been told of between two ticks (after `from_tick`, up to and
     /// including `to_tick`), in the shape of `summary_since`, with at most `max_major` lines.
     /// The timelapse stores it beside each sample as that sample's event markers (#484).
