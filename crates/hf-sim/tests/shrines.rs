@@ -194,6 +194,100 @@ fn a_shrine_left_untended_falls_and_is_remembered() {
 }
 
 #[test]
+fn a_fallen_shrine_leaves_its_stones() {
+    let (mut w, _ids) = valley(2978, 6);
+    let at = raise_shrine(&mut w);
+    let cid = w.communities[0].id;
+    // Make it a stone shrine, worn to nothing at dawn.
+    let st = w.structures.iter_mut().find(|s| s.pos == at).unwrap();
+    st.material = Material::STONE_BLOCK;
+    st.condition = 0.04;
+    w.events.drain();
+    w.meta.tick = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY + 6 * TICKS_PER_HOUR + 41;
+    hf_sim::shrines::step(&mut w);
+    let lost = w
+        .events
+        .pending
+        .iter()
+        .filter(|e| matches!(&e.kind, EventKind::ShrineLost { community, .. } if *community == cid))
+        .count();
+    assert_eq!(lost, 1);
+    let rubble: Vec<_> = w
+        .items
+        .iter()
+        .filter(|i| {
+            i.kind == hf_sim::items::ItemKind::RoughStone
+                && matches!(i.place, hf_sim::items::ItemPlace::Ground(p) if p == at)
+        })
+        .collect();
+    assert_eq!(rubble.iter().map(|i| i.count).sum::<u32>(), 2);
+    assert!(rubble.iter().all(|i| i.material == Material::STONE_BLOCK));
+    assert!(rubble[0]
+        .story
+        .as_ref()
+        .unwrap()
+        .origin
+        .starts_with("from the shrine of "));
+}
+
+#[test]
+fn a_fallen_timber_shrine_leaves_a_log_once() {
+    let (mut w, _ids) = valley(2977, 6);
+    let at = raise_shrine(&mut w);
+    let cid = w.communities[0].id;
+    let st = w.structures.iter_mut().find(|s| s.pos == at).unwrap();
+    st.material = Material::WOOD;
+    st.condition = 0.04;
+    w.events.drain();
+    w.meta.tick = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY + 6 * TICKS_PER_HOUR + 41;
+    let logs = |w: &World| -> u32 {
+        w.items
+            .iter()
+            .filter(|i| {
+                i.kind == hf_sim::items::ItemKind::Log
+                    && matches!(i.place, hf_sim::items::ItemPlace::Ground(p) if p == at)
+            })
+            .map(|i| i.count)
+            .sum()
+    };
+    let before = logs(&w);
+    hf_sim::shrines::step(&mut w);
+    assert_eq!(logs(&w), before + 1);
+    // The same hour stepped again adds nothing: the shrine is gone, and lost only once.
+    hf_sim::shrines::step(&mut w);
+    assert_eq!(logs(&w), before + 1);
+    let lost = w
+        .events
+        .pending
+        .iter()
+        .filter(|e| matches!(&e.kind, EventKind::ShrineLost { community, .. } if *community == cid))
+        .count();
+    assert_eq!(lost, 1);
+}
+
+#[test]
+fn a_shrine_broken_down_or_burned_leaves_no_rubble() {
+    let (mut w, _ids) = valley(2976, 6);
+    let at = raise_shrine(&mut w);
+    w.structures
+        .retain(|s| !(s.pos == at && s.kind == StructureKind::Shrine));
+    let rubble = |w: &World| {
+        w.items
+            .iter()
+            .filter(|i| matches!(i.place, hf_sim::items::ItemPlace::Ground(p) if p == at))
+            .filter(|i| {
+                i.story
+                    .as_ref()
+                    .is_some_and(|s| s.origin.starts_with("from the shrine of "))
+            })
+            .count()
+    };
+    w.meta.tick = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY + 6 * TICKS_PER_HOUR + 41;
+    hf_sim::shrines::step(&mut w);
+    assert_eq!(rubble(&w), 0);
+}
+
+#[test]
 fn a_timber_shrine_burns_and_one_left_behind_by_a_move_is_lost() {
     let (mut w, _) = valley(2979, 6);
     let at = raise_shrine(&mut w);
@@ -272,4 +366,69 @@ fn in_play_the_shrine_is_proposed_built_and_taken_as_theirs() {
     }
     let at = hf_sim::shrines::of(&w, cid).expect("the shrine stands and is theirs");
     assert!(home.dist(at) <= 12);
+}
+
+/// Keep one noon observance with each gatherer at the given age in years (all awake and equally
+/// near); the first two are the ones followed in the spirit and lean strongest. Returns who led it,
+/// and whether it lapsed.
+fn keep_with_ages(seed: u64, years: [u64; 4]) -> (Vec<AgentId>, Option<AgentId>, bool) {
+    let (mut w, ids) = valley(seed, 4);
+    plan_projects(&mut w);
+    w.projects.clear();
+    let at = raise_shrine(&mut w);
+    w.events.drain();
+    let day = w.meta.epoch + 5 * TICKS_PER_DAY;
+    w.meta.tick = day + 12 * TICKS_PER_HOUR;
+    for (k, &id) in ids.iter().enumerate() {
+        let i = idx(&w, id);
+        w.agents[i].activity = hf_sim::mind::activity::Activity::Idle;
+        w.agents[i].pos = w.grid.surface(at.x + 1, at.y + 1);
+        let lean = if k < 2 { 0.9 } else { 0.3 };
+        w.agents[i]
+            .beliefs
+            .hold(Topic::DeitySigns, lean, lean, Source::Culture(0), 0);
+        w.agents[i].born = w.meta.tick as i64 - (years[k] * hf_sim::time::TICKS_PER_YEAR) as i64;
+    }
+    hf_sim::observances::step(&mut w);
+    let by = w.events.pending.iter().find_map(|e| match &e.kind {
+        EventKind::Observance { by, .. } => Some(*by),
+        _ => None,
+    });
+    let lapsed = w
+        .events
+        .pending
+        .iter()
+        .any(|e| matches!(&e.kind, EventKind::ObservanceLapsed { .. }));
+    (ids, by, lapsed)
+}
+
+#[test]
+fn a_child_does_not_lead_the_observance() {
+    // The two who lean strongest (one followed in the spirit) are nine; the others are grown.
+    let (ids, by, _) = keep_with_ages(2979, [9, 9, 30, 30]);
+    let by = by.expect("the observance was kept");
+    assert!(
+        by == ids[2] || by == ids[3],
+        "led by {by:?}, who is not of age"
+    );
+}
+
+#[test]
+fn the_youngest_person_of_age_may_lead_and_one_a_year_short_may_not() {
+    let (ids, by, _) = keep_with_ages(2979, [16, 15, 30, 30]);
+    assert_eq!(
+        by,
+        Some(ids[0]),
+        "a sixteen-year-old who leans strongest leads"
+    );
+    let (ids, by, _) = keep_with_ages(2979, [15, 15, 30, 30]);
+    let by = by.expect("the observance was kept");
+    assert!(by == ids[2] || by == ids[3], "a fifteen-year-old led it");
+}
+
+#[test]
+fn an_observance_with_only_children_gathered_lapses() {
+    let (_, by, lapsed) = keep_with_ages(2979, [9, 9, 9, 9]);
+    assert_eq!(by, None, "no child leads");
+    assert!(lapsed, "nobody led it, so the observance lapses");
 }

@@ -502,3 +502,46 @@ fn kin_side_with_their_own() {
     happen_social(&mut w, EventKind::Quarrelled { a, b });
     assert_eq!(w.agents[broi].opinion_of(b), after_bro);
 }
+
+/// A feud's only holder of one side going off on a journey must not read as "nobody of
+/// one side is left in the valley" — they are still of the community, just off the map
+/// (overworld.away), and still hold the feud (feuds.rs's own comment at `daily`).
+#[test]
+fn a_feud_survives_a_journey() {
+    let (mut w, p) = meadow(4060, 2);
+    let (a, b) = (w.agents[p[0]].id, w.agents[p[1]].id);
+    hf_sim::feuds::begin(&mut w, a, b);
+    assert_eq!(w.feuds.len(), 1);
+
+    // a is the only holder of their side; send them off on a 6-day journey, as journeys.rs
+    // does: moved whole out of w.agents and into overworld.away with `journey` set.
+    let ai = w.agents.iter().position(|x| x.id == a).unwrap();
+    let mut agent = w.agents.remove(ai);
+    let depart = w.meta.tick;
+    let until = depart + 6 * TICKS_PER_DAY;
+    agent.journey = Some((until, "Greywater".to_string(), "to see it".to_string()));
+    w.overworld.away.push(agent);
+
+    // The daily feud check runs while they are away; the feud must still be running.
+    for d in 1..=5 {
+        morning(&mut w, d);
+        assert_eq!(
+            w.feuds.len(),
+            1,
+            "day {d}: the feud survives while they are away"
+        );
+    }
+    assert_eq!(count(&w, |k| matches!(k, EventKind::FeudEnded { .. })), 0);
+    assert_eq!(
+        count(&w, |k| matches!(k, EventKind::FeudInherited { .. })),
+        0
+    );
+
+    // They come back; still holding it, as before.
+    let ix = w.overworld.away.iter().position(|x| x.id == a).unwrap();
+    let agent = w.overworld.away.remove(ix);
+    w.agents.push(agent);
+    morning(&mut w, 6);
+    assert_eq!(w.feuds.len(), 1);
+    assert_eq!(w.feuds[0].heads[w.feuds[0].side_of(a).unwrap()], a);
+}

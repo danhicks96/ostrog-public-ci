@@ -3,7 +3,7 @@
 use hf_sim::agents::Species;
 use hf_sim::chronicle::Chronicle;
 use hf_sim::events::{Event, EventKind, Severity};
-use hf_sim::ids::EventId;
+use hf_sim::ids::{EventId, ItemId, TilePos};
 use hf_sim::view::summary;
 use hf_sim::World;
 
@@ -264,4 +264,129 @@ fn viewer_hidden_repeats_cannot_change_visible_groups() {
     assert_eq!(detail.earliest_tick, t0 + 30);
     assert_eq!(detail.latest_tick, t0 + 30);
     assert!(detail.line.contains("visible concern"));
+}
+
+/// OST-010: two deaths, a birth and many hauling rows read as "died 2, born 1"; the raw counts
+/// still carry the hauling.
+#[test]
+fn summary_counts_read_as_words() {
+    let w = World::opening_world(3);
+    let a = w.agents[0].id;
+    let mut evs = Vec::new();
+    let mut push = |kind: EventKind, sev: Severity| {
+        evs.push(Event {
+            id: EventId(evs.len() as u32 + 1),
+            tick: w.meta.epoch + 10,
+            at: None,
+            severity: sev,
+            kind,
+        });
+    };
+    for _ in 0..2 {
+        push(
+            EventKind::Died {
+                agent: a,
+                cause: "age".into(),
+            },
+            Severity::Major,
+        );
+    }
+    push(
+        EventKind::Born {
+            agent: a,
+            mother: a,
+            father: None,
+        },
+        Severity::Major,
+    );
+    for _ in 0..40 {
+        push(
+            EventKind::Hauled {
+                agent: a,
+                item: ItemId(1),
+                to: TilePos { x: 0, y: 0, z: 0 },
+            },
+            Severity::Minor,
+        );
+    }
+    let mut c = Chronicle::in_memory().unwrap();
+    c.record(&evs).unwrap();
+    let sum = summary::since(&w, &c, 0, w.meta.epoch + 20, 12).unwrap();
+    assert_eq!(sum.counts_in_words(), "died 2, born 1");
+    assert!(
+        sum.counts.iter().any(|(k, n)| k == "hauled" && *n == 40),
+        "raw counts keep the hauling"
+    );
+}
+
+/// OST-011: the Catch Up card reads the headline, then the named changes, then the folded
+/// details; a row told by name is not repeated below, and the raw counts stay as they were.
+#[test]
+fn catch_up_card_orders_headline_changes_then_folded_details() {
+    let w = World::opening_world(1);
+    let people: Vec<_> = w
+        .agents
+        .iter()
+        .filter(|a| a.species == Species::Person && !hf_sim::view::known::is_unfound(&w, a.id))
+        .map(|a| a.id)
+        .collect();
+    let &[a, b, d, ..] = people.as_slice() else {
+        panic!("expected three known people");
+    };
+    let t0 = w.meta.tick;
+    let notable = Severity::Notable;
+    let mut rows = vec![
+        (t0 + 2, notable, EventKind::Paired { a, b }),
+        (
+            t0 + 3,
+            notable,
+            EventKind::Died {
+                agent: d,
+                cause: "a fever".into(),
+            },
+        ),
+    ];
+    for i in 0..3 {
+        rows.push((
+            t0 + 10 + i,
+            notable,
+            EventKind::Suspected {
+                by: a,
+                of: b,
+                because: "the sickness".into(),
+            },
+        ));
+    }
+    for (n, what) in [(1u32, "berries"), (2, "grain")] {
+        rows.push((
+            t0 + 20 + n as u64,
+            Severity::Major,
+            EventKind::Raided {
+                band: n,
+                what: what.into(),
+                count: 2,
+                open: false,
+            },
+        ));
+    }
+    let (c, _) = chronicle_fixture(rows);
+    let to = t0 + 50;
+    let raw = summary::since(&w, &c, t0, to, 12).unwrap();
+    let card = summary::catch_up_card(&w, &c, t0, to, 10).unwrap();
+    assert_eq!(card.headline, raw.counts_in_words());
+    assert_eq!(card.changes.len(), 2, "the death and the pairing");
+    assert_eq!(card.details.len(), 3, "folded suspicions and two raids");
+    assert!(
+        card.details.iter().any(|l| l.ends_with("(x3)")),
+        "the folded line says how many: {:?}",
+        card.details
+    );
+    let text = card.bbcode();
+    let head = text.find(&card.headline).unwrap();
+    let changes = text.find("What changed").unwrap();
+    let details = text.find("Also noted").unwrap();
+    assert!(head < changes && changes < details);
+    assert!(text.find(&card.changes[0]).unwrap() < details);
+    let after = summary::since(&w, &c, t0, to, 12).unwrap();
+    assert_eq!(after.counts, raw.counts, "raw counts unchanged");
 }

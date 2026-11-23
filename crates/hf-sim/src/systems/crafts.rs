@@ -32,6 +32,21 @@ pub fn knowers(w: &World, cid: CommunityId, t: Technique) -> Vec<usize> {
         .collect()
 }
 
+/// Whether `cid`'s own ground holds a finished bench of the kind `t`'s recipes ask for: a
+/// craft the community uses, not merely one some arrival once learned.
+pub fn craft_used(w: &World, cid: CommunityId, t: Technique) -> bool {
+    let stations: Vec<crate::structures::StructureKind> = (0..crate::work::recipes::RECIPES.len())
+        .filter(|&r| crate::work::recipes::craft_of(r as u8) == Some(t))
+        .map(|r| crate::work::recipes::recipe(r as u8).station)
+        .collect();
+    let home = w.communities.iter().find(|c| c.id == cid).map(|c| c.home);
+    home.is_some_and(|h| {
+        w.structures
+            .iter()
+            .any(|s| stations.contains(&s.kind) && s.progress >= 1.0 && s.pos.dist(h) <= 30)
+    })
+}
+
 /// Those of `cid` who know `t` and are away on the community's own journey (#259): the craft
 /// is not lost while its knower is three days down the road.
 pub fn knowers_away(w: &World, cid: CommunityId, t: Technique) -> Vec<String> {
@@ -263,19 +278,7 @@ pub fn step(w: &mut World) {
         // 2. A lesson: a craft the community uses (a bench of its kind stands on their
         // ground) that one person alone knows is taught to the best other hand, once a day
         // at most, if they will.
-        let used = |w: &World, t: Technique| -> bool {
-            let stations: Vec<crate::structures::StructureKind> = (0
-                ..crate::work::recipes::RECIPES.len())
-                .filter(|&r| crate::work::recipes::craft_of(r as u8) == Some(t))
-                .map(|r| crate::work::recipes::recipe(r as u8).station)
-                .collect();
-            let home = w.communities.iter().find(|c| c.id == cid).map(|c| c.home);
-            home.is_some_and(|h| {
-                w.structures
-                    .iter()
-                    .any(|s| stations.contains(&s.kind) && s.progress >= 1.0 && s.pos.dist(h) <= 30)
-            })
-        };
+        let used = |w: &World, t: Technique| -> bool { craft_used(w, cid, t) };
         for (t, _) in now.clone() {
             let k = knowers(w, cid, t);
             if k.len() != 1 || !used(w, t) {
