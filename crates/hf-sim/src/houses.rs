@@ -664,7 +664,6 @@ pub fn fine_stone(w: &World, p: TilePos) -> Option<crate::world::Material> {
     None
 }
 
-<<<<<<< HEAD
 /// `fine_stone` for a known plan.
 fn fine_stone_of(w: &World, plan: &HousePlan) -> Option<crate::world::Material> {
     let mut of: BTreeMap<crate::world::Material, u32> = BTreeMap::new();
@@ -775,7 +774,8 @@ pub fn room_stats(w: &World, plan: &HousePlan, sleepers: u32) -> RoomStats {
         clutter: ((loose + bodies) as f32 / 4.0).clamp(0.0, 1.0),
         dirt: 0.0,
     }
-=======
+}
+
 /// A free seat (OST-1307): the nearest finished stool or chair within `within`
 /// tiles of `near` on the same level that someone can walk to, that no other person holds or
 /// stands on, and, when `at_table`, that has a finished table orthogonally beside it. Ties go
@@ -809,7 +809,6 @@ pub fn free_seat(
         .filter(|s| w.nav.as_ref().is_some_and(|n| n.reach(near, s.pos)))
         .min_by_key(|s| ((s.pos.x - near.x).abs().max((s.pos.y - near.y).abs()), s.id))
         .map(|s| (s.id, s.pos))
->>>>>>> origin/main
 }
 
 #[cfg(test)]
