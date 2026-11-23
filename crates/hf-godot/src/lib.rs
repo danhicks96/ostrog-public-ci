@@ -796,11 +796,16 @@ fn communities_line(w: &World) -> String {
                 .iter()
                 .filter(|a| a.community == Some(c.id))
                 .count();
-            if away > 0 {
+            let mut line = if away > 0 {
                 format!("{} {} ({} away)", c.name, here, away)
             } else {
                 format!("{} {}", c.name, here)
+            };
+            if let Some(word) = hf_sim::society::cohesion_word(c.cohesion) {
+                line.push_str(", ");
+                line.push_str(word);
             }
+            line
         })
         .collect();
     parts.join(" · ")
