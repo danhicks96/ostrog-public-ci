@@ -1,5 +1,23 @@
 # Fix log
 
+## 2026-11-23: Catch Up opened only on window focus, with no way to ask for it (OST-012)
+
+- Symptom: the away card opened only when the window regained OS focus after an hour, so a viewer
+  watching on a second monitor (focus never on the game) never got it, and there was no way to ask
+  "what happened since I looked?" or to read a past day or season.
+- Cause: the focus-in notification was the only caller of the card.
+- Fix: coming back to the game after more than 300 real seconds with input over the window opens
+  Catch Up, but only with news (a named change or a notable line, not counts of routine work); the
+  focus trigger stays. `[A]` and a bar button open it on demand, and the panel picks a span: since
+  the last stretch away, today, yesterday, this season, last season. A day or season span covers its
+  first tick, so the midnight or season-boundary row belongs to the new span; at the start there is
+  no previous day or season, and nothing underflows. The 300 s default is a constant; it is not a
+  setting yet.
+- Guards: `tests/catch_up.rs::catch_up_spans_put_the_boundary_row_in_the_new_span` and
+  `catch_up_has_news_only_for_a_named_change_or_a_notable_line`; `tools/gd_test.gd` at 299, 300 and
+  301 seconds, the single control, and the bridge spans.
+- Not checked here: a second-screen run in a desktop client, and the control by hand.
+
 ## 2026-11-23: Catch Up shared History's panel and was replaced by it (OST-011)
 
 - Symptom: the away card and History were written into the same panel, so opening History (or
