@@ -496,6 +496,7 @@ pub enum EventKind {
         agent: AgentId,
         prey: String,
     },
+    /// Never pushed: a cave-in is `Collapse` (underground.rs). Kept for save order.
     CaveIn {
         agent: AgentId,
         at: TilePos,

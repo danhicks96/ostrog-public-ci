@@ -3425,7 +3425,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/health.rs:710 | a made limb |
 | systems/health.rs:712 | a wooden leg |
 | systems/health.rs:714 | a wooden hand |
-| systems/learn.rs:204 | from watching {dname} |
+| systems/learn.rs:192 | from watching {dname} |
 | systems/life.rs:91 | worn out |
 | systems/life.rs:114 | worn |
 | systems/life.rs:162 | starvation |
@@ -3447,40 +3447,40 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/movement.rs:218 | fell |
 | systems/moving.rs:31 | old age |
 | systems/moving.rs:45 | strangers from {} took from the store |
-| systems/moving.rs:52 | the rock came down |
-| systems/moving.rs:56 | the deep broke through |
-| systems/moving.rs:82 | of  |
-| systems/moving.rs:83 | {name} died {how} |
-| systems/moving.rs:85 | {name} was {how} |
-| systems/moving.rs:94 | beyond the valley |
-| systems/moving.rs:162 |  died  |
-| systems/moving.rs:162 |  was  |
-| systems/moving.rs:202 | no water within a long walk of home, and the well they dug found none |
-| systems/moving.rs:205 | {}: {} hard things in two seasons |
-| systems/moving.rs:287 | to move camp to a better place in the valley |
-| systems/moving.rs:289 | to leave the valley |
-| systems/moving.rs:328 | went with {leader_name} |
-| systems/moving.rs:330 | thinks well of {leader_name} |
-| systems/moving.rs:332 | has had enough of this place |
-| systems/moving.rs:337 | stayed |
-| systems/moving.rs:339 | will not leave the graves of their own |
-| systems/moving.rs:341 | does not trust {leader_name} |
-| systems/moving.rs:343 | this is home |
-| systems/moving.rs:345 | saw no reason to go |
-| systems/moving.rs:502 | the world beyond |
-| systems/moving.rs:550 | four |
-| systems/moving.rs:551 | five |
-| systems/moving.rs:552 | six |
-| systems/moving.rs:553 | seven |
-| systems/moving.rs:554 | eight |
-| systems/moving.rs:555 | nine |
-| systems/moving.rs:556 | ten |
-| systems/moving.rs:586 | left the valley for {to} |
-| systems/moving.rs:597 | #last |
-| systems/moving.rs:604 | died out |
-| systems/moving.rs:606 | died out ({d}) |
-| systems/moving.rs:638 | {}: they {how}. |
-| systems/moving.rs:641 |  /  |
+| systems/moving.rs:50 | the rock came down |
+| systems/moving.rs:54 | the deep broke through |
+| systems/moving.rs:80 | of  |
+| systems/moving.rs:81 | {name} died {how} |
+| systems/moving.rs:83 | {name} was {how} |
+| systems/moving.rs:92 | beyond the valley |
+| systems/moving.rs:160 |  died  |
+| systems/moving.rs:160 |  was  |
+| systems/moving.rs:200 | no water within a long walk of home, and the well they dug found none |
+| systems/moving.rs:203 | {}: {} hard things in two seasons |
+| systems/moving.rs:285 | to move camp to a better place in the valley |
+| systems/moving.rs:287 | to leave the valley |
+| systems/moving.rs:326 | went with {leader_name} |
+| systems/moving.rs:328 | thinks well of {leader_name} |
+| systems/moving.rs:330 | has had enough of this place |
+| systems/moving.rs:335 | stayed |
+| systems/moving.rs:337 | will not leave the graves of their own |
+| systems/moving.rs:339 | does not trust {leader_name} |
+| systems/moving.rs:341 | this is home |
+| systems/moving.rs:343 | saw no reason to go |
+| systems/moving.rs:500 | the world beyond |
+| systems/moving.rs:548 | four |
+| systems/moving.rs:549 | five |
+| systems/moving.rs:550 | six |
+| systems/moving.rs:551 | seven |
+| systems/moving.rs:552 | eight |
+| systems/moving.rs:553 | nine |
+| systems/moving.rs:554 | ten |
+| systems/moving.rs:584 | left the valley for {to} |
+| systems/moving.rs:595 | #last |
+| systems/moving.rs:602 | died out |
+| systems/moving.rs:604 | died out ({d}) |
+| systems/moving.rs:636 | {}: they {how}. |
+| systems/moving.rs:639 |  /  |
 | systems/projects.rs:28 | a carpenter's bench |
 | systems/projects.rs:29 | a loom |
 | systems/projects.rs:30 | a smelter |

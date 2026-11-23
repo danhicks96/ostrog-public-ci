@@ -1,5 +1,10 @@
 # Fix log
 
+## 2026-11-22: retire the unreachable cave-in event arms
+
+- Symptom: a cave-in is a `Collapse`; the `CaveIn` event variant is never pushed, yet two systems carried unreachable arms for it and a test built it.
+- Fix: remove the dead `CaveIn` arms in learning and hardship, document the variant as kept only for save order, and build `Collapse` rows in the test. No variant is removed.
+- Guard: the phase-1 learning test now exercises the `Collapse` path that actually fires.
 ## 2026-11-22: a custom is not re-formed from the same cause
 
 - Symptom: a custom for a community that had left was formed and lapsed again every dawn.
