@@ -11,6 +11,21 @@
 - Guard: `mind::learning::tests::reserved_cues_are_listed` fails if a reserved observation kind is
   also in the hand-kept list of written kinds. The problem list has no equivalent guard yet.
 
+## 2026-11-22: an orphan is taken in by kin before whoever likes them best (OST-1306)
+
+- Symptom: a child with a living grandparent in the community could be fostered by a neighbour who
+  merely thought better of them.
+- Cause: the carer was chosen by opinion alone (with a small bonus for a partnered adult).
+- Fix: same-community adults are ranked by kin first: a grandparent, then a parent's sibling (shares
+  a mother or father with a parent), then an adult sibling. Ties go to opinion with the partner
+  bonus, then the lower id; with no kin the old rule is unchanged. `EventKind::Fostered` gains an
+  appended `kin` field (0 none, 1 grandparent, 2 parent's sibling, 3 sibling, defaulted when
+  absent) and the line says how they are related. No new randomness.
+- Guards: `tests/fostering.rs` `an_orphan_goes_to_a_grandparent_first`,
+  `an_aunt_or_a_sibling_is_kin_and_beats_a_better_liked_neighbour` and
+  `kin_tiers_rank_grandparent_then_aunt_then_sibling_then_the_old_rule` (tier order, and the old
+  best-liked rule when no kin is left). A better-liked neighbour is present in each, so the old
+  rule would pick the neighbour.
 ## 2026-11-22: a fire behind a hill is not known without sight or smoke
 
 - Symptom: everyone within 18 tiles knew of a fire without seeing or smelling it.
