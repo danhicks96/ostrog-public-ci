@@ -2100,12 +2100,23 @@ func test_catch_up_opens_on_return_after_idle_with_news() -> void:
 
 # OST-012: the manual control: one key and one button, and a span for each name the bridge knows.
 func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
-	var with_a := 0
+	var with_key := 0
 	for b in Rules.BAR_ITEMS:
-		if str(b.get("key", "")) == "A":
-			with_a += 1
-			check(str(b["id"]) == "catchup", "the Catch Up button owns A")
-	check(with_a == 1, "one button has A: %d" % with_a)
+		if str(b.get("key", "")) == "U":
+			with_key += 1
+			check(str(b["id"]) == "catchup", "the Catch Up button owns U")
+	check(with_key == 1, "one button has U: %d" % with_key)
+	# The key must not collide with anything main.gd already binds (A was the pan-left key).
+	var src := FileAccess.get_file_as_string("res://scripts/main.gd")
+	check(src.count("KEY_U:") == 1, "KEY_U is bound once in main.gd: %d" % src.count("KEY_U:"))
+	check(src.count("is_key_pressed(KEY_U)") == 0, "U is not a held movement key")
+	check(src.count("\t\t\tKEY_A:") == 0, "A is left to the pan keys")
+	var letters := {}
+	for b in Rules.BAR_ITEMS:
+		var k := str(b.get("key", ""))
+		if k.length() == 1:
+			check(not letters.has(k), "bar key %s used twice" % k)
+			letters[k] = true
 	var ids := []
 	for sp in Rules.CATCH_UP_SPANS:
 		ids.append(sp["id"])

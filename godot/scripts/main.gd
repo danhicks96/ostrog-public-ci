@@ -9,7 +9,7 @@ const TimelapsePanel := preload("res://scripts/timelapse_panel.gd")
 const HistoryReel := preload("res://scripts/history_reel.gd")
 const AwayMap := preload("res://scripts/away_map.gd")
 ## The key list, shown on [?] (and once, on a first launch) instead of on every HUD line (#181).
-const HELP_TEXT := "[b]Mouse & Keys[/b]\n\n[b]Mouse[/b]\nClick any person or animal to inspect them (Follow, ★ Favourite, Go to)\nClick any ground, water, or rock tile to inspect what it holds\nDrag with any mouse button to pan (dragging stops following)\nMouse wheel zooms toward the pointer\nThe bottom bar has every command (B to hide/show)\nClick any feed line or top announcement to look where it happened\n\n[b]Keys[/b]\n[Space] pause   [1 2 3] speed   [Home] settlement\n[, .] or PgUp/PgDn   level up and down\n[C] camera director   [F] follow inspected   [J] ★ favourites\n[P] people   [H] history   [T] timelapse   [L] legends\n[V] what the community has seen   [G] feed rate   [K] waiting work\n[N] alerts   [Shift+N] pause on major   [B] toggle bar\n[F5] save   [F9] load   [O] settings   [?] help   [A] catch up\n[Ctrl+F1–8] set bookmark, [F1–8] go to it"
+const HELP_TEXT := "[b]Mouse & Keys[/b]\n\n[b]Mouse[/b]\nClick any person or animal to inspect them (Follow, ★ Favourite, Go to)\nClick any ground, water, or rock tile to inspect what it holds\nDrag with any mouse button to pan (dragging stops following)\nMouse wheel zooms toward the pointer\nThe bottom bar has every command (B to hide/show)\nClick any feed line or top announcement to look where it happened\n\n[b]Keys[/b]\n[Space] pause   [1 2 3] speed   [Home] settlement\n[, .] or PgUp/PgDn   level up and down\n[C] camera director   [F] follow inspected   [J] ★ favourites\n[P] people   [H] history   [T] timelapse   [L] legends\n[V] what the community has seen   [G] feed rate   [K] waiting work\n[N] alerts   [Shift+N] pause on major   [B] toggle bar\n[F5] save   [F9] load   [O] settings   [?] help   [U] catch up\n[Ctrl+F1–8] set bookmark, [F1–8] go to it"
 const TICKS_PER_SEC := 20.0
 const SPEEDS := [0, 1, 3, 10]
 
@@ -1821,7 +1821,7 @@ func _show_summary(from_tick: int) -> void:
 	look_anchor_tick = from_tick
 	_open_catch_up(sim.catch_up_since(from_tick), "since_look")
 
-## Pick a span from the Catch Up panel or the [A] control: "since_look" reads from the start of
+## Pick a span from the Catch Up panel or the [U] control: "since_look" reads from the start of
 ## the last stretch away; the others are the calendar day or season (Yesterday and Last season
 ## say so when the world is too young to have one).
 func _show_catch_up(span_id: String) -> void:
@@ -2411,7 +2411,7 @@ func _unhandled_input(e: InputEvent) -> void:
 				view.refresh()
 				_note("relationship lines: " + ("on" if view.entities.relationships_visible else "off"))
 				_fx("ui_click")
-			KEY_A:
+			KEY_U:
 				if panels.is_open(&"catchup"): panels.close(&"catchup"); _fx("ui_click")
 				else: _show_catch_up("since_look")
 			KEY_K:

@@ -8,7 +8,7 @@
 - Cause: the focus-in notification was the only caller of the card.
 - Fix: coming back to the game after more than 300 real seconds with input over the window opens
   Catch Up, but only with news (a named change or a notable line, not counts of routine work); the
-  focus trigger stays. `[A]` and a bar button open it on demand, and the panel picks a span: since
+  focus trigger stays. `[U]` and a bar button open it on demand, and the panel picks a span: since
   the last stretch away, today, yesterday, this season, last season. A day or season span covers its
   first tick, so the midnight or season-boundary row belongs to the new span; at the start there is
   no previous day or season, and nothing underflows. The 300 s default is a constant; it is not a

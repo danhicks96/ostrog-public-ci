@@ -450,7 +450,7 @@ const BAR_ITEMS := [
 	{"id": "feed_rate", "group": "views", "label": "Feed", "key": "G", "tip": "Cycle feed rate: calm (notable only), normal, or full [G]"},
 	{"id": "announce", "group": "views", "label": "Alerts", "key": "N", "tip": "Cycle which events appear as top-screen announcements [N]"},
 	{"id": "pause_major", "group": "views", "label": "Pause!", "key": "Shift+N", "tip": "Toggle pausing automatically when a major event happens [Shift+N]"},
-	{"id": "catchup", "group": "views", "label": "Catch Up", "key": "A", "tip": "What happened while you were away; pick a span [A]"},
+	{"id": "catchup", "group": "views", "label": "Catch Up", "key": "U", "tip": "What happened while you were away; pick a span [U]"},
 	{"id": "waiting", "group": "views", "label": "Waiting", "key": "K", "tip": "Work nobody has taken, and why [K]"},
 	{"id": "bookmarks", "group": "views", "label": "Marks", "key": "F1–F8", "tip": "Camera bookmarks: jump to F1–F8 or save with Ctrl+F1–F8 [F1–F8]"},
 	{"id": "save", "group": "system", "label": "Save", "key": "F5", "tip": "Save the valley to the manual slot [F5]"},
