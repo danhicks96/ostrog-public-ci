@@ -3431,8 +3431,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/life.rs:220 | thirst |
 | systems/life.rs:351 | of unknown make |
 | systems/life.rs:359 | was given at a pairing |
-| systems/life.rs:480 | old age |
-| systems/life.rs:613 | none of their own people |
+| systems/life.rs:489 | old age |
+| systems/life.rs:622 | none of their own people |
 | systems/moods.rs:50 | as {master}, {craft}, taught them |
 | systems/moods.rs:52 | smith |
 | systems/moods.rs:56 | remembering {child}, their child |
