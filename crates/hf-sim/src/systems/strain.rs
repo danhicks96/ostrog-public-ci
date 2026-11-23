@@ -4,7 +4,7 @@
 
 use rand::Rng;
 
-use crate::agents::Species;
+use crate::agents::{Agent, Species};
 use crate::events::{BreakExplanation, EventKind, Severity};
 use crate::ids::AgentId;
 use crate::mind::thoughts::ThoughtKind;
@@ -234,7 +234,7 @@ pub fn arrival_shock(a: &mut crate::agents::Agent, now: u64) {
     // not the thought, does it, so the calmer are untouched (the whole party breaking was
     // tried for #392 and reverted).
     if calm <= PANIC_LINE {
-        let threshold = 0.55 + calm * 0.35;
+        let threshold = threshold(a);
         a.stress = a.stress.max((threshold + 0.05).min(1.0));
     }
 }
@@ -402,7 +402,7 @@ pub fn step(w: &mut World) {
         let ease =
             0.005 * (0.5 + calm) * (1.0 + a.mood.max(0.0)) + if steadied { STEADY } else { 0.0 };
         a.stress = (a.stress + build - ease).clamp(0.0, 1.0);
-        let threshold = 0.55 + calm * 0.35;
+        let threshold = threshold(a);
         let child = a.is_child(tick);
         let rested = a.last_break == 0 || tick - a.last_break > TICKS_PER_DAY * 2;
         if a.stress >= threshold && rested && !child {
@@ -866,4 +866,9 @@ enum Break {
     WalkOut,
     /// #332: one who holds that force settles things sets something alight.
     Firestart,
+}
+
+/// The stress at which this person breaks: the calmer, the higher.
+pub fn threshold(a: &Agent) -> f32 {
+    0.55 + a.genome.calm() * 0.35
 }

@@ -1714,8 +1714,7 @@ func _update_inspect() -> void:
 		s += "customs:\n"
 		for c in d["customs"]:
 			s += "  [color=#d9c9a8]%s[/color]\n" % c
-	var mood: float = d["mood"]
-	s += "mood: %s" % ("cheerful" if mood > 0.3 else ("content" if mood > 0.0 else ("low" if mood > -0.3 else "miserable")))
+	s += "mood: %s" % d.get("mood_word", "")
 	# Why (#292): the thoughts pushing the mood its way, and what they feel most.
 	if d.get("why", "") != "": s += ", because: %s" % d["why"]
 	s += "\n"
@@ -1762,11 +1761,10 @@ func _show_summary(from_tick: int) -> void:
 		return
 	var ticks: int = int(d["to"]) - int(d["from"])
 	var s := "[b]While you were away[/b]  (%.1f game-hours)\n\n" % (ticks / 1200.0)
-	var counts: Dictionary = d["counts"]
-	var parts := []
-	for k in counts.keys():
-		parts.append("%s %d" % [k, counts[k]])
-	s += ", ".join(parts) + "\n\n"
+	# Counts in words, routine work left out; `counts` stays for the timelapse.
+	var words: String = d.get("counts_words", "")
+	if words != "":
+		s += words + "\n\n"
 	for l in d["lines"]:
 		s += l + "\n"
 	s += "\n[color=#9a9a9a]H or Esc to close[/color]"

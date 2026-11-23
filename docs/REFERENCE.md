@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3172 strings (click to open)</summary>
+<details><summary>3173 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1755,14 +1755,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | delving.rs:70 | harder stone for their walls |
 | delving.rs:71 | the gems and gold of the deep |
 | delving.rs:72 | water |
-| duties.rs:194 | {} ({} hours lately) |
-| duties.rs:205 | building |
-| duties.rs:206 | farming |
-| duties.rs:207 | cooking |
-| duties.rs:208 | mining |
-| duties.rs:209 | hauling |
-| duties.rs:210 | tending the hurt |
-| duties.rs:211 | foraging |
+| duties.rs:241 | {} ({} hours lately) |
+| duties.rs:252 | building |
+| duties.rs:253 | farming |
+| duties.rs:254 | cooking |
+| duties.rs:255 | mining |
+| duties.rs:256 | hauling |
+| duties.rs:257 | tending the hurt |
+| duties.rs:258 | foraging |
 | ecology.rs:96 | starved, the grazing gone |
 | ecology.rs:98 | starved, the game gone |
 | economy.rs:20 | +{cause} |
@@ -1830,8 +1830,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | feuds.rs:197 | a reckoning: each side has made amends to the other |
 | feuds.rs:219 | settled by the judgement of |
 | feuds.rs:270 | a marriage between the two families |
-| feuds.rs:320 | nobody of one side is left in the valley |
-| feuds.rs:324 | five years without a new grievance, and let go |
+| feuds.rs:326 | nobody of one side is left in the valley |
+| feuds.rs:330 | five years without a new grievance, and let go |
 | fish.rs:130 | drowned through the ice |
 | fish.rs:139 | fish |
 | floods.rs:72 | the stream |
@@ -1913,16 +1913,17 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | justice.rs:707 | pardoned |
 | justice.rs:719 | exiled |
 | justice.rs:744 | the wilds |
-| left_sites.rs:182 | a wall of the old camp, fallen with the weather |
-| left_sites.rs:209 | their own fear |
-| left_sites.rs:218 | the graves there |
-| left_sites.rs:226 | the burned timbers |
-| left_sites.rs:230 | the {dir} |
-| left_sites.rs:231 | a worn path leading out |
-| left_sites.rs:234 | nothing left to read |
-| left_sites.rs:327 | food |
-| left_sites.rs:336 | took {take} {label} for the road |
-| left_sites.rs:337 | the stores were theirs to carry |
+| left_sites.rs:123 | left at {site_name} |
+| left_sites.rs:235 | a wall of the old camp, fallen with the weather |
+| left_sites.rs:262 | their own fear |
+| left_sites.rs:271 | the graves there |
+| left_sites.rs:279 | the burned timbers |
+| left_sites.rs:283 | the {dir} |
+| left_sites.rs:284 | a worn path leading out |
+| left_sites.rs:287 | nothing left to read |
+| left_sites.rs:380 | food |
+| left_sites.rs:389 | took {take} {label} for the road |
+| left_sites.rs:390 | the stores were theirs to carry |
 | legend.rs:100 | {:?} of year {} |
 | legend.rs:110 | iron tool |
 | legend.rs:111 | copper tool |
@@ -2090,8 +2091,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | observances.rs:30 | summer |
 | observances.rs:31 | autumn |
 | observances.rs:32 | winter |
-| observances.rs:225 | nobody led it |
-| observances.rs:227 | nobody came |
+| observances.rs:230 | nobody led it |
+| observances.rs:232 | nobody came |
 | omens.rs:50 | crows coming in over the valley's rim |
 | omens.rs:66 | a kind season |
 | omens.rs:67 | the host from {site} |
@@ -2412,6 +2413,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | society.rs:76 | a cramped site |
 | society.rs:77 | a grown household |
 | society.rs:78 | their cultural preference |
+| society.rs:256 | close |
+| society.rs:258 | divided |
+| society.rs:260 | uneasy |
 | species.rs:40 | diurnal |
 | species.rs:145 | deep |
 | species.rs:146 | dark |
@@ -3336,14 +3340,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:1623 | someone else is already at it |
 | systems/decide.rs:1626 | off work since they broke down |
 | systems/decide.rs:1628 | weighs nothing now |
-| systems/decide.rs:2600 | hunger |
-| systems/decide.rs:2605 | thirst |
-| systems/decide.rs:2610 | tiredness |
-| systems/decide.rs:2615 | days of food in store |
-| systems/decide.rs:2620 | night near with no bed or roof |
-| systems/decide.rs:2625 | arrival urge |
-| systems/decide.rs:2630 | leisure weight |
-| systems/decide.rs:2639 | nothing |
+| systems/decide.rs:2606 | hunger |
+| systems/decide.rs:2611 | thirst |
+| systems/decide.rs:2616 | tiredness |
+| systems/decide.rs:2621 | days of food in store |
+| systems/decide.rs:2626 | night near with no bed or roof |
+| systems/decide.rs:2631 | arrival urge |
+| systems/decide.rs:2636 | leisure weight |
+| systems/decide.rs:2645 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |
@@ -3437,9 +3441,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moods.rs:95 | remembering {name}, who died of {cause} |
 | systems/moods.rs:285 | made in a fey mood, {} |
 | systems/moods.rs:287 | a figure of {}, made in a fey mood, {} |
-| systems/movement.rs:57 | fell through the floor |
-| systems/movement.rs:134 | slipped going down and fell |
-| systems/movement.rs:182 | fell |
+| systems/movement.rs:93 | fell through the floor |
+| systems/movement.rs:170 | slipped going down and fell |
+| systems/movement.rs:218 | fell |
 | systems/moving.rs:31 | old age |
 | systems/moving.rs:45 | strangers from {} took from the store |
 | systems/moving.rs:52 | the rock came down |
@@ -3556,21 +3560,21 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/settlement.rs:444 | , and no rock face near to dig into nor ground to dig down |
 | systems/settlement.rs:568 | added to |
 | systems/settlement.rs:580 | marked out |
-| systems/settlement.rs:1542 | gave up on the {} |
-| systems/settlement.rs:1545 | found no place for it on their own ground |
-| systems/settlement.rs:2215 | upper room for {} |
-| systems/settlement.rs:2575 | walls up |
-| systems/settlement.rs:2576 | mended |
-| systems/settlement.rs:2577 | roofed |
-| systems/settlement.rs:2592 | roofed |
-| systems/settlement.rs:2615 | upper room roofed; a way of building upward was learned |
-| systems/settlement.rs:2901 | east |
-| systems/settlement.rs:2902 | west |
-| systems/settlement.rs:2903 | south |
-| systems/settlement.rs:2904 | north |
-| systems/settlement.rs:4221 | a need for another room |
-| systems/settlement.rs:4223 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
-| systems/settlement.rs:4288 | We {label}, as our first house was built. |
+| systems/settlement.rs:1583 | gave up on the {} |
+| systems/settlement.rs:1586 | found no place for it on their own ground |
+| systems/settlement.rs:2256 | upper room for {} |
+| systems/settlement.rs:2616 | walls up |
+| systems/settlement.rs:2617 | mended |
+| systems/settlement.rs:2618 | roofed |
+| systems/settlement.rs:2633 | roofed |
+| systems/settlement.rs:2656 | upper room roofed; a way of building upward was learned |
+| systems/settlement.rs:2942 | east |
+| systems/settlement.rs:2943 | west |
+| systems/settlement.rs:2944 | south |
+| systems/settlement.rs:2945 | north |
+| systems/settlement.rs:4262 | a need for another room |
+| systems/settlement.rs:4264 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
+| systems/settlement.rs:4329 | We {label}, as our first house was built. |
 | systems/society.rs:265 | carried off |
 | systems/society.rs:385 | they hold that other kinds are best kept apart, and most here are {plural} |
 | systems/society.rs:397 | strangers are not taken in |
@@ -3689,45 +3693,38 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/alive.rs:62 | drowned |
 | view/alive.rs:69 | thirst |
 | view/alive.rs:70 | froze |
-| view/alive.rs:780 | mood_median |
-| view/alive.rs:781 | mood_p10 |
-| view/alive.rs:782 | mood_hi |
-| view/alive.rs:783 | mood_lo |
-| view/alive.rs:784 | mood_clamped |
-| view/alive.rs:785 | mood_spread |
-| view/alive.rs:786 | mood_p25 |
-| view/alive.rs:787 | mood_p75 |
-| view/alive.rs:788 | mood_below_m03 |
-| view/alive.rs:789 | mood_term_needs |
-| view/alive.rs:790 | mood_term_recent |
-| view/alive.rs:791 | mood_term_long |
-| view/alive.rs:792 | mood_term_thoughts |
-| view/alive.rs:793 | standing_share |
-| view/alive.rs:794 | unreadable_share |
-| view/alive.rs:795 | work_share |
-| view/alive.rs:796 | talk_share |
-| view/alive.rs:797 | day_distance |
-| view/alive.rs:798 | act_entropy_sd |
-| view/alive.rs:800 | ties_saturated |
-| view/alive.rs:804 | ties_hostile |
-| view/alive.rs:807 | ties_frozen |
-| view/alive.rs:808 | ties_frozen_max_days |
-| view/alive.rs:810 | ties_to_dead_share |
-| view/alive.rs:813 | grief_drop_2d |
-| view/alive.rs:814 | grief_drop_10d |
-| view/alive.rs:815 | grief_days |
-| view/alive.rs:816 | grief_n |
-| view/alive.rs:817 | cause_repeat |
-| view/alive.rs:818 | lesson_ignored |
-| view/alive.rs:819 | glance_major_n |
-| view/alive.rs:820 | glance_missed_major |
-| view/alive.rs:823 | glance_missed_major_died |
-| view/alive.rs:824 | glance_missed_major_captured |
-| view/alive.rs:825 | glance_missed_major_broke |
-| view/alive.rs:826 | glance_missed_major_exiled |
-| view/alive.rs:827 | glance_missed_major_born |
-| view/alive.rs:828 | glance_missed_major_paired |
-| view/alive.rs:829 | glance_missed_major_returned |
+| view/alive.rs:750 | mood_median |
+| view/alive.rs:751 | mood_p10 |
+| view/alive.rs:752 | mood_hi |
+| view/alive.rs:753 | mood_lo |
+| view/alive.rs:754 | mood_clamped |
+| view/alive.rs:755 | mood_spread |
+| view/alive.rs:756 | standing_share |
+| view/alive.rs:757 | unreadable_share |
+| view/alive.rs:758 | work_share |
+| view/alive.rs:759 | talk_share |
+| view/alive.rs:760 | day_distance |
+| view/alive.rs:761 | act_entropy_sd |
+| view/alive.rs:763 | ties_saturated |
+| view/alive.rs:767 | ties_hostile |
+| view/alive.rs:770 | ties_frozen |
+| view/alive.rs:771 | ties_frozen_max_days |
+| view/alive.rs:773 | ties_to_dead_share |
+| view/alive.rs:776 | grief_drop_2d |
+| view/alive.rs:777 | grief_drop_10d |
+| view/alive.rs:778 | grief_days |
+| view/alive.rs:779 | grief_n |
+| view/alive.rs:780 | cause_repeat |
+| view/alive.rs:781 | lesson_ignored |
+| view/alive.rs:782 | glance_major_n |
+| view/alive.rs:783 | glance_missed_major |
+| view/alive.rs:786 | glance_missed_major_died |
+| view/alive.rs:787 | glance_missed_major_captured |
+| view/alive.rs:788 | glance_missed_major_broke |
+| view/alive.rs:789 | glance_missed_major_exiled |
+| view/alive.rs:790 | glance_missed_major_born |
+| view/alive.rs:791 | glance_missed_major_paired |
+| view/alive.rs:792 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
@@ -4428,19 +4425,19 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:1898 | fourth |
 | view/narrate.rs:1899 | fifth |
 | view/narrate.rs:1900 | {n}th |
-| view/summary.rs:61 | died |
-| view/summary.rs:62 | born |
-| view/summary.rs:63 | paired |
-| view/summary.rs:64 | arrived |
-| view/summary.rs:65 | joined |
-| view/summary.rs:66 | left |
-| view/summary.rs:67 | exiled |
-| view/summary.rs:68 | captured |
-| view/summary.rs:69 | returned |
-| view/summary.rs:70 | broke |
-| view/summary.rs:71 | craft_lost |
-| view/summary.rs:72 | role |
-| view/summary.rs:91 | '{k}' |
+| view/summary.rs:69 | died |
+| view/summary.rs:70 | born |
+| view/summary.rs:71 | paired |
+| view/summary.rs:72 | arrived |
+| view/summary.rs:73 | joined |
+| view/summary.rs:74 | left |
+| view/summary.rs:75 | exiled |
+| view/summary.rs:76 | captured |
+| view/summary.rs:77 | returned |
+| view/summary.rs:78 | broke |
+| view/summary.rs:79 | craft_lost |
+| view/summary.rs:80 | role |
+| view/summary.rs:99 | '{k}' |
 | view/waiting.rs:20 | Planned: {} ({}) |
 | view/waiting.rs:30 | {n} has taken it |
 | view/waiting.rs:33 | set aside after {} failed tries |
@@ -4463,12 +4460,16 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/waiting.rs:165 | is a child |
 | view/waiting.rs:166 | do not know the craft |
 | view/waiting.rs:166 | does not know the craft |
-| view/why.rs:18 | afraid of {n} |
-| view/why.rs:19 | grieving for {n} |
-| view/why.rs:20 | angry with {n} |
-| view/why.rs:21 | glad of {n} |
-| view/why.rs:22 | in awe of {n} |
-| view/why.rs:23 | ashamed before {n} |
+| view/why.rs:25 | cheerful |
+| view/why.rs:26 | content |
+| view/why.rs:27 | low |
+| view/why.rs:28 | miserable |
+| view/why.rs:43 | afraid of {n} |
+| view/why.rs:44 | grieving for {n} |
+| view/why.rs:45 | angry with {n} |
+| view/why.rs:46 | glad of {n} |
+| view/why.rs:47 | in awe of {n} |
+| view/why.rs:48 | ashamed before {n} |
 | world/gen/biome.rs:62 | wet |
 | world/gen/biome.rs:64 | dry |
 | world/gen/biome.rs:67 | mild |
@@ -4713,69 +4714,69 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:1711 | _update_inspect | parents: %s /  |
 | godot/scripts/main.gd:1712 | _update_inspect | children: %s /  |
 | godot/scripts/main.gd:1714 | _update_inspect | customs: /  |
-| godot/scripts/main.gd:1718 | _update_inspect | mood: %s |
-| godot/scripts/main.gd:1720 | _update_inspect | , because: %s |
-| godot/scripts/main.gd:1722 | _update_inspect | feels: %s /  |
-| godot/scripts/main.gd:1726 | _update_inspect | people: %s /  |
-| godot/scripts/main.gd:1728 | _update_inspect | believes: /  |
-| godot/scripts/main.gd:1732 | _update_inspect | before the portal, in %s: /  |
-| godot/scripts/main.gd:1732 | _update_inspect | the old village |
-| godot/scripts/main.gd:1736 | _update_inspect | remembers: /  |
-| godot/scripts/main.gd:1741 | _update_inspect | knows %d things /  |
-| godot/scripts/main.gd:1764 | _show_summary | [b]While you were away[/b]  (%.1f game-hours) /  /  |
-| godot/scripts/main.gd:1772 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
-| godot/scripts/main.gd:1777 | _show_legends | world:0 |
-| godot/scripts/main.gd:1781 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
-| godot/scripts/main.gd:1799 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1808 | _on_legends_year | This world has no map beyond the valley. |
-| godot/scripts/main.gd:1818 | _on_legends_year | the year before the portal |
-| godot/scripts/main.gd:1818 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1821 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
-| godot/scripts/main.gd:1821 | _on_legends_year | , ringed: where those away are |
-| godot/scripts/main.gd:1829 | _show_history | [b]History[/b] /  /  |
-| godot/scripts/main.gd:1832 | _show_history |  / [b]The record[/b] /  |
-| godot/scripts/main.gd:1836 | _show_history |  / [b]Why they do what they do[/b] /  |
-| godot/scripts/main.gd:1840 | _show_history |  / [b]The valley before the portal[/b] /  |
-| godot/scripts/main.gd:1844 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
-| godot/scripts/main.gd:1849 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
-| godot/scripts/main.gd:1879 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
-| godot/scripts/main.gd:1987 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
-| godot/scripts/main.gd:2027 | _capture_timelapse | png_sha256 |
-| godot/scripts/main.gd:2060 | _capture_timelapse | timelapse snapshot failed (error %d) |
-| godot/scripts/main.gd:2061 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
-| godot/scripts/main.gd:2102 | _process | saved (%.0f ms capture) |
-| godot/scripts/main.gd:2120 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
-| godot/scripts/main.gd:2224 | _do_load_manual | loaded manual save |
-| godot/scripts/main.gd:2225 | _do_load_manual | load failed:  |
-| godot/scripts/main.gd:2265 | _unhandled_input | pause on major events:  |
-| godot/scripts/main.gd:2268 | _unhandled_input | announce:  |
-| godot/scripts/main.gd:2279 | _unhandled_input | relationship lines:  |
-| godot/scripts/main.gd:2307 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2308 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2318 | _unhandled_input | view: %s |
-| godot/scripts/main.gd:2318 | _unhandled_input | what the community has seen |
-| godot/scripts/main.gd:2320 | _unhandled_input | saving… |
-| godot/scripts/main.gd:2333 | _unhandled_input | bookmark %d set |
-| godot/scripts/main.gd:2424 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
-| godot/scripts/main.gd:2483 | _do_shot | SHOT_FAILED %s (error %d) |
-| godot/scripts/main.gd:2556 | _build_settings | Settings |
-| godot/scripts/main.gd:2557 | _build_settings | Close [Esc] |
-| godot/scripts/main.gd:2557 | _build_settings | Close settings [O or Esc] |
-| godot/scripts/main.gd:2561 | _build_settings | Master volume |
-| godot/scripts/main.gd:2562 | _build_settings | Ambient volume |
-| godot/scripts/main.gd:2563 | _build_settings | Effects volume |
-| godot/scripts/main.gd:2564 | _build_settings | Music volume |
-| godot/scripts/main.gd:2565 | _build_settings | Autosave |
-| godot/scripts/main.gd:2566 | _build_settings | Feed rate:  |
-| godot/scripts/main.gd:2566 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
-| godot/scripts/main.gd:2570 | _build_settings | Name tags:  |
-| godot/scripts/main.gd:2570 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
-| godot/scripts/main.gd:2575 | _build_settings | Camera director |
-| godot/scripts/main.gd:2579 | _build_settings | Debug decision log (writes every decision to a file) |
-| godot/scripts/main.gd:2583 | _build_settings | Decision log:  |
-| godot/scripts/main.gd:2585 | _build_settings | Saves:  |
-| godot/scripts/main.gd:2588 | _build_settings | Your files and data |
-| godot/scripts/main.gd:2588 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
+| godot/scripts/main.gd:1717 | _update_inspect | mood: %s |
+| godot/scripts/main.gd:1719 | _update_inspect | , because: %s |
+| godot/scripts/main.gd:1721 | _update_inspect | feels: %s /  |
+| godot/scripts/main.gd:1725 | _update_inspect | people: %s /  |
+| godot/scripts/main.gd:1727 | _update_inspect | believes: /  |
+| godot/scripts/main.gd:1731 | _update_inspect | before the portal, in %s: /  |
+| godot/scripts/main.gd:1731 | _update_inspect | the old village |
+| godot/scripts/main.gd:1735 | _update_inspect | remembers: /  |
+| godot/scripts/main.gd:1740 | _update_inspect | knows %d things /  |
+| godot/scripts/main.gd:1763 | _show_summary | [b]While you were away[/b]  (%.1f game-hours) /  /  |
+| godot/scripts/main.gd:1770 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
+| godot/scripts/main.gd:1775 | _show_legends | world:0 |
+| godot/scripts/main.gd:1779 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
+| godot/scripts/main.gd:1797 | _on_legends_link | world:0 |
+| godot/scripts/main.gd:1806 | _on_legends_year | This world has no map beyond the valley. |
+| godot/scripts/main.gd:1816 | _on_legends_year | the year before the portal |
+| godot/scripts/main.gd:1816 | _on_legends_year | %d years before the portal |
+| godot/scripts/main.gd:1819 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
+| godot/scripts/main.gd:1819 | _on_legends_year | , ringed: where those away are |
+| godot/scripts/main.gd:1827 | _show_history | [b]History[/b] /  /  |
+| godot/scripts/main.gd:1830 | _show_history |  / [b]The record[/b] /  |
+| godot/scripts/main.gd:1834 | _show_history |  / [b]Why they do what they do[/b] /  |
+| godot/scripts/main.gd:1838 | _show_history |  / [b]The valley before the portal[/b] /  |
+| godot/scripts/main.gd:1842 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
+| godot/scripts/main.gd:1847 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
+| godot/scripts/main.gd:1877 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
+| godot/scripts/main.gd:1985 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
+| godot/scripts/main.gd:2025 | _capture_timelapse | png_sha256 |
+| godot/scripts/main.gd:2058 | _capture_timelapse | timelapse snapshot failed (error %d) |
+| godot/scripts/main.gd:2059 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
+| godot/scripts/main.gd:2100 | _process | saved (%.0f ms capture) |
+| godot/scripts/main.gd:2118 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
+| godot/scripts/main.gd:2222 | _do_load_manual | loaded manual save |
+| godot/scripts/main.gd:2223 | _do_load_manual | load failed:  |
+| godot/scripts/main.gd:2263 | _unhandled_input | pause on major events:  |
+| godot/scripts/main.gd:2266 | _unhandled_input | announce:  |
+| godot/scripts/main.gd:2277 | _unhandled_input | relationship lines:  |
+| godot/scripts/main.gd:2305 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2306 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2316 | _unhandled_input | view: %s |
+| godot/scripts/main.gd:2316 | _unhandled_input | what the community has seen |
+| godot/scripts/main.gd:2318 | _unhandled_input | saving… |
+| godot/scripts/main.gd:2331 | _unhandled_input | bookmark %d set |
+| godot/scripts/main.gd:2422 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
+| godot/scripts/main.gd:2481 | _do_shot | SHOT_FAILED %s (error %d) |
+| godot/scripts/main.gd:2554 | _build_settings | Settings |
+| godot/scripts/main.gd:2555 | _build_settings | Close [Esc] |
+| godot/scripts/main.gd:2555 | _build_settings | Close settings [O or Esc] |
+| godot/scripts/main.gd:2559 | _build_settings | Master volume |
+| godot/scripts/main.gd:2560 | _build_settings | Ambient volume |
+| godot/scripts/main.gd:2561 | _build_settings | Effects volume |
+| godot/scripts/main.gd:2562 | _build_settings | Music volume |
+| godot/scripts/main.gd:2563 | _build_settings | Autosave |
+| godot/scripts/main.gd:2564 | _build_settings | Feed rate:  |
+| godot/scripts/main.gd:2564 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
+| godot/scripts/main.gd:2568 | _build_settings | Name tags:  |
+| godot/scripts/main.gd:2568 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
+| godot/scripts/main.gd:2573 | _build_settings | Camera director |
+| godot/scripts/main.gd:2577 | _build_settings | Debug decision log (writes every decision to a file) |
+| godot/scripts/main.gd:2581 | _build_settings | Decision log:  |
+| godot/scripts/main.gd:2583 | _build_settings | Saves:  |
+| godot/scripts/main.gd:2586 | _build_settings | Your files and data |
+| godot/scripts/main.gd:2586 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
 | godot/scripts/setup.gd:16 |  | The valley |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
@@ -4877,13 +4878,13 @@ What the client prints; scripts and testers grep for these (SHOT_SAVED, SHOT_FAI
 | godot/scripts/main.gd:517 | _world_ready | BANDS %s |
 | godot/scripts/main.gd:554 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
 | godot/scripts/main.gd:654 | _save_and_quit | SAVED ON CLOSE tick %d |
-| godot/scripts/main.gd:2040 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
-| godot/scripts/main.gd:2428 | _write_automation_json | AUTOMATION_JSON %s |
-| godot/scripts/main.gd:2455 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
-| godot/scripts/main.gd:2474 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
-| godot/scripts/main.gd:2486 | _do_shot | SHOT_SAVED %s |
-| godot/scripts/main.gd:2514 | _do_footage | FOOTAGE_FRAME %d %s |
-| godot/scripts/main.gd:2516 | _do_footage | FOOTAGE_DONE |
+| godot/scripts/main.gd:2038 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
+| godot/scripts/main.gd:2426 | _write_automation_json | AUTOMATION_JSON %s |
+| godot/scripts/main.gd:2453 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
+| godot/scripts/main.gd:2472 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
+| godot/scripts/main.gd:2484 | _do_shot | SHOT_SAVED %s |
+| godot/scripts/main.gd:2512 | _do_footage | FOOTAGE_FRAME %d %s |
+| godot/scripts/main.gd:2514 | _do_footage | FOOTAGE_DONE |
 
 <!-- END GENERATED: strings-client -->
 

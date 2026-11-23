@@ -297,9 +297,15 @@ pub fn observe(w: &mut World) {
     }
 }
 
-/// In the valley: alive and of a community.
+/// In the valley: alive and of a community. Those away on a journey still count:
+/// `overworld.away` holds them whole while they are off the map, and a short trip must not read
+/// as nobody of the side being left.
 fn here(w: &World, id: AgentId) -> bool {
     living(w, id).is_some_and(|a| a.community.is_some())
+        || w.overworld
+            .away
+            .iter()
+            .any(|a| a.id == id && a.alive && a.community.is_some())
 }
 
 fn daily(w: &mut World) {

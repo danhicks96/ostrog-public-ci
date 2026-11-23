@@ -796,11 +796,16 @@ fn communities_line(w: &World) -> String {
                 .iter()
                 .filter(|a| a.community == Some(c.id))
                 .count();
-            if away > 0 {
+            let mut line = if away > 0 {
                 format!("{} {} ({} away)", c.name, here, away)
             } else {
                 format!("{} {}", c.name, here)
+            };
+            if let Some(word) = hf_sim::society::cohesion_word(c.cohesion) {
+                line.push_str(", ");
+                line.push_str(word);
             }
+            line
         })
         .collect();
     parts.join(" · ")
@@ -1882,6 +1887,12 @@ impl SimHost {
         }
         d.set("known_list", &known);
         d.set("mood", a.mood);
+        d.set(
+            "mood_word",
+            &GString::from(hf_sim::view::why::mood_word(hf_sim::view::why::mood_band(
+                a,
+            ))),
+        );
         d.set(
             "tool",
             &GString::from(
@@ -3698,6 +3709,7 @@ impl SimHost {
             max_major,
         ) {
             Ok(sum) => {
+                let counts_words = sum.counts_in_words();
                 let mut counts = VarDictionary::new();
                 for (k, n) in sum.counts {
                     counts.set(&GString::from(k.as_str()), n);
@@ -3726,6 +3738,7 @@ impl SimHost {
                     }
                 }
                 d.set("counts", &counts);
+                d.set("counts_words", &GString::from(counts_words.as_str()));
                 d.set("lines", &lines);
                 d.set("from", from_tick);
                 d.set("to", to as i64);
