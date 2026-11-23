@@ -10,8 +10,11 @@
   bonus, then the lower id; with no kin the old rule is unchanged. `EventKind::Fostered` gains an
   appended `kin` field (0 none, 1 grandparent, 2 parent's sibling, 3 sibling, defaulted when
   absent) and the line says how they are related. No new randomness.
-- Guard: `tests/fostering.rs` `an_orphan_goes_to_a_grandparent_first`, where a neighbour is
-  better liked; the old rule picks the neighbour, and the test also needs the `kin` field.
+- Guards: `tests/fostering.rs` `an_orphan_goes_to_a_grandparent_first`,
+  `an_aunt_or_a_sibling_is_kin_and_beats_a_better_liked_neighbour` and
+  `kin_tiers_rank_grandparent_then_aunt_then_sibling_then_the_old_rule` (tier order, and the old
+  best-liked rule when no kin is left). A better-liked neighbour is present in each, so the old
+  rule would pick the neighbour.
 
 ## 2026-11-22: name how settled a community is (OST-1001)
 
