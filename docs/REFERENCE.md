@@ -1830,8 +1830,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | feuds.rs:197 | a reckoning: each side has made amends to the other |
 | feuds.rs:219 | settled by the judgement of |
 | feuds.rs:270 | a marriage between the two families |
-| feuds.rs:320 | nobody of one side is left in the valley |
-| feuds.rs:324 | five years without a new grievance, and let go |
+| feuds.rs:326 | nobody of one side is left in the valley |
+| feuds.rs:330 | five years without a new grievance, and let go |
 | fish.rs:130 | drowned through the ice |
 | fish.rs:139 | fish |
 | floods.rs:72 | the stream |
@@ -2090,8 +2090,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | observances.rs:30 | summer |
 | observances.rs:31 | autumn |
 | observances.rs:32 | winter |
-| observances.rs:225 | nobody led it |
-| observances.rs:227 | nobody came |
+| observances.rs:230 | nobody led it |
+| observances.rs:232 | nobody came |
 | omens.rs:50 | crows coming in over the valley's rim |
 | omens.rs:66 | a kind season |
 | omens.rs:67 | the host from {site} |
@@ -3336,14 +3336,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:1623 | someone else is already at it |
 | systems/decide.rs:1626 | off work since they broke down |
 | systems/decide.rs:1628 | weighs nothing now |
-| systems/decide.rs:2600 | hunger |
-| systems/decide.rs:2605 | thirst |
-| systems/decide.rs:2610 | tiredness |
-| systems/decide.rs:2615 | days of food in store |
-| systems/decide.rs:2620 | night near with no bed or roof |
-| systems/decide.rs:2625 | arrival urge |
-| systems/decide.rs:2630 | leisure weight |
-| systems/decide.rs:2639 | nothing |
+| systems/decide.rs:2606 | hunger |
+| systems/decide.rs:2611 | thirst |
+| systems/decide.rs:2616 | tiredness |
+| systems/decide.rs:2621 | days of food in store |
+| systems/decide.rs:2626 | night near with no bed or roof |
+| systems/decide.rs:2631 | arrival urge |
+| systems/decide.rs:2636 | leisure weight |
+| systems/decide.rs:2645 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |
@@ -4421,19 +4421,19 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:1898 | fourth |
 | view/narrate.rs:1899 | fifth |
 | view/narrate.rs:1900 | {n}th |
-| view/summary.rs:61 | died |
-| view/summary.rs:62 | born |
-| view/summary.rs:63 | paired |
-| view/summary.rs:64 | arrived |
-| view/summary.rs:65 | joined |
-| view/summary.rs:66 | left |
-| view/summary.rs:67 | exiled |
-| view/summary.rs:68 | captured |
-| view/summary.rs:69 | returned |
-| view/summary.rs:70 | broke |
-| view/summary.rs:71 | craft_lost |
-| view/summary.rs:72 | role |
-| view/summary.rs:91 | '{k}' |
+| view/summary.rs:69 | died |
+| view/summary.rs:70 | born |
+| view/summary.rs:71 | paired |
+| view/summary.rs:72 | arrived |
+| view/summary.rs:73 | joined |
+| view/summary.rs:74 | left |
+| view/summary.rs:75 | exiled |
+| view/summary.rs:76 | captured |
+| view/summary.rs:77 | returned |
+| view/summary.rs:78 | broke |
+| view/summary.rs:79 | craft_lost |
+| view/summary.rs:80 | role |
+| view/summary.rs:99 | '{k}' |
 | view/waiting.rs:20 | Planned: {} ({}) |
 | view/waiting.rs:30 | {n} has taken it |
 | view/waiting.rs:33 | set aside after {} failed tries |
@@ -4716,59 +4716,59 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:1736 | _update_inspect | remembers: /  |
 | godot/scripts/main.gd:1741 | _update_inspect | knows %d things /  |
 | godot/scripts/main.gd:1764 | _show_summary | [b]While you were away[/b]  (%.1f game-hours) /  /  |
-| godot/scripts/main.gd:1772 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
-| godot/scripts/main.gd:1777 | _show_legends | world:0 |
-| godot/scripts/main.gd:1781 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
-| godot/scripts/main.gd:1799 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1808 | _on_legends_year | This world has no map beyond the valley. |
-| godot/scripts/main.gd:1818 | _on_legends_year | the year before the portal |
-| godot/scripts/main.gd:1818 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1821 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
-| godot/scripts/main.gd:1821 | _on_legends_year | , ringed: where those away are |
-| godot/scripts/main.gd:1829 | _show_history | [b]History[/b] /  /  |
-| godot/scripts/main.gd:1832 | _show_history |  / [b]The record[/b] /  |
-| godot/scripts/main.gd:1836 | _show_history |  / [b]Why they do what they do[/b] /  |
-| godot/scripts/main.gd:1840 | _show_history |  / [b]The valley before the portal[/b] /  |
-| godot/scripts/main.gd:1844 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
-| godot/scripts/main.gd:1849 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
-| godot/scripts/main.gd:1879 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
-| godot/scripts/main.gd:1987 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
-| godot/scripts/main.gd:2027 | _capture_timelapse | png_sha256 |
-| godot/scripts/main.gd:2060 | _capture_timelapse | timelapse snapshot failed (error %d) |
-| godot/scripts/main.gd:2061 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
-| godot/scripts/main.gd:2102 | _process | saved (%.0f ms capture) |
-| godot/scripts/main.gd:2120 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
-| godot/scripts/main.gd:2224 | _do_load_manual | loaded manual save |
-| godot/scripts/main.gd:2225 | _do_load_manual | load failed:  |
-| godot/scripts/main.gd:2265 | _unhandled_input | pause on major events:  |
-| godot/scripts/main.gd:2268 | _unhandled_input | announce:  |
-| godot/scripts/main.gd:2279 | _unhandled_input | relationship lines:  |
+| godot/scripts/main.gd:1771 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
+| godot/scripts/main.gd:1776 | _show_legends | world:0 |
+| godot/scripts/main.gd:1780 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
+| godot/scripts/main.gd:1798 | _on_legends_link | world:0 |
+| godot/scripts/main.gd:1807 | _on_legends_year | This world has no map beyond the valley. |
+| godot/scripts/main.gd:1817 | _on_legends_year | the year before the portal |
+| godot/scripts/main.gd:1817 | _on_legends_year | %d years before the portal |
+| godot/scripts/main.gd:1820 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
+| godot/scripts/main.gd:1820 | _on_legends_year | , ringed: where those away are |
+| godot/scripts/main.gd:1828 | _show_history | [b]History[/b] /  /  |
+| godot/scripts/main.gd:1831 | _show_history |  / [b]The record[/b] /  |
+| godot/scripts/main.gd:1835 | _show_history |  / [b]Why they do what they do[/b] /  |
+| godot/scripts/main.gd:1839 | _show_history |  / [b]The valley before the portal[/b] /  |
+| godot/scripts/main.gd:1843 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
+| godot/scripts/main.gd:1848 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
+| godot/scripts/main.gd:1878 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
+| godot/scripts/main.gd:1986 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
+| godot/scripts/main.gd:2026 | _capture_timelapse | png_sha256 |
+| godot/scripts/main.gd:2059 | _capture_timelapse | timelapse snapshot failed (error %d) |
+| godot/scripts/main.gd:2060 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
+| godot/scripts/main.gd:2101 | _process | saved (%.0f ms capture) |
+| godot/scripts/main.gd:2119 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
+| godot/scripts/main.gd:2223 | _do_load_manual | loaded manual save |
+| godot/scripts/main.gd:2224 | _do_load_manual | load failed:  |
+| godot/scripts/main.gd:2264 | _unhandled_input | pause on major events:  |
+| godot/scripts/main.gd:2267 | _unhandled_input | announce:  |
+| godot/scripts/main.gd:2278 | _unhandled_input | relationship lines:  |
+| godot/scripts/main.gd:2306 | _unhandled_input | world:0 |
 | godot/scripts/main.gd:2307 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2308 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2318 | _unhandled_input | view: %s |
-| godot/scripts/main.gd:2318 | _unhandled_input | what the community has seen |
-| godot/scripts/main.gd:2320 | _unhandled_input | saving… |
-| godot/scripts/main.gd:2333 | _unhandled_input | bookmark %d set |
-| godot/scripts/main.gd:2424 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
-| godot/scripts/main.gd:2483 | _do_shot | SHOT_FAILED %s (error %d) |
-| godot/scripts/main.gd:2556 | _build_settings | Settings |
-| godot/scripts/main.gd:2557 | _build_settings | Close [Esc] |
-| godot/scripts/main.gd:2557 | _build_settings | Close settings [O or Esc] |
-| godot/scripts/main.gd:2561 | _build_settings | Master volume |
-| godot/scripts/main.gd:2562 | _build_settings | Ambient volume |
-| godot/scripts/main.gd:2563 | _build_settings | Effects volume |
-| godot/scripts/main.gd:2564 | _build_settings | Music volume |
-| godot/scripts/main.gd:2565 | _build_settings | Autosave |
-| godot/scripts/main.gd:2566 | _build_settings | Feed rate:  |
-| godot/scripts/main.gd:2566 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
-| godot/scripts/main.gd:2570 | _build_settings | Name tags:  |
-| godot/scripts/main.gd:2570 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
-| godot/scripts/main.gd:2575 | _build_settings | Camera director |
-| godot/scripts/main.gd:2579 | _build_settings | Debug decision log (writes every decision to a file) |
-| godot/scripts/main.gd:2583 | _build_settings | Decision log:  |
-| godot/scripts/main.gd:2585 | _build_settings | Saves:  |
-| godot/scripts/main.gd:2588 | _build_settings | Your files and data |
-| godot/scripts/main.gd:2588 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
+| godot/scripts/main.gd:2317 | _unhandled_input | view: %s |
+| godot/scripts/main.gd:2317 | _unhandled_input | what the community has seen |
+| godot/scripts/main.gd:2319 | _unhandled_input | saving… |
+| godot/scripts/main.gd:2332 | _unhandled_input | bookmark %d set |
+| godot/scripts/main.gd:2423 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
+| godot/scripts/main.gd:2482 | _do_shot | SHOT_FAILED %s (error %d) |
+| godot/scripts/main.gd:2555 | _build_settings | Settings |
+| godot/scripts/main.gd:2556 | _build_settings | Close [Esc] |
+| godot/scripts/main.gd:2556 | _build_settings | Close settings [O or Esc] |
+| godot/scripts/main.gd:2560 | _build_settings | Master volume |
+| godot/scripts/main.gd:2561 | _build_settings | Ambient volume |
+| godot/scripts/main.gd:2562 | _build_settings | Effects volume |
+| godot/scripts/main.gd:2563 | _build_settings | Music volume |
+| godot/scripts/main.gd:2564 | _build_settings | Autosave |
+| godot/scripts/main.gd:2565 | _build_settings | Feed rate:  |
+| godot/scripts/main.gd:2565 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
+| godot/scripts/main.gd:2569 | _build_settings | Name tags:  |
+| godot/scripts/main.gd:2569 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
+| godot/scripts/main.gd:2574 | _build_settings | Camera director |
+| godot/scripts/main.gd:2578 | _build_settings | Debug decision log (writes every decision to a file) |
+| godot/scripts/main.gd:2582 | _build_settings | Decision log:  |
+| godot/scripts/main.gd:2584 | _build_settings | Saves:  |
+| godot/scripts/main.gd:2587 | _build_settings | Your files and data |
+| godot/scripts/main.gd:2587 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
 | godot/scripts/setup.gd:16 |  | The valley |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
@@ -4870,13 +4870,13 @@ What the client prints; scripts and testers grep for these (SHOT_SAVED, SHOT_FAI
 | godot/scripts/main.gd:517 | _world_ready | BANDS %s |
 | godot/scripts/main.gd:554 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
 | godot/scripts/main.gd:654 | _save_and_quit | SAVED ON CLOSE tick %d |
-| godot/scripts/main.gd:2040 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
-| godot/scripts/main.gd:2428 | _write_automation_json | AUTOMATION_JSON %s |
-| godot/scripts/main.gd:2455 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
-| godot/scripts/main.gd:2474 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
-| godot/scripts/main.gd:2486 | _do_shot | SHOT_SAVED %s |
-| godot/scripts/main.gd:2514 | _do_footage | FOOTAGE_FRAME %d %s |
-| godot/scripts/main.gd:2516 | _do_footage | FOOTAGE_DONE |
+| godot/scripts/main.gd:2039 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
+| godot/scripts/main.gd:2427 | _write_automation_json | AUTOMATION_JSON %s |
+| godot/scripts/main.gd:2454 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
+| godot/scripts/main.gd:2473 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
+| godot/scripts/main.gd:2485 | _do_shot | SHOT_SAVED %s |
+| godot/scripts/main.gd:2513 | _do_footage | FOOTAGE_FRAME %d %s |
+| godot/scripts/main.gd:2515 | _do_footage | FOOTAGE_DONE |
 
 <!-- END GENERATED: strings-client -->
 
