@@ -17,6 +17,56 @@
 
 
 
+
+## 2026-11-22: let the history view trace an event back through its causes (OST-1003)
+
+- Symptom: the history view showed what happened but not why, though the record names a cause
+  for many events; the client's one-step "because" was the only trace.
+- Cause: nothing followed the recorded cause links past one step, and the one step lived in the
+  Godot bridge instead of the view layer.
+- Fix: `view::causes` follows recorded causes (bounded, and saying so when cut), stops with a
+  plain line at a cause missing from the record or about someone the valley has not found, and
+  serves it as the Legends page `why:<id>`. The bridge's one-step lookup now uses it.
+- Guards: `tests/causes.rs` covers a full chain, the step limit, an event with no cause, a cause
+  missing from the record, and a cause about an unfound person (chain ends `Untold` and the
+  page does not name them).
+- Not measured: how often chains reach a root in a long run.
+
+## 2026-11-22: name how settled a community is (OST-1001)
+
+- Symptom: the communities line gave a cohesion number the player could not read at a glance, so
+  a settlement about to split looked the same as a close one.
+- Cause: the number was shown raw, with no word for its bands.
+- Fix: `society::cohesion_word` names the bands (close from 0.75, uneasy below 0.55, divided
+  below 0.45, nothing between) and the bridge appends the word to the communities line.
+- Guard: `tests/society.rs::cohesion_word_reads_divided_in_the_hour_of_a_split` pins the band
+  edges and reads the word in the hour a hostile-cliques community splits. No simulation draw changes.
+- Not measured: how long a community reads divided before it splits.
+
+
+## 2026-11-22: say a person's mood in words, with the strain threshold shared (OST-1002)
+
+- Symptom: the inspect panel gave a mood number the player had to interpret, and the number's
+  bands were duplicated in the client script.
+- Cause: the band edges lived only in the client; the strain system kept its own inline copy of
+  the threshold formula.
+- Fix: `view::why::mood_band` and `mood_word` give the word on the inspect dictionary. The strain
+  threshold moves unchanged into `strain::threshold`, used by both the shock and the step.
+- Guards: `tests/client_view.rs::mood_band_follows_the_inspect_thresholds` (exact edges) and
+  `strain_threshold_is_unchanged` fail if either band or the formula drifts. No simulation draw changes.
+- Not measured: how often each word appears in a long run.
+
+## 2026-11-22: only someone of age leads an observance (OST-1301)
+
+- Symptom: a nine-year-old could lead the season's observance, whether as the person followed in
+  the spirit or as the most devout of those gathered.
+- Cause: the leader choice checked only that a person was awake and (for the fallback) devout.
+- Fix: both paths require the leader to be of age. A gathering of children alone lapses with
+  "nobody led it".
+- Guards: `tests/shrines.rs` `a_child_does_not_lead_the_observance`,
+  `the_youngest_person_of_age_may_lead_and_one_a_year_short_may_not` and
+  `an_observance_with_only_children_gathered_lapses`; all three fail without the fix.
+- Not measured: a long-run census of observance leaders' ages. Duty gating is OST-1300.
 ## 2026-11-22: the away card's first line was a chore tally in internal names
 
 - Symptom: "While you were away" opened with `hauled 122, harvested 166, suspected 21`.
@@ -69,6 +119,7 @@
 - Not measured: how often seeded runs fostered wrongly before the fix. Kin-first carer choice is a
   separate change.
 
+
 ## 2026-11-22: a shrine that falls to ruin leaves its material (OST-1302)
 
 - Symptom: a worn shrine was removed and its loss recorded, but nothing lay on the tile, so the
@@ -96,6 +147,7 @@
 - Cause: The drought arm of the spell weather adjustment only cleared Sky::Rain.
 - Fix: Clear a storm the same way as rain; a storm's wind without rain is not modelled, so clear is the honest stand-in. No save-format change.
 - Guard: crates/hf-sim/tests/spells.rs::a_drought_lets_no_storm_through forces a storm hour under an active drought and checks the sky reads Clear with no rainfall; it fails without the change.
+
 
 ## 2026-11-22: a child holds no duty until grown (OST-1300)
 
@@ -128,6 +180,41 @@
 - Cause: The daily repayment added to one person's hunger and subtracted from another's, with no item involved.
 - Fix: The repayer must be within one tile and not across a feud or in sour opinion with the recipient, and hands over a real food item they carry themselves, whole or split by one as hauling does; the recipient notes it. No food, no repayment. No save-format change.
 - Guard: crates/hf-sim/tests/social.rs covers a carried meal moved with no creation or double use, a split stack, feud and opinion blocks, and distance; it fails without the change.
+
+## 2026-11-22: the tired no longer choose beds in a flood's way
+
+- Symptom: After a flood, many people collapsed from exhaustion in the same hour instead of lying down on the high ground they fled to.
+- Cause: A tired person was offered every reachable free bed, with ground sleep only when no bed was found, and nothing asked whether the bed lay in a flood's way. The flood-flight step turned them back from it each time, so they never lay down until rest ran out (likely loop; not confirmed by a trace).
+- Fix: The shared bed-consideration step skips a bed in a flood's way or on unsafe ground and does not count it as found, so ground sleep is offered where the person stands. Safe beds stay preferred; the night still counts as rough. No save-format change.
+- Guard: crates/hf-sim/tests/floods.rs::the_tired_sleep_on_high_ground_when_the_flood_covers_their_beds stages six tired people with beds by a pond in spate and checks all sleep away from flood water with no exhaustion event; it fails without the change.
+
+## 2026-11-22: a feud survives its only holder's journey
+
+- Symptom: A feud ended with 'nobody of one side is left in the valley' while its only holder of that side was away on a journey, and came back to find it gone.
+- Cause: The feud check counted only people alive in the valley's agent list; journeyers are held whole in the away list, so they never counted, despite a comment saying those away still hold the feud.
+- Fix: Count someone away on a journey who has a community as still here for the feud checks, including the heir check. Dead and disowned holders still end a feud.
+- Guard: crates/hf-sim/tests/feuds.rs::a_feud_survives_a_journey sends the only holder away for six days, checks the feud survives each morning with no end or inheritance event, and checks the head on return; it fails without the change.
+
+## 2026-11-22: a hearth cooked at for years gets a cooking pot
+
+- Symptom: A hearth that people cooked at for years never got a cooking pot: the pot kind existed but nothing posted one.
+- Cause: The settlement planner had no path that posted a cooking pot, and the structure cost table had no entry for one.
+- Fix: When a hearth has a cook order open or freshly posted and no cooking pot (finished or ordered) within a tile, and a vessel is in store, the planner posts a pot order on a free neighbouring tile, a clay pot whose only cost is the vessel. No vessel in store, no order. No save-format change.
+- Guard: crates/hf-sim/tests/hearth_pot.rs covers the positive case and the no-vessel case, and de-duplicates open and finished orders; the positive case fails without the change.
+
+## 2026-11-22: a role is kept until a challenger has led for three mornings
+
+- Symptom: A person's role flipped between forager and hauler within days, each flip a feed line; about a third of role events in long runs returned to the previous role within three days.
+- Cause: Each morning the role was set to whichever duty had the most minutes, with no margin, so one day's work could flip it.
+- Fix: Keep the current role unless a challenger's minutes are 25% ahead on three consecutive mornings; a defaulted counter on the duties record tracks the mornings. Taking a first role and dropping a faded role stay immediate. The duty list that weighs work choice is unchanged.
+- Guard: crates/hf-sim/tests/duties.rs::a_role_does_not_flip_on_one_day checks one and two mornings keep the role, the third switches it once with one role event; it fails without the change. Old saves load through the serde default.
+
+## 2026-11-22: tools left at an abandoned camp teach their craft
+
+- Symptom: Tools left at an abandoned camp taught nothing when studied, although the old hamlets' things did, so craft-bearing things ran out over a long game.
+- Cause: Study teaches only when an item's story names a craft; only the old hamlets' things were given one, and things a moving community leaves behind kept their maker but not their craft.
+- Fix: When a community records a move, each made item on the camp's floors whose maker is still known and knew the craft of its recipe now teaches that craft, with a 'left at' origin if it had none. Food, unmade things and items whose maker is gone or did not know the craft are unchanged. No save-format change.
+- Guard: crates/hf-sim/tests/left_sites.rs::the_tools_left_at_the_old_camp_teach_their_craft; it fails without the change.
 
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
