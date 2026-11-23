@@ -60,6 +60,9 @@ pub fn record_move(w: &mut World, cid: CommunityId, home: TilePos, to: TilePos) 
     // tale of it reads "the last of <camp> went to <community>" rather than
     // "the last of Eldergate went to Eldergate" (issue #358).
     let name = crate::deep::hamlet_name(w.meta.seed, id);
+    // What this camp leaves should teach the way the old hamlets' things do:
+    // a made thing left on the floor, whose maker knew its craft, carries that craft on.
+    teach_crafts_of_left_things(w, &floors, &name);
     w.left_sites.push(LeftSite {
         id,
         community: cid,
@@ -71,6 +74,56 @@ pub fn record_move(w: &mut World, cid: CommunityId, home: TilePos, to: TilePos) 
         walls,
         floors,
     });
+}
+
+/// The craft a recipe whose output is `kind` asks of whoever works it, if any (the first
+/// recipe for that kind that names a craft at all; a plain stone tool, which names none,
+/// is skipped in favour of a later recipe for the same kind that does).
+fn craft_for_kind(kind: crate::items::ItemKind) -> Option<crate::mind::Technique> {
+    crate::work::recipes::RECIPES
+        .iter()
+        .filter(|r| r.output.0 == kind)
+        .filter_map(|r| crate::work::recipes::craft_of(r.id))
+        .next()
+}
+
+/// A made thing left behind on the camp's floor teaches its craft on, the way the old
+/// hamlets' things do: if its maker knew the craft its recipe calls for, its
+/// story's `teaches` is set to that craft, so `Study` and the `decide.rs` designation pick
+/// it up unchanged. Food and other unmade things are untouched, since they carry no maker.
+fn teach_crafts_of_left_things(w: &mut World, floors: &[TilePos], site_name: &str) {
+    let mut taught: Vec<usize> = Vec::new();
+    for (idx, it) in w.items.iter().enumerate() {
+        let crate::items::ItemPlace::Ground(p) = it.place else {
+            continue;
+        };
+        if !floors.contains(&p) {
+            continue;
+        }
+        let Some(s) = it.story.as_ref() else { continue };
+        if s.teaches.is_some() {
+            continue;
+        }
+        let Some(maker_id) = s.maker else { continue };
+        let Some(craft) = craft_for_kind(it.kind) else {
+            continue;
+        };
+        let Some(agent) = w.agents.iter().find(|a| a.id == maker_id) else {
+            continue;
+        };
+        if agent.techniques.knows(craft) {
+            taught.push(idx);
+        }
+    }
+    for idx in taught {
+        let craft = craft_for_kind(w.items[idx].kind);
+        if let (Some(craft), Some(s)) = (craft, w.items[idx].story.as_mut()) {
+            s.teaches = Some(craft);
+            if s.origin.is_empty() {
+                s.origin = format!("left at {site_name}");
+            }
+        }
+    }
 }
 
 /// The left sites' walls as they lie now, for the client: standing while the wall is still
