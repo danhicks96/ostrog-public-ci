@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-22: births are gated by community, not by the whole valley
+
+- Symptom: a band of raiders camped at the edge halved the births of a small community.
+- Cause: the crowd rule counted every living person on the map, including bands and strangers who belong to no community.
+- Fix: count only living people of the couple's own community when applying the halving at 40.
+- Guard: `strangers_do_not_crowd_the_nursery` in `tests/generations.rs`.
 ## 2026-11-22: rain wets people outdoors; a roof or hearth dries them
 
 - Symptom: people had no wetness, so standing in a storm left someone exactly as dry as sitting by the hearth.
