@@ -146,6 +146,31 @@ static func help_rect(view: Vector2, hud_bottom: float, content_h: float) -> Rec
 	var room := maxf(160.0, view.y - HELP_BAR_ROOM - top)
 	return Rect2(10.0, top, minf(HELP_W, view.x - 20.0), minf(content_h, room))
 
+## Catch Up sits at the left edge under the HUD like Mouse & Keys, as tall as its text and never
+## over the bottom bar, so History and the other centred reading panels open clear of it (OST-011).
+const CATCH_UP_W := 460.0
+## Back at the game after more than this many real seconds with news opens Catch Up by itself
+## (OST-012). The window-focus trigger stays beside it.
+const CATCH_UP_IDLE_S := 300.0
+
+## Open on return only after MORE than the idle threshold, and only with news: a named change
+## or a notable line (not counts of routine work).
+static func catch_up_due(idle_s: float, has_news: bool) -> bool:
+	return has_news and idle_s > CATCH_UP_IDLE_S
+
+## The spans the viewer can pick, as the bridge names them.
+const CATCH_UP_SPANS := [
+	{"id": "since_look", "label": "Since I looked"},
+	{"id": "current_day", "label": "Today"},
+	{"id": "previous_day", "label": "Yesterday"},
+	{"id": "current_season", "label": "This season"},
+	{"id": "previous_season", "label": "Last season"},
+]
+static func catch_up_rect(view: Vector2, hud_bottom: float, content_h: float) -> Rect2:
+	var top := hud_bottom + 8.0
+	var room := maxf(160.0, view.y - HELP_BAR_ROOM - top)
+	return Rect2(10.0, top, minf(CATCH_UP_W, view.x - 20.0), minf(content_h, room))
+
 # People sheet columns for the dead (entity_layer.gd P_FALL, P_LYING).
 const P_FALL := 32
 const P_LYING := 33
@@ -425,6 +450,7 @@ const BAR_ITEMS := [
 	{"id": "feed_rate", "group": "views", "label": "Feed", "key": "G", "tip": "Cycle feed rate: calm (notable only), normal, or full [G]"},
 	{"id": "announce", "group": "views", "label": "Alerts", "key": "N", "tip": "Cycle which events appear as top-screen announcements [N]"},
 	{"id": "pause_major", "group": "views", "label": "Pause!", "key": "Shift+N", "tip": "Toggle pausing automatically when a major event happens [Shift+N]"},
+	{"id": "catchup", "group": "views", "label": "Catch Up", "key": "U", "tip": "What happened while you were away; pick a span [U]"},
 	{"id": "waiting", "group": "views", "label": "Waiting", "key": "K", "tip": "Work nobody has taken, and why [K]"},
 	{"id": "bookmarks", "group": "views", "label": "Marks", "key": "F1–F8", "tip": "Camera bookmarks: jump to F1–F8 or save with Ctrl+F1–F8 [F1–F8]"},
 	{"id": "save", "group": "system", "label": "Save", "key": "F5", "tip": "Save the valley to the manual slot [F5]"},

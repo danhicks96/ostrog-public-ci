@@ -30,7 +30,80 @@ fn wet_weather_turning_is_an_event() {
     assert!(kinds.len() < 200, "not every sky flicker: {}", kinds.len());
 }
 
-/// #1262: wet clothes and fur strip heat faster than a dry cold does.
+#[test]
+fn rain_wets_those_out_in_it_and_a_roof_dries_them() {
+    use hf_sim::ids::TilePos;
+    use hf_sim::mind::Activity;
+    use hf_sim::systems::weather::Sky;
+    use hf_sim::time::TICKS_PER_HOUR;
+    use hf_sim::world::Material;
+    let mut w = World::generate(1703, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.plants.clear();
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.meta.tick = TICKS_PER_HOUR * 8;
+    w.rebuild_caches();
+    let ids = w.found_party(3);
+    w.meta.autoplan = false;
+    w.build_house(40, 40, 7, 6, 1, Material::WOOD, Material::WOOD);
+    w.rebuild_caches();
+    w.ensure_nav();
+    let at = |w: &World, id| w.agents.iter().position(|a| a.id == id).unwrap();
+    let (i_out, i_in, i_fire) = (at(&w, ids[0]), at(&w, ids[1]), at(&w, ids[2]));
+    let p_out = TilePos::new(10, 10, 2);
+    let p_in = TilePos::new(43, 42, 2);
+    let mut rain = w.weather;
+    rain.sky = Sky::Rain;
+    rain.drizzle = false;
+    rain.temperature_c = 12.0;
+    w.force_weather = Some(rain);
+    let hold = |w: &mut World, spots: &[(usize, TilePos)]| {
+        for &(j, p) in spots {
+            let a = &mut w.agents[j];
+            a.activity = Activity::Loitering { ticks_left: 100 };
+            a.pos = p;
+            a.from = p;
+            a.path.clear();
+            a.needs.hunger = 0.9;
+        }
+    };
+    for _ in 0..TICKS_PER_HOUR * 2 {
+        hold(&mut w, &[(i_out, p_out), (i_in, p_in)]);
+        w.step();
+    }
+    assert!(
+        w.agents[i_out].wet >= 0.6,
+        "soaked: {}",
+        w.agents[i_out].wet
+    );
+    assert_eq!(w.agents[i_in].wet, 0.0, "a roof keeps the rain off");
+    // The rain stops and the soaked one sits beside a lit hearth: dry within 2 hours. (Standing
+    // out in the rain beside a hearth still wets, as the issue words it: outdoors while wet.)
+    rain.sky = Sky::Clear;
+    w.force_weather = Some(rain);
+    w.agents[i_fire].wet = w.agents[i_out].wet;
+    let near = TilePos::new(20, 20, 2);
+    let id = w.alloc_structure_id();
+    w.structures.push(hf_sim::structures::Structure {
+        id,
+        kind: hf_sim::structures::StructureKind::Hearth,
+        pos: near,
+        material: Material::STONE_BLOCK,
+        progress: 1.0,
+        active: true,
+        condition: 1.0,
+        owner: None,
+        quality: 0.5,
+    });
+    w.rebuild_caches();
+    for _ in 0..TICKS_PER_HOUR * 2 {
+        hold(&mut w, &[(i_fire, near)]);
+        w.step();
+    }
+    assert_eq!(w.agents[i_fire].wet, 0.0, "dried by the hearth");
+}
+
+/// wet clothes and fur strip heat faster than a dry cold does.
 #[test]
 fn soaked_in_the_cold_chills_faster() {
     let mut w = World::generate(1262, GenParams::small());

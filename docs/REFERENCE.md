@@ -745,7 +745,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | CameBackUnsettled | came_back_unsettled | Notable | {agent} came back from the portal stone unsettled and could not say why. |
 | WouldNotCut | would_not_cut | (computed at the push site) | {agent} stopped at the face and would not cut it, and could not say why. |
 | Frosted | frosted | Notable | A killing frost took {plants} of {community}'s growing crop. |
-| Fostered | fostered | Notable | {by} took in {child}, whose parents are gone. |
+| Fostered | fostered | Notable | {by} took in {child}, whose parents are gone{match kin {                 1 => ", their grandparent",                 2 => ", their aunt or uncle",                 3 => ", their sibling",                 _ => "",             }}. |
 | NewStone | new_stone | Notable | {agent} cut {stone}, harder than any stone the valley has worked. |
 | SocietyFormed | society_formed | Notable | {members} who have no love for {against} have begun to meet by night, apart. |
 | Betrayed | betrayed | Major | {by} told {to} of the {members} who meet against them by night. |
@@ -1126,10 +1126,10 @@ Narratives:
 
 | where | narrative |
 |---|---|
-| systems/culture.rs:498 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
-| systems/culture.rs:518 | We sow and cook more than we need, because {who} starved. |
-| systems/culture.rs:534 | We take in no strangers, since {who} led people away: {cause}. |
-| systems/culture.rs:570 | We do not eat {k}, because {who} fell ill of it and went hungry. |
+| systems/culture.rs:535 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
+| systems/culture.rs:556 | We sow and cook more than we need, because {who} starved. |
+| systems/culture.rs:575 | We take in no strangers, since {who} led people away: {cause}. |
+| systems/culture.rs:620 | We do not eat {k}, because {who} fell ill of it and went hungry. |
 
 #### The Engine (`engine.rs`)
 
@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3165 strings (click to open)</summary>
+<details><summary>3199 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1455,9 +1455,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:503 | someone |
 | accounts.rs:513 | {} and {} more |
 | accounts.rs:517 |  Said: {words} ({by}). |
-| agents.rs:448 | fur |
-| agents.rs:449 | feathers |
-| agents.rs:450 | scales |
+| agents.rs:449 | fur |
+| agents.rs:450 | feathers |
+| agents.rs:451 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -1542,22 +1542,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | conditions.rs:51 | the Thirst |
 | conditions.rs:52 | the Stone-sleep |
 | conditions.rs:53 | the true-dream |
-| conditions.rs:225 | their death is carved, and remembered |
-| conditions.rs:303 | {} gave them their rite |
-| conditions.rs:351 | stone-sleep |
-| conditions.rs:360 | the stone that was {name} |
-| conditions.rs:361 | {name}, who touched the underworld's rock in {} |
-| conditions.rs:369 | turned to stone, since they touched the underworld's rock in {} |
-| conditions.rs:465 | for eating of their own dead, which their people hold abhorrent, by {d}'s will |
-| conditions.rs:498 | burned by the sun |
-| conditions.rs:565 | torn apart in the night |
-| conditions.rs:568 | they were gone on the night of the full moon |
-| conditions.rs:581 | a sleeper woke weak, with two small wounds |
-| conditions.rs:615 | for sleeping within the thin place's reach |
-| conditions.rs:655 | {} walking, unrested |
-| conditions.rs:656 | the stone that should not be |
-| conditions.rs:675 | they cry out in their sleep of things no one told them |
-| conditions.rs:718 | bitten in the night |
+| conditions.rs:228 | their death is carved, and remembered |
+| conditions.rs:306 | {} gave them their rite |
+| conditions.rs:354 | stone-sleep |
+| conditions.rs:363 | the stone that was {name} |
+| conditions.rs:364 | {name}, who touched the underworld's rock in {} |
+| conditions.rs:372 | turned to stone, since they touched the underworld's rock in {} |
+| conditions.rs:468 | for eating of their own dead, which their people hold abhorrent, by {d}'s will |
+| conditions.rs:501 | burned by the sun |
+| conditions.rs:568 | torn apart in the night |
+| conditions.rs:571 | they were gone on the night of the full moon |
+| conditions.rs:584 | a sleeper woke weak, with two small wounds |
+| conditions.rs:618 | for sleeping within the thin place's reach |
+| conditions.rs:658 | {} walking, unrested |
+| conditions.rs:659 | the stone that should not be |
+| conditions.rs:678 | they cry out in their sleep of things no one told them |
+| conditions.rs:721 | bitten in the night |
 | creatures.rs:347 | the White Hart |
 | creatures.rs:374 | trophy |
 | creatures.rs:380 | the White Hart's hide |
@@ -1755,14 +1755,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | delving.rs:70 | harder stone for their walls |
 | delving.rs:71 | the gems and gold of the deep |
 | delving.rs:72 | water |
-| duties.rs:194 | {} ({} hours lately) |
-| duties.rs:205 | building |
-| duties.rs:206 | farming |
-| duties.rs:207 | cooking |
-| duties.rs:208 | mining |
-| duties.rs:209 | hauling |
-| duties.rs:210 | tending the hurt |
-| duties.rs:211 | foraging |
+| duties.rs:241 | {} ({} hours lately) |
+| duties.rs:252 | building |
+| duties.rs:253 | farming |
+| duties.rs:254 | cooking |
+| duties.rs:255 | mining |
+| duties.rs:256 | hauling |
+| duties.rs:257 | tending the hurt |
+| duties.rs:258 | foraging |
 | ecology.rs:96 | starved, the grazing gone |
 | ecology.rs:98 | starved, the game gone |
 | economy.rs:20 | +{cause} |
@@ -1774,7 +1774,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | engine.rs:29 | whimsical |
 | engine.rs:29 | mirre |
 | engine.rs:31 | no deity {other:?}: choose Aun (steady), Hask (relentless) or Mirre (whimsical) |
-| engrave.rs:231 | Carved by {} in {when}: {} |
+| engrave.rs:240 | the way of {}, as {} did it |
+| engrave.rs:277 | Carved by {} in {when}: {} |
 | expedition.rs:158 | Greywater |
 | expedition.rs:159 | Tollmoor |
 | expedition.rs:160 | Hollin's Rest |
@@ -1913,16 +1914,17 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | justice.rs:707 | pardoned |
 | justice.rs:719 | exiled |
 | justice.rs:744 | the wilds |
-| left_sites.rs:182 | a wall of the old camp, fallen with the weather |
-| left_sites.rs:209 | their own fear |
-| left_sites.rs:218 | the graves there |
-| left_sites.rs:226 | the burned timbers |
-| left_sites.rs:230 | the {dir} |
-| left_sites.rs:231 | a worn path leading out |
-| left_sites.rs:234 | nothing left to read |
-| left_sites.rs:327 | food |
-| left_sites.rs:336 | took {take} {label} for the road |
-| left_sites.rs:337 | the stores were theirs to carry |
+| left_sites.rs:123 | left at {site_name} |
+| left_sites.rs:235 | a wall of the old camp, fallen with the weather |
+| left_sites.rs:262 | their own fear |
+| left_sites.rs:271 | the graves there |
+| left_sites.rs:279 | the burned timbers |
+| left_sites.rs:283 | the {dir} |
+| left_sites.rs:284 | a worn path leading out |
+| left_sites.rs:287 | nothing left to read |
+| left_sites.rs:380 | food |
+| left_sites.rs:389 | took {take} {label} for the road |
+| left_sites.rs:390 | the stores were theirs to carry |
 | legend.rs:100 | {:?} of year {} |
 | legend.rs:110 | iron tool |
 | legend.rs:111 | copper tool |
@@ -2412,6 +2414,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | society.rs:76 | a cramped site |
 | society.rs:77 | a grown household |
 | society.rs:78 | their cultural preference |
+| society.rs:256 | close |
+| society.rs:258 | divided |
+| society.rs:260 | uneasy |
 | species.rs:40 | diurnal |
 | species.rs:145 | deep |
 | species.rs:146 | dark |
@@ -3224,17 +3229,17 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/conscience.rs:69 | {name} was {} all along |
 | systems/conscience.rs:72 | told themselves {name} had it coming |
 | systems/conscience.rs:74 | {name} was {}, but they would not own the quarrel |
-| systems/crafts.rs:97 | worked out by trying |
-| systems/crafts.rs:134 | does not trust {teacher_name} |
-| systems/crafts.rs:141 | remembers {teacher_name} too well |
-| systems/crafts.rs:144 | would rather not be tied to a bench |
-| systems/crafts.rs:147 | will not work beside {teacher_name} all day |
-| systems/crafts.rs:217 | dead |
-| systems/crafts.rs:222 | gone to {} |
-| systems/crafts.rs:224 | gone from the valley |
-| systems/crafts.rs:227 | gone |
-| systems/crafts.rs:334 | refused to learn {} from {} |
-| systems/crafts.rs:342 | taught by {} |
+| systems/crafts.rs:112 | worked out by trying |
+| systems/crafts.rs:149 | does not trust {teacher_name} |
+| systems/crafts.rs:156 | remembers {teacher_name} too well |
+| systems/crafts.rs:159 | would rather not be tied to a bench |
+| systems/crafts.rs:162 | will not work beside {teacher_name} all day |
+| systems/crafts.rs:232 | dead |
+| systems/crafts.rs:237 | gone to {} |
+| systems/crafts.rs:239 | gone from the valley |
+| systems/crafts.rs:242 | gone |
+| systems/crafts.rs:337 | refused to learn {} from {} |
+| systems/crafts.rs:345 | taught by {} |
 | systems/culture.rs:158 | how their people tell it: {telling} |
 | systems/culture.rs:214 | told by {tname} at the hearth |
 | systems/culture.rs:222 | the tale that {} |
@@ -3242,16 +3247,16 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/culture.rs:246 | what they remember of the other side of the portal |
 | systems/culture.rs:291 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
 | systems/culture.rs:322 | hold that {} |
-| systems/culture.rs:491 | first |
-| systems/culture.rs:492 | second |
-| systems/culture.rs:493 | third |
-| systems/culture.rs:494 | fourth |
-| systems/culture.rs:495 | fifth |
-| systems/culture.rs:496 | {n}th |
-| systems/culture.rs:514 | starvation |
-| systems/culture.rs:781 | ale |
-| systems/culture.rs:783 | berry wine |
-| systems/culture.rs:786 | drunk |
+| systems/culture.rs:528 | first |
+| systems/culture.rs:529 | second |
+| systems/culture.rs:530 | third |
+| systems/culture.rs:531 | fourth |
+| systems/culture.rs:532 | fifth |
+| systems/culture.rs:533 | {n}th |
+| systems/culture.rs:551 | starvation |
+| systems/culture.rs:831 | ale |
+| systems/culture.rs:833 | berry wine |
+| systems/culture.rs:836 | drunk |
 | systems/decide.rs:99 | someone |
 | systems/decide.rs:103 | search_for_the_lost |
 | systems/decide.rs:104 | go looking for one of the lost near {at} |
@@ -3393,20 +3398,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:437 | by lightning |
 | systems/hazards.rs:475 | spread |
 | systems/hazards.rs:505 | in the fire |
-| systems/hazards.rs:706 | made for higher ground |
-| systems/hazards.rs:706 | the water was rising |
-| systems/hazards.rs:708 | responded to dangerous water by moving to safety |
-| systems/hazards.rs:709 | they noticed dangerous water |
-| systems/hazards.rs:826 | drowned in the flood |
-| systems/hazards.rs:828 | drowned in the flooded workings |
-| systems/hazards.rs:1100 | from the cold |
-| systems/hazards.rs:1108 | froze |
-| systems/hazards.rs:1127 | below ground |
-| systems/hazards.rs:1132 | hearth |
-| systems/hazards.rs:1134 | roofed, no hearth |
-| systems/hazards.rs:1138 | roofed, open side |
-| systems/hazards.rs:1144 | tent/nest |
-| systems/hazards.rs:1146 | open |
+| systems/hazards.rs:711 | made for higher ground |
+| systems/hazards.rs:711 | the water was rising |
+| systems/hazards.rs:713 | responded to dangerous water by moving to safety |
+| systems/hazards.rs:714 | they noticed dangerous water |
+| systems/hazards.rs:831 | drowned in the flood |
+| systems/hazards.rs:833 | drowned in the flooded workings |
+| systems/hazards.rs:1115 | from the cold |
+| systems/hazards.rs:1123 | froze |
+| systems/hazards.rs:1142 | below ground |
+| systems/hazards.rs:1147 | hearth |
+| systems/hazards.rs:1149 | roofed, no hearth |
+| systems/hazards.rs:1153 | roofed, open side |
+| systems/hazards.rs:1159 | tent/nest |
+| systems/hazards.rs:1161 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
@@ -3420,15 +3425,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/health.rs:710 | a made limb |
 | systems/health.rs:712 | a wooden leg |
 | systems/health.rs:714 | a wooden hand |
-| systems/learn.rs:204 | from watching {dname} |
+| systems/learn.rs:192 | from watching {dname} |
 | systems/life.rs:91 | worn out |
 | systems/life.rs:114 | worn |
 | systems/life.rs:162 | starvation |
 | systems/life.rs:220 | thirst |
 | systems/life.rs:351 | of unknown make |
 | systems/life.rs:359 | was given at a pairing |
-| systems/life.rs:480 | old age |
-| systems/life.rs:613 | none of their own people |
+| systems/life.rs:489 | old age |
+| systems/life.rs:622 | none of their own people |
 | systems/moods.rs:50 | as {master}, {craft}, taught them |
 | systems/moods.rs:52 | smith |
 | systems/moods.rs:56 | remembering {child}, their child |
@@ -3442,40 +3447,40 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/movement.rs:218 | fell |
 | systems/moving.rs:31 | old age |
 | systems/moving.rs:45 | strangers from {} took from the store |
-| systems/moving.rs:52 | the rock came down |
-| systems/moving.rs:56 | the deep broke through |
-| systems/moving.rs:82 | of  |
-| systems/moving.rs:83 | {name} died {how} |
-| systems/moving.rs:85 | {name} was {how} |
-| systems/moving.rs:94 | beyond the valley |
-| systems/moving.rs:162 |  died  |
-| systems/moving.rs:162 |  was  |
-| systems/moving.rs:202 | no water within a long walk of home, and the well they dug found none |
-| systems/moving.rs:205 | {}: {} hard things in two seasons |
-| systems/moving.rs:287 | to move camp to a better place in the valley |
-| systems/moving.rs:289 | to leave the valley |
-| systems/moving.rs:328 | went with {leader_name} |
-| systems/moving.rs:330 | thinks well of {leader_name} |
-| systems/moving.rs:332 | has had enough of this place |
-| systems/moving.rs:337 | stayed |
-| systems/moving.rs:339 | will not leave the graves of their own |
-| systems/moving.rs:341 | does not trust {leader_name} |
-| systems/moving.rs:343 | this is home |
-| systems/moving.rs:345 | saw no reason to go |
-| systems/moving.rs:502 | the world beyond |
-| systems/moving.rs:550 | four |
-| systems/moving.rs:551 | five |
-| systems/moving.rs:552 | six |
-| systems/moving.rs:553 | seven |
-| systems/moving.rs:554 | eight |
-| systems/moving.rs:555 | nine |
-| systems/moving.rs:556 | ten |
-| systems/moving.rs:586 | left the valley for {to} |
-| systems/moving.rs:597 | #last |
-| systems/moving.rs:604 | died out |
-| systems/moving.rs:606 | died out ({d}) |
-| systems/moving.rs:638 | {}: they {how}. |
-| systems/moving.rs:641 |  /  |
+| systems/moving.rs:50 | the rock came down |
+| systems/moving.rs:54 | the deep broke through |
+| systems/moving.rs:80 | of  |
+| systems/moving.rs:81 | {name} died {how} |
+| systems/moving.rs:83 | {name} was {how} |
+| systems/moving.rs:92 | beyond the valley |
+| systems/moving.rs:160 |  died  |
+| systems/moving.rs:160 |  was  |
+| systems/moving.rs:200 | no water within a long walk of home, and the well they dug found none |
+| systems/moving.rs:203 | {}: {} hard things in two seasons |
+| systems/moving.rs:285 | to move camp to a better place in the valley |
+| systems/moving.rs:287 | to leave the valley |
+| systems/moving.rs:326 | went with {leader_name} |
+| systems/moving.rs:328 | thinks well of {leader_name} |
+| systems/moving.rs:330 | has had enough of this place |
+| systems/moving.rs:335 | stayed |
+| systems/moving.rs:337 | will not leave the graves of their own |
+| systems/moving.rs:339 | does not trust {leader_name} |
+| systems/moving.rs:341 | this is home |
+| systems/moving.rs:343 | saw no reason to go |
+| systems/moving.rs:500 | the world beyond |
+| systems/moving.rs:548 | four |
+| systems/moving.rs:549 | five |
+| systems/moving.rs:550 | six |
+| systems/moving.rs:551 | seven |
+| systems/moving.rs:552 | eight |
+| systems/moving.rs:553 | nine |
+| systems/moving.rs:554 | ten |
+| systems/moving.rs:584 | left the valley for {to} |
+| systems/moving.rs:595 | #last |
+| systems/moving.rs:602 | died out |
+| systems/moving.rs:604 | died out ({d}) |
+| systems/moving.rs:636 | {}: they {how}. |
+| systems/moving.rs:639 |  /  |
 | systems/projects.rs:28 | a carpenter's bench |
 | systems/projects.rs:29 | a loom |
 | systems/projects.rs:30 | a smelter |
@@ -3495,51 +3500,53 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/projects.rs:67 | channel |
 | systems/projects.rs:68 | move |
 | systems/projects.rs:165 | , as {n} taught them |
-| systems/projects.rs:294 | to carve it into a wall |
-| systems/projects.rs:295 | remembers it: {line} |
-| systems/projects.rs:342 | holds that {}{} |
-| systems/projects.rs:351 | to brew from the full store |
-| systems/projects.rs:391 | the carpenter |
-| systems/projects.rs:399 | the smith |
-| systems/projects.rs:406 | the smith |
-| systems/projects.rs:448 | learned the craft from {master}, {craft} |
-| systems/projects.rs:451 | is a good hand at {} |
-| systems/projects.rs:453 | building |
-| systems/projects.rs:455 | making things |
-| systems/projects.rs:471 | to build {} |
-| systems/projects.rs:540 | holds that {}{}, with strangers from {band} taking from the store |
-| systems/projects.rs:549 | to make spears |
-| systems/projects.rs:681 | {why}; {name} has {} to spare |
-| systems/projects.rs:690 | to fetch {} from {name} |
-| systems/projects.rs:708 | thinks {name} will pay for their {} |
-| systems/projects.rs:727 | wants to see what lies at {name} |
-| systems/projects.rs:756 | to lead a party out of the valley |
-| systems/projects.rs:834 | slept on the ground, {everyone} of them and {places} places to sleep |
-| systems/projects.rs:840 | to build {} |
-| systems/projects.rs:874 | took from the store |
-| systems/projects.rs:878 | strangers from  |
-| systems/projects.rs:879 |  took from the store |
-| systems/projects.rs:921 | holds that {}{}, with strangers from {band} taking from the store |
-| systems/projects.rs:929 | is a careful one, with strangers from {band} taking from the store |
-| systems/projects.rs:938 | to dig a shelter for the stores |
-| systems/projects.rs:972 | took from the store |
-| systems/projects.rs:976 | strangers from  |
-| systems/projects.rs:977 |  took from the store |
-| systems/projects.rs:985 | strangers are a danger |
-| systems/projects.rs:986 | beyond the valley |
-| systems/projects.rs:1021 | holds that {}{}, with strangers from {band} taking from the store |
-| systems/projects.rs:1029 | is a careful one, with strangers from {band} taking from the store |
-| systems/projects.rs:1038 | to raise a wall round the houses |
-| systems/projects.rs:1095 | remembers the shrine they had: {why} |
-| systems/projects.rs:1098 | holds that {}{}, and the observances want a place |
-| systems/projects.rs:1110 | to raise a shrine |
-| systems/projects.rs:1160 | the nearest water is {d} paces from home |
-| systems/projects.rs:1161 | there is no water within a long walk of home |
-| systems/projects.rs:1168 | to dig a well |
-| systems/projects.rs:1200 | the field is dry and water lies {} paces off |
-| systems/projects.rs:1207 | to dig a channel to the field |
-| systems/projects.rs:1257 | the walls want stone and no rock face is within reach |
-| systems/projects.rs:1262 | the building wants timber and no tree stands within reach |
+| systems/projects.rs:293 | the way of {}, as {} did it |
+| systems/projects.rs:303 | remembers it: {line} |
+| systems/projects.rs:304 | is the last who knows it: {line} |
+| systems/projects.rs:311 | to carve it into a wall |
+| systems/projects.rs:359 | holds that {}{} |
+| systems/projects.rs:368 | to brew from the full store |
+| systems/projects.rs:408 | the carpenter |
+| systems/projects.rs:416 | the smith |
+| systems/projects.rs:423 | the smith |
+| systems/projects.rs:465 | learned the craft from {master}, {craft} |
+| systems/projects.rs:468 | is a good hand at {} |
+| systems/projects.rs:470 | building |
+| systems/projects.rs:472 | making things |
+| systems/projects.rs:488 | to build {} |
+| systems/projects.rs:557 | holds that {}{}, with strangers from {band} taking from the store |
+| systems/projects.rs:566 | to make spears |
+| systems/projects.rs:698 | {why}; {name} has {} to spare |
+| systems/projects.rs:707 | to fetch {} from {name} |
+| systems/projects.rs:725 | thinks {name} will pay for their {} |
+| systems/projects.rs:744 | wants to see what lies at {name} |
+| systems/projects.rs:773 | to lead a party out of the valley |
+| systems/projects.rs:851 | slept on the ground, {everyone} of them and {places} places to sleep |
+| systems/projects.rs:857 | to build {} |
+| systems/projects.rs:891 | took from the store |
+| systems/projects.rs:895 | strangers from  |
+| systems/projects.rs:896 |  took from the store |
+| systems/projects.rs:938 | holds that {}{}, with strangers from {band} taking from the store |
+| systems/projects.rs:946 | is a careful one, with strangers from {band} taking from the store |
+| systems/projects.rs:955 | to dig a shelter for the stores |
+| systems/projects.rs:989 | took from the store |
+| systems/projects.rs:993 | strangers from  |
+| systems/projects.rs:994 |  took from the store |
+| systems/projects.rs:1002 | strangers are a danger |
+| systems/projects.rs:1003 | beyond the valley |
+| systems/projects.rs:1038 | holds that {}{}, with strangers from {band} taking from the store |
+| systems/projects.rs:1046 | is a careful one, with strangers from {band} taking from the store |
+| systems/projects.rs:1055 | to raise a wall round the houses |
+| systems/projects.rs:1112 | remembers the shrine they had: {why} |
+| systems/projects.rs:1115 | holds that {}{}, and the observances want a place |
+| systems/projects.rs:1127 | to raise a shrine |
+| systems/projects.rs:1177 | the nearest water is {d} paces from home |
+| systems/projects.rs:1178 | there is no water within a long walk of home |
+| systems/projects.rs:1185 | to dig a well |
+| systems/projects.rs:1217 | the field is dry and water lies {} paces off |
+| systems/projects.rs:1224 | to dig a channel to the field |
+| systems/projects.rs:1274 | the walls want stone and no rock face is within reach |
+| systems/projects.rs:1279 | the building wants timber and no tree stands within reach |
 | systems/rescue.rs:127 | climbed down |
 | systems/rescue.rs:128 | there was no other way home |
 | systems/rites.rs:77 | nobody of their people was left |
@@ -3556,21 +3563,21 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/settlement.rs:444 | , and no rock face near to dig into nor ground to dig down |
 | systems/settlement.rs:568 | added to |
 | systems/settlement.rs:580 | marked out |
-| systems/settlement.rs:1542 | gave up on the {} |
-| systems/settlement.rs:1545 | found no place for it on their own ground |
-| systems/settlement.rs:2215 | upper room for {} |
-| systems/settlement.rs:2575 | walls up |
-| systems/settlement.rs:2576 | mended |
-| systems/settlement.rs:2577 | roofed |
-| systems/settlement.rs:2592 | roofed |
-| systems/settlement.rs:2615 | upper room roofed; a way of building upward was learned |
-| systems/settlement.rs:2901 | east |
-| systems/settlement.rs:2902 | west |
-| systems/settlement.rs:2903 | south |
-| systems/settlement.rs:2904 | north |
-| systems/settlement.rs:4221 | a need for another room |
-| systems/settlement.rs:4223 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
-| systems/settlement.rs:4288 | We {label}, as our first house was built. |
+| systems/settlement.rs:1583 | gave up on the {} |
+| systems/settlement.rs:1586 | found no place for it on their own ground |
+| systems/settlement.rs:2256 | upper room for {} |
+| systems/settlement.rs:2616 | walls up |
+| systems/settlement.rs:2617 | mended |
+| systems/settlement.rs:2618 | roofed |
+| systems/settlement.rs:2633 | roofed |
+| systems/settlement.rs:2656 | upper room roofed; a way of building upward was learned |
+| systems/settlement.rs:2942 | east |
+| systems/settlement.rs:2943 | west |
+| systems/settlement.rs:2944 | south |
+| systems/settlement.rs:2945 | north |
+| systems/settlement.rs:4262 | a need for another room |
+| systems/settlement.rs:4264 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
+| systems/settlement.rs:4329 | We {label}, as our first house was built. |
 | systems/society.rs:265 | carried off |
 | systems/society.rs:385 | they hold that other kinds are best kept apart, and most here are {plural} |
 | systems/society.rs:397 | strangers are not taken in |
@@ -3689,38 +3696,45 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/alive.rs:62 | drowned |
 | view/alive.rs:69 | thirst |
 | view/alive.rs:70 | froze |
-| view/alive.rs:750 | mood_median |
-| view/alive.rs:751 | mood_p10 |
-| view/alive.rs:752 | mood_hi |
-| view/alive.rs:753 | mood_lo |
-| view/alive.rs:754 | mood_clamped |
-| view/alive.rs:755 | mood_spread |
-| view/alive.rs:756 | standing_share |
-| view/alive.rs:757 | unreadable_share |
-| view/alive.rs:758 | work_share |
-| view/alive.rs:759 | talk_share |
-| view/alive.rs:760 | day_distance |
-| view/alive.rs:761 | act_entropy_sd |
-| view/alive.rs:763 | ties_saturated |
-| view/alive.rs:767 | ties_hostile |
-| view/alive.rs:770 | ties_frozen |
-| view/alive.rs:771 | ties_frozen_max_days |
-| view/alive.rs:773 | ties_to_dead_share |
-| view/alive.rs:776 | grief_drop_2d |
-| view/alive.rs:777 | grief_drop_10d |
-| view/alive.rs:778 | grief_days |
-| view/alive.rs:779 | grief_n |
-| view/alive.rs:780 | cause_repeat |
-| view/alive.rs:781 | lesson_ignored |
-| view/alive.rs:782 | glance_major_n |
-| view/alive.rs:783 | glance_missed_major |
-| view/alive.rs:786 | glance_missed_major_died |
-| view/alive.rs:787 | glance_missed_major_captured |
-| view/alive.rs:788 | glance_missed_major_broke |
-| view/alive.rs:789 | glance_missed_major_exiled |
-| view/alive.rs:790 | glance_missed_major_born |
-| view/alive.rs:791 | glance_missed_major_paired |
-| view/alive.rs:792 | glance_missed_major_returned |
+| view/alive.rs:780 | mood_median |
+| view/alive.rs:781 | mood_p10 |
+| view/alive.rs:782 | mood_hi |
+| view/alive.rs:783 | mood_lo |
+| view/alive.rs:784 | mood_clamped |
+| view/alive.rs:785 | mood_spread |
+| view/alive.rs:786 | mood_p25 |
+| view/alive.rs:787 | mood_p75 |
+| view/alive.rs:788 | mood_below_m03 |
+| view/alive.rs:789 | mood_term_needs |
+| view/alive.rs:790 | mood_term_recent |
+| view/alive.rs:791 | mood_term_long |
+| view/alive.rs:792 | mood_term_thoughts |
+| view/alive.rs:793 | standing_share |
+| view/alive.rs:794 | unreadable_share |
+| view/alive.rs:795 | work_share |
+| view/alive.rs:796 | talk_share |
+| view/alive.rs:797 | day_distance |
+| view/alive.rs:798 | act_entropy_sd |
+| view/alive.rs:800 | ties_saturated |
+| view/alive.rs:804 | ties_hostile |
+| view/alive.rs:807 | ties_frozen |
+| view/alive.rs:808 | ties_frozen_max_days |
+| view/alive.rs:810 | ties_to_dead_share |
+| view/alive.rs:813 | grief_drop_2d |
+| view/alive.rs:814 | grief_drop_10d |
+| view/alive.rs:815 | grief_days |
+| view/alive.rs:816 | grief_n |
+| view/alive.rs:817 | cause_repeat |
+| view/alive.rs:818 | lesson_ignored |
+| view/alive.rs:819 | glance_major_n |
+| view/alive.rs:820 | glance_missed_major |
+| view/alive.rs:823 | glance_missed_major_died |
+| view/alive.rs:824 | glance_missed_major_captured |
+| view/alive.rs:825 | glance_missed_major_broke |
+| view/alive.rs:826 | glance_missed_major_exiled |
+| view/alive.rs:827 | glance_missed_major_born |
+| view/alive.rs:828 | glance_missed_major_paired |
+| view/alive.rs:829 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
@@ -3884,6 +3898,13 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/block.rs:723 | Body of {} ({how}) |
 | view/built.rs:22 | someone no longer remembered |
 | view/built.rs:24 | Built by {name}, {} |
+| view/causes.rs:98 | [b]Why it happened[/b] / Nothing is recorded here. |
+| view/causes.rs:101 | [b]Why it happened[/b] / {}: {first} /  |
+| view/causes.rs:106 |   because, {}: {line} /  |
+| view/causes.rs:111 | The record names no cause for it. /  |
+| view/causes.rs:113 |   and it goes back further than this page follows. /  |
+| view/causes.rs:114 |   and the record of what caused that is missing. /  |
+| view/causes.rs:115 |   and before that, nothing the valley knows. /  |
 | view/day_shape.rs:61 | unknown |
 | view/day_shape.rs:62 | {name}:{goal} |
 | view/director.rs:84 | settlement |
@@ -4226,151 +4247,152 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/legends.rs:54 | polity |
 | view/legends.rs:55 | a realm |
 | view/legends.rs:86 | [color=#9a9a9a]{}[/color]  {} |
-| view/legends.rs:98 | [b]Legends[/b] /  / This valley's world has no recorded history beyond it. |
-| view/legends.rs:103 | people |
-| view/legends.rs:104 | site |
-| view/legends.rs:105 | figure |
-| view/legends.rs:106 | polity |
-| view/legends.rs:107 | war |
-| view/legends.rs:108 | species |
-| view/legends.rs:109 | culture |
-| view/legends.rs:110 | beast |
-| view/legends.rs:112 | known |
-| view/legends.rs:133 | [b]{}[/b] / A huge thing of {}, of {} parts ({plan}). It woke {} {}. /  |
-| view/legends.rs:139 | underworld |
-| view/legends.rs:140 | in the underworld |
-| view/legends.rs:142 | in the deep caverns |
-| view/legends.rs:148 | It left {} empty. /  |
-| view/legends.rs:150 | beast |
-| view/legends.rs:152 |  / [b]The record[/b] /  |
-| view/legends.rs:153 |  /  |
-| view/legends.rs:154 |  /  |
-| view/legends.rs:156 |  / [url=world:0]The world[/url] |
-| view/legends.rs:167 | [b]{}[/b], a culture of {}. /  |
-| view/legends.rs:174 | It grew at {}, far from the homeland, {} (from {}). /  |
-| view/legends.rs:177 | culture |
-| view/legends.rs:180 | The culture of their homeland. /  |
-| view/legends.rs:182 | They {}. /  / [b]What they hold[/b] /  |
-| view/legends.rs:186 | Nothing more firmly than their neighbours. /  |
-| view/legends.rs:189 | That {}. /  |
-| view/legends.rs:196 |  / Held in {sites} settlements now. /  |
-| view/legends.rs:199 | They name {} for {}. /  |
-| view/legends.rs:203 | They hold a grudge against {}. /  |
-| view/legends.rs:215 |  / [b]Who they deal with[/b] /  |
-| view/legends.rs:220 | , and one marriage |
-| view/legends.rs:221 | , and {n} marriages |
-| view/legends.rs:224 | {}: {} caravans{married}, the last {}. /  |
-| view/legends.rs:225 | culture |
-| view/legends.rs:239 |  / [b]What they tell[/b] /  |
-| view/legends.rs:242 |  (a later telling) |
-| view/legends.rs:247 | {}{later}, {}. /  |
-| view/legends.rs:268 | [b]{}[/b] / {}. /  / A body of {} parts ({}), {:.0} to {:.0} cm tall and {:.0} to {:.0} kg; comfortable from {:.0} to {:.0} degrees, {}. They live in {}, build {}, and pair {}. /  |
-| view/legends.rs:285 | bare |
-| view/legends.rs:285 | bare-skinned |
-| view/legends.rs:286 | in {c} |
-| view/legends.rs:289 | household |
-| view/legends.rs:289 | households |
-| view/legends.rs:290 | {o}s |
-| view/legends.rs:294 | pair |
-| view/legends.rs:294 | for life |
-| view/legends.rs:295 | group |
-| view/legends.rs:295 | in groups |
-| view/legends.rs:296 | rarely |
-| view/legends.rs:306 |  / [b]Peoples of this kind[/b] /  |
-| view/legends.rs:308 | None in this world. /  |
-| view/legends.rs:310 |  /  |
-| view/legends.rs:319 | {} /  / [b]The world[/b] / {} years remembered before the portal. {} peoples, {} settlements ({} still lived in), {} named figures, {} realms. /  / [b]Peoples[/b] /  |
-| view/legends.rs:321 | known |
-| view/legends.rs:321 | What the valley knows (not the world as it is) |
-| view/legends.rs:336 | {}, {} {}: {n} settlements /  |
-| view/legends.rs:342 |  / [b]Realms[/b] /  |
-| view/legends.rs:345 | ended {} ({cause}) |
-| view/legends.rs:346 | since {} |
-| view/legends.rs:349 | {} of the {}, seat {}: {state} /  |
-| view/legends.rs:356 |  / [b]Wars[/b] (the latest) /  |
-| view/legends.rs:359 | ended {} ({cause}) |
-| view/legends.rs:360 | still fought |
-| view/legends.rs:363 | {}: {state} /  |
-| view/legends.rs:365 | war |
-| view/legends.rs:368 | {} against {} |
-| view/legends.rs:376 |  / [b]Beasts of the deep[/b] /  |
-| view/legends.rs:379 | {}, woke {} /  |
-| view/legends.rs:380 | beast |
-| view/legends.rs:387 |  / The valley lies among the {}. /  |
-| view/legends.rs:404 | They live in the caverns under the land. Their first home was {}. |
-| view/legends.rs:407 | Their first home was {}. |
-| view/legends.rs:418 | They have no land of their own. |
-| view/legends.rs:421 | They have no land of their own; households of them live in {}. |
-| view/legends.rs:428 | [b]The {}[/b], {} {}. {home} /  / [b]What they hold[/b] /  |
-| view/legends.rs:440 | That {}. /  |
-| view/legends.rs:447 | culture |
-| view/legends.rs:450 |  / [b]Cultures[/b] {} /  |
-| view/legends.rs:453 |  / [b]Settlements[/b] {} founded, {alive} still lived in. The largest: /  |
-| view/legends.rs:464 | {}, a {} of {:.0} /  |
-| view/legends.rs:472 |  / [b]Their realms[/b] /  |
-| view/legends.rs:474 | {} /  |
-| view/legends.rs:477 |  / [b]Remembered among them[/b] /  |
-| view/legends.rs:491 | {}, {} /  |
-| view/legends.rs:493 |  / [url=world:0]The world[/url] |
-| view/legends.rs:503 | [b]{}[/b], a {} of the {}. / Founded {} |
-| view/legends.rs:506 | mine |
-| view/legends.rs:510 | ruin |
-| view/legends.rs:516 |  by settlers from {} |
-| view/legends.rs:518 | . /  |
-| view/legends.rs:522 | Left empty {}: {cause}. At its height {:.0} lived there. /  |
-| view/legends.rs:527 | {:.0} live there (at most {:.0}). /  |
-| view/legends.rs:544 | They hold for trade: {}. /  |
-| view/legends.rs:549 | {n} {} |
-| view/legends.rs:554 | A caravan from the valley traded {} for {} ({}). /  |
-| view/legends.rs:557 | nothing |
-| view/legends.rs:572 | a neighbour |
-| view/legends.rs:574 | Traded {} {} to {with} for {} {} ({}). /  |
-| view/legends.rs:589 | the seat of |
-| view/legends.rs:591 | part of |
-| view/legends.rs:593 | It is {role} the realm of {}. /  |
-| view/legends.rs:598 |  / [b]What is told of it[/b] /  |
-| view/legends.rs:608 | culture |
-| view/legends.rs:611 |  (a later telling) |
-| view/legends.rs:616 | {who} say: {}{later}, {}. /  |
-| view/legends.rs:630 |  / [b]Born here[/b] ({}) /  |
-| view/legends.rs:632 | {}, {} /  |
-| view/legends.rs:635 | site |
-| view/legends.rs:637 |  / [b]The record[/b] /  |
-| view/legends.rs:638 |  /  |
-| view/legends.rs:639 |  /  |
-| view/legends.rs:642 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:654 | [b]{}[/b], {} of the {}. / Born {} at {} |
-| view/legends.rs:662 | , child of {} |
-| view/legends.rs:664 | . /  |
-| view/legends.rs:666 | Died {} ({cause}), aged {}. /  |
-| view/legends.rs:669 | Lives at {}, aged {}. /  |
-| view/legends.rs:677 |  / [b]Children[/b] /  |
-| view/legends.rs:679 | {} /  |
-| view/legends.rs:682 | figure |
-| view/legends.rs:684 |  / [b]The record[/b] /  |
-| view/legends.rs:685 |  /  |
-| view/legends.rs:686 |  /  |
-| view/legends.rs:689 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:701 | [b]The realm of {}[/b], of the {}. / Its seat is {}, since {}. /  |
-| view/legends.rs:708 | It came to an end {}: {cause}. /  |
-| view/legends.rs:709 | Ruled now by {}. /  |
-| view/legends.rs:710 | Nobody rules it now. /  |
-| view/legends.rs:712 | {} settlements belong to it. /  |
-| view/legends.rs:717 | , until {} ({why}) |
-| view/legends.rs:721 | Allied with {} against {}, {}{ended}. /  |
-| view/legends.rs:727 | polity |
-| view/legends.rs:729 |  / [b]The record[/b] /  |
-| view/legends.rs:730 |  /  |
-| view/legends.rs:731 |  /  |
-| view/legends.rs:734 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:814 | [b]The war between {} and {}[/b] / Begun {}: {}. /  |
-| view/legends.rs:823 | Ended {}: {cause}. {} battles were fought. /  |
-| view/legends.rs:828 | Still fought; {} battles so far. /  |
-| view/legends.rs:830 | war |
-| view/legends.rs:832 |  / [b]The record[/b] /  |
-| view/legends.rs:833 |  /  |
-| view/legends.rs:834 |  /  |
-| view/legends.rs:836 |  / [url=world:0]The world[/url] |
+| view/legends.rs:97 | why: |
+| view/legends.rs:102 | [b]Legends[/b] /  / This valley's world has no recorded history beyond it. |
+| view/legends.rs:107 | people |
+| view/legends.rs:108 | site |
+| view/legends.rs:109 | figure |
+| view/legends.rs:110 | polity |
+| view/legends.rs:111 | war |
+| view/legends.rs:112 | species |
+| view/legends.rs:113 | culture |
+| view/legends.rs:114 | beast |
+| view/legends.rs:116 | known |
+| view/legends.rs:137 | [b]{}[/b] / A huge thing of {}, of {} parts ({plan}). It woke {} {}. /  |
+| view/legends.rs:143 | underworld |
+| view/legends.rs:144 | in the underworld |
+| view/legends.rs:146 | in the deep caverns |
+| view/legends.rs:152 | It left {} empty. /  |
+| view/legends.rs:154 | beast |
+| view/legends.rs:156 |  / [b]The record[/b] /  |
+| view/legends.rs:157 |  /  |
+| view/legends.rs:158 |  /  |
+| view/legends.rs:160 |  / [url=world:0]The world[/url] |
+| view/legends.rs:171 | [b]{}[/b], a culture of {}. /  |
+| view/legends.rs:178 | It grew at {}, far from the homeland, {} (from {}). /  |
+| view/legends.rs:181 | culture |
+| view/legends.rs:184 | The culture of their homeland. /  |
+| view/legends.rs:186 | They {}. /  / [b]What they hold[/b] /  |
+| view/legends.rs:190 | Nothing more firmly than their neighbours. /  |
+| view/legends.rs:193 | That {}. /  |
+| view/legends.rs:200 |  / Held in {sites} settlements now. /  |
+| view/legends.rs:203 | They name {} for {}. /  |
+| view/legends.rs:207 | They hold a grudge against {}. /  |
+| view/legends.rs:219 |  / [b]Who they deal with[/b] /  |
+| view/legends.rs:224 | , and one marriage |
+| view/legends.rs:225 | , and {n} marriages |
+| view/legends.rs:228 | {}: {} caravans{married}, the last {}. /  |
+| view/legends.rs:229 | culture |
+| view/legends.rs:243 |  / [b]What they tell[/b] /  |
+| view/legends.rs:246 |  (a later telling) |
+| view/legends.rs:251 | {}{later}, {}. /  |
+| view/legends.rs:272 | [b]{}[/b] / {}. /  / A body of {} parts ({}), {:.0} to {:.0} cm tall and {:.0} to {:.0} kg; comfortable from {:.0} to {:.0} degrees, {}. They live in {}, build {}, and pair {}. /  |
+| view/legends.rs:289 | bare |
+| view/legends.rs:289 | bare-skinned |
+| view/legends.rs:290 | in {c} |
+| view/legends.rs:293 | household |
+| view/legends.rs:293 | households |
+| view/legends.rs:294 | {o}s |
+| view/legends.rs:298 | pair |
+| view/legends.rs:298 | for life |
+| view/legends.rs:299 | group |
+| view/legends.rs:299 | in groups |
+| view/legends.rs:300 | rarely |
+| view/legends.rs:310 |  / [b]Peoples of this kind[/b] /  |
+| view/legends.rs:312 | None in this world. /  |
+| view/legends.rs:314 |  /  |
+| view/legends.rs:323 | {} /  / [b]The world[/b] / {} years remembered before the portal. {} peoples, {} settlements ({} still lived in), {} named figures, {} realms. /  / [b]Peoples[/b] /  |
+| view/legends.rs:325 | known |
+| view/legends.rs:325 | What the valley knows (not the world as it is) |
+| view/legends.rs:340 | {}, {} {}: {n} settlements /  |
+| view/legends.rs:346 |  / [b]Realms[/b] /  |
+| view/legends.rs:349 | ended {} ({cause}) |
+| view/legends.rs:350 | since {} |
+| view/legends.rs:353 | {} of the {}, seat {}: {state} /  |
+| view/legends.rs:360 |  / [b]Wars[/b] (the latest) /  |
+| view/legends.rs:363 | ended {} ({cause}) |
+| view/legends.rs:364 | still fought |
+| view/legends.rs:367 | {}: {state} /  |
+| view/legends.rs:369 | war |
+| view/legends.rs:372 | {} against {} |
+| view/legends.rs:380 |  / [b]Beasts of the deep[/b] /  |
+| view/legends.rs:383 | {}, woke {} /  |
+| view/legends.rs:384 | beast |
+| view/legends.rs:391 |  / The valley lies among the {}. /  |
+| view/legends.rs:408 | They live in the caverns under the land. Their first home was {}. |
+| view/legends.rs:411 | Their first home was {}. |
+| view/legends.rs:422 | They have no land of their own. |
+| view/legends.rs:425 | They have no land of their own; households of them live in {}. |
+| view/legends.rs:432 | [b]The {}[/b], {} {}. {home} /  / [b]What they hold[/b] /  |
+| view/legends.rs:444 | That {}. /  |
+| view/legends.rs:451 | culture |
+| view/legends.rs:454 |  / [b]Cultures[/b] {} /  |
+| view/legends.rs:457 |  / [b]Settlements[/b] {} founded, {alive} still lived in. The largest: /  |
+| view/legends.rs:468 | {}, a {} of {:.0} /  |
+| view/legends.rs:476 |  / [b]Their realms[/b] /  |
+| view/legends.rs:478 | {} /  |
+| view/legends.rs:481 |  / [b]Remembered among them[/b] /  |
+| view/legends.rs:495 | {}, {} /  |
+| view/legends.rs:497 |  / [url=world:0]The world[/url] |
+| view/legends.rs:507 | [b]{}[/b], a {} of the {}. / Founded {} |
+| view/legends.rs:510 | mine |
+| view/legends.rs:514 | ruin |
+| view/legends.rs:520 |  by settlers from {} |
+| view/legends.rs:522 | . /  |
+| view/legends.rs:526 | Left empty {}: {cause}. At its height {:.0} lived there. /  |
+| view/legends.rs:531 | {:.0} live there (at most {:.0}). /  |
+| view/legends.rs:548 | They hold for trade: {}. /  |
+| view/legends.rs:553 | {n} {} |
+| view/legends.rs:558 | A caravan from the valley traded {} for {} ({}). /  |
+| view/legends.rs:561 | nothing |
+| view/legends.rs:576 | a neighbour |
+| view/legends.rs:578 | Traded {} {} to {with} for {} {} ({}). /  |
+| view/legends.rs:593 | the seat of |
+| view/legends.rs:595 | part of |
+| view/legends.rs:597 | It is {role} the realm of {}. /  |
+| view/legends.rs:602 |  / [b]What is told of it[/b] /  |
+| view/legends.rs:612 | culture |
+| view/legends.rs:615 |  (a later telling) |
+| view/legends.rs:620 | {who} say: {}{later}, {}. /  |
+| view/legends.rs:634 |  / [b]Born here[/b] ({}) /  |
+| view/legends.rs:636 | {}, {} /  |
+| view/legends.rs:639 | site |
+| view/legends.rs:641 |  / [b]The record[/b] /  |
+| view/legends.rs:642 |  /  |
+| view/legends.rs:643 |  /  |
+| view/legends.rs:646 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:658 | [b]{}[/b], {} of the {}. / Born {} at {} |
+| view/legends.rs:666 | , child of {} |
+| view/legends.rs:668 | . /  |
+| view/legends.rs:670 | Died {} ({cause}), aged {}. /  |
+| view/legends.rs:673 | Lives at {}, aged {}. /  |
+| view/legends.rs:681 |  / [b]Children[/b] /  |
+| view/legends.rs:683 | {} /  |
+| view/legends.rs:686 | figure |
+| view/legends.rs:688 |  / [b]The record[/b] /  |
+| view/legends.rs:689 |  /  |
+| view/legends.rs:690 |  /  |
+| view/legends.rs:693 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:705 | [b]The realm of {}[/b], of the {}. / Its seat is {}, since {}. /  |
+| view/legends.rs:712 | It came to an end {}: {cause}. /  |
+| view/legends.rs:713 | Ruled now by {}. /  |
+| view/legends.rs:714 | Nobody rules it now. /  |
+| view/legends.rs:716 | {} settlements belong to it. /  |
+| view/legends.rs:721 | , until {} ({why}) |
+| view/legends.rs:725 | Allied with {} against {}, {}{ended}. /  |
+| view/legends.rs:731 | polity |
+| view/legends.rs:733 |  / [b]The record[/b] /  |
+| view/legends.rs:734 |  /  |
+| view/legends.rs:735 |  /  |
+| view/legends.rs:738 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:818 | [b]The war between {} and {}[/b] / Begun {}: {}. /  |
+| view/legends.rs:827 | Ended {}: {cause}. {} battles were fought. /  |
+| view/legends.rs:832 | Still fought; {} battles so far. /  |
+| view/legends.rs:834 | war |
+| view/legends.rs:836 |  / [b]The record[/b] /  |
+| view/legends.rs:837 |  /  |
+| view/legends.rs:838 |  /  |
+| view/legends.rs:840 |  / [url=world:0]The world[/url] |
 | view/look.rs:12 | tunic |
 | view/look.rs:13 | dress |
 | view/look.rs:14 | apron |
@@ -4393,10 +4415,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/look.rs:35 | coat |
 | view/look.rs:36 | workshirt |
 | view/look.rs:37 | vest |
-| view/mod.rs:33 | douse |
-| view/mod.rs:34 | by lightning |
-| view/mod.rs:34 | lightning |
-| view/mod.rs:35 | flare |
+| view/mod.rs:34 | douse |
+| view/mod.rs:35 | by lightning |
+| view/mod.rs:35 | lightning |
+| view/mod.rs:36 | flare |
 | view/music.rs:20 | mourn |
 | view/music.rs:22 | welcome |
 | view/narrate.rs:39 | {} and {} |
@@ -4404,36 +4426,44 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:59 | An |
 | view/narrate.rs:60 | {article} {n} |
 | view/narrate.rs:71 | community {} |
-| view/narrate.rs:1829 | It was over {}. |
-| view/narrate.rs:1832 | They broke down {cause}. |
-| view/narrate.rs:1834 | No one could name the cause. |
-| view/narrate.rs:1866 | some {} |
-| view/narrate.rs:1867 | a torch |
-| view/narrate.rs:1868 | a sheaf of grain |
-| view/narrate.rs:1869 | a stone block |
-| view/narrate.rs:1888 | aeiouAEIOU |
-| view/narrate.rs:1889 | {} {what} |
-| view/narrate.rs:1889 | an |
-| view/narrate.rs:1889 | a |
-| view/narrate.rs:1895 | first |
-| view/narrate.rs:1896 | second |
-| view/narrate.rs:1897 | third |
-| view/narrate.rs:1898 | fourth |
-| view/narrate.rs:1899 | fifth |
-| view/narrate.rs:1900 | {n}th |
-| view/summary.rs:69 | died |
-| view/summary.rs:70 | born |
-| view/summary.rs:71 | paired |
-| view/summary.rs:72 | arrived |
-| view/summary.rs:73 | joined |
-| view/summary.rs:74 | left |
-| view/summary.rs:75 | exiled |
-| view/summary.rs:76 | captured |
-| view/summary.rs:77 | returned |
-| view/summary.rs:78 | broke |
-| view/summary.rs:79 | craft_lost |
-| view/summary.rs:80 | role |
-| view/summary.rs:99 | '{k}' |
+| view/narrate.rs:1835 | It was over {}. |
+| view/narrate.rs:1838 | They broke down {cause}. |
+| view/narrate.rs:1840 | No one could name the cause. |
+| view/narrate.rs:1872 | some {} |
+| view/narrate.rs:1873 | a torch |
+| view/narrate.rs:1874 | a sheaf of grain |
+| view/narrate.rs:1875 | a stone block |
+| view/narrate.rs:1894 | aeiouAEIOU |
+| view/narrate.rs:1895 | {} {what} |
+| view/narrate.rs:1895 | an |
+| view/narrate.rs:1895 | a |
+| view/narrate.rs:1901 | first |
+| view/narrate.rs:1902 | second |
+| view/narrate.rs:1903 | third |
+| view/narrate.rs:1904 | fourth |
+| view/narrate.rs:1905 | fifth |
+| view/narrate.rs:1906 | {n}th |
+| view/summary.rs:81 | died |
+| view/summary.rs:82 | born |
+| view/summary.rs:83 | paired |
+| view/summary.rs:84 | arrived |
+| view/summary.rs:85 | joined |
+| view/summary.rs:86 | left |
+| view/summary.rs:87 | exiled |
+| view/summary.rs:88 | captured |
+| view/summary.rs:89 | returned |
+| view/summary.rs:90 | broke |
+| view/summary.rs:91 | craft_lost |
+| view/summary.rs:92 | role |
+| view/summary.rs:115 | '{k}' |
+| view/summary.rs:252 |  /  /  |
+| view/summary.rs:255 | [b]What changed[/b] /  |
+| view/summary.rs:263 | [b]Also noted[/b] /  |
+| view/summary.rs:306 | {} (x{}) |
+| view/summary.rs:332 | previous_day |
+| view/summary.rs:333 | current_day |
+| view/summary.rs:334 | previous_season |
+| view/summary.rs:335 | current_season |
 | view/waiting.rs:20 | Planned: {} ({}) |
 | view/waiting.rs:30 | {n} has taken it |
 | view/waiting.rs:33 | set aside after {} failed tries |
@@ -4456,12 +4486,16 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/waiting.rs:165 | is a child |
 | view/waiting.rs:166 | do not know the craft |
 | view/waiting.rs:166 | does not know the craft |
-| view/why.rs:18 | afraid of {n} |
-| view/why.rs:19 | grieving for {n} |
-| view/why.rs:20 | angry with {n} |
-| view/why.rs:21 | glad of {n} |
-| view/why.rs:22 | in awe of {n} |
-| view/why.rs:23 | ashamed before {n} |
+| view/why.rs:25 | cheerful |
+| view/why.rs:26 | content |
+| view/why.rs:27 | low |
+| view/why.rs:28 | miserable |
+| view/why.rs:43 | afraid of {n} |
+| view/why.rs:44 | grieving for {n} |
+| view/why.rs:45 | angry with {n} |
+| view/why.rs:46 | glad of {n} |
+| view/why.rs:47 | in awe of {n} |
+| view/why.rs:48 | ashamed before {n} |
 | world/gen/biome.rs:62 | wet |
 | world/gen/biome.rs:64 | dry |
 | world/gen/biome.rs:67 | mild |
@@ -4579,196 +4613,203 @@ Generated from `godot/scripts/` by the same script.
 
 HUD, feed, inspect panel, History, away summary, settings and the arrival screen. `%s`, `%d` and `%.2f` are filled at run time; `[b]` and `[color=...]` are BBCode.
 
-<details><summary>261 strings (click to open)</summary>
+<details><summary>268 strings (click to open)</summary>
 
 | file:line | function | string |
 |---|---|---|
-| godot/scripts/main.gd:12 |  | [b]Mouse & Keys[/b] /  / [b]Mouse[/b] / Click any person or animal to inspect them (Follow, ★ Favourite, Go to) / Click any ground, water, or rock tile to inspect what it holds / Drag with any mouse button to pan (dragging stops following) / Mouse wheel zooms toward the pointer / The bottom bar has every command (B to hide/show) / Click any feed line or top announcement to look where it happened /  / [b]Keys[/b] / [Space] pause   [1 2 3] speed   [Home] settlement / [, .] or PgUp/PgDn   level up and down / [C] camera director   [F] follow inspected   [J] ★ favourites / [P] people   [H] history   [T] timelapse   [L] legends / [V] what the community has seen   [G] feed rate   [K] waiting work / [N] alerts   [Shift+N] pause on major   [B] toggle bar / [F5] save   [F9] load   [O] settings   [?] help / [Ctrl+F1–8] set bookmark, [F1–8] go to it |
-| godot/scripts/main.gd:280 | _start_debug_log | OSTROG_DEBUG_LOG |
-| godot/scripts/main.gd:291 | _debug_log_on | command=client seed=%d ticks=%d stage=%s opening=%s load=%s |
-| godot/scripts/main.gd:306 | _on_debug_log_toggled | Decision log:  |
-| godot/scripts/main.gd:356 | _ready | autosave could not be read (%s); started a fresh valley |
-| godot/scripts/main.gd:377 | _ready | No autosave could be read; started a new valley. The old files are still in the saves folder. |
-| godot/scripts/main.gd:380 | _ready | A new valley. Watch, or press H for history and O for settings. |
-| godot/scripts/main.gd:745 | _build_ui | Follow [F] |
-| godot/scripts/main.gd:745 | _build_ui | Keep the camera on this person [F] |
-| godot/scripts/main.gd:752 | _build_ui | ☆ Favourite |
-| godot/scripts/main.gd:752 | _build_ui | Mark or unmark this person as a favourite to watch |
-| godot/scripts/main.gd:761 | _build_ui | Why? |
-| godot/scripts/main.gd:761 | _build_ui | Show why this person is doing what they do: the options they weighed and what they put off |
-| godot/scripts/main.gd:768 | _build_ui | Go to |
-| godot/scripts/main.gd:768 | _build_ui | Centre the camera on this person now |
-| godot/scripts/main.gd:779 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:779 | _build_ui | Close the inspect panel [Esc] |
-| godot/scripts/main.gd:813 | _build_ui | Block inspection |
-| godot/scripts/main.gd:817 | _build_ui | Go to |
-| godot/scripts/main.gd:817 | _build_ui | Centre the camera on this block |
-| godot/scripts/main.gd:826 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:826 | _build_ui | Close block inspection [Esc] |
-| godot/scripts/main.gd:852 | _build_ui | ★ Favourites   (click a person to inspect & star them) |
-| godot/scripts/main.gd:856 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:856 | _build_ui | Close favourites [J or Esc] |
-| godot/scripts/main.gd:868 | _build_ui | No favourites yet. Click anyone in the valley and press '☆ Favourite' on their panel to keep track of them here. |
-| godot/scripts/main.gd:887 | _build_ui | People |
-| godot/scripts/main.gd:891 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:891 | _build_ui | Close people [P or Esc] |
-| godot/scripts/main.gd:903 | _build_ui | Nobody lives in the valley. |
-| godot/scripts/main.gd:920 | _build_ui | Waiting work: what nobody has taken, and why |
-| godot/scripts/main.gd:924 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:924 | _build_ui | Close waiting work [K or Esc] |
-| godot/scripts/main.gd:949 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:949 | _build_ui | Close help [? or Esc] |
-| godot/scripts/main.gd:980 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:980 | _build_ui | Close history / summary [H or Esc] |
-| godot/scripts/main.gd:1002 | _build_ui | ← Back [Backspace] |
-| godot/scripts/main.gd:1002 | _build_ui | Return to the previous Legends page [Backspace] |
-| godot/scripts/main.gd:1009 | _build_ui | World overview |
-| godot/scripts/main.gd:1009 | _build_ui | Open the top-level world page |
-| godot/scripts/main.gd:1010 | _build_ui | world:0 |
-| godot/scripts/main.gd:1011 | _build_ui | world:0 |
-| godot/scripts/main.gd:1012 | _build_ui | world:0 |
-| godot/scripts/main.gd:1018 | _build_ui | Close [Esc] |
-| godot/scripts/main.gd:1018 | _build_ui | Close Legends [L or Esc] |
-| godot/scripts/main.gd:1091 | _show_waiting | Nothing is waiting: every order has been taken, or was posted within the hour. |
-| godot/scripts/main.gd:1104 | _show_waiting | Go to |
-| godot/scripts/main.gd:1104 | _show_waiting | Look where it waits |
-| godot/scripts/main.gd:1135 | _build_bottom_bar | ▼ Bar |
-| godot/scripts/main.gd:1135 | _build_bottom_bar | Hide or show the bottom button bar [B] |
-| godot/scripts/main.gd:1168 | _build_bottom_bar | Keep playing [Esc] |
-| godot/scripts/main.gd:1168 | _build_bottom_bar | Keep the valley as it is |
-| godot/scripts/main.gd:1172 | _build_bottom_bar | Load |
-| godot/scripts/main.gd:1172 | _build_bottom_bar | Load the saved valley |
-| godot/scripts/main.gd:1189 | _build_bottom_bar | Camera bookmarks (F1–F8) |
-| godot/scripts/main.gd:1193 | _build_bottom_bar | Close |
-| godot/scripts/main.gd:1193 | _build_bottom_bar | Close bookmarks |
-| godot/scripts/main.gd:1206 | _build_bottom_bar | Go F%d |
-| godot/scripts/main.gd:1206 | _build_bottom_bar | Jump to bookmark F%d [F%d] |
-| godot/scripts/main.gd:1214 | _build_bottom_bar | bookmark %d not set yet (click Set) |
-| godot/scripts/main.gd:1216 | _build_bottom_bar | Set |
-| godot/scripts/main.gd:1216 | _build_bottom_bar | Save current camera to bookmark F%d [Ctrl+F%d] |
-| godot/scripts/main.gd:1218 | _build_bottom_bar | bookmark %d set |
-| godot/scripts/main.gd:1230 | _set_bar_visible | ▼ Bar |
-| godot/scripts/main.gd:1230 | _set_bar_visible | ▲ Bar |
-| godot/scripts/main.gd:1248 | _set_feed_rate | Feed rate:  |
-| godot/scripts/main.gd:1271 | _cycle_name_tags | Name tags:  |
-| godot/scripts/main.gd:1272 | _cycle_name_tags | name tags:  |
-| godot/scripts/main.gd:1277 | _cycle_feed_rate | feed rate:  |
-| godot/scripts/main.gd:1289 | _on_bar_pressed | spd1 |
-| godot/scripts/main.gd:1291 | _on_bar_pressed | spd2 |
-| godot/scripts/main.gd:1293 | _on_bar_pressed | spd3 |
-| godot/scripts/main.gd:1333 | _on_bar_pressed | world:0 |
-| godot/scripts/main.gd:1334 | _on_bar_pressed | world:0 |
-| godot/scripts/main.gd:1338 | _on_bar_pressed | view: %s |
-| godot/scripts/main.gd:1338 | _on_bar_pressed | what the community has seen |
-| godot/scripts/main.gd:1344 | _on_bar_pressed | announce:  |
-| godot/scripts/main.gd:1348 | _on_bar_pressed | pause on major events:  |
-| godot/scripts/main.gd:1354 | _on_bar_pressed | saving… |
-| godot/scripts/main.gd:1377 | _update_bar_buttons | ▶ Play |
-| godot/scripts/main.gd:1377 | _update_bar_buttons | ⏸ Pause |
-| godot/scripts/main.gd:1381 | _update_bar_buttons | Director: on |
-| godot/scripts/main.gd:1381 | _update_bar_buttons | Director: off |
-| godot/scripts/main.gd:1382 | _update_bar_buttons | Known: on |
-| godot/scripts/main.gd:1382 | _update_bar_buttons | Known: all |
-| godot/scripts/main.gd:1384 | _update_bar_buttons | Feed:  |
-| godot/scripts/main.gd:1385 | _update_bar_buttons | Alerts:  |
-| godot/scripts/main.gd:1386 | _update_bar_buttons | Pause!: on |
-| godot/scripts/main.gd:1386 | _update_bar_buttons | Pause!: off |
-| godot/scripts/main.gd:1388 | _update_bar_buttons | ★ Favs (%d) |
-| godot/scripts/main.gd:1388 | _update_bar_buttons | ★ Favs |
-| godot/scripts/main.gd:1394 | _update_inspect_buttons | Following [F] |
-| godot/scripts/main.gd:1394 | _update_inspect_buttons | Follow [F] |
-| godot/scripts/main.gd:1396 | _update_inspect_buttons | Why? (on) |
-| godot/scripts/main.gd:1396 | _update_inspect_buttons | Why? |
-| godot/scripts/main.gd:1398 | _update_inspect_buttons | ★ Favourited |
-| godot/scripts/main.gd:1398 | _update_inspect_buttons | ☆ Favourite |
-| godot/scripts/main.gd:1451 | _fill_people | Inspect |
-| godot/scripts/main.gd:1451 | _fill_people | Open %s's inspect panel |
-| godot/scripts/main.gd:1466 | _fill_people | Following |
-| godot/scripts/main.gd:1466 | _fill_people | Follow |
-| godot/scripts/main.gd:1466 | _fill_people | Keep the camera on %s (dragging stops follow) |
-| godot/scripts/main.gd:1481 | _fill_people | Remove %s from favourites |
-| godot/scripts/main.gd:1493 | _update_hud | director: %s |
-| godot/scripts/main.gd:1493 | _update_hud | on, watching %s |
-| godot/scripts/main.gd:1496 | _update_hud | pop %d |
-| godot/scripts/main.gd:1588 | _push_feed | paused:  |
-| godot/scripts/main.gd:1661 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
-| godot/scripts/main.gd:1673 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
-| godot/scripts/main.gd:1673 | _update_inspect | ; who  |
-| godot/scripts/main.gd:1682 | _update_inspect |  / surface: %s /  |
-| godot/scripts/main.gd:1690 | _update_inspect | skills: %s /  |
-| godot/scripts/main.gd:1691 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
-| godot/scripts/main.gd:1692 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
-| godot/scripts/main.gd:1694 | _update_inspect |  / equipped / wearing: /  |
-| godot/scripts/main.gd:1698 | _update_inspect | inventory: /  |
-| godot/scripts/main.gd:1702 | _update_inspect | knows how: /  |
-| godot/scripts/main.gd:1707 | _update_inspect | has heard: /  |
-| godot/scripts/main.gd:1710 | _update_inspect | partner: %s /  |
-| godot/scripts/main.gd:1711 | _update_inspect | parents: %s /  |
-| godot/scripts/main.gd:1712 | _update_inspect | children: %s /  |
-| godot/scripts/main.gd:1714 | _update_inspect | customs: /  |
-| godot/scripts/main.gd:1718 | _update_inspect | mood: %s |
-| godot/scripts/main.gd:1720 | _update_inspect | , because: %s |
-| godot/scripts/main.gd:1722 | _update_inspect | feels: %s /  |
-| godot/scripts/main.gd:1726 | _update_inspect | people: %s /  |
-| godot/scripts/main.gd:1728 | _update_inspect | believes: /  |
-| godot/scripts/main.gd:1732 | _update_inspect | before the portal, in %s: /  |
-| godot/scripts/main.gd:1732 | _update_inspect | the old village |
-| godot/scripts/main.gd:1736 | _update_inspect | remembers: /  |
-| godot/scripts/main.gd:1741 | _update_inspect | knows %d things /  |
-| godot/scripts/main.gd:1764 | _show_summary | [b]While you were away[/b]  (%.1f game-hours) /  /  |
-| godot/scripts/main.gd:1771 | _show_summary |  / [color=#9a9a9a]H or Esc to close[/color] |
-| godot/scripts/main.gd:1776 | _show_legends | world:0 |
-| godot/scripts/main.gd:1780 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
-| godot/scripts/main.gd:1798 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1807 | _on_legends_year | This world has no map beyond the valley. |
-| godot/scripts/main.gd:1817 | _on_legends_year | the year before the portal |
-| godot/scripts/main.gd:1817 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1820 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
-| godot/scripts/main.gd:1820 | _on_legends_year | , ringed: where those away are |
-| godot/scripts/main.gd:1828 | _show_history | [b]History[/b] /  /  |
-| godot/scripts/main.gd:1831 | _show_history |  / [b]The record[/b] /  |
-| godot/scripts/main.gd:1835 | _show_history |  / [b]Why they do what they do[/b] /  |
-| godot/scripts/main.gd:1839 | _show_history |  / [b]The valley before the portal[/b] /  |
-| godot/scripts/main.gd:1843 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
-| godot/scripts/main.gd:1848 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
-| godot/scripts/main.gd:1878 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
-| godot/scripts/main.gd:1986 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
-| godot/scripts/main.gd:2026 | _capture_timelapse | png_sha256 |
-| godot/scripts/main.gd:2059 | _capture_timelapse | timelapse snapshot failed (error %d) |
-| godot/scripts/main.gd:2060 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
-| godot/scripts/main.gd:2101 | _process | saved (%.0f ms capture) |
-| godot/scripts/main.gd:2119 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
-| godot/scripts/main.gd:2223 | _do_load_manual | loaded manual save |
-| godot/scripts/main.gd:2224 | _do_load_manual | load failed:  |
-| godot/scripts/main.gd:2264 | _unhandled_input | pause on major events:  |
-| godot/scripts/main.gd:2267 | _unhandled_input | announce:  |
-| godot/scripts/main.gd:2278 | _unhandled_input | relationship lines:  |
-| godot/scripts/main.gd:2306 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2307 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2317 | _unhandled_input | view: %s |
-| godot/scripts/main.gd:2317 | _unhandled_input | what the community has seen |
-| godot/scripts/main.gd:2319 | _unhandled_input | saving… |
-| godot/scripts/main.gd:2332 | _unhandled_input | bookmark %d set |
-| godot/scripts/main.gd:2423 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
-| godot/scripts/main.gd:2482 | _do_shot | SHOT_FAILED %s (error %d) |
-| godot/scripts/main.gd:2555 | _build_settings | Settings |
-| godot/scripts/main.gd:2556 | _build_settings | Close [Esc] |
-| godot/scripts/main.gd:2556 | _build_settings | Close settings [O or Esc] |
-| godot/scripts/main.gd:2560 | _build_settings | Master volume |
-| godot/scripts/main.gd:2561 | _build_settings | Ambient volume |
-| godot/scripts/main.gd:2562 | _build_settings | Effects volume |
-| godot/scripts/main.gd:2563 | _build_settings | Music volume |
-| godot/scripts/main.gd:2564 | _build_settings | Autosave |
-| godot/scripts/main.gd:2565 | _build_settings | Feed rate:  |
-| godot/scripts/main.gd:2565 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
-| godot/scripts/main.gd:2569 | _build_settings | Name tags:  |
-| godot/scripts/main.gd:2569 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
-| godot/scripts/main.gd:2574 | _build_settings | Camera director |
-| godot/scripts/main.gd:2578 | _build_settings | Debug decision log (writes every decision to a file) |
-| godot/scripts/main.gd:2582 | _build_settings | Decision log:  |
-| godot/scripts/main.gd:2584 | _build_settings | Saves:  |
-| godot/scripts/main.gd:2587 | _build_settings | Your files and data |
-| godot/scripts/main.gd:2587 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
+| godot/scripts/main.gd:12 |  | [b]Mouse & Keys[/b] /  / [b]Mouse[/b] / Click any person or animal to inspect them (Follow, ★ Favourite, Go to) / Click any ground, water, or rock tile to inspect what it holds / Drag with any mouse button to pan (dragging stops following) / Mouse wheel zooms toward the pointer / The bottom bar has every command (B to hide/show) / Click any feed line or top announcement to look where it happened /  / [b]Keys[/b] / [Space] pause   [1 2 3] speed   [Home] settlement / [, .] or PgUp/PgDn   level up and down / [C] camera director   [F] follow inspected   [J] ★ favourites / [P] people   [H] history   [T] timelapse   [L] legends / [V] what the community has seen   [G] feed rate   [K] waiting work / [N] alerts   [Shift+N] pause on major   [B] toggle bar / [F5] save   [F9] load   [O] settings   [?] help   [U] catch up / [Ctrl+F1–8] set bookmark, [F1–8] go to it |
+| godot/scripts/main.gd:293 | _start_debug_log | OSTROG_DEBUG_LOG |
+| godot/scripts/main.gd:304 | _debug_log_on | command=client seed=%d ticks=%d stage=%s opening=%s load=%s |
+| godot/scripts/main.gd:319 | _on_debug_log_toggled | Decision log:  |
+| godot/scripts/main.gd:369 | _ready | autosave could not be read (%s); started a fresh valley |
+| godot/scripts/main.gd:390 | _ready | No autosave could be read; started a new valley. The old files are still in the saves folder. |
+| godot/scripts/main.gd:393 | _ready | A new valley. Watch, or press H for history and O for settings. |
+| godot/scripts/main.gd:762 | _build_ui | Follow [F] |
+| godot/scripts/main.gd:762 | _build_ui | Keep the camera on this person [F] |
+| godot/scripts/main.gd:769 | _build_ui | ☆ Favourite |
+| godot/scripts/main.gd:769 | _build_ui | Mark or unmark this person as a favourite to watch |
+| godot/scripts/main.gd:778 | _build_ui | Why? |
+| godot/scripts/main.gd:778 | _build_ui | Show why this person is doing what they do: the options they weighed and what they put off |
+| godot/scripts/main.gd:785 | _build_ui | Go to |
+| godot/scripts/main.gd:785 | _build_ui | Centre the camera on this person now |
+| godot/scripts/main.gd:796 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:796 | _build_ui | Close the inspect panel [Esc] |
+| godot/scripts/main.gd:830 | _build_ui | Block inspection |
+| godot/scripts/main.gd:834 | _build_ui | Go to |
+| godot/scripts/main.gd:834 | _build_ui | Centre the camera on this block |
+| godot/scripts/main.gd:843 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:843 | _build_ui | Close block inspection [Esc] |
+| godot/scripts/main.gd:869 | _build_ui | ★ Favourites   (click a person to inspect & star them) |
+| godot/scripts/main.gd:873 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:873 | _build_ui | Close favourites [J or Esc] |
+| godot/scripts/main.gd:885 | _build_ui | No favourites yet. Click anyone in the valley and press '☆ Favourite' on their panel to keep track of them here. |
+| godot/scripts/main.gd:904 | _build_ui | People |
+| godot/scripts/main.gd:908 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:908 | _build_ui | Close people [P or Esc] |
+| godot/scripts/main.gd:920 | _build_ui | Nobody lives in the valley. |
+| godot/scripts/main.gd:937 | _build_ui | Waiting work: what nobody has taken, and why |
+| godot/scripts/main.gd:941 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:941 | _build_ui | Close waiting work [K or Esc] |
+| godot/scripts/main.gd:966 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:966 | _build_ui | Close help [? or Esc] |
+| godot/scripts/main.gd:997 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:997 | _build_ui | Close history / summary [H or Esc] |
+| godot/scripts/main.gd:1021 | _build_ui | While you were away |
+| godot/scripts/main.gd:1027 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:1027 | _build_ui | Close Catch Up [Esc] |
+| godot/scripts/main.gd:1040 | _build_ui | Catch Up:  |
+| godot/scripts/main.gd:1057 | _build_ui | ← Back [Backspace] |
+| godot/scripts/main.gd:1057 | _build_ui | Return to the previous Legends page [Backspace] |
+| godot/scripts/main.gd:1064 | _build_ui | World overview |
+| godot/scripts/main.gd:1064 | _build_ui | Open the top-level world page |
+| godot/scripts/main.gd:1065 | _build_ui | world:0 |
+| godot/scripts/main.gd:1066 | _build_ui | world:0 |
+| godot/scripts/main.gd:1067 | _build_ui | world:0 |
+| godot/scripts/main.gd:1073 | _build_ui | Close [Esc] |
+| godot/scripts/main.gd:1073 | _build_ui | Close Legends [L or Esc] |
+| godot/scripts/main.gd:1148 | _show_waiting | Nothing is waiting: every order has been taken, or was posted within the hour. |
+| godot/scripts/main.gd:1161 | _show_waiting | Go to |
+| godot/scripts/main.gd:1161 | _show_waiting | Look where it waits |
+| godot/scripts/main.gd:1192 | _build_bottom_bar | ▼ Bar |
+| godot/scripts/main.gd:1192 | _build_bottom_bar | Hide or show the bottom button bar [B] |
+| godot/scripts/main.gd:1225 | _build_bottom_bar | Keep playing [Esc] |
+| godot/scripts/main.gd:1225 | _build_bottom_bar | Keep the valley as it is |
+| godot/scripts/main.gd:1229 | _build_bottom_bar | Load |
+| godot/scripts/main.gd:1229 | _build_bottom_bar | Load the saved valley |
+| godot/scripts/main.gd:1246 | _build_bottom_bar | Camera bookmarks (F1–F8) |
+| godot/scripts/main.gd:1250 | _build_bottom_bar | Close |
+| godot/scripts/main.gd:1250 | _build_bottom_bar | Close bookmarks |
+| godot/scripts/main.gd:1263 | _build_bottom_bar | Go F%d |
+| godot/scripts/main.gd:1263 | _build_bottom_bar | Jump to bookmark F%d [F%d] |
+| godot/scripts/main.gd:1271 | _build_bottom_bar | bookmark %d not set yet (click Set) |
+| godot/scripts/main.gd:1273 | _build_bottom_bar | Set |
+| godot/scripts/main.gd:1273 | _build_bottom_bar | Save current camera to bookmark F%d [Ctrl+F%d] |
+| godot/scripts/main.gd:1275 | _build_bottom_bar | bookmark %d set |
+| godot/scripts/main.gd:1287 | _set_bar_visible | ▼ Bar |
+| godot/scripts/main.gd:1287 | _set_bar_visible | ▲ Bar |
+| godot/scripts/main.gd:1305 | _set_feed_rate | Feed rate:  |
+| godot/scripts/main.gd:1328 | _cycle_name_tags | Name tags:  |
+| godot/scripts/main.gd:1329 | _cycle_name_tags | name tags:  |
+| godot/scripts/main.gd:1334 | _cycle_feed_rate | feed rate:  |
+| godot/scripts/main.gd:1346 | _on_bar_pressed | spd1 |
+| godot/scripts/main.gd:1348 | _on_bar_pressed | spd2 |
+| godot/scripts/main.gd:1350 | _on_bar_pressed | spd3 |
+| godot/scripts/main.gd:1393 | _on_bar_pressed | world:0 |
+| godot/scripts/main.gd:1394 | _on_bar_pressed | world:0 |
+| godot/scripts/main.gd:1398 | _on_bar_pressed | view: %s |
+| godot/scripts/main.gd:1398 | _on_bar_pressed | what the community has seen |
+| godot/scripts/main.gd:1404 | _on_bar_pressed | announce:  |
+| godot/scripts/main.gd:1408 | _on_bar_pressed | pause on major events:  |
+| godot/scripts/main.gd:1414 | _on_bar_pressed | saving… |
+| godot/scripts/main.gd:1437 | _update_bar_buttons | ▶ Play |
+| godot/scripts/main.gd:1437 | _update_bar_buttons | ⏸ Pause |
+| godot/scripts/main.gd:1441 | _update_bar_buttons | Director: on |
+| godot/scripts/main.gd:1441 | _update_bar_buttons | Director: off |
+| godot/scripts/main.gd:1442 | _update_bar_buttons | Known: on |
+| godot/scripts/main.gd:1442 | _update_bar_buttons | Known: all |
+| godot/scripts/main.gd:1444 | _update_bar_buttons | Feed:  |
+| godot/scripts/main.gd:1445 | _update_bar_buttons | Alerts:  |
+| godot/scripts/main.gd:1446 | _update_bar_buttons | Pause!: on |
+| godot/scripts/main.gd:1446 | _update_bar_buttons | Pause!: off |
+| godot/scripts/main.gd:1448 | _update_bar_buttons | ★ Favs (%d) |
+| godot/scripts/main.gd:1448 | _update_bar_buttons | ★ Favs |
+| godot/scripts/main.gd:1454 | _update_inspect_buttons | Following [F] |
+| godot/scripts/main.gd:1454 | _update_inspect_buttons | Follow [F] |
+| godot/scripts/main.gd:1456 | _update_inspect_buttons | Why? (on) |
+| godot/scripts/main.gd:1456 | _update_inspect_buttons | Why? |
+| godot/scripts/main.gd:1458 | _update_inspect_buttons | ★ Favourited |
+| godot/scripts/main.gd:1458 | _update_inspect_buttons | ☆ Favourite |
+| godot/scripts/main.gd:1511 | _fill_people | Inspect |
+| godot/scripts/main.gd:1511 | _fill_people | Open %s's inspect panel |
+| godot/scripts/main.gd:1526 | _fill_people | Following |
+| godot/scripts/main.gd:1526 | _fill_people | Follow |
+| godot/scripts/main.gd:1526 | _fill_people | Keep the camera on %s (dragging stops follow) |
+| godot/scripts/main.gd:1541 | _fill_people | Remove %s from favourites |
+| godot/scripts/main.gd:1553 | _update_hud | director: %s |
+| godot/scripts/main.gd:1553 | _update_hud | on, watching %s |
+| godot/scripts/main.gd:1556 | _update_hud | pop %d |
+| godot/scripts/main.gd:1648 | _push_feed | paused:  |
+| godot/scripts/main.gd:1721 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
+| godot/scripts/main.gd:1733 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
+| godot/scripts/main.gd:1733 | _update_inspect | ; who  |
+| godot/scripts/main.gd:1742 | _update_inspect |  / surface: %s /  |
+| godot/scripts/main.gd:1750 | _update_inspect | skills: %s /  |
+| godot/scripts/main.gd:1751 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
+| godot/scripts/main.gd:1752 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
+| godot/scripts/main.gd:1754 | _update_inspect |  / equipped / wearing: /  |
+| godot/scripts/main.gd:1758 | _update_inspect | inventory: /  |
+| godot/scripts/main.gd:1762 | _update_inspect | knows how: /  |
+| godot/scripts/main.gd:1767 | _update_inspect | has heard: /  |
+| godot/scripts/main.gd:1770 | _update_inspect | partner: %s /  |
+| godot/scripts/main.gd:1771 | _update_inspect | parents: %s /  |
+| godot/scripts/main.gd:1772 | _update_inspect | children: %s /  |
+| godot/scripts/main.gd:1774 | _update_inspect | customs: /  |
+| godot/scripts/main.gd:1777 | _update_inspect | mood: %s |
+| godot/scripts/main.gd:1779 | _update_inspect | , because: %s |
+| godot/scripts/main.gd:1781 | _update_inspect | feels: %s /  |
+| godot/scripts/main.gd:1785 | _update_inspect | people: %s /  |
+| godot/scripts/main.gd:1787 | _update_inspect | believes: /  |
+| godot/scripts/main.gd:1791 | _update_inspect | before the portal, in %s: /  |
+| godot/scripts/main.gd:1791 | _update_inspect | the old village |
+| godot/scripts/main.gd:1795 | _update_inspect | remembers: /  |
+| godot/scripts/main.gd:1800 | _update_inspect | knows %d things /  |
+| godot/scripts/main.gd:1835 | _show_catch_up | Catch Up |
+| godot/scripts/main.gd:1836 | _show_catch_up | [color=#9a9a9a]Nothing to show yet for this span.[/color] |
+| godot/scripts/main.gd:1848 | _open_catch_up | While you were away  (%.1f game-hours) |
+| godot/scripts/main.gd:1851 | _open_catch_up | [color=#9a9a9a]Nothing to tell.[/color] /  |
+| godot/scripts/main.gd:1852 | _open_catch_up |  / [color=#9a9a9a]Esc to close[/color] |
+| godot/scripts/main.gd:1898 | _show_legends | world:0 |
+| godot/scripts/main.gd:1902 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
+| godot/scripts/main.gd:1920 | _on_legends_link | world:0 |
+| godot/scripts/main.gd:1929 | _on_legends_year | This world has no map beyond the valley. |
+| godot/scripts/main.gd:1939 | _on_legends_year | the year before the portal |
+| godot/scripts/main.gd:1939 | _on_legends_year | %d years before the portal |
+| godot/scripts/main.gd:1942 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
+| godot/scripts/main.gd:1942 | _on_legends_year | , ringed: where those away are |
+| godot/scripts/main.gd:1960 | _show_history | [b]History[/b] /  /  |
+| godot/scripts/main.gd:1963 | _show_history |  / [b]The record[/b] /  |
+| godot/scripts/main.gd:1967 | _show_history |  / [b]Why they do what they do[/b] /  |
+| godot/scripts/main.gd:1971 | _show_history |  / [b]The valley before the portal[/b] /  |
+| godot/scripts/main.gd:1975 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
+| godot/scripts/main.gd:1980 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
+| godot/scripts/main.gd:2010 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
+| godot/scripts/main.gd:2118 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
+| godot/scripts/main.gd:2158 | _capture_timelapse | png_sha256 |
+| godot/scripts/main.gd:2191 | _capture_timelapse | timelapse snapshot failed (error %d) |
+| godot/scripts/main.gd:2192 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
+| godot/scripts/main.gd:2235 | _process | saved (%.0f ms capture) |
+| godot/scripts/main.gd:2253 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
+| godot/scripts/main.gd:2357 | _do_load_manual | loaded manual save |
+| godot/scripts/main.gd:2358 | _do_load_manual | load failed:  |
+| godot/scripts/main.gd:2398 | _unhandled_input | pause on major events:  |
+| godot/scripts/main.gd:2401 | _unhandled_input | announce:  |
+| godot/scripts/main.gd:2412 | _unhandled_input | relationship lines:  |
+| godot/scripts/main.gd:2443 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2444 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2454 | _unhandled_input | view: %s |
+| godot/scripts/main.gd:2454 | _unhandled_input | what the community has seen |
+| godot/scripts/main.gd:2456 | _unhandled_input | saving… |
+| godot/scripts/main.gd:2469 | _unhandled_input | bookmark %d set |
+| godot/scripts/main.gd:2560 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
+| godot/scripts/main.gd:2619 | _do_shot | SHOT_FAILED %s (error %d) |
+| godot/scripts/main.gd:2692 | _build_settings | Settings |
+| godot/scripts/main.gd:2693 | _build_settings | Close [Esc] |
+| godot/scripts/main.gd:2693 | _build_settings | Close settings [O or Esc] |
+| godot/scripts/main.gd:2697 | _build_settings | Master volume |
+| godot/scripts/main.gd:2698 | _build_settings | Ambient volume |
+| godot/scripts/main.gd:2699 | _build_settings | Effects volume |
+| godot/scripts/main.gd:2700 | _build_settings | Music volume |
+| godot/scripts/main.gd:2701 | _build_settings | Autosave |
+| godot/scripts/main.gd:2702 | _build_settings | Feed rate:  |
+| godot/scripts/main.gd:2702 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
+| godot/scripts/main.gd:2706 | _build_settings | Name tags:  |
+| godot/scripts/main.gd:2706 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
+| godot/scripts/main.gd:2711 | _build_settings | Camera director |
+| godot/scripts/main.gd:2715 | _build_settings | Debug decision log (writes every decision to a file) |
+| godot/scripts/main.gd:2719 | _build_settings | Decision log:  |
+| godot/scripts/main.gd:2721 | _build_settings | Saves:  |
+| godot/scripts/main.gd:2724 | _build_settings | Your files and data |
+| godot/scripts/main.gd:2724 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
 | godot/scripts/setup.gd:16 |  | The valley |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
@@ -4853,30 +4894,30 @@ What the client prints; scripts and testers grep for these (SHOT_SAVED, SHOT_FAI
 
 | file:line | function | string |
 |---|---|---|
-| godot/scripts/main.gd:274 | _parse_args | UNKNOWN_FLAG %s (ignored) |
-| godot/scripts/main.gd:294 | _debug_log_on | DEBUG_LOG on: %s |
-| godot/scripts/main.gd:342 | _ready | opening %s -> %s |
-| godot/scripts/main.gd:346 | _ready | LOAD %s -> %s |
-| godot/scripts/main.gd:352 | _ready | loaded %s |
-| godot/scripts/main.gd:354 | _ready | load failed (%s), starting fresh |
-| godot/scripts/main.gd:378 | _ready | autosaves present but none valid; started fresh |
-| godot/scripts/main.gd:382 | _ready | HUNGRY %s |
-| godot/scripts/main.gd:396 | _fresh_world | opening failed (%s), falling back to a generated world |
-| godot/scripts/main.gd:448 | _save_viewport | WIZARD_SHOT %s FAILED (no viewport image) |
-| godot/scripts/main.gd:451 | _save_viewport | WIZARD_SHOT %s err %d size %s |
-| godot/scripts/main.gd:461 | _on_setup_chosen | BEGIN REFUSED (%s) |
-| godot/scripts/main.gd:489 | _after_begin | HUNGRY %s |
-| godot/scripts/main.gd:502 | _world_ready | IGNITE %s -> %s |
-| godot/scripts/main.gd:517 | _world_ready | BANDS %s |
-| godot/scripts/main.gd:554 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
-| godot/scripts/main.gd:654 | _save_and_quit | SAVED ON CLOSE tick %d |
-| godot/scripts/main.gd:2039 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
-| godot/scripts/main.gd:2427 | _write_automation_json | AUTOMATION_JSON %s |
-| godot/scripts/main.gd:2454 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
-| godot/scripts/main.gd:2473 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
-| godot/scripts/main.gd:2485 | _do_shot | SHOT_SAVED %s |
-| godot/scripts/main.gd:2513 | _do_footage | FOOTAGE_FRAME %d %s |
-| godot/scripts/main.gd:2515 | _do_footage | FOOTAGE_DONE |
+| godot/scripts/main.gd:287 | _parse_args | UNKNOWN_FLAG %s (ignored) |
+| godot/scripts/main.gd:307 | _debug_log_on | DEBUG_LOG on: %s |
+| godot/scripts/main.gd:355 | _ready | opening %s -> %s |
+| godot/scripts/main.gd:359 | _ready | LOAD %s -> %s |
+| godot/scripts/main.gd:365 | _ready | loaded %s |
+| godot/scripts/main.gd:367 | _ready | load failed (%s), starting fresh |
+| godot/scripts/main.gd:391 | _ready | autosaves present but none valid; started fresh |
+| godot/scripts/main.gd:395 | _ready | HUNGRY %s |
+| godot/scripts/main.gd:409 | _fresh_world | opening failed (%s), falling back to a generated world |
+| godot/scripts/main.gd:461 | _save_viewport | WIZARD_SHOT %s FAILED (no viewport image) |
+| godot/scripts/main.gd:464 | _save_viewport | WIZARD_SHOT %s err %d size %s |
+| godot/scripts/main.gd:474 | _on_setup_chosen | BEGIN REFUSED (%s) |
+| godot/scripts/main.gd:502 | _after_begin | HUNGRY %s |
+| godot/scripts/main.gd:515 | _world_ready | IGNITE %s -> %s |
+| godot/scripts/main.gd:530 | _world_ready | BANDS %s |
+| godot/scripts/main.gd:567 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
+| godot/scripts/main.gd:671 | _save_and_quit | SAVED ON CLOSE tick %d |
+| godot/scripts/main.gd:2171 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
+| godot/scripts/main.gd:2564 | _write_automation_json | AUTOMATION_JSON %s |
+| godot/scripts/main.gd:2591 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
+| godot/scripts/main.gd:2610 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
+| godot/scripts/main.gd:2622 | _do_shot | SHOT_SAVED %s |
+| godot/scripts/main.gd:2650 | _do_footage | FOOTAGE_FRAME %d %s |
+| godot/scripts/main.gd:2652 | _do_footage | FOOTAGE_DONE |
 
 <!-- END GENERATED: strings-client -->
 

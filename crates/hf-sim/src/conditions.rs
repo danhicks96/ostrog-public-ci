@@ -191,7 +191,10 @@ fn restless(w: &mut World) {
                     .iter()
                     .any(|m| m.subject == crate::mind::Subject::Person(id))
         });
-        let carved = w.engravings.values().any(|e| e.event == c.cause);
+        let carved = w
+            .engravings
+            .values()
+            .any(|e| e.craft.is_none() && e.event == c.cause);
         if c.stage == 0 {
             if tick.saturating_sub(c.since) < 10 * TICKS_PER_DAY {
                 continue;

@@ -318,3 +318,195 @@ fn summary_counts_read_as_words() {
         "raw counts keep the hauling"
     );
 }
+
+/// OST-011: the Catch Up card reads the headline, then the named changes, then the folded
+/// details; a row told by name is not repeated below, and the raw counts stay as they were.
+#[test]
+fn catch_up_card_orders_headline_changes_then_folded_details() {
+    let w = World::opening_world(1);
+    let people: Vec<_> = w
+        .agents
+        .iter()
+        .filter(|a| a.species == Species::Person && !hf_sim::view::known::is_unfound(&w, a.id))
+        .map(|a| a.id)
+        .collect();
+    let &[a, b, d, ..] = people.as_slice() else {
+        panic!("expected three known people");
+    };
+    let t0 = w.meta.tick;
+    let notable = Severity::Notable;
+    let mut rows = vec![
+        (t0 + 2, notable, EventKind::Paired { a, b }),
+        (
+            t0 + 3,
+            notable,
+            EventKind::Died {
+                agent: d,
+                cause: "a fever".into(),
+            },
+        ),
+    ];
+    for i in 0..3 {
+        rows.push((
+            t0 + 10 + i,
+            notable,
+            EventKind::Suspected {
+                by: a,
+                of: b,
+                because: "the sickness".into(),
+            },
+        ));
+    }
+    for (n, what) in [(1u32, "berries"), (2, "grain")] {
+        rows.push((
+            t0 + 20 + n as u64,
+            Severity::Major,
+            EventKind::Raided {
+                band: n,
+                what: what.into(),
+                count: 2,
+                open: false,
+            },
+        ));
+    }
+    let (c, _) = chronicle_fixture(rows);
+    let to = t0 + 50;
+    let raw = summary::since(&w, &c, t0, to, 12).unwrap();
+    let card = summary::catch_up_card(&w, &c, t0, to, 10).unwrap();
+    assert_eq!(card.headline, raw.counts_in_words());
+    assert_eq!(card.changes.len(), 2, "the death and the pairing");
+    assert_eq!(card.details.len(), 3, "folded suspicions and two raids");
+    assert!(
+        card.details.iter().any(|l| l.ends_with("(x3)")),
+        "the folded line says how many: {:?}",
+        card.details
+    );
+    let text = card.bbcode();
+    let head = text.find(&card.headline).unwrap();
+    let changes = text.find("What changed").unwrap();
+    let details = text.find("Also noted").unwrap();
+    assert!(head < changes && changes < details);
+    assert!(text.find(&card.changes[0]).unwrap() < details);
+    let after = summary::since(&w, &c, t0, to, 12).unwrap();
+    assert_eq!(after.counts, raw.counts, "raw counts unchanged");
+}
+
+fn born_at(a: hf_sim::ids::AgentId, tick: u64) -> (u64, Severity, EventKind) {
+    (
+        tick,
+        Severity::Major,
+        EventKind::Born {
+            agent: a,
+            mother: a,
+            father: None,
+        },
+    )
+}
+
+fn born_count(card: &summary::CatchUpCard) -> String {
+    card.headline.clone()
+}
+
+/// OST-012: a day or season span covers its first tick, so a row on the midnight (or season
+/// boundary) belongs to the new span and not to the previous one.
+#[test]
+fn catch_up_spans_put_the_boundary_row_in_the_new_span() {
+    use hf_sim::time::{DAYS_PER_SEASON, TICKS_PER_DAY};
+    use summary::{catch_up_span_bounds as bounds, CatchUpSpan::*};
+    let w = World::opening_world(3);
+    let a = w.agents[0].id;
+    let epoch = w.meta.epoch;
+    let card = |from: i64, to: i64, rows: Vec<(u64, Severity, EventKind)>| {
+        let (c, _) = chronicle_fixture(rows);
+        summary::catch_up_card_between(&w, &c, from, to, 10).unwrap()
+    };
+
+    // Midnight: rows just before, on and just after it, in a world three days old.
+    let mid = epoch + 3 * TICKS_PER_DAY;
+    let now = mid + 100;
+    let rows = || vec![born_at(a, mid - 1), born_at(a, mid), born_at(a, mid + 1)];
+    let (f, t) = bounds(epoch, now, CurrentDay).unwrap();
+    assert_eq!(
+        born_count(&card(f, t, rows())),
+        "born 2",
+        "the midnight row and after"
+    );
+    let (f, t) = bounds(epoch, now, PreviousDay).unwrap();
+    assert_eq!(
+        born_count(&card(f, t, rows())),
+        "born 1",
+        "only the row before midnight"
+    );
+
+    // A season boundary, five days in: the same three rows.
+    let sb = epoch + DAYS_PER_SEASON * TICKS_PER_DAY;
+    let now = sb + 10;
+    let rows = || vec![born_at(a, sb - 1), born_at(a, sb), born_at(a, sb + 1)];
+    let (f, t) = bounds(epoch, now, CurrentSeason).unwrap();
+    assert_eq!(born_count(&card(f, t, rows())), "born 2");
+    let (f, t) = bounds(epoch, now, PreviousSeason).unwrap();
+    assert_eq!(born_count(&card(f, t, rows())), "born 1");
+    // The current day at that boundary is the new day too.
+    let (f, t) = bounds(epoch, now, CurrentDay).unwrap();
+    assert_eq!(born_count(&card(f, t, rows())), "born 2");
+
+    // Tick zero: a row at tick zero is in the current day and season; there is no previous one.
+    let (f, t) = bounds(0, 0, CurrentDay).unwrap();
+    assert_eq!((f, t), (-1, 0));
+    assert_eq!(born_count(&card(f, t, vec![born_at(a, 0)])), "born 1");
+    let (f, t) = bounds(0, 0, CurrentSeason).unwrap();
+    assert_eq!(born_count(&card(f, t, vec![born_at(a, 0)])), "born 1");
+    assert_eq!(bounds(0, 0, PreviousDay), None);
+    assert_eq!(bounds(0, 0, PreviousSeason), None);
+    // Inside the first day and the first season there is still no previous span.
+    assert_eq!(bounds(epoch, epoch + 5, PreviousDay), None);
+    assert_eq!(
+        bounds(epoch, epoch + 2 * TICKS_PER_DAY, PreviousSeason),
+        None
+    );
+    // Day one's previous day is day zero.
+    let (f, t) = bounds(epoch, epoch + TICKS_PER_DAY + 7, PreviousDay).unwrap();
+    assert_eq!(
+        (f, t),
+        (epoch as i64 - 1, (epoch + TICKS_PER_DAY) as i64 - 1)
+    );
+
+    // Out of the chronicle too: a span with no previous day gives no card.
+    let (c, _) = chronicle_fixture(vec![]);
+    assert!(summary::catch_up_card_span(&w, &c, PreviousDay, 10)
+        .unwrap()
+        .is_none());
+    assert!(summary::catch_up_card_span(&w, &c, CurrentDay, 10)
+        .unwrap()
+        .is_some());
+    assert_eq!(
+        summary::CatchUpSpan::parse("previous_day"),
+        Some(PreviousDay)
+    );
+    assert_eq!(summary::CatchUpSpan::parse("last_week"), None);
+}
+
+/// OST-012: only a named change or a notable detail is news; counts of routine work are not.
+#[test]
+fn catch_up_has_news_only_for_a_named_change_or_a_notable_line() {
+    let w = World::opening_world(3);
+    let a = w.agents[0].id;
+    let t0 = w.meta.epoch + 10;
+    let hauled = |n: u64| {
+        (
+            t0 + n,
+            Severity::Minor,
+            EventKind::Hauled {
+                agent: a,
+                item: ItemId(1),
+                to: TilePos { x: 0, y: 0, z: 0 },
+            },
+        )
+    };
+    let (c, _) = chronicle_fixture((0..20).map(hauled).collect());
+    let quiet = summary::catch_up_card_between(&w, &c, t0 as i64 - 1, t0 as i64 + 50, 10).unwrap();
+    assert!(!quiet.has_news, "hauling alone is not news");
+    let (c, _) = chronicle_fixture(vec![born_at(a, t0 + 1)]);
+    let busy = summary::catch_up_card_between(&w, &c, t0 as i64 - 1, t0 as i64 + 50, 10).unwrap();
+    assert!(busy.has_news, "a birth is");
+}
