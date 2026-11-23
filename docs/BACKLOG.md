@@ -306,6 +306,8 @@ Add a viewer page that follows a history line back through its recorded causes, 
 
 **Acceptance:** The walk is bounded, shows only causes the viewer may know, and says plainly when a cause is missing rather than claiming there is none. Staged fixtures cover a long chain, a missing record and a hidden person. Keep screenshots and planning notes out of the source change.
 
+**Known gap:** the History "why?" link and the Legends page have not been run in the Godot client; that check is waived for this change and left as a follow-up.
+
 ### OST-003 · Compare long-run camera coverage
 
 **State:** Waiting on dependencies · **Developer:** None · **Public PR:** None
