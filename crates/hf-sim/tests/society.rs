@@ -152,3 +152,42 @@ fn two_communities_trade() {
     let meals_near_a = w.items.iter().filter(|it| it.kind == ItemKind::Meal && matches!(it.place, hf_sim::items::ItemPlace::Ground(p) if p.dist(TilePos::new(18, 30, 2)) <= 20)).map(|it| it.count).sum::<u32>();
     assert!(meals_near_a > 0, "meals arrived at the first community");
 }
+
+#[test]
+fn cohesion_word_reads_divided_in_the_hour_of_a_split() {
+    use hf_sim::society::cohesion_word;
+    assert_eq!(cohesion_word(0.8), Some("close"));
+    assert_eq!(cohesion_word(0.6), None);
+    assert_eq!(cohesion_word(0.5), Some("uneasy"));
+    assert_eq!(cohesion_word(0.42), Some("divided"));
+    // Exact band edges.
+    assert_eq!(cohesion_word(0.75), Some("close"));
+    assert_eq!(cohesion_word(0.55), None);
+    assert_eq!(cohesion_word(0.45), Some("uneasy"));
+    assert_eq!(cohesion_word(0.4499), Some("divided"));
+    // Two cliques who dislike each other read "divided" in the hour of the split (cohesion is written just before the split check). This shows the word at the split, not a reading from an earlier hour.
+    let mut w = meadow(62);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    let ids = w.found_party(10);
+    let tick = w.tick();
+    for (i, a) in w.agents.iter_mut().enumerate() {
+        for (j, other) in ids.iter().enumerate() {
+            if i != j {
+                let same = (i < 5) == (j < 5);
+                a.relate(*other, if same { 0.6 } else { -1.0 }, 0.5, tick);
+            }
+        }
+    }
+    let mut word_before = None;
+    for _ in 0..TICKS_PER_DAY * 4 {
+        w.step();
+        if w.last_events
+            .iter()
+            .any(|e| matches!(e.kind, EventKind::Split { .. }))
+        {
+            word_before = Some(cohesion_word(w.communities[0].cohesion));
+            break;
+        }
+    }
+    assert_eq!(word_before, Some(Some("divided")));
+}
