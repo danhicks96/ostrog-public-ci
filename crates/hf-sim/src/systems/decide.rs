@@ -2029,6 +2029,12 @@ fn choose(
             if sleeping_places.is_taken(id, a.id) {
                 return false;
             }
+            // A bed in a flood's way or on ground under water is no choice: `flee_step` turns
+            // the tired back from it, and they never lie down until they collapse. With no
+            // safe bed they sleep where they stand.
+            if crate::systems::hazards::in_floods_way(w, at) || unsafe_ground(w, at) {
+                return false;
+            }
             let feel = a.place_multiplier(at, now);
             consider(
                 urgency * 1.2 * dist_discount(at) * feel,

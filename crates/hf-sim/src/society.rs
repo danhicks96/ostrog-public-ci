@@ -249,6 +249,20 @@ impl Hollow {
     }
 }
 
+/// A word for how close-knit a camp is, for the HUD: "close" from 0.75, "uneasy" below 0.55,
+/// "divided" below 0.45 (the split line is 0.4); nothing in between.
+pub fn cohesion_word(c: f32) -> Option<&'static str> {
+    if c >= 0.75 {
+        Some("close")
+    } else if c < 0.45 {
+        Some("divided")
+    } else if c < 0.55 {
+        Some("uneasy")
+    } else {
+        None
+    }
+}
+
 impl Community {
     pub fn new(id: CommunityId, name: String, home: TilePos, founded: u64) -> Self {
         Community {
