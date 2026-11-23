@@ -1324,10 +1324,16 @@ pub fn line(w: &World, e: &Event) -> String {
             "A killing frost took {plants} of {}'s growing crop.",
             cname(w, *community)
         ),
-        Fostered { child, by } => format!(
-            "{} took in {}, whose parents are gone.",
+        Fostered { child, by, kin } => format!(
+            "{} took in {}, whose parents are gone{}.",
             named_as(w, e.tick, *by),
-            named_as(w, e.tick, *child)
+            named_as(w, e.tick, *child),
+            match kin {
+                1 => ", their grandparent",
+                2 => ", their aunt or uncle",
+                3 => ", their sibling",
+                _ => "",
+            }
         ),
         NewStone { agent, stone } => format!(
             "{} cut {stone}, harder than any stone the valley has worked.",
