@@ -1,5 +1,10 @@
 # Fix log
 
+## 2026-11-22: a fire behind a hill is not known without sight or smoke
+
+- Symptom: everyone within 18 tiles knew of a fire without seeing or smelling it.
+- Fix: a fire is known by direct line of sight or by a recent smoke observation, and the near-fire sighting also needs line of sight.
+- Guard: `a_fire_behind_a_hill_is_found_by_its_smoke` in `tests/senses.rs`.
 ## 2026-11-22: retire the unreachable cave-in event arms
 
 - Symptom: a cave-in is a `Collapse`; the `CaveIn` event variant is never pushed, yet two systems carried unreachable arms for it and a test built it.

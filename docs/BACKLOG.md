@@ -154,7 +154,7 @@ This is the reserved-marking slice of the tracking issue on unused problem and o
 
 ### OST-901 · Count births per community, not per valley
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#634](https://github.com/danhicks96/ostrog-public-ci/pull/634)
 
 Raiders and strangers count toward the crowd rule that halves births. Count per community instead. Tracking issue: [#587](https://github.com/danhicks96/ostrog-public-ci/issues/587).
 
@@ -162,7 +162,7 @@ Raiders and strangers count toward the crowd rule that halves births. Count per 
 
 ### OST-902 · Retire the unreachable cave-in event
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#635](https://github.com/danhicks96/ostrog-public-ci/pull/635)
 
 `CaveIn` is never pushed; collapses are `Collapse`. Remove its dead arms and keep the variant for save order. Tracking issue: [#588](https://github.com/danhicks96/ostrog-public-ci/issues/588).
 
@@ -170,7 +170,7 @@ Raiders and strangers count toward the crowd rule that halves births. Count per 
 
 ### OST-903 · Rain wets people outdoors; a roof or hearth dries them
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#636](https://github.com/danhicks96/ostrog-public-ci/pull/636)
 
 Add a saved wetness state per person. Nothing reads it yet. Tracking issue: [#589](https://github.com/danhicks96/ostrog-public-ci/issues/589).
 
@@ -178,7 +178,7 @@ Add a saved wetness state per person. Nothing reads it yet. Tracking issue: [#58
 
 ### OST-904 · Add mood-term keys to the alive report
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#638](https://github.com/danhicks96/ostrog-public-ci/pull/638)
 
 Report what mood is made of across a colony. Report only; simulation digest unchanged. Related tracker: [#179](https://github.com/danhicks96/ostrog-public-ci/issues/179). Tracking issue: [#590](https://github.com/danhicks96/ostrog-public-ci/issues/590).
 
@@ -186,7 +186,7 @@ Report what mood is made of across a colony. Report only; simulation digest unch
 
 ### OST-905 · Let the last knower of a craft carve it
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#639](https://github.com/danhicks96/ostrog-public-ci/pull/639)
 
 An old or ailing sole knower of a craft their community uses carves the way of the craft before it is lost. Tracking issue: [#591](https://github.com/danhicks96/ostrog-public-ci/issues/591).
 
@@ -194,7 +194,7 @@ An old or ailing sole knower of a craft their community uses carves the way of t
 
 ### OST-906 · Gate fire sightings on line of sight
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#640](https://github.com/danhicks96/ostrog-public-ci/pull/640)
 
 A fire behind a hill is known only by sight or by smoke already observed. Tracking issue: [#592](https://github.com/danhicks96/ostrog-public-ci/issues/592).
 
@@ -202,7 +202,7 @@ A fire behind a hill is known only by sight or by smoke already observed. Tracki
 
 ### OST-907 · Do not re-form a custom from the same cause
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#641](https://github.com/danhicks96/ostrog-public-ci/pull/641)
 
 A custom for a dissolved community is formed and lapsed again every dawn. Skip dissolved communities and never re-form from an origin event that already produced one. Tracking issue: [#593](https://github.com/danhicks96/ostrog-public-ci/issues/593).
 
@@ -275,7 +275,7 @@ Stools and chairs are built, but nothing can look for a free one. Add a pure `ho
 
 ### OST-900 · Count a grown tree's shade in the heat
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sol (SL) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#609](https://github.com/danhicks96/ostrog-public-ci/pull/609)
 
 Heat wears people down the same whether they stand under a grown tree or on bare ground. Halve the excess heat for someone shaded by a mature tree. Tracking issue: [#541](https://github.com/danhicks96/ostrog-public-ci/issues/541).
 
