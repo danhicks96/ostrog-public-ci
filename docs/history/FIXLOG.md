@@ -11,6 +11,19 @@
   walled-off stool.
 - Guard: `tests/furniture.rs` `free_seat_finds_the_stool_beside_the_table`; it does not compile
   without `free_seat`.
+## 2026-11-23: Catch Up shared History's panel and was replaced by it (OST-011)
+
+- Symptom: the away card and History were written into the same panel, so opening History (or
+  any centred reading panel) replaced Catch Up, and the card was a headline followed by a flat list
+  of major lines.
+- Cause: Catch Up had no panel of its own; `_show_summary` wrote into the shared summary box.
+- Fix: a Catch Up panel of its own at the left edge under the HUD, registered outside the reading
+  group. `summary::catch_up_card` reads the headline in words, then the named changes, then the
+  folded details (a row already named is not repeated below); the bridge's `catch_up_since` hands
+  the client the card. `summary_since` and the raw counts are unchanged.
+- Guards: `tests/catch_up.rs::catch_up_card_orders_headline_changes_then_folded_details`;
+  `tools/gd_test.gd` panel placement, History opening beside Catch Up, and the bridge card.
+- Not checked here: the panel in a running desktop client after a real away period.
 ## 2026-11-22: births are gated by community, not by the whole valley
 
 - Symptom: a band of raiders camped at the edge halved the births of a small community.

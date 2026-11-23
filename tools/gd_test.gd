@@ -2039,3 +2039,51 @@ func test_closing_the_window_saves_only_a_running_game_that_moved() -> void:
 	check(not R.save_on_close(true, false, false, false, 1.0, 5000, 5000), "nothing moved since the last autosave: no extra save")
 	check(not R.save_on_close(true, false, true, false, 1.0, 5000, 0), "headless without --ring is not saved")
 	check(R.save_on_close(true, false, true, true, 1.0, 5000, 0), "headless with --ring is saved, as the autosave would be")
+
+# OST-011: Catch Up has its own panel at the left edge under the HUD, as tall as its text, clear of
+# the middle where the reading panels (History among them) open, and clear of the bottom bar.
+func test_catch_up_panel_sits_at_the_edge_clear_of_the_reading_panels() -> void:
+	for view in [Vector2(1600, 900), Vector2(1280, 720)]:
+		var r: Rect2 = Rules.catch_up_rect(view, 90.0, 400.0)
+		check(r.end.x < view.x / 2.0 - 40.0, "%s: clear of the middle (right edge %.0f)" % [view, r.end.x])
+		check(r.position.y >= 90.0, "%s: under the HUD" % view)
+		check(r.size.y == 400.0, "%s: as tall as its text" % view)
+		check(r.end.y <= view.y - Rules.HELP_BAR_ROOM, "%s: clear of the bottom bar" % view)
+	var tall: Rect2 = Rules.catch_up_rect(Vector2(1280, 720), 140.0, 2000.0)
+	check(tall.end.y <= 720.0 - Rules.HELP_BAR_ROOM, "a short window: capped above the bar")
+	var narrow: Rect2 = Rules.catch_up_rect(Vector2(400, 720), 90.0, 400.0)
+	check(narrow.end.x <= 390.0, "a narrow window: inside it")
+
+# OST-011: opening a reading panel closes the others of its group; Catch Up is in none, so History
+# opening does not close or replace it.
+func test_opening_history_does_not_close_catch_up() -> void:
+	var pm := PanelManager.new()
+	var catchup := PanelContainer.new()
+	var summary := PanelContainer.new()
+	var legends := PanelContainer.new()
+	pm.register(&"catchup", catchup)
+	pm.register(&"summary", summary, &"reading")
+	pm.register(&"legends", legends, &"reading")
+	pm.open(&"catchup")
+	pm.open(&"summary")
+	check(pm.is_open(&"catchup") and pm.is_open(&"summary"), "History opens beside Catch Up")
+	pm.open(&"legends")
+	check(pm.is_open(&"catchup") and not pm.is_open(&"summary"), "another reading panel replaces History, not Catch Up")
+	pm.close(&"catchup")
+	check(not pm.is_open(&"catchup") and pm.is_open(&"legends"), "closing Catch Up leaves the reading panel")
+	for n in [catchup, summary, legends]:
+		n.free()
+
+# OST-011: the bridge hands the client a Catch Up card (BBCode text) beside the unchanged
+# `summary_since` counts the timelapse still reads.
+func test_catch_up_card_comes_through_the_bridge_and_summary_since_is_unchanged() -> void:
+	var sim := SimHost.new()
+	sim.stage_demo(1)
+	var from: int = sim.tick()
+	sim.step(24000)
+	var card: Dictionary = sim.catch_up_since(from)
+	check(card.has("text") and card["text"] is String, "the card has its text")
+	check(int(card["to"]) > int(card["from"]), "it spans the time that passed")
+	var raw: Dictionary = sim.summary_since(from)
+	check(raw.has("counts") and raw.has("lines") and raw.has("counts_words"), "summary_since keeps its raw counts and lines")
+	sim.free()
