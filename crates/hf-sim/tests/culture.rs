@@ -147,3 +147,130 @@ fn custom_changes_behavior() {
         "work drops on the rest day: rest {work_rest} vs before {work_before}"
     );
 }
+
+/// OST-907: a custom formed for a community that then leaves the valley should not be formed and
+/// lapsed over and over from the same Split, every dawn, until the event ages out of the log.
+#[test]
+fn a_custom_is_not_reborn_from_the_same_cause() {
+    let mut w = meadow(1324);
+    let ids = w.found_party(4);
+    let cid = w
+        .agents
+        .iter()
+        .find(|a| a.id == ids[0])
+        .unwrap()
+        .community
+        .unwrap();
+    let leader = ids[0];
+
+    w.meta.tick = TICKS_PER_HOUR * 6;
+    let tick = w.meta.tick;
+    let split = EventKind::Split {
+        from: cid,
+        to: hf_sim::ids::CommunityId(999_999),
+        leader,
+        members: 2,
+        cause: "a test leaving".into(),
+    };
+    let eid = w
+        .events
+        .push(tick, None, hf_sim::events::Severity::Major, split.clone());
+    w.culture_log.push((eid, tick, split));
+
+    let mut formed = 0;
+    let mut lapsed = 0;
+    for day in 0..30u64 {
+        w.meta.tick = TICKS_PER_DAY * day + TICKS_PER_HOUR * 6;
+        hf_sim::systems::culture::step(&mut w);
+        for e in w.events.drain() {
+            match &e.kind {
+                EventKind::CustomFormed {
+                    community, label, ..
+                } if *community == cid && label.contains("take in no strangers") => formed += 1,
+                EventKind::CustomLapsed {
+                    community, label, ..
+                } if *community == cid && label.contains("take in no strangers") => lapsed += 1,
+                _ => {}
+            }
+        }
+        if day == 2 {
+            // The community leaves the valley: nobody of it is left.
+            for a in w.agents.iter_mut().filter(|a| a.community == Some(cid)) {
+                a.alive = false;
+            }
+            w.communities
+                .iter_mut()
+                .find(|c| c.id == cid)
+                .unwrap()
+                .dissolved = true;
+        }
+    }
+    assert_eq!(formed, 1, "the custom should form once, not every dawn");
+    assert_eq!(
+        lapsed, 1,
+        "the custom should lapse once when its holders are gone, not over and over"
+    );
+}
+
+/// OST-907: once a rest-day custom lapses (its holders gone), a later death can still found a new
+/// one — the fix against re-forming from the same cause must not block a genuinely new cause.
+#[test]
+fn a_new_death_can_found_a_new_rest_day() {
+    let mut w = meadow(13242);
+    let ids = w.found_party(4);
+
+    w.meta.tick = TICKS_PER_HOUR * 6;
+    hf_sim::systems::life::die(&mut w, ids[0], "old age".into());
+    let died: Vec<_> = w
+        .events
+        .drain()
+        .into_iter()
+        .filter(|e| matches!(e.kind, EventKind::Died { .. }))
+        .map(|e| (e.id, e.tick, e.kind))
+        .collect();
+    w.culture_log.extend(died);
+    hf_sim::systems::culture::step(&mut w);
+    let first = w
+        .customs
+        .iter()
+        .find(|c| matches!(c.kind, CustomKind::RestDay { .. }))
+        .expect("a rest-day custom formed")
+        .id;
+    let first_origin = w.customs.iter().find(|c| c.id == first).unwrap().origin;
+
+    // Force it to lapse quickly, as if its holders were gone.
+    w.customs
+        .iter_mut()
+        .find(|c| c.id == first)
+        .unwrap()
+        .intensity = 0.05;
+    w.meta.tick = TICKS_PER_DAY + TICKS_PER_HOUR * 6;
+    hf_sim::systems::culture::step(&mut w);
+    assert!(
+        w.customs.iter().find(|c| c.id == first).unwrap().lapsed,
+        "the first rest day lapsed"
+    );
+
+    // A different person's death, a new cause, founds a new one.
+    w.meta.tick = TICKS_PER_DAY * 2 + TICKS_PER_HOUR * 6;
+    hf_sim::systems::life::die(&mut w, ids[1], "an accident".into());
+    let died: Vec<_> = w
+        .events
+        .drain()
+        .into_iter()
+        .filter(|e| matches!(e.kind, EventKind::Died { .. }))
+        .map(|e| (e.id, e.tick, e.kind))
+        .collect();
+    w.culture_log.extend(died);
+    w.meta.tick = TICKS_PER_DAY * 3 + TICKS_PER_HOUR * 6;
+    hf_sim::systems::culture::step(&mut w);
+    let second = w
+        .customs
+        .iter()
+        .find(|c| matches!(c.kind, CustomKind::RestDay { .. }) && c.id != first)
+        .expect("a new rest-day custom formed from the new death");
+    assert_ne!(
+        second.origin, first_origin,
+        "the new custom has a new cause"
+    );
+}

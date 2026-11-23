@@ -58,7 +58,7 @@ The read-model candidate is pending review. Do not open a second implementation.
 
 ### OST-008 · Count visible activity in the camera frame
 
-**Milestone:** Make important events easier to follow · **State:** Claim pending · **Developer:** Pending · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Iris (IV) · **Public PR:** Pending
 
 Reconcile the existing read-only frame tally rather than starting another. Count whether visible people are doing something readable or standing still, separate from whether a major event was missed.
 
@@ -267,7 +267,7 @@ Fostering picks the adult the orphan likes best. Prefer kin of the same communit
 
 ### OST-1307 · Find a free seat
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#651](https://github.com/danhicks96/ostrog-public-ci/pull/651)
 
 Stools and chairs are built, but nothing can look for a free one. Add a pure `houses::free_seat` returning the nearest finished stool or chair on the level that nobody else holds or stands on, optionally beside a table, and reachable. It reserves nothing and has no caller yet; using it is tracked separately.
 
