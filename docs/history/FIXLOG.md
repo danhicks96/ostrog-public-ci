@@ -1,5 +1,18 @@
 # Fix log
 
+## 2026-11-23: a census of each house as a room (OST-1309)
+
+- Symptom: no measure of what the valley's houses are like as rooms, so a later room score had
+  nothing to be compared against.
+- Cause: nothing counted a house's floor, beds, sleepers and fittings together.
+- Fix: read-only `examples/room_census.rs`. For each house at fixed days it reports floor tiles,
+  beds and sleepers (most people asleep in its beds in any game hour of the day), stools, chairs,
+  tables, chests, lamps and hearths on the floor, the main wall material and fine stone, and loose
+  non-food stacks. It prints the median and spread of floor per sleeper and fittings per sleeper.
+  No simulation code changes, so digests do not change.
+- Guard: `tests/room_census.rs` `census_counts_a_staged_house`, which counts a staged house
+  exactly. It does not compile without the example.
+
 ## 2026-11-22: an orphan is taken in by kin before whoever likes them best (OST-1306)
 
 - Symptom: a child with a living grandparent in the community could be fostered by a neighbour who
