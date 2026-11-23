@@ -1,5 +1,56 @@
 # Fix log
 
+## 2026-11-22: name three stages of childhood (OST-1400)
+
+- Symptom: only `LifeStage::Child` existed, so any rule that needed "an infant" or "a small child"
+  would write its own age by hand.
+- Cause: a missing helper, not a behaviour bug.
+- Fix: `agents::Childhood { Infant, Small, Older }`, `INFANT_YEARS` (2), `SMALL_YEARS` (7), and
+  `Agent::childhood`, `past_infancy`, `old_enough_for`, scaled by `stage_years().0 / ADULT_YEARS`.
+  Recorded as D101. Nothing calls them yet, no field is saved and no behaviour changes.
+- Guard: `tests/childhood.rs::childhood_has_three_stages_scaled_to_each_kind` pins the human
+  boundaries at 2 and 7 years and a kind that matures at 30 (scaled by two).
+
+
+
+## 2026-11-23: Catch Up opened only on window focus, with no way to ask for it (OST-012)
+
+- Symptom: the away card opened only when the window regained OS focus after an hour, so a viewer
+  watching on a second monitor (focus never on the game) never got it, and there was no way to ask
+  "what happened since I looked?" or to read a past day or season.
+- Cause: the focus-in notification was the only caller of the card.
+- Fix: coming back to the game after more than 300 real seconds with input over the window opens
+  Catch Up, but only with news (a named change or a notable line, not counts of routine work); the
+  focus trigger stays. `[U]` and a bar button open it on demand, and the panel picks a span: since
+  the last stretch away, today, yesterday, this season, last season. A day or season span covers its
+  first tick, so the midnight or season-boundary row belongs to the new span; at the start there is
+  no previous day or season, and nothing underflows. The 300 s default is a constant; it is not a
+  setting yet.
+- Guards: `tests/catch_up.rs::catch_up_spans_put_the_boundary_row_in_the_new_span` and
+  `catch_up_has_news_only_for_a_named_change_or_a_notable_line`; `tools/gd_test.gd` at 299, 300 and
+  301 seconds, the single control, and the bridge spans.
+- Not checked here: a second-screen run in a desktop client, and the control by hand.
+
+## 2026-11-22: an orphan is taken in by kin before whoever likes them best (OST-1306)
+
+- Symptom: a child with a living grandparent in the community could be fostered by a neighbour who
+  merely thought better of them.
+- Cause: the carer was chosen by opinion alone (with a small bonus for a partnered adult).
+- Fix: same-community adults are ranked by kin first: a grandparent, then a parent's sibling (shares
+  a mother or father with a parent), then an adult sibling. Ties go to opinion with the partner
+  bonus, then the lower id; with no kin the old rule is unchanged. `EventKind::Fostered` gains an
+  appended `kin` field (0 none, 1 grandparent, 2 parent's sibling, 3 sibling, defaulted when
+  absent) and the line says how they are related. No new randomness.
+- Guards: `tests/fostering.rs` `an_orphan_goes_to_a_grandparent_first`,
+  `an_aunt_or_a_sibling_is_kin_and_beats_a_better_liked_neighbour` and
+  `kin_tiers_rank_grandparent_then_aunt_then_sibling_then_the_old_rule` (tier order, and the old
+  best-liked rule when no kin is left). A better-liked neighbour is present in each, so the old
+  rule would pick the neighbour.
+## 2026-11-22: a fire behind a hill is not known without sight or smoke
+
+- Symptom: everyone within 18 tiles knew of a fire without seeing or smelling it.
+- Fix: a fire is known by direct line of sight or by a recent smoke observation, and the near-fire sighting also needs line of sight.
+- Guard: `a_fire_behind_a_hill_is_found_by_its_smoke` in `tests/senses.rs`.
 ## 2026-11-22: retire the unreachable cave-in event arms
 
 - Symptom: a cave-in is a `Collapse`; the `CaveIn` event variant is never pushed, yet two systems carried unreachable arms for it and a test built it.
