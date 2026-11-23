@@ -74,7 +74,7 @@ Reconcile the existing summary change. The opening line should summarize importa
 
 ### OST-1206 · Repay a good turn with a real meal, and not across a feud
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Sage (SG) · **Public PR:** [#633](https://github.com/danhicks96/ostrog-public-ci/pull/633)
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sage (SG) · **Public PR:** [#633](https://github.com/danhicks96/ostrog-public-ci/pull/633)
 
 Repaying a good turn moves hunger numbers, not food. Hand over a real meal. Tracking issue: [#610](https://github.com/danhicks96/ostrog-public-ci/issues/610).
 
@@ -285,7 +285,7 @@ Heat wears people down the same whether they stand under a grown tree or on bare
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Sage (SG) · **Public PR:** [#632](https://github.com/danhicks96/ostrog-public-ci/pull/632)
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sage (SG) · **Public PR:** [#632](https://github.com/danhicks96/ostrog-public-ci/pull/632)
 
 A drought clears rain but lets storms through. Make it clear storms too. Tracking issue: [#545](https://github.com/danhicks96/ostrog-public-ci/issues/545).
 
@@ -293,7 +293,7 @@ A drought clears rain but lets storms through. Make it clear storms too. Trackin
 
 ### OST-1000 · List what happened in one colony year
 
-**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Wren (WN) · **Public PR:** [#585](https://github.com/danhicks96/ostrog-public-ci/pull/585)
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Wren (WN) · **Public PR:** [#585](https://github.com/danhicks96/ostrog-public-ci/pull/585)
 
 Add a read-only history query that returns the notable-or-worse events of one colony year, in the order they happened, that the viewer is allowed to know about. Repeated events are folded the same way the history and Catch Up read models fold them. This is a Rust read model only: no bridge, client panel or media change, and no simulation change. It is separate from the Catch Up folding in OST-014 and the panel in OST-011.
 
@@ -301,7 +301,7 @@ Add a read-only history query that returns the notable-or-worse events of one co
 
 ### OST-1001 · Show a cohesion word on the community line
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Wren (WN) · **Public PR:** [#622](https://github.com/danhicks96/ostrog-public-ci/pull/622)
 
 Show a short word for how united a community is on the HUD community line, using the community's existing cohesion number. Keep the raw number available. This is a display of the current state, not a forecast, unless a reading before a split can be shown.
 
@@ -309,7 +309,7 @@ Show a short word for how united a community is on the HUD community line, using
 
 ### OST-1002 · Take the mood word from the simulation
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Wren (WN) · **Public PR:** [#623](https://github.com/danhicks96/ostrog-public-ci/pull/623)
 
 The inspect panel works out its mood word in client script. Have the simulation supply the existing mood label and the shared strain threshold, and let the client show what it is sent. Keep the simulation's behavior unchanged.
 
@@ -317,11 +317,13 @@ The inspect panel works out its mood word in client script. Have the simulation 
 
 ### OST-1003 · Follow a record line's chain of recorded causes
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Wren (WN) · **Public PR:** [#624](https://github.com/danhicks96/ostrog-public-ci/pull/624)
 
 Add a viewer page that follows a history line back through its recorded causes, one step at a time, beyond the single-step explanation that exists today. Do not duplicate or replace the one-step explanation (OST-005).
 
 **Acceptance:** The walk is bounded, shows only causes the viewer may know, and says plainly when a cause is missing rather than claiming there is none. Staged fixtures cover a long chain, a missing record and a hidden person. Keep screenshots and planning notes out of the source change.
+
+**Known gap:** the History "why?" link and the Legends page have not been run in the Godot client; that check is waived for this change and left as a follow-up.
 
 ### OST-003 · Compare long-run camera coverage
 
@@ -333,7 +335,7 @@ Add a viewer page that follows a history line back through its recorded causes, 
 
 ### OST-1201 · Keep a feud alive while its only holder is on a journey
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sage (SG) · **Public PR:** [#621](https://github.com/danhicks96/ostrog-public-ci/pull/621)
 
 Feuds end while their only holder is on a journey. Count people away as still holding it. Tracking issue: [#547](https://github.com/danhicks96/ostrog-public-ci/issues/547).
 
@@ -349,7 +351,7 @@ Feuds end while their only holder is on a journey. Count people away as still ho
 
 ### OST-1202 · Do not offer a bed in a flood's way to a tired sleeper
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Sage (SG) · **Public PR:** [#613](https://github.com/danhicks96/ostrog-public-ci/pull/613)
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sage (SG) · **Public PR:** [#613](https://github.com/danhicks96/ostrog-public-ci/pull/613)
 
 Tired people are offered beds in a flood's way and collapse instead. Skip those beds. Tracking issue: [#549](https://github.com/danhicks96/ostrog-public-ci/issues/549).
 
@@ -365,7 +367,7 @@ Tired people are offered beds in a flood's way and collapse instead. Skip those 
 
 ### OST-1203 · Keep a role until a challenger has led for several mornings
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sage (SG) · **Public PR:** [#614](https://github.com/danhicks96/ostrog-public-ci/pull/614)
 
 Roles flip daily when two duties are close. Add a margin and a three-morning hold. Tracking issue: [#551](https://github.com/danhicks96/ostrog-public-ci/issues/551).
 
@@ -381,7 +383,7 @@ Roles flip daily when two duties are close. Add a margin and a three-morning hol
 
 ### OST-1204 · Let tools left at an abandoned camp teach their craft
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sage (SG) · **Public PR:** [#612](https://github.com/danhicks96/ostrog-public-ci/pull/612)
 
 Left-behind tools keep their maker but not their craft. Make them teach it. Tracking issue: [#553](https://github.com/danhicks96/ostrog-public-ci/issues/553).
 
@@ -397,7 +399,7 @@ Left-behind tools keep their maker but not their craft. Make them teach it. Trac
 
 ### OST-1205 · Post a cooking pot beside a hearth that is cooked at
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Sage (SG) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sage (SG) · **Public PR:** [#637](https://github.com/danhicks96/ostrog-public-ci/pull/637)
 
 Hearths are cooked at but never get a pot. Post one from a stored vessel. Tracking issue: [#596](https://github.com/danhicks96/ostrog-public-ci/issues/596).
 

@@ -982,6 +982,8 @@ func _build_ui() -> void:
 		_fx("ui_click")
 	))
 	summary_box = RichTextLabel.new()
+	# A "why?" on a line of the record opens its chain of causes in Legends.
+	summary_box.meta_clicked.connect(_on_history_link)
 	summary_box.bbcode_enabled = true
 	summary_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_style_text(summary_box, 14)
@@ -1714,8 +1716,7 @@ func _update_inspect() -> void:
 		s += "customs:\n"
 		for c in d["customs"]:
 			s += "  [color=#d9c9a8]%s[/color]\n" % c
-	var mood: float = d["mood"]
-	s += "mood: %s" % ("cheerful" if mood > 0.3 else ("content" if mood > 0.0 else ("low" if mood > -0.3 else "miserable")))
+	s += "mood: %s" % d.get("mood_word", "")
 	# Why (#292): the thoughts pushing the mood its way, and what they feel most.
 	if d.get("why", "") != "": s += ", because: %s" % d["why"]
 	s += "\n"
@@ -1818,6 +1819,16 @@ func _on_legends_year(v: float) -> void:
 	if back <= 1 and sim.realm_year() > 0:
 		when = "now"
 	legends_year_label.text = "The world %s (the valley in white, ruins dark%s)" % [when, ", ringed: where those away are" if away.size() > 0 else ""]
+
+## A link in the History text: "why:ID" opens that event's chain of causes.
+func _on_history_link(meta) -> void:
+	var page := str(meta)
+	if not page.begins_with("why:"):
+		return
+	legends_back.clear()
+	legends_text.set_meta("page", page)
+	_show_legends(page)
+	_fx("ui_click")
 
 func _show_history() -> void:
 	var d: Dictionary = sim.history(14)
