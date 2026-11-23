@@ -2087,3 +2087,47 @@ func test_catch_up_card_comes_through_the_bridge_and_summary_since_is_unchanged(
 	var raw: Dictionary = sim.summary_since(from)
 	check(raw.has("counts") and raw.has("lines") and raw.has("counts_words"), "summary_since keeps its raw counts and lines")
 	sim.free()
+
+# OST-012: coming back opens Catch Up only after MORE than 300 s away and only with news (a named
+# change or notable line); 299 and 300 s do not, 301 s does, and no news never does.
+func test_catch_up_opens_on_return_after_idle_with_news() -> void:
+	check(Rules.CATCH_UP_IDLE_S == 300.0, "the default is 300 s")
+	check(not Rules.catch_up_due(299.0, true), "299 s with news: not due")
+	check(not Rules.catch_up_due(300.0, true), "300 s with news: not due (more than 300)")
+	check(Rules.catch_up_due(301.0, true), "301 s with news: due")
+	check(not Rules.catch_up_due(400.0, false), "400 s with no news: not due")
+	check(not Rules.catch_up_due(30.0, true), "30 s with news: not due")
+
+# OST-012: the manual control: one key and one button, and a span for each name the bridge knows.
+func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
+	var with_key := 0
+	for b in Rules.BAR_ITEMS:
+		if str(b.get("key", "")) == "U":
+			with_key += 1
+			check(str(b["id"]) == "catchup", "the Catch Up button owns U")
+	check(with_key == 1, "one button has U: %d" % with_key)
+	# The key must not collide with anything main.gd already binds (A was the pan-left key).
+	var src := FileAccess.get_file_as_string("res://scripts/main.gd")
+	check(src.count("KEY_U:") == 1, "KEY_U is bound once in main.gd: %d" % src.count("KEY_U:"))
+	check(src.count("is_key_pressed(KEY_U)") == 0, "U is not a held movement key")
+	check(src.count("\t\t\tKEY_A:") == 0, "A is left to the pan keys")
+	var letters := {}
+	for b in Rules.BAR_ITEMS:
+		var k := str(b.get("key", ""))
+		if k.length() == 1:
+			check(not letters.has(k), "bar key %s used twice" % k)
+			letters[k] = true
+	var ids := []
+	for sp in Rules.CATCH_UP_SPANS:
+		ids.append(sp["id"])
+	check(ids == ["since_look", "current_day", "previous_day", "current_season", "previous_season"], "the spans: %s" % [ids])
+	var sim := SimHost.new()
+	sim.stage_demo(1)
+	sim.step(24000)
+	for sid in ["current_day", "current_season"]:
+		var d: Dictionary = sim.catch_up_span(sid)
+		check(d.has("text") and d.has("has_news") and int(d["to"]) >= int(d["from"]), "%s answers with a card" % sid)
+	check(sim.catch_up_span("last_week").is_empty(), "an unknown span answers nothing")
+	var since: Dictionary = sim.catch_up_since(0)
+	check(since.has("has_news"), "since-look says whether there is news")
+	sim.free()
