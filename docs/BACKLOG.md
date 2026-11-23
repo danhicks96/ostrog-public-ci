@@ -299,7 +299,7 @@ Add a pure `Body::capacities` that folds a body's parts and wounds into three nu
 
 ### OST-1311 · A party that comes up hurt from the deep carries a real wound
 
-**Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Keep daily life believable · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#673](https://github.com/danhicks96/ostrog-public-ci/pull/673)
 
 A party that comes back up hurt from below is only marked injured for two days, with nothing to heal, scar or tend. Give each hurt member one deterministic wound (part, kind and severity drawn from a stream keyed by the seed, the taken child and the person), recorded with the cause. Do not change who is hurt or how often.
 

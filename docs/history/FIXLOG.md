@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-24: a party that comes up hurt from the deep carries a real wound (OST-1311)
+
+- Symptom: a party member who came back up hurt was only marked injured for two days, with nothing
+  to heal, scar or tend.
+- Cause: the hurt outcome set a two-day injury timer and nothing else.
+- Fix: each hurt member now takes one wound on a random body part, of a cut, bruise or break, with a
+  severity from a quarter to a half, recorded with the cause "hurt below, going after" the child.
+  Part, kind and severity come from a stream keyed by the seed, the taken child and the person, so
+  the same seed gives the same wounds; who is hurt and how often is unchanged. Wounds are already
+  saved, so older saves still load. This changes the simulation digest.
+- Guards: `tests/the_deep.rs` `hurt_below_is_a_wound` (exactly one wound each, naming the child,
+  the unhurt third untouched; it fails without the change) and
+  `the_same_seed_gives_the_same_wounds_below`.
+
 ## 2026-11-23: a census of each house as a room (OST-1309)
 
 - Symptom: no measure of what the valley's houses are like as rooms, so a later room score had

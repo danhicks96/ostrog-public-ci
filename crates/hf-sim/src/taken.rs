@@ -395,10 +395,42 @@ pub fn settle(w: &mut World, k: usize, o: Outcome) {
                 if let Some(a) = w.agents.iter_mut().find(|a| a.id == *id) {
                     a.remember(tick, MemKind::Hardship, Subject::None, -0.6, 0.9, Some(eid));
                     if hurt.contains(id) {
-                        a.injured_until = tick + 2 * TICKS_PER_DAY;
                         a.thoughts.add(ThoughtKind::Hurt, tick, Some(eid));
                     }
                 }
+            }
+            // A real wound, named for the child they went after (OST-1311): it
+            // had been only two days marked injured, with nothing to heal, scar or tend.
+            let child = w
+                .agents
+                .iter()
+                .chain(w.overworld.away.iter())
+                .find(|a| a.id == rec.child)
+                .map_or_else(|| "the child".to_string(), |a| a.name.clone());
+            let cause = format!("hurt below, going after {child}");
+            for id in &hurt {
+                let Some(i) = w.agents.iter().position(|a| a.id == *id) else {
+                    continue;
+                };
+                let mut r = stream(
+                    w.meta.seed,
+                    &[
+                        purpose::AGENT_SOCIAL,
+                        0x3226,
+                        rec.child.0 as u64,
+                        rec.taken,
+                        id.0 as u64,
+                    ],
+                );
+                let plan = w.agents[i].species_def().body_plan();
+                let part = plan.random_part(&mut r, crate::plan::PartFilter::Any);
+                let kind = match r.gen_range(0..3) {
+                    0 => crate::body::WoundKind::Cut,
+                    1 => crate::body::WoundKind::Bruise,
+                    _ => crate::body::WoundKind::Break,
+                };
+                let severity = r.gen_range(0.25..0.5);
+                crate::systems::health::wound(w, i, part, kind, severity, 0.1, &cause, None);
             }
             w.gone_below[k].stage = Stage::Below;
         }
