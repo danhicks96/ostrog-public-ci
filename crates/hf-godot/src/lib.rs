@@ -712,21 +712,8 @@ fn event_because(
     line: &str,
 ) -> String {
     use hf_sim::events::EventKind as K;
-    let cause_id = match &e.kind {
-        K::Possessed { cause, .. }
-        | K::TrueDream { cause, .. }
-        | K::Drenched { cause, .. }
-        | K::VerminDrawn { cause, .. }
-        | K::VerminBite { cause, .. }
-        | K::Festered { cause, .. }
-        | K::Weakened { cause, .. }
-        | K::SickenedWeak { cause, .. }
-        | K::RainSpoiled { cause, .. }
-        | K::HealerLost { cause, .. }
-        | K::WoundFestered { cause, .. } => Some(*cause),
-        K::CustomFormed { origin, .. } | K::CustomAdopted { origin, .. } => Some(*origin),
-        _ => None,
-    };
+    // The recorded cause (the list lives in view::causes, shared with the "why?" chain).
+    let cause_id = hf_sim::view::causes::cause_of(&e.kind);
     if let Some(cid) = cause_id {
         if let Ok(Some((hid, ctick, detail))) = chronicle.row(cid) {
             if let Some(cev) = hf_sim::view::history::event_from_row(hid, ctick, &detail) {
@@ -796,11 +783,16 @@ fn communities_line(w: &World) -> String {
                 .iter()
                 .filter(|a| a.community == Some(c.id))
                 .count();
-            if away > 0 {
+            let mut line = if away > 0 {
                 format!("{} {} ({} away)", c.name, here, away)
             } else {
                 format!("{} {}", c.name, here)
+            };
+            if let Some(word) = hf_sim::society::cohesion_word(c.cohesion) {
+                line.push_str(", ");
+                line.push_str(word);
             }
+            line
         })
         .collect();
     parts.join(" · ")
@@ -1621,8 +1613,12 @@ impl SimHost {
         if let Ok(list) =
             hf_sim::view::history::major(&s.world, &s.chronicle, limit.max(1) as usize)
         {
-            for (_, tick, line, detail) in list {
+            for (hid, tick, line, detail) in list {
                 let mut text = format!("{}  {}", hf_sim::view::history::when(&s.world, tick), line);
+                // An event the record gives a cause for opens its chain.
+                if hf_sim::view::causes::has_cause(&s.chronicle, hid) {
+                    text.push_str(&format!("  [url=why:{hid}]why?[/url]"));
+                }
                 if let Some(dd) = detail {
                     text.push_str("\n    ");
                     text.push_str(&dd);
@@ -1904,6 +1900,12 @@ impl SimHost {
         }
         d.set("known_list", &known);
         d.set("mood", a.mood);
+        d.set(
+            "mood_word",
+            &GString::from(hf_sim::view::why::mood_word(hf_sim::view::why::mood_band(
+                a,
+            ))),
+        );
         d.set(
             "tool",
             &GString::from(
