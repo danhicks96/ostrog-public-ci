@@ -130,6 +130,20 @@
 - Fix: The shared bed-consideration step skips a bed in a flood's way or on unsafe ground and does not count it as found, so ground sleep is offered where the person stands. Safe beds stay preferred; the night still counts as rough. No save-format change.
 - Guard: crates/hf-sim/tests/floods.rs::the_tired_sleep_on_high_ground_when_the_flood_covers_their_beds stages six tired people with beds by a pond in spate and checks all sleep away from flood water with no exhaustion event; it fails without the change.
 
+## 2026-11-22: a feud survives its only holder's journey
+
+- Symptom: A feud ended with 'nobody of one side is left in the valley' while its only holder of that side was away on a journey, and came back to find it gone.
+- Cause: The feud check counted only people alive in the valley's agent list; journeyers are held whole in the away list, so they never counted, despite a comment saying those away still hold the feud.
+- Fix: Count someone away on a journey who has a community as still here for the feud checks, including the heir check. Dead and disowned holders still end a feud.
+- Guard: crates/hf-sim/tests/feuds.rs::a_feud_survives_a_journey sends the only holder away for six days, checks the feud survives each morning with no end or inheritance event, and checks the head on return; it fails without the change.
+
+## 2026-11-22: a hearth cooked at for years gets a cooking pot
+
+- Symptom: A hearth that people cooked at for years never got a cooking pot: the pot kind existed but nothing posted one.
+- Cause: The settlement planner had no path that posted a cooking pot, and the structure cost table had no entry for one.
+- Fix: When a hearth has a cook order open or freshly posted and no cooking pot (finished or ordered) within a tile, and a vessel is in store, the planner posts a pot order on a free neighbouring tile, a clay pot whose only cost is the vessel. No vessel in store, no order. No save-format change.
+- Guard: crates/hf-sim/tests/hearth_pot.rs covers the positive case and the no-vessel case, and de-duplicates open and finished orders; the positive case fails without the change.
+
 ## 2026-11-22: a role is kept until a challenger has led for three mornings
 
 - Symptom: A person's role flipped between forager and hauler within days, each flip a feed line; about a third of role events in long runs returned to the previous role within three days.
