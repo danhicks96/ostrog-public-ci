@@ -273,6 +273,22 @@ Stools and chairs are built, but nothing can look for a free one. Add a pure `ho
 
 **Acceptance:** Tests cover nearest-first, beside-table, a reserved seat, an occupied seat, and an unreachable seat. No simulation state changes.
 
+### OST-1308 · Census of postings aimed at unseen targets
+
+**Milestone:** Measure the simulation · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+
+Add a read-only example that watches each hourly planning pass and reports how many hunt and mine postings point at something nobody in the community has seen: a hunted animal not seen by any living member within two days, or a mine cell outside the explored set. It also reports the deepest level mined below home and food per head and ore in store at fixed days. It informs a later planner decision and changes no behaviour.
+
+**Acceptance:** A test flags a hunt for an unseen animal and not for one that was seen. The probe reuses the live planner state and changes nothing. A short smoke run is reported before any long run.
+
+### OST-1309 · Census of each house as a room
+
+**Milestone:** Measure the simulation · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+
+Add a read-only example that reports, per house at fixed days, floor tiles, beds and sleepers, seats, tables, chests, lamps, hearths, main wall material and loose stacks on the floor, with the median and spread of floor per sleeper and fittings per sleeper. It prints the numbers a later room score will be compared against and does not depend on the room-score work in OST-1402.
+
+**Acceptance:** A test counts a staged house exactly. The example only looks at the world and changes no state.
+
 ### OST-900 · Count a grown tree's shade in the heat
 
 **Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#609](https://github.com/danhicks96/ostrog-public-ci/pull/609)
