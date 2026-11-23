@@ -72,18 +72,6 @@ pub fn observe(w: &mut World) {
         .last_events
         .iter()
         .filter_map(|e| match &e.kind {
-            EventKind::CaveIn { agent, at, hurt } => Some((
-                *agent,
-                *at,
-                crate::mind::ObservationKind::StructuralWeakness,
-                if *hurt {
-                    crate::mind::OutcomeKind::Harm
-                } else {
-                    crate::mind::OutcomeKind::NoChange
-                },
-                e.tick,
-                e.id,
-            )),
             EventKind::Collapse { by, at, hurt, .. } => Some((
                 *by,
                 *at,

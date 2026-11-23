@@ -15,6 +15,31 @@
   `kin_tiers_rank_grandparent_then_aunt_then_sibling_then_the_old_rule` (tier order, and the old
   best-liked rule when no kin is left). A better-liked neighbour is present in each, so the old
   rule would pick the neighbour.
+## 2026-11-22: a fire behind a hill is not known without sight or smoke
+
+- Symptom: everyone within 18 tiles knew of a fire without seeing or smelling it.
+- Fix: a fire is known by direct line of sight or by a recent smoke observation, and the near-fire sighting also needs line of sight.
+- Guard: `a_fire_behind_a_hill_is_found_by_its_smoke` in `tests/senses.rs`.
+## 2026-11-22: retire the unreachable cave-in event arms
+
+- Symptom: a cave-in is a `Collapse`; the `CaveIn` event variant is never pushed, yet two systems carried unreachable arms for it and a test built it.
+- Fix: remove the dead `CaveIn` arms in learning and hardship, document the variant as kept only for save order, and build `Collapse` rows in the test. No variant is removed.
+- Guard: the phase-1 learning test now exercises the `Collapse` path that actually fires.
+## 2026-11-22: a custom is not re-formed from the same cause
+
+- Symptom: a custom for a community that had left was formed and lapsed again every dawn.
+- Fix: skip dissolved or empty communities, never re-form a custom from an origin event that already produced one, and adopt only living members.
+- Guard: `a_custom_is_not_reborn_from_the_same_cause` and `a_new_death_can_found_a_new_rest_day` in `tests/culture.rs`.
+## 2026-11-22: the last knower carves the way of their craft
+
+- Symptom: when the last knower of a craft died, the craft was lost with nothing left behind.
+- Fix: an old or ailing sole knower of a craft their community uses prefers to carve it. Engravings gain an optional craft field that old saves load as none.
+- Guard: `the_last_smith_carves_the_way_of_smelting` in `tests/engrave.rs`.
+## 2026-11-22: mood terms in the alive report
+
+- Symptom: nothing reported what a colony's mood is made of, only a few spread numbers.
+- Fix: extract the four mood terms into one helper used by the mood update and add the term means and spread keys to the alive report. Report only; simulation unchanged.
+- Guard: `mood_terms_sum_to_mood` in `tests/mood.rs` and the alive report tests.
 ## 2026-11-22: a free stool or chair can be found (OST-1307)
 
 - Symptom: stools and chairs are built, but nothing could look for a free one.
