@@ -309,7 +309,7 @@ Show a short word for how united a community is on the HUD community line, using
 
 ### OST-1002 · Take the mood word from the simulation
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Wren (WN) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Wren (WN) · **Public PR:** [#623](https://github.com/danhicks96/ostrog-public-ci/pull/623)
 
 The inspect panel works out its mood word in client script. Have the simulation supply the existing mood label and the shared strain threshold, and let the client show what it is sent. Keep the simulation's behavior unchanged.
 

@@ -1,5 +1,18 @@
 # Fix log
 
+
+## 2026-11-22: say a person's mood in words, with the strain threshold shared (OST-1002)
+
+- Symptom: the inspect panel gave a mood number the player had to interpret, and the number's
+  bands were duplicated in the client script.
+- Cause: the band edges lived only in the client; the strain system kept its own inline copy of
+  the threshold formula.
+- Fix: `view::why::mood_band` and `mood_word` give the word on the inspect dictionary. The strain
+  threshold moves unchanged into `strain::threshold`, used by both the shock and the step.
+- Guards: `tests/client_view.rs::mood_band_follows_the_inspect_thresholds` (exact edges) and
+  `strain_threshold_is_unchanged` fail if either band or the formula drifts. No simulation draw changes.
+- Not measured: how often each word appears in a long run.
+
 ## 2026-11-22: only someone of age leads an observance (OST-1301)
 
 - Symptom: a nine-year-old could lead the season's observance, whether as the person followed in
@@ -90,6 +103,7 @@
 - Cause: The drought arm of the spell weather adjustment only cleared Sky::Rain.
 - Fix: Clear a storm the same way as rain; a storm's wind without rain is not modelled, so clear is the honest stand-in. No save-format change.
 - Guard: crates/hf-sim/tests/spells.rs::a_drought_lets_no_storm_through forces a storm hour under an active drought and checks the sky reads Clear with no rainfall; it fails without the change.
+
 
 ## 2026-11-22: a child holds no duty until grown (OST-1300)
 
