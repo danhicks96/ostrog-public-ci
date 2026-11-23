@@ -11,6 +11,31 @@
   walled-off stool.
 - Guard: `tests/furniture.rs` `free_seat_finds_the_stool_beside_the_table`; it does not compile
   without `free_seat`.
+## 2026-11-22: births are gated by community, not by the whole valley
+
+- Symptom: a band of raiders camped at the edge halved the births of a small community.
+- Cause: the crowd rule counted every living person on the map, including bands and strangers who belong to no community.
+- Fix: count only living people of the couple's own community when applying the halving at 40.
+- Guard: `strangers_do_not_crowd_the_nursery` in `tests/generations.rs`.
+## 2026-11-22: rain wets people outdoors; a roof or hearth dries them
+
+- Symptom: people had no wetness, so standing in a storm left someone exactly as dry as sitting by the hearth.
+- Fix: add a saved `wet` value (0 to 1, defaulting to 0 in old saves). Outdoors in rain it rises with rainfall; otherwise it falls, faster beside a lit hearth. Nothing reads it yet.
+- Guard: `rain_wets_those_out_in_it_and_a_roof_dries_them` in `tests/weather_events.rs`.
+
+## 2026-11-22: let the history view trace an event back through its causes (OST-1003)
+
+- Symptom: the history view showed what happened but not why, though the record names a cause
+  for many events; the client's one-step "because" was the only trace.
+- Cause: nothing followed the recorded cause links past one step, and the one step lived in the
+  Godot bridge instead of the view layer.
+- Fix: `view::causes` follows recorded causes (bounded, and saying so when cut), stops with a
+  plain line at a cause missing from the record or about someone the valley has not found, and
+  serves it as the Legends page `why:<id>`. The bridge's one-step lookup now uses it.
+- Guards: `tests/causes.rs` covers a full chain, the step limit, an event with no cause, a cause
+  missing from the record, and a cause about an unfound person (chain ends `Untold` and the
+  page does not name them).
+- Not measured: how often chains reach a root in a long run.
 
 ## 2026-11-22: name how settled a community is (OST-1001)
 
