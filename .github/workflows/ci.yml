@@ -12,14 +12,19 @@ on:
   pull_request:
   push:
     branches: [master, main]
+  schedule:
+    # Daily full build of main: pushes to main run only the cheap jobs, so this gives main a real verdict.
+    - cron: '17 6 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  # PR runs are replaced by newer pushes to the same PR. Each push to main gets its own group so
+  # rapid merges no longer cancel one another (they only run the cheap jobs, see `changes`).
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CARGO_TERM_COLOR: always
@@ -31,7 +36,7 @@ env:
 jobs:
   changes:
     # Docs-only PRs (claims, notes) skip the long cargo jobs. The skipped jobs report "skipped",
-    # which GitHub treats as passing for required checks. Pushes and manual runs always build.
+    # which GitHub treats as passing for required checks. Pushes to main run only the cheap jobs; the scheduled and manual runs always build.
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -43,6 +48,7 @@ jobs:
           EVENT: ${{ github.event_name }}
           PR: ${{ github.event.pull_request.number }}
         run: |
+          if [ "$EVENT" = push ]; then echo code=false >> "$GITHUB_OUTPUT"; exit 0; fi
           if [ "$EVENT" != pull_request ]; then echo code=true >> "$GITHUB_OUTPUT"; exit 0; fi
           files=$(gh api --paginate "repos/${{ github.repository }}/pulls/$PR/files" --jq '.[].filename') || { echo code=true >> "$GITHUB_OUTPUT"; exit 0; }
           if printf '%s\n' "$files" | grep -qvE '^(docs/.*\.md|[^/]+\.md)$'; then c=true; else c=false; fi
