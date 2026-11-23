@@ -1,5 +1,10 @@
 # Fix log
 
+## 2026-11-22: rain wets people outdoors; a roof or hearth dries them
+
+- Symptom: people had no wetness, so standing in a storm left someone exactly as dry as sitting by the hearth.
+- Fix: add a saved `wet` value (0 to 1, defaulting to 0 in old saves). Outdoors in rain it rises with rainfall; otherwise it falls, faster beside a lit hearth. Nothing reads it yet.
+- Guard: `rain_wets_those_out_in_it_and_a_roof_dries_them` in `tests/weather_events.rs`.
 
 ## 2026-11-22: let the history view trace an event back through its causes (OST-1003)
 
