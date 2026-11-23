@@ -1,5 +1,10 @@
 # Fix log
 
+## 2026-11-22: a custom is not re-formed from the same cause
+
+- Symptom: a custom for a community that had left was formed and lapsed again every dawn.
+- Fix: skip dissolved or empty communities, never re-form a custom from an origin event that already produced one, and adopt only living members.
+- Guard: `a_custom_is_not_reborn_from_the_same_cause` and `a_new_death_can_found_a_new_rest_day` in `tests/culture.rs`.
 ## 2026-11-22: the last knower carves the way of their craft
 
 - Symptom: when the last knower of a craft died, the craft was lost with nothing left behind.

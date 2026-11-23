@@ -1126,10 +1126,10 @@ Narratives:
 
 | where | narrative |
 |---|---|
-| systems/culture.rs:498 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
-| systems/culture.rs:518 | We sow and cook more than we need, because {who} starved. |
-| systems/culture.rs:534 | We take in no strangers, since {who} led people away: {cause}. |
-| systems/culture.rs:570 | We do not eat {k}, because {who} fell ill of it and went hungry. |
+| systems/culture.rs:535 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
+| systems/culture.rs:556 | We sow and cook more than we need, because {who} starved. |
+| systems/culture.rs:575 | We take in no strangers, since {who} led people away: {cause}. |
+| systems/culture.rs:620 | We do not eat {k}, because {who} fell ill of it and went hungry. |
 
 #### The Engine (`engine.rs`)
 
@@ -3247,16 +3247,16 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/culture.rs:246 | what they remember of the other side of the portal |
 | systems/culture.rs:291 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
 | systems/culture.rs:322 | hold that {} |
-| systems/culture.rs:491 | first |
-| systems/culture.rs:492 | second |
-| systems/culture.rs:493 | third |
-| systems/culture.rs:494 | fourth |
-| systems/culture.rs:495 | fifth |
-| systems/culture.rs:496 | {n}th |
-| systems/culture.rs:514 | starvation |
-| systems/culture.rs:781 | ale |
-| systems/culture.rs:783 | berry wine |
-| systems/culture.rs:786 | drunk |
+| systems/culture.rs:528 | first |
+| systems/culture.rs:529 | second |
+| systems/culture.rs:530 | third |
+| systems/culture.rs:531 | fourth |
+| systems/culture.rs:532 | fifth |
+| systems/culture.rs:533 | {n}th |
+| systems/culture.rs:551 | starvation |
+| systems/culture.rs:831 | ale |
+| systems/culture.rs:833 | berry wine |
+| systems/culture.rs:836 | drunk |
 | systems/decide.rs:99 | someone |
 | systems/decide.rs:103 | search_for_the_lost |
 | systems/decide.rs:104 | go looking for one of the lost near {at} |
