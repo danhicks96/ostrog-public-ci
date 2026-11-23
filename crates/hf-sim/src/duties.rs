@@ -44,6 +44,11 @@ pub const TEND_CREDIT: u32 = 180;
 pub const DUTY_MINUTES: u32 = 120;
 /// What the tally keeps of itself each day, in hundredths.
 pub const KEEPS: u32 = 85;
+/// How far ahead a challenger's minutes must stand of the current role's, in hundredths, to
+/// start counting toward a switch: 125 is 25% ahead.
+pub const SWITCH_MARGIN: u32 = 125;
+/// Mornings a challenger must hold the margin before it takes the role.
+pub const SWITCH_MORNINGS: u8 = 3;
 
 /// Someone's recent work, by kind (`KINDS`), in minutes, and the duties it makes.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -51,6 +56,10 @@ pub struct Duties {
     /// By `KINDS`; a save from before #602 has six (no gathering) and is filled out on use.
     pub minutes: Vec<u32>,
     pub held: Vec<Role>,
+    /// A role ahead of the current one by `SWITCH_MARGIN`, and how many consecutive mornings
+    /// running: a role is identity, so one day's lead does not retitle someone.
+    #[serde(default)]
+    pub challenger: Option<(Role, u8)>,
 }
 
 /// The kind of work an order is, for the tally.
@@ -161,8 +170,46 @@ pub fn daily(w: &mut World) {
         } else {
             Vec::new()
         };
-        let role = held.first().copied();
-        a.duties.held = held;
+        let top = held.first().copied();
+        a.duties.held = held.clone();
+
+        // A first role, or leaving one whose minutes fell below DUTY_MINUTES, is immediate;
+        // only a challenger replacing a role still held needs the margin and the
+        // consecutive mornings.
+        let role = match a.role {
+            None => top,
+            Some(cur) if !held.contains(&cur) => {
+                a.duties.challenger = None;
+                top
+            }
+            Some(cur) => match top {
+                Some(t) if t == cur => {
+                    a.duties.challenger = None;
+                    Some(cur)
+                }
+                Some(t) => {
+                    let cur_min = a.duties.minutes[KINDS.iter().position(|x| *x == cur).unwrap()];
+                    let t_min = a.duties.minutes[KINDS.iter().position(|x| *x == t).unwrap()];
+                    if t_min * 100 >= cur_min * SWITCH_MARGIN {
+                        let streak = match a.duties.challenger {
+                            Some((r, n)) if r == t => n + 1,
+                            _ => 1,
+                        };
+                        if streak >= SWITCH_MORNINGS {
+                            a.duties.challenger = None;
+                            Some(t)
+                        } else {
+                            a.duties.challenger = Some((t, streak));
+                            Some(cur)
+                        }
+                    } else {
+                        a.duties.challenger = None;
+                        Some(cur)
+                    }
+                }
+                None => Some(cur),
+            },
+        };
         if a.role == role {
             continue;
         }

@@ -490,3 +490,67 @@ fn someone_caught_under_on_their_way_makes_for_the_nearest_dry_ground() {
     );
     assert!(w.agents[i].alive);
 }
+
+#[test]
+fn the_tired_sleep_on_high_ground_when_the_flood_covers_their_beds() {
+    // A tired person was offered every reachable bed, including those in the flood's
+    // way, and `flee_step` kept turning them back, so a camp stayed up until it collapsed.
+    use hf_sim::agents::Species;
+    use hf_sim::events::EventKind;
+    use hf_sim::mind::{Activity, Known};
+    use hf_sim::structures::StructureKind;
+    let mut w = valley(3940);
+    w.meta.autoplan = false;
+    w.meta.tick = TICKS_PER_HOUR * 20;
+    // The stream in spate (from 18:00, so it has been up two hours), its banks 2 tiles from
+    // the beds.
+    let stream = TilePos::new(30, 30, 2);
+    let mut ids = Vec::new();
+    for k in 0..6 {
+        let bed = TilePos::new(26 + 2 * k, 28, 2);
+        w.place_structure(StructureKind::Bed, bed, Material::WOOD, false);
+        let sid = w.structures.iter().find(|s| s.pos == bed).unwrap().id;
+        let at = TilePos::new(26 + 2 * k, 24, 2);
+        let id = w.spawn_agent(Species::Person, at);
+        let i = w.agents.iter().position(|a| a.id == id).unwrap();
+        let now = w.meta.tick;
+        let a = &mut w.agents[i];
+        a.activity = Activity::Idle;
+        a.needs.rest = 0.2;
+        a.needs.hunger = 1.0;
+        a.needs.thirst = 1.0;
+        a.needs.warmth = 1.0;
+        a.needs.social = 1.0;
+        a.knowledge
+            .note(Known::Structure(sid), bed, now, StructureKind::Bed as u16);
+        ids.push(id);
+    }
+    w.rebuild_caches();
+    weather(&mut w, Sky::Clear, 20.0);
+    let held = floods::SPATE + 0.3;
+    let mut exhausted = 0;
+    for _ in 0..3 * TICKS_PER_HOUR {
+        let bi = w
+            .waters
+            .bodies
+            .iter()
+            .position(|b| b.tiles.contains(&stream))
+            .unwrap();
+        w.waters.bodies[bi].stage = held;
+        w.step();
+        for e in &w.last_events {
+            exhausted += matches!(e.kind, EventKind::Exhausted { .. }) as u32;
+        }
+    }
+    assert_eq!(exhausted, 0, "nobody collapsed");
+    for id in &ids {
+        let a = w.agents.iter().find(|a| a.id == *id).unwrap();
+        assert!(a.activity.is_asleep(), "{} is {:?}", a.name, a.activity);
+        assert!(
+            !hf_sim::systems::hazards::in_floods_way(&w, a.pos),
+            "{} sleeps in the flood's way at {}",
+            a.name,
+            a.pos
+        );
+    }
+}

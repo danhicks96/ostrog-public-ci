@@ -1888,6 +1888,12 @@ impl SimHost {
         d.set("known_list", &known);
         d.set("mood", a.mood);
         d.set(
+            "mood_word",
+            &GString::from(hf_sim::view::why::mood_word(hf_sim::view::why::mood_band(
+                a,
+            ))),
+        );
+        d.set(
             "tool",
             &GString::from(
                 // The tool in hand and its story (legend.rs); a tool from before stories as it was.
