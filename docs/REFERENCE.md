@@ -1830,8 +1830,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | feuds.rs:197 | a reckoning: each side has made amends to the other |
 | feuds.rs:219 | settled by the judgement of |
 | feuds.rs:270 | a marriage between the two families |
-| feuds.rs:320 | nobody of one side is left in the valley |
-| feuds.rs:324 | five years without a new grievance, and let go |
+| feuds.rs:326 | nobody of one side is left in the valley |
+| feuds.rs:330 | five years without a new grievance, and let go |
 | fish.rs:130 | drowned through the ice |
 | fish.rs:139 | fish |
 | floods.rs:72 | the stream |

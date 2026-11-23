@@ -130,6 +130,13 @@
 - Fix: The shared bed-consideration step skips a bed in a flood's way or on unsafe ground and does not count it as found, so ground sleep is offered where the person stands. Safe beds stay preferred; the night still counts as rough. No save-format change.
 - Guard: crates/hf-sim/tests/floods.rs::the_tired_sleep_on_high_ground_when_the_flood_covers_their_beds stages six tired people with beds by a pond in spate and checks all sleep away from flood water with no exhaustion event; it fails without the change.
 
+## 2026-11-22: a feud survives its only holder's journey
+
+- Symptom: A feud ended with 'nobody of one side is left in the valley' while its only holder of that side was away on a journey, and came back to find it gone.
+- Cause: The feud check counted only people alive in the valley's agent list; journeyers are held whole in the away list, so they never counted, despite a comment saying those away still hold the feud.
+- Fix: Count someone away on a journey who has a community as still here for the feud checks, including the heir check. Dead and disowned holders still end a feud.
+- Guard: crates/hf-sim/tests/feuds.rs::a_feud_survives_a_journey sends the only holder away for six days, checks the feud survives each morning with no end or inheritance event, and checks the head on return; it fails without the change.
+
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
 - Symptom: removing media left asset-dependent Rust and documentation checks without inputs.
