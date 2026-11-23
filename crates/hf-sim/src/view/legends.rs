@@ -93,6 +93,10 @@ fn record(w: &World, c: &Chronicle, kind: &str, id: u32, limit: usize) -> Vec<St
 
 /// One page: "world", "people:N", "site:N", "figure:N" or "polity:N".
 pub fn page(w: &World, c: &Chronicle, target: &str) -> String {
+    // Why it happened: the valley's own record, whatever the realm holds.
+    if let Some(id) = target.strip_prefix("why:") {
+        return crate::view::causes::page(w, c, id.parse().unwrap_or(0));
+    }
     let r = &w.realm;
     if r.peoples.is_empty() {
         return "[b]Legends[/b]\n\nThis valley's world has no recorded history beyond it.".into();

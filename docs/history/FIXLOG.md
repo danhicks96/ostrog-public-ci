@@ -16,6 +16,20 @@
   best-liked rule when no kin is left). A better-liked neighbour is present in each, so the old
   rule would pick the neighbour.
 
+## 2026-11-22: let the history view trace an event back through its causes (OST-1003)
+
+- Symptom: the history view showed what happened but not why, though the record names a cause
+  for many events; the client's one-step "because" was the only trace.
+- Cause: nothing followed the recorded cause links past one step, and the one step lived in the
+  Godot bridge instead of the view layer.
+- Fix: `view::causes` follows recorded causes (bounded, and saying so when cut), stops with a
+  plain line at a cause missing from the record or about someone the valley has not found, and
+  serves it as the Legends page `why:<id>`. The bridge's one-step lookup now uses it.
+- Guards: `tests/causes.rs` covers a full chain, the step limit, an event with no cause, a cause
+  missing from the record, and a cause about an unfound person (chain ends `Untold` and the
+  page does not name them).
+- Not measured: how often chains reach a root in a long run.
+
 ## 2026-11-22: name how settled a community is (OST-1001)
 
 - Symptom: the communities line gave a cohesion number the player could not read at a glance, so
