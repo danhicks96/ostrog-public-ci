@@ -109,6 +109,11 @@ const GRIEF_MARK_SLACK: u64 = TICKS_PER_DAY;
 /// rubric's "within 0.10 of baseline" (a tenth of the -1..+1 mood range's width of 2, 5%).
 const GRIEF_BACK: f32 = 0.10;
 
+/// The mood terms are read once per 10 game days (OST-904): 288,000 ticks at 28,800 a day.
+const TERMS_EVERY: u64 = 10 * TICKS_PER_DAY;
+/// A mood below this counts toward `mood_below_m03`.
+const MOOD_LOW: f32 = -0.3;
+
 /// How many `Activity` names there are, and the order a person's hour counts are kept in. The
 /// order is `Activity::name()`'s: idle, going, eating, foraging, sleeping, talking, loitering,
 /// wandering, working, drinking. `slot` is an exhaustive match, so a new `Activity` variant
@@ -178,6 +183,12 @@ pub struct AliveTally {
     /// Deaths counted so far where the victim held a lesson (confidence >= 0.5) about the cause
     /// but it was not heeded (#1823: `lesson_ignored`).
     lesson_ignored: u32,
+    /// Sums of the four mood terms (`systems::needs::mood_terms`) over every sampled person at
+    /// each 10-day look, and how many person-looks that is (OST-904).
+    term_sums: [f64; 4],
+    term_n: u32,
+    /// The 10-day window (tick over `TERMS_EVERY`) of the latest look, so each window is read once.
+    terms_window: Option<u64>,
     /// Watched Major events (OST-004) still inside `GLANCE_MAJOR_WINDOW`, in the order seen.
     major_watch: Vec<MajorWatch>,
     /// Per kind in `GLANCE_MAJOR_KINDS`: (missed, all) of the watched events whose hour has run
@@ -296,6 +307,9 @@ impl AliveTally {
             causes_seen: BTreeSet::new(),
             cause_repeat: 0,
             lesson_ignored: 0,
+            term_sums: [0.0; 4],
+            term_n: 0,
+            terms_window: None,
             major_watch: Vec::new(),
             major_counts: BTreeMap::new(),
         }
@@ -314,6 +328,17 @@ impl AliveTally {
             self.activity_hours.entry(a.id).or_default()[slot(&a.activity)] += 1;
         }
         self.observe_grief(w.meta.tick, &people);
+        let window = w.meta.tick / TERMS_EVERY;
+        if self.terms_window != Some(window) {
+            self.terms_window = Some(window);
+            for a in &people {
+                let t = crate::systems::needs::mood_terms(a, w.meta.tick);
+                for (sum, x) in self.term_sums.iter_mut().zip(t) {
+                    *sum += f64::from(x);
+                }
+                self.term_n += 1;
+            }
+        }
         let moods: Vec<f32> = people.iter().map(|a| a.mood).collect();
         if moods.is_empty() {
             return;
@@ -659,6 +684,11 @@ impl AliveTally {
     /// - `mood_hi`, `mood_lo`, `mood_clamped`: the share of samples at >= 0.9, below 0, and
     ///   >= 0.995.
     /// - `mood_spread`: the median over the observed hours of that hour's s.d.
+    /// - `mood_p25`, `mood_p75`: the 25th and 75th percentiles (rank floor(q * (n - 1))) of all
+    ///   sampled moods; `mood_below_m03`: the share below -0.3 (OST-904).
+    /// - `mood_term_needs`, `mood_term_recent`, `mood_term_long`, `mood_term_thoughts`: the mean
+    ///   of each term of `systems::needs::mood_terms` over every sampled person at the first look
+    ///   of each 10-day window (OST-904); 0.0 before any look.
     ///
     /// The activity keys (#1490; FIXLOG 2026-11-14 #1490) read the same sampled people. "Waking
     /// hours" are all sampled person-hours except `sleeping`.
@@ -753,6 +783,13 @@ impl AliveTally {
             ("mood_lo", share(&|m| m < 0.0)),
             ("mood_clamped", share(&|m| m >= MOOD_CLAMPED)),
             ("mood_spread", median(&spread)),
+            ("mood_p25", quantile(&sorted, 25)),
+            ("mood_p75", quantile(&sorted, 75)),
+            ("mood_below_m03", share(&|m| m < MOOD_LOW)),
+            ("mood_term_needs", self.term_mean(0)),
+            ("mood_term_recent", self.term_mean(1)),
+            ("mood_term_long", self.term_mean(2)),
+            ("mood_term_thoughts", self.term_mean(3)),
             ("standing_share", standing),
             ("unreadable_share", unreadable),
             ("work_share", work),
@@ -793,6 +830,14 @@ impl AliveTally {
         ];
         rows.extend(GLANCE_KEYS.into_iter().zip(glance_by_kind));
         AliveReport { rows }
+    }
+
+    /// The mean of mood term `i` over the 10-day looks; 0.0 when there is none.
+    fn term_mean(&self, i: usize) -> f64 {
+        if self.term_n == 0 {
+            return 0.0;
+        }
+        self.term_sums[i] / f64::from(self.term_n)
     }
 
     /// (standing, unreadable, work, talk) as shares of every sampled person's waking hours.
@@ -880,5 +925,14 @@ fn percentile10(sorted: &[f32]) -> f64 {
     match sorted.len() {
         0 => 0.0,
         n => sorted[(n - 1) / 10] as f64,
+    }
+}
+
+/// The `pct`th percentile of an already sorted slice: the sample at rank floor(pct * (n - 1) /
+/// 100); 0.0 when empty.
+fn quantile(sorted: &[f32], pct: usize) -> f64 {
+    match sorted.len() {
+        0 => 0.0,
+        n => sorted[(n - 1) * pct / 100] as f64,
     }
 }

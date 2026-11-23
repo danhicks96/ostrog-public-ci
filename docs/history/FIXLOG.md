@@ -5,6 +5,60 @@
 - Symptom: when the last knower of a craft died, the craft was lost with nothing left behind.
 - Fix: an old or ailing sole knower of a craft their community uses prefers to carve it. Engravings gain an optional craft field that old saves load as none.
 - Guard: `the_last_smith_carves_the_way_of_smelting` in `tests/engrave.rs`.
+## 2026-11-22: mood terms in the alive report
+
+- Symptom: nothing reported what a colony's mood is made of, only a few spread numbers.
+- Fix: extract the four mood terms into one helper used by the mood update and add the term means and spread keys to the alive report. Report only; simulation unchanged.
+- Guard: `mood_terms_sum_to_mood` in `tests/mood.rs` and the alive report tests.
+## 2026-11-22: a free stool or chair can be found (OST-1307)
+
+- Symptom: stools and chairs are built, but nothing could look for a free one.
+- Cause: no seat finder existed. This is a pure addition with no caller yet, so behaviour and the
+  simulation digest do not change.
+- Fix: `houses::free_seat` returns the nearest finished stool or chair on the level within range
+  that no one else reserves or stands on, optionally beside a finished table, and reachable by
+  `nav.reach`. Ties go to the lower id. Water is waded by nav, so the unreachable case is a
+  walled-off stool.
+- Guard: `tests/furniture.rs` `free_seat_finds_the_stool_beside_the_table`; it does not compile
+  without `free_seat`.
+## 2026-11-23: Catch Up shared History's panel and was replaced by it (OST-011)
+
+- Symptom: the away card and History were written into the same panel, so opening History (or
+  any centred reading panel) replaced Catch Up, and the card was a headline followed by a flat list
+  of major lines.
+- Cause: Catch Up had no panel of its own; `_show_summary` wrote into the shared summary box.
+- Fix: a Catch Up panel of its own at the left edge under the HUD, registered outside the reading
+  group. `summary::catch_up_card` reads the headline in words, then the named changes, then the
+  folded details (a row already named is not repeated below); the bridge's `catch_up_since` hands
+  the client the card. `summary_since` and the raw counts are unchanged.
+- Guards: `tests/catch_up.rs::catch_up_card_orders_headline_changes_then_folded_details`;
+  `tools/gd_test.gd` panel placement, History opening beside Catch Up, and the bridge card.
+- Not checked here: the panel in a running desktop client after a real away period.
+## 2026-11-22: births are gated by community, not by the whole valley
+
+- Symptom: a band of raiders camped at the edge halved the births of a small community.
+- Cause: the crowd rule counted every living person on the map, including bands and strangers who belong to no community.
+- Fix: count only living people of the couple's own community when applying the halving at 40.
+- Guard: `strangers_do_not_crowd_the_nursery` in `tests/generations.rs`.
+## 2026-11-22: rain wets people outdoors; a roof or hearth dries them
+
+- Symptom: people had no wetness, so standing in a storm left someone exactly as dry as sitting by the hearth.
+- Fix: add a saved `wet` value (0 to 1, defaulting to 0 in old saves). Outdoors in rain it rises with rainfall; otherwise it falls, faster beside a lit hearth. Nothing reads it yet.
+- Guard: `rain_wets_those_out_in_it_and_a_roof_dries_them` in `tests/weather_events.rs`.
+
+## 2026-11-22: let the history view trace an event back through its causes (OST-1003)
+
+- Symptom: the history view showed what happened but not why, though the record names a cause
+  for many events; the client's one-step "because" was the only trace.
+- Cause: nothing followed the recorded cause links past one step, and the one step lived in the
+  Godot bridge instead of the view layer.
+- Fix: `view::causes` follows recorded causes (bounded, and saying so when cut), stops with a
+  plain line at a cause missing from the record or about someone the valley has not found, and
+  serves it as the Legends page `why:<id>`. The bridge's one-step lookup now uses it.
+- Guards: `tests/causes.rs` covers a full chain, the step limit, an event with no cause, a cause
+  missing from the record, and a cause about an unfound person (chain ends `Untold` and the
+  page does not name them).
+- Not measured: how often chains reach a root in a long run.
 
 ## 2026-11-22: name how settled a community is (OST-1001)
 

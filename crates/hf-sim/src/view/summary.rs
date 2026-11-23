@@ -208,3 +208,73 @@ pub fn catch_up_details(
     }
     Ok(details)
 }
+
+/// The Catch Up card: a headline in words, the named changes, then the folded details. Each
+/// part comes from its own read model; the raw `Summary::counts` are untouched.
+pub struct CatchUpCard {
+    pub headline: String,
+    pub changes: Vec<String>,
+    pub details: Vec<String>,
+}
+
+impl CatchUpCard {
+    /// The card as the client shows it, in reading order: the headline, the named changes,
+    /// then the folded details. A part with nothing to say is left out. A folded line says how
+    /// many times it happened.
+    pub fn bbcode(&self) -> String {
+        let mut out = String::new();
+        if !self.headline.is_empty() {
+            out.push_str(&self.headline);
+            out.push_str("\n\n");
+        }
+        if !self.changes.is_empty() {
+            out.push_str("[b]What changed[/b]\n");
+            for l in &self.changes {
+                out.push_str(l);
+                out.push('\n');
+            }
+            out.push('\n');
+        }
+        if !self.details.is_empty() {
+            out.push_str("[b]Also noted[/b]\n");
+            for l in &self.details {
+                out.push_str(l);
+                out.push('\n');
+            }
+        }
+        out
+    }
+}
+
+/// Build the Catch Up card for `(from, to]`: the counts in words, the life events by name, and
+/// at most `detail_limit` folded details. Only rows the viewer may be told of are read.
+pub fn catch_up_card(
+    w: &World,
+    c: &Chronicle,
+    from: u64,
+    to: u64,
+    detail_limit: usize,
+) -> Result<CatchUpCard> {
+    let sum = since(w, c, from, to, 0)?;
+    let named = changes(w, c, from, to)?;
+    let named_ids: Vec<i64> = named.iter().map(|ch| ch.history_id).collect();
+    let changes = named.into_iter().map(|ch| ch.line).collect();
+    // A row already told by name is not told again below it.
+    let details = catch_up_details(w, c, from, to, detail_limit + named_ids.len())?
+        .into_iter()
+        .filter(|d| !named_ids.contains(&d.history_id))
+        .take(detail_limit)
+        .map(|d| {
+            if d.count > 1 {
+                format!("{} (x{})", d.line, d.count)
+            } else {
+                d.line
+            }
+        })
+        .collect();
+    Ok(CatchUpCard {
+        headline: sum.counts_in_words(),
+        changes,
+        details,
+    })
+}

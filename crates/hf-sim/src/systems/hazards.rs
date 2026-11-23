@@ -1011,7 +1011,17 @@ pub fn cold_step(w: &mut World) {
         // founding site's ground, warmer below it (below ground the season does not
         // reach at all — the `inside` rule above already keeps them from feeling it).
         let temp = w.temp_at(p);
+        let raining = w.weather.sky.wet();
+        let rainfall = w.weather.rainfall();
         let a = &mut w.agents[i];
+        // Wetness (OST-903): rain soaks whoever is out in it; a roof dries, a hearth dries faster, the open air does not.
+        // No rng.
+        if raining && !inside {
+            a.wet = (a.wet + 0.35 * rainfall).min(1.0);
+        } else if inside || warm_near {
+            // Drying needs shelter or a fire; out in the open without rain, clothes stay damp.
+            a.wet = (a.wet - if warm_near { 0.4 } else { 0.15 }).max(0.0);
+        }
         // Each people feels cold below its own comfort, and heat above it (P4).
         let [cold_below, hot_above] = a.species_def().climate.comfort_c;
         // Hardened to the cold by a winter out in it (#346).
@@ -1023,7 +1033,7 @@ pub fn cold_step(w: &mut World) {
                 (true, false) => 0.5,
                 _ => 1.5,
             };
-            // Wet clothes and fur strip heat faster (#1262): soaked through (wet 1.0) loses
+            // Wet clothes and fur strip heat faster: soaked through (wet 1.0) loses
             // heat at 1.8x the dry rate.
             loss *= 1.0 + 0.8 * a.wet;
             if temp < cold_below - 7.0 {
