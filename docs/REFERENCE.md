@@ -1502,15 +1502,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | body.rs:324 | {} of its {} left |
 | body.rs:326 | {}% of its mass |
 | body.rs:328 | {} of {} segments |
-| body.rs:448 | , infected |
-| body.rs:453 | fever {}% |
-| body.rs:456 | blood {}% |
-| body.rs:463 | {} set crooked |
-| body.rs:464 | {} lost |
-| body.rs:466 | {} replaced by {what} |
-| body.rs:475 | {} scar{} |
-| body.rs:477 | s |
-| body.rs:485 | sound |
+| body.rs:501 | , infected |
+| body.rs:506 | fever {}% |
+| body.rs:509 | blood {}% |
+| body.rs:516 | {} set crooked |
+| body.rs:517 | {} lost |
+| body.rs:519 | {} replaced by {what} |
+| body.rs:528 | {} scar{} |
+| body.rs:530 | s |
+| body.rs:538 | sound |
 | building.rs:160 | with nothing left to hold it |
 | building.rs:162 | under the weight of the snow |
 | building.rs:200 | when the roof came down |
