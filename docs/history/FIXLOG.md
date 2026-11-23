@@ -123,6 +123,13 @@
 - Fix: The repayer must be within one tile and not across a feud or in sour opinion with the recipient, and hands over a real food item they carry themselves, whole or split by one as hauling does; the recipient notes it. No food, no repayment. No save-format change.
 - Guard: crates/hf-sim/tests/social.rs covers a carried meal moved with no creation or double use, a split stack, feud and opinion blocks, and distance; it fails without the change.
 
+## 2026-11-22: the tired no longer choose beds in a flood's way
+
+- Symptom: After a flood, many people collapsed from exhaustion in the same hour instead of lying down on the high ground they fled to.
+- Cause: A tired person was offered every reachable free bed, with ground sleep only when no bed was found, and nothing asked whether the bed lay in a flood's way. The flood-flight step turned them back from it each time, so they never lay down until rest ran out (likely loop; not confirmed by a trace).
+- Fix: The shared bed-consideration step skips a bed in a flood's way or on unsafe ground and does not count it as found, so ground sleep is offered where the person stands. Safe beds stay preferred; the night still counts as rough. No save-format change.
+- Guard: crates/hf-sim/tests/floods.rs::the_tired_sleep_on_high_ground_when_the_flood_covers_their_beds stages six tired people with beds by a pond in spate and checks all sleep away from flood water with no exhaustion event; it fails without the change.
+
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
 - Symptom: removing media left asset-dependent Rust and documentation checks without inputs.
