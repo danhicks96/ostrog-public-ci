@@ -151,6 +151,13 @@
 - Fix: Keep the current role unless a challenger's minutes are 25% ahead on three consecutive mornings; a defaulted counter on the duties record tracks the mornings. Taking a first role and dropping a faded role stay immediate. The duty list that weighs work choice is unchanged.
 - Guard: crates/hf-sim/tests/duties.rs::a_role_does_not_flip_on_one_day checks one and two mornings keep the role, the third switches it once with one role event; it fails without the change. Old saves load through the serde default.
 
+## 2026-11-22: tools left at an abandoned camp teach their craft
+
+- Symptom: Tools left at an abandoned camp taught nothing when studied, although the old hamlets' things did, so craft-bearing things ran out over a long game.
+- Cause: Study teaches only when an item's story names a craft; only the old hamlets' things were given one, and things a moving community leaves behind kept their maker but not their craft.
+- Fix: When a community records a move, each made item on the camp's floors whose maker is still known and knew the craft of its recipe now teaches that craft, with a 'left at' origin if it had none. Food, unmade things and items whose maker is gone or did not know the craft are unchanged. No save-format change.
+- Guard: crates/hf-sim/tests/left_sites.rs::the_tools_left_at_the_old_camp_teach_their_craft; it fails without the change.
+
 ## 2026-11-19: preserve asset coverage in a media-free CI source snapshot
 
 - Symptom: removing media left asset-dependent Rust and documentation checks without inputs.
