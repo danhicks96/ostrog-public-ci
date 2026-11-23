@@ -30,10 +30,22 @@ pub fn since(
     to_tick: u64,
     max_major: usize,
 ) -> Result<Summary> {
+    since_i64(w, c, from_tick as i64, to_tick as i64, max_major)
+}
+
+/// `since` over `(from, to]` with signed bounds, so a span can start before tick zero and still
+/// take a row at tick zero.
+fn since_i64(
+    w: &World,
+    c: &Chronicle,
+    from_tick: i64,
+    to_tick: i64,
+    max_major: usize,
+) -> Result<Summary> {
     let told = crate::view::known::rows_told_sql(w);
     let mut st = c.conn.prepare(&format!("SELECT kind, COUNT(*) FROM real_history WHERE tick > ?1 AND tick <= ?2{told} GROUP BY kind ORDER BY COUNT(*) DESC"))?;
     let counts = st
-        .query_map(rusqlite::params![from_tick as i64, to_tick as i64], |r| {
+        .query_map(rusqlite::params![from_tick, to_tick], |r| {
             Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?))
         })?
         .collect::<std::result::Result<Vec<_>, _>>()?;
@@ -41,8 +53,8 @@ pub fn since(
     let major = st2
         .query_map(
             rusqlite::params![
-                from_tick as i64,
-                to_tick as i64,
+                from_tick,
+                to_tick,
                 Severity::Notable as i64,
                 max_major as i64
             ],
@@ -56,8 +68,8 @@ pub fn since(
         )?
         .collect::<std::result::Result<Vec<_>, _>>()?;
     Ok(Summary {
-        from_tick,
-        to_tick,
+        from_tick: from_tick.max(0) as u64,
+        to_tick: to_tick.max(0) as u64,
         counts,
         major,
     })
@@ -96,6 +108,10 @@ pub struct Change {
 /// be told of (view::known) are read. A role counts only the first time the person took it.
 /// Not wired into the card yet (#1445).
 pub fn changes(w: &World, c: &Chronicle, from: u64, to: u64) -> Result<Vec<Change>> {
+    changes_i64(w, c, from as i64, to as i64)
+}
+
+fn changes_i64(w: &World, c: &Chronicle, from: i64, to: i64) -> Result<Vec<Change>> {
     let kinds: Vec<String> = CHANGE_KINDS.iter().map(|k| format!("'{k}'")).collect();
     let sql = format!(
         "SELECT id, tick, kind, detail FROM real_history WHERE tick > ?1 AND tick <= ?2 \
@@ -107,7 +123,7 @@ pub fn changes(w: &World, c: &Chronicle, from: u64, to: u64) -> Result<Vec<Chang
     );
     let mut st = c.conn.prepare(&sql)?;
     let rows = st
-        .query_map(rusqlite::params![from as i64, to as i64], |r| {
+        .query_map(rusqlite::params![from, to], |r| {
             Ok((
                 r.get::<_, i64>(0)?,
                 r.get::<_, i64>(1)? as u64,
@@ -157,6 +173,16 @@ pub fn catch_up_details(
     to: u64,
     limit: usize,
 ) -> Result<Vec<CatchUpDetail>> {
+    catch_up_details_i64(w, c, from as i64, to as i64, limit)
+}
+
+fn catch_up_details_i64(
+    w: &World,
+    c: &Chronicle,
+    from: i64,
+    to: i64,
+    limit: usize,
+) -> Result<Vec<CatchUpDetail>> {
     if limit == 0 {
         return Ok(Vec::new());
     }
@@ -166,11 +192,7 @@ pub fn catch_up_details(
          AND severity >= ?3{} ORDER BY id DESC",
         crate::view::known::rows_told_sql(w)
     ))?;
-    let mut rows = st.query(rusqlite::params![
-        from as i64,
-        to as i64,
-        Severity::Notable as i64
-    ])?;
+    let mut rows = st.query(rusqlite::params![from, to, Severity::Notable as i64])?;
     let mut details: Vec<CatchUpDetail> = Vec::new();
     let mut by_key = std::collections::BTreeMap::<String, usize>::new();
     while let Some(row) = rows.next()? {
@@ -212,6 +234,8 @@ pub fn catch_up_details(
 /// The Catch Up card: a headline in words, the named changes, then the folded details. Each
 /// part comes from its own read model; the raw `Summary::counts` are untouched.
 pub struct CatchUpCard {
+    /// Whether there is news: a named change or a notable detail. Counts alone are not news.
+    pub has_news: bool,
     pub headline: String,
     pub changes: Vec<String>,
     pub details: Vec<String>,
@@ -255,26 +279,100 @@ pub fn catch_up_card(
     to: u64,
     detail_limit: usize,
 ) -> Result<CatchUpCard> {
-    let sum = since(w, c, from, to, 0)?;
-    let named = changes(w, c, from, to)?;
+    catch_up_card_between(w, c, from as i64, to as i64, detail_limit)
+}
+
+/// The card for rows after `from` up to and including `to`, with signed bounds so a span that
+/// starts at tick zero can take a row at tick zero (`from` is then -1).
+pub fn catch_up_card_between(
+    w: &World,
+    c: &Chronicle,
+    from: i64,
+    to: i64,
+    detail_limit: usize,
+) -> Result<CatchUpCard> {
+    let sum = since_i64(w, c, from, to, 0)?;
+    let named = changes_i64(w, c, from, to)?;
     let named_ids: Vec<i64> = named.iter().map(|ch| ch.history_id).collect();
-    let changes = named.into_iter().map(|ch| ch.line).collect();
+    let changes: Vec<String> = named.into_iter().map(|ch| ch.line).collect();
     // A row already told by name is not told again below it.
-    let details = catch_up_details(w, c, from, to, detail_limit + named_ids.len())?
-        .into_iter()
-        .filter(|d| !named_ids.contains(&d.history_id))
-        .take(detail_limit)
-        .map(|d| {
-            if d.count > 1 {
-                format!("{} (x{})", d.line, d.count)
-            } else {
-                d.line
-            }
-        })
-        .collect();
+    let details: Vec<String> =
+        catch_up_details_i64(w, c, from, to, detail_limit + named_ids.len())?
+            .into_iter()
+            .filter(|d| !named_ids.contains(&d.history_id))
+            .take(detail_limit)
+            .map(|d| {
+                if d.count > 1 {
+                    format!("{} (x{})", d.line, d.count)
+                } else {
+                    d.line
+                }
+            })
+            .collect();
     Ok(CatchUpCard {
+        has_news: !changes.is_empty() || !details.is_empty(),
         headline: sum.counts_in_words(),
         changes,
         details,
     })
+}
+
+/// The spans the viewer can ask Catch Up for.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CatchUpSpan {
+    PreviousDay,
+    CurrentDay,
+    PreviousSeason,
+    CurrentSeason,
+}
+
+impl CatchUpSpan {
+    pub fn parse(name: &str) -> Option<Self> {
+        match name {
+            "previous_day" => Some(Self::PreviousDay),
+            "current_day" => Some(Self::CurrentDay),
+            "previous_season" => Some(Self::PreviousSeason),
+            "current_season" => Some(Self::CurrentSeason),
+            _ => None,
+        }
+    }
+}
+
+/// The rows after `.0` up to and including `.1` that a span covers at tick `now` in a world whose
+/// calendar starts at `epoch`. A current span runs from its first tick (inclusive) to now; a
+/// previous span ends on the tick before the current one starts, so the new day or season's
+/// boundary row belongs only to the current span. `None` when there is no previous span: at the
+/// start there is no invented earlier day or season, and nothing underflows.
+pub fn catch_up_span_bounds(epoch: u64, now: u64, span: CatchUpSpan) -> Option<(i64, i64)> {
+    use crate::time::{DAYS_PER_SEASON, TICKS_PER_DAY};
+    let unit = match span {
+        CatchUpSpan::PreviousDay | CatchUpSpan::CurrentDay => TICKS_PER_DAY,
+        CatchUpSpan::PreviousSeason | CatchUpSpan::CurrentSeason => TICKS_PER_DAY * DAYS_PER_SEASON,
+    };
+    let rel = now.saturating_sub(epoch);
+    let start = epoch + rel / unit * unit;
+    match span {
+        CatchUpSpan::CurrentDay | CatchUpSpan::CurrentSeason => {
+            Some((start as i64 - 1, now as i64))
+        }
+        CatchUpSpan::PreviousDay | CatchUpSpan::PreviousSeason => {
+            if start < epoch + unit {
+                return None;
+            }
+            Some((start as i64 - unit as i64 - 1, start as i64 - 1))
+        }
+    }
+}
+
+/// The Catch Up card for a span ending now; `None` for a previous span that does not exist yet.
+pub fn catch_up_card_span(
+    w: &World,
+    c: &Chronicle,
+    span: CatchUpSpan,
+    detail_limit: usize,
+) -> Result<Option<CatchUpCard>> {
+    let Some((from, to)) = catch_up_span_bounds(w.meta.epoch, w.tick(), span) else {
+        return Ok(None);
+    };
+    catch_up_card_between(w, c, from, to, detail_limit).map(Some)
 }
