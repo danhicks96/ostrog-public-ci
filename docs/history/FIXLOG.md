@@ -5,6 +5,17 @@
 - Symptom: nothing reported what a colony's mood is made of, only a few spread numbers.
 - Fix: extract the four mood terms into one helper used by the mood update and add the term means and spread keys to the alive report. Report only; simulation unchanged.
 - Guard: `mood_terms_sum_to_mood` in `tests/mood.rs` and the alive report tests.
+## 2026-11-22: a free stool or chair can be found (OST-1307)
+
+- Symptom: stools and chairs are built, but nothing could look for a free one.
+- Cause: no seat finder existed. This is a pure addition with no caller yet, so behaviour and the
+  simulation digest do not change.
+- Fix: `houses::free_seat` returns the nearest finished stool or chair on the level within range
+  that no one else reserves or stands on, optionally beside a finished table, and reachable by
+  `nav.reach`. Ties go to the lower id. Water is waded by nav, so the unreachable case is a
+  walled-off stool.
+- Guard: `tests/furniture.rs` `free_seat_finds_the_stool_beside_the_table`; it does not compile
+  without `free_seat`.
 ## 2026-11-23: Catch Up shared History's panel and was replaced by it (OST-011)
 
 - Symptom: the away card and History were written into the same panel, so opening History (or
