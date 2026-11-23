@@ -1455,9 +1455,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:503 | someone |
 | accounts.rs:513 | {} and {} more |
 | accounts.rs:517 |  Said: {words} ({by}). |
-| agents.rs:449 | fur |
-| agents.rs:450 | feathers |
-| agents.rs:451 | scales |
+| agents.rs:453 | fur |
+| agents.rs:454 | feathers |
+| agents.rs:455 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2124,24 +2124,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:573 | {name} is already back with the others |
-| opening.rs:574 | what became of {name} is already known |
-| opening.rs:586 | no sign of {who} here |
-| opening.rs:597 | {who} was alive, and is coming back |
-| opening.rs:604 | something |
-| opening.rs:608 | {who} had died there, of {cause} |
-| opening.rs:787 | coming through the portal |
-| opening.rs:939 | the herb-woman |
-| opening.rs:942 | apprenticed to {master} |
-| opening.rs:951 | the carpenter |
-| opening.rs:952 | apprenticed to {master} |
-| opening.rs:961 | the smith |
-| opening.rs:962 | apprenticed to {master} |
-| opening.rs:978 | the quarry |
-| opening.rs:979 | apprenticed to {master} |
-| opening.rs:983 | the baker |
-| opening.rs:984 | apprenticed to {master} |
-| opening.rs:1096 | brought through the portal |
+| opening.rs:574 | {name} is already back with the others |
+| opening.rs:575 | what became of {name} is already known |
+| opening.rs:587 | no sign of {who} here |
+| opening.rs:598 | {who} was alive, and is coming back |
+| opening.rs:605 | something |
+| opening.rs:609 | {who} had died there, of {cause} |
+| opening.rs:788 | coming through the portal |
+| opening.rs:940 | the herb-woman |
+| opening.rs:943 | apprenticed to {master} |
+| opening.rs:952 | the carpenter |
+| opening.rs:953 | apprenticed to {master} |
+| opening.rs:962 | the smith |
+| opening.rs:963 | apprenticed to {master} |
+| opening.rs:979 | the quarry |
+| opening.rs:980 | apprenticed to {master} |
+| opening.rs:984 | the baker |
+| opening.rs:985 | apprenticed to {master} |
+| opening.rs:1097 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
@@ -2188,10 +2188,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | past.rs:602 | the hungry winter |
 | past.rs:603 | the raiders |
 | past.rs:613 | the fire |
-| pilgrimage.rs:57 | in grief |
-| pilgrimage.rs:60 | afraid of the warning read to them |
-| pilgrimage.rs:63 | troubled by what was lost |
-| pilgrimage.rs:71 | the shrine |
+| pilgrimage.rs:61 | in grief |
+| pilgrimage.rs:69 | afraid of the warning read to them |
+| pilgrimage.rs:72 | troubled by what was lost |
+| pilgrimage.rs:80 | the shrine |
 | plan.rs:57 | body |
 | plan.rs:82 | a part id or an old part name |
 | plan.rs:87 | part id out of range |
@@ -2361,14 +2361,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:438 | scenario |
-| scenario.rs:479 | brought by the founders |
-| scenario.rs:789 | scenario |
-| scenario.rs:796 | scenario |
-| scenario.rs:804 | scenario |
-| scenario.rs:823 | scenario |
-| scenario.rs:843 | scenario |
-| scenario.rs:1013 | scenario |
+| scenario.rs:440 | scenario |
+| scenario.rs:481 | brought by the founders |
+| scenario.rs:791 | scenario |
+| scenario.rs:798 | scenario |
+| scenario.rs:806 | scenario |
+| scenario.rs:825 | scenario |
+| scenario.rs:845 | scenario |
+| scenario.rs:1015 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |

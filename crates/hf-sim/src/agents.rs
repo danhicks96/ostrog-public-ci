@@ -221,6 +221,10 @@ pub struct Agent {
     /// #452).
     #[serde(default)]
     pub accounts: Vec<crate::accounts::Account>,
+    /// The warning signs they have set out to pray over, newest last, at most
+    /// `pilgrimage::PRAYED_KEPT`: one warning sends a person to the shrine once (OST-505).
+    #[serde(default)]
+    pub prayed_over: Vec<crate::ids::EventId>,
     /// A hidden potential carried through the portal, if any (resonance.rs, #308): shown
     /// nowhere until it shows itself.
     #[serde(default)]
