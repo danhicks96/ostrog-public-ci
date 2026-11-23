@@ -17,6 +17,126 @@
 
 
 
+## 2026-11-22: a reproducible number for threat pacing (OST-1401)
+
+- Symptom: band, host and colony-size numbers for storyteller work were pulled by hand from a
+  probe's event dump, so no change had a before-and-after anyone could reproduce.
+- Cause: a missing report, not a behaviour bug.
+- Fix: new read-only example `crates/hf-sim/examples/threat_census.rs`
+  (`threat_census <seed> <days> <steady|relentless|whimsical>`), one CSV row per 100 days: bands
+  set out and hosts besieging counted apart, size min/mean/max, portions raided, endings by kind,
+  mean grown members of communities, food, other items and finished structures, deaths of people
+  not of old age, and the longest gap from the last ending to the next arrival (a gap counts in
+  the block where it closes). Registered with `test = true` in `crates/hf-sim/Cargo.toml`. It
+  reads only `last_events` and the world; no simulation behaviour changes.
+- Guards: `counts_sizes_endings_deaths_and_gap` and `a_gap_crossing_a_block_counts_where_it_closes`.
+- Not run: the seeds 1-8, three-engine, 600-day baseline tables.
+## 2026-11-22: name three stages of childhood (OST-1400)
+
+- Symptom: only `LifeStage::Child` existed, so any rule that needed "an infant" or "a small child"
+  would write its own age by hand.
+- Cause: a missing helper, not a behaviour bug.
+- Fix: `agents::Childhood { Infant, Small, Older }`, `INFANT_YEARS` (2), `SMALL_YEARS` (7), and
+  `Agent::childhood`, `past_infancy`, `old_enough_for`, scaled by `stage_years().0 / ADULT_YEARS`.
+  Recorded as D101. Nothing calls them yet, no field is saved and no behaviour changes.
+- Guard: `tests/childhood.rs::childhood_has_three_stages_scaled_to_each_kind` pins the human
+  boundaries at 2 and 7 years and a kind that matures at 30 (scaled by two).
+
+
+
+## 2026-11-23: Catch Up opened only on window focus, with no way to ask for it (OST-012)
+
+- Symptom: the away card opened only when the window regained OS focus after an hour, so a viewer
+  watching on a second monitor (focus never on the game) never got it, and there was no way to ask
+  "what happened since I looked?" or to read a past day or season.
+- Cause: the focus-in notification was the only caller of the card.
+- Fix: coming back to the game after more than 300 real seconds with input over the window opens
+  Catch Up, but only with news (a named change or a notable line, not counts of routine work); the
+  focus trigger stays. `[U]` and a bar button open it on demand, and the panel picks a span: since
+  the last stretch away, today, yesterday, this season, last season. A day or season span covers its
+  first tick, so the midnight or season-boundary row belongs to the new span; at the start there is
+  no previous day or season, and nothing underflows. The 300 s default is a constant; it is not a
+  setting yet.
+- Guards: `tests/catch_up.rs::catch_up_spans_put_the_boundary_row_in_the_new_span` and
+  `catch_up_has_news_only_for_a_named_change_or_a_notable_line`; `tools/gd_test.gd` at 299, 300 and
+  301 seconds, the single control, and the bridge spans.
+- Not checked here: a second-screen run in a desktop client, and the control by hand.
+
+## 2026-11-22: an orphan is taken in by kin before whoever likes them best (OST-1306)
+
+- Symptom: a child with a living grandparent in the community could be fostered by a neighbour who
+  merely thought better of them.
+- Cause: the carer was chosen by opinion alone (with a small bonus for a partnered adult).
+- Fix: same-community adults are ranked by kin first: a grandparent, then a parent's sibling (shares
+  a mother or father with a parent), then an adult sibling. Ties go to opinion with the partner
+  bonus, then the lower id; with no kin the old rule is unchanged. `EventKind::Fostered` gains an
+  appended `kin` field (0 none, 1 grandparent, 2 parent's sibling, 3 sibling, defaulted when
+  absent) and the line says how they are related. No new randomness.
+- Guards: `tests/fostering.rs` `an_orphan_goes_to_a_grandparent_first`,
+  `an_aunt_or_a_sibling_is_kin_and_beats_a_better_liked_neighbour` and
+  `kin_tiers_rank_grandparent_then_aunt_then_sibling_then_the_old_rule` (tier order, and the old
+  best-liked rule when no kin is left). A better-liked neighbour is present in each, so the old
+  rule would pick the neighbour.
+## 2026-11-22: a fire behind a hill is not known without sight or smoke
+
+- Symptom: everyone within 18 tiles knew of a fire without seeing or smelling it.
+- Fix: a fire is known by direct line of sight or by a recent smoke observation, and the near-fire sighting also needs line of sight.
+- Guard: `a_fire_behind_a_hill_is_found_by_its_smoke` in `tests/senses.rs`.
+## 2026-11-22: retire the unreachable cave-in event arms
+
+- Symptom: a cave-in is a `Collapse`; the `CaveIn` event variant is never pushed, yet two systems carried unreachable arms for it and a test built it.
+- Fix: remove the dead `CaveIn` arms in learning and hardship, document the variant as kept only for save order, and build `Collapse` rows in the test. No variant is removed.
+- Guard: the phase-1 learning test now exercises the `Collapse` path that actually fires.
+## 2026-11-22: a custom is not re-formed from the same cause
+
+- Symptom: a custom for a community that had left was formed and lapsed again every dawn.
+- Fix: skip dissolved or empty communities, never re-form a custom from an origin event that already produced one, and adopt only living members.
+- Guard: `a_custom_is_not_reborn_from_the_same_cause` and `a_new_death_can_found_a_new_rest_day` in `tests/culture.rs`.
+## 2026-11-22: the last knower carves the way of their craft
+
+- Symptom: when the last knower of a craft died, the craft was lost with nothing left behind.
+- Fix: an old or ailing sole knower of a craft their community uses prefers to carve it. Engravings gain an optional craft field that old saves load as none.
+- Guard: `the_last_smith_carves_the_way_of_smelting` in `tests/engrave.rs`.
+## 2026-11-22: mood terms in the alive report
+
+- Symptom: nothing reported what a colony's mood is made of, only a few spread numbers.
+- Fix: extract the four mood terms into one helper used by the mood update and add the term means and spread keys to the alive report. Report only; simulation unchanged.
+- Guard: `mood_terms_sum_to_mood` in `tests/mood.rs` and the alive report tests.
+## 2026-11-22: a free stool or chair can be found (OST-1307)
+
+- Symptom: stools and chairs are built, but nothing could look for a free one.
+- Cause: no seat finder existed. This is a pure addition with no caller yet, so behaviour and the
+  simulation digest do not change.
+- Fix: `houses::free_seat` returns the nearest finished stool or chair on the level within range
+  that no one else reserves or stands on, optionally beside a finished table, and reachable by
+  `nav.reach`. Ties go to the lower id. Water is waded by nav, so the unreachable case is a
+  walled-off stool.
+- Guard: `tests/furniture.rs` `free_seat_finds_the_stool_beside_the_table`; it does not compile
+  without `free_seat`.
+## 2026-11-23: Catch Up shared History's panel and was replaced by it (OST-011)
+
+- Symptom: the away card and History were written into the same panel, so opening History (or
+  any centred reading panel) replaced Catch Up, and the card was a headline followed by a flat list
+  of major lines.
+- Cause: Catch Up had no panel of its own; `_show_summary` wrote into the shared summary box.
+- Fix: a Catch Up panel of its own at the left edge under the HUD, registered outside the reading
+  group. `summary::catch_up_card` reads the headline in words, then the named changes, then the
+  folded details (a row already named is not repeated below); the bridge's `catch_up_since` hands
+  the client the card. `summary_since` and the raw counts are unchanged.
+- Guards: `tests/catch_up.rs::catch_up_card_orders_headline_changes_then_folded_details`;
+  `tools/gd_test.gd` panel placement, History opening beside Catch Up, and the bridge card.
+- Not checked here: the panel in a running desktop client after a real away period.
+## 2026-11-22: births are gated by community, not by the whole valley
+
+- Symptom: a band of raiders camped at the edge halved the births of a small community.
+- Cause: the crowd rule counted every living person on the map, including bands and strangers who belong to no community.
+- Fix: count only living people of the couple's own community when applying the halving at 40.
+- Guard: `strangers_do_not_crowd_the_nursery` in `tests/generations.rs`.
+## 2026-11-22: rain wets people outdoors; a roof or hearth dries them
+
+- Symptom: people had no wetness, so standing in a storm left someone exactly as dry as sitting by the hearth.
+- Fix: add a saved `wet` value (0 to 1, defaulting to 0 in old saves). Outdoors in rain it rises with rainfall; otherwise it falls, faster beside a lit hearth. Nothing reads it yet.
+- Guard: `rain_wets_those_out_in_it_and_a_roof_dries_them` in `tests/weather_events.rs`.
 
 ## 2026-11-22: let the history view trace an event back through its causes (OST-1003)
 

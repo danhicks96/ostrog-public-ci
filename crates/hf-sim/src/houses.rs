@@ -664,6 +664,7 @@ pub fn fine_stone(w: &World, p: TilePos) -> Option<crate::world::Material> {
     None
 }
 
+<<<<<<< HEAD
 /// `fine_stone` for a known plan.
 fn fine_stone_of(w: &World, plan: &HousePlan) -> Option<crate::world::Material> {
     let mut of: BTreeMap<crate::world::Material, u32> = BTreeMap::new();
@@ -774,6 +775,41 @@ pub fn room_stats(w: &World, plan: &HousePlan, sleepers: u32) -> RoomStats {
         clutter: ((loose + bodies) as f32 / 4.0).clamp(0.0, 1.0),
         dirt: 0.0,
     }
+=======
+/// A free seat (OST-1307): the nearest finished stool or chair within `within`
+/// tiles of `near` on the same level that someone can walk to, that no other person holds or
+/// stands on, and, when `at_table`, that has a finished table orthogonally beside it. Ties go
+/// to the lower id. Pure: nothing is reserved here.
+pub fn free_seat(
+    w: &World,
+    near: TilePos,
+    within: i32,
+    at_table: bool,
+    who: crate::ids::AgentId,
+) -> Option<(crate::ids::StructureId, TilePos)> {
+    use crate::structures::StructureKind as K;
+    use crate::work::ResKey;
+    let done = |k: &crate::structures::Structure| k.progress >= 1.0;
+    w.structures
+        .iter()
+        .filter(|s| done(s) && matches!(s.kind, K::Stool | K::Chair))
+        .filter(|s| s.pos.z == near.z)
+        .filter(|s| (s.pos.x - near.x).abs().max((s.pos.y - near.y).abs()) <= within)
+        .filter(|s| w.reservations.is_free_for(ResKey::Station(s.id), who))
+        .filter(|s| !w.agents.iter().any(|a| a.id != who && a.pos == s.pos))
+        .filter(|s| {
+            !at_table
+                || w.structures.iter().any(|t| {
+                    done(t)
+                        && t.kind == K::Table
+                        && t.pos.z == s.pos.z
+                        && (t.pos.x - s.pos.x).abs() + (t.pos.y - s.pos.y).abs() == 1
+                })
+        })
+        .filter(|s| w.nav.as_ref().is_some_and(|n| n.reach(near, s.pos)))
+        .min_by_key(|s| ((s.pos.x - near.x).abs().max((s.pos.y - near.y).abs()), s.id))
+        .map(|s| (s.id, s.pos))
+>>>>>>> origin/main
 }
 
 #[cfg(test)]

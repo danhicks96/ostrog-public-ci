@@ -100,7 +100,7 @@ fn saves_from_before_learning_default_to_no_personal_evidence() {
 }
 
 #[test]
-fn cave_ins_and_collapses_distinguish_harm_from_no_change() {
+fn collapses_distinguish_harm_from_no_change() {
     let mut w = World::generate(117, GenParams::small());
     let p = w.meta.founding_site;
     let miner = w.spawn_agent(Species::Person, p);
@@ -112,10 +112,13 @@ fn cave_ins_and_collapses_distinguish_harm_from_no_change() {
                 81,
                 4,
                 Some(p),
-                EventKind::CaveIn {
-                    agent: miner,
+                EventKind::Collapse {
+                    by: miner,
                     at: p,
-                    hurt: true,
+                    tiles: 1,
+                    rock: "stone".into(),
+                    sank: false,
+                    hurt: vec![miner],
                 },
             ),
             OutcomeKind::Harm,
@@ -125,10 +128,13 @@ fn cave_ins_and_collapses_distinguish_harm_from_no_change() {
                 82,
                 5,
                 Some(p.offset(1, 0, 0)),
-                EventKind::CaveIn {
-                    agent: miner,
+                EventKind::Collapse {
+                    by: miner,
                     at: p.offset(1, 0, 0),
-                    hurt: false,
+                    tiles: 1,
+                    rock: "stone".into(),
+                    sank: false,
+                    hurt: vec![],
                 },
             ),
             OutcomeKind::NoChange,
