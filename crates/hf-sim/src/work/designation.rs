@@ -275,6 +275,8 @@ pub fn structure_cost(kind: StructureKind) -> Vec<(ItemKind, u32)> {
         K::Smelter => vec![(ItemKind::StoneBlock, 6)],
         K::Kiln => vec![(ItemKind::StoneBlock, 4), (ItemKind::Clay, 2)],
         K::Anvil => vec![(ItemKind::StoneBlock, 3)],
+        // A vessel from store, turned into the pot on the fire.
+        K::CookingPot => vec![(ItemKind::Vessel, 1)],
         K::Loom => vec![(ItemKind::Plank, 3)],
         // Two poles and a hide; a nest is woven of three logs' worth of withies.
         K::Tent => vec![(ItemKind::Log, 2), (ItemKind::Hide, 1)],
