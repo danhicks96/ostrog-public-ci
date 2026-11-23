@@ -1716,8 +1716,7 @@ func _update_inspect() -> void:
 		s += "customs:\n"
 		for c in d["customs"]:
 			s += "  [color=#d9c9a8]%s[/color]\n" % c
-	var mood: float = d["mood"]
-	s += "mood: %s" % ("cheerful" if mood > 0.3 else ("content" if mood > 0.0 else ("low" if mood > -0.3 else "miserable")))
+	s += "mood: %s" % d.get("mood_word", "")
 	# Why (#292): the thoughts pushing the mood its way, and what they feel most.
 	if d.get("why", "") != "": s += ", because: %s" % d["why"]
 	s += "\n"

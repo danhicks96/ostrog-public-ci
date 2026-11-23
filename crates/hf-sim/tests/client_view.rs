@@ -198,3 +198,44 @@ fn fold_gathers_same_kind_and_subject() {
         "a death has no fold key"
     );
 }
+
+/// the panel's mood word and any sprite cue come from one rule.
+#[test]
+fn mood_band_follows_the_inspect_thresholds() {
+    use hf_sim::view::why::{mood_band, mood_word};
+    let mut w = World::opening_world(1);
+    let i = w
+        .agents
+        .iter()
+        .position(|a| a.species == Species::Person)
+        .unwrap();
+    // Exact edges: 0.3 is still content, 0.0 is low, -0.3 is miserable.
+    for (m, band) in [
+        (-0.5, 1),
+        (-0.3, 1),
+        (-0.1, 2),
+        (0.0, 2),
+        (0.2, 3),
+        (0.3, 3),
+        (0.5, 4),
+    ] {
+        w.agents[i].mood = m;
+        assert_eq!(mood_band(&w.agents[i]), band, "mood {m}");
+    }
+    assert_eq!(mood_word(4), "cheerful");
+    assert_eq!(mood_word(1), "miserable");
+    w.agents[i].alive = false;
+    assert_eq!(mood_band(&w.agents[i]), 0);
+}
+
+/// OST-1002: pulling the break threshold into one function did not change it.
+#[test]
+fn strain_threshold_is_unchanged() {
+    let w = World::opening_world(1);
+    for a in w.agents.iter().filter(|a| a.species == Species::Person) {
+        assert_eq!(
+            hf_sim::systems::strain::threshold(a),
+            0.55 + a.genome.calm() * 0.35
+        );
+    }
+}
