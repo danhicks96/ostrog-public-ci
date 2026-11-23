@@ -1755,14 +1755,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | delving.rs:70 | harder stone for their walls |
 | delving.rs:71 | the gems and gold of the deep |
 | delving.rs:72 | water |
-| duties.rs:194 | {} ({} hours lately) |
-| duties.rs:205 | building |
-| duties.rs:206 | farming |
-| duties.rs:207 | cooking |
-| duties.rs:208 | mining |
-| duties.rs:209 | hauling |
-| duties.rs:210 | tending the hurt |
-| duties.rs:211 | foraging |
+| duties.rs:241 | {} ({} hours lately) |
+| duties.rs:252 | building |
+| duties.rs:253 | farming |
+| duties.rs:254 | cooking |
+| duties.rs:255 | mining |
+| duties.rs:256 | hauling |
+| duties.rs:257 | tending the hurt |
+| duties.rs:258 | foraging |
 | ecology.rs:96 | starved, the grazing gone |
 | ecology.rs:98 | starved, the game gone |
 | economy.rs:20 | +{cause} |
@@ -1830,8 +1830,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | feuds.rs:197 | a reckoning: each side has made amends to the other |
 | feuds.rs:219 | settled by the judgement of |
 | feuds.rs:270 | a marriage between the two families |
-| feuds.rs:320 | nobody of one side is left in the valley |
-| feuds.rs:324 | five years without a new grievance, and let go |
+| feuds.rs:326 | nobody of one side is left in the valley |
+| feuds.rs:330 | five years without a new grievance, and let go |
 | fish.rs:130 | drowned through the ice |
 | fish.rs:139 | fish |
 | floods.rs:72 | the stream |
@@ -2091,8 +2091,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | observances.rs:30 | summer |
 | observances.rs:31 | autumn |
 | observances.rs:32 | winter |
-| observances.rs:225 | nobody led it |
-| observances.rs:227 | nobody came |
+| observances.rs:230 | nobody led it |
+| observances.rs:232 | nobody came |
 | omens.rs:50 | crows coming in over the valley's rim |
 | omens.rs:66 | a kind season |
 | omens.rs:67 | the host from {site} |
@@ -3337,14 +3337,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:1623 | someone else is already at it |
 | systems/decide.rs:1626 | off work since they broke down |
 | systems/decide.rs:1628 | weighs nothing now |
-| systems/decide.rs:2600 | hunger |
-| systems/decide.rs:2605 | thirst |
-| systems/decide.rs:2610 | tiredness |
-| systems/decide.rs:2615 | days of food in store |
-| systems/decide.rs:2620 | night near with no bed or roof |
-| systems/decide.rs:2625 | arrival urge |
-| systems/decide.rs:2630 | leisure weight |
-| systems/decide.rs:2639 | nothing |
+| systems/decide.rs:2606 | hunger |
+| systems/decide.rs:2611 | thirst |
+| systems/decide.rs:2616 | tiredness |
+| systems/decide.rs:2621 | days of food in store |
+| systems/decide.rs:2626 | night near with no bed or roof |
+| systems/decide.rs:2631 | arrival urge |
+| systems/decide.rs:2636 | leisure weight |
+| systems/decide.rs:2645 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |
@@ -3557,21 +3557,21 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/settlement.rs:444 | , and no rock face near to dig into nor ground to dig down |
 | systems/settlement.rs:568 | added to |
 | systems/settlement.rs:580 | marked out |
-| systems/settlement.rs:1542 | gave up on the {} |
-| systems/settlement.rs:1545 | found no place for it on their own ground |
-| systems/settlement.rs:2215 | upper room for {} |
-| systems/settlement.rs:2575 | walls up |
-| systems/settlement.rs:2576 | mended |
-| systems/settlement.rs:2577 | roofed |
-| systems/settlement.rs:2592 | roofed |
-| systems/settlement.rs:2615 | upper room roofed; a way of building upward was learned |
-| systems/settlement.rs:2901 | east |
-| systems/settlement.rs:2902 | west |
-| systems/settlement.rs:2903 | south |
-| systems/settlement.rs:2904 | north |
-| systems/settlement.rs:4221 | a need for another room |
-| systems/settlement.rs:4223 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
-| systems/settlement.rs:4288 | We {label}, as our first house was built. |
+| systems/settlement.rs:1583 | gave up on the {} |
+| systems/settlement.rs:1586 | found no place for it on their own ground |
+| systems/settlement.rs:2256 | upper room for {} |
+| systems/settlement.rs:2616 | walls up |
+| systems/settlement.rs:2617 | mended |
+| systems/settlement.rs:2618 | roofed |
+| systems/settlement.rs:2633 | roofed |
+| systems/settlement.rs:2656 | upper room roofed; a way of building upward was learned |
+| systems/settlement.rs:2942 | east |
+| systems/settlement.rs:2943 | west |
+| systems/settlement.rs:2944 | south |
+| systems/settlement.rs:2945 | north |
+| systems/settlement.rs:4262 | a need for another room |
+| systems/settlement.rs:4264 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
+| systems/settlement.rs:4329 | We {label}, as our first house was built. |
 | systems/society.rs:265 | carried off |
 | systems/society.rs:385 | they hold that other kinds are best kept apart, and most here are {plural} |
 | systems/society.rs:397 | strangers are not taken in |

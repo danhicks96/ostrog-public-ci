@@ -1,5 +1,16 @@
 # Fix log
 
+## 2026-11-22: only someone of age leads an observance (OST-1301)
+
+- Symptom: a nine-year-old could lead the season's observance, whether as the person followed in
+  the spirit or as the most devout of those gathered.
+- Cause: the leader choice checked only that a person was awake and (for the fallback) devout.
+- Fix: both paths require the leader to be of age. A gathering of children alone lapses with
+  "nobody led it".
+- Guards: `tests/shrines.rs` `a_child_does_not_lead_the_observance`,
+  `the_youngest_person_of_age_may_lead_and_one_a_year_short_may_not` and
+  `an_observance_with_only_children_gathered_lapses`; all three fail without the fix.
+- Not measured: a long-run census of observance leaders' ages. Duty gating is OST-1300.
 ## 2026-11-22: the away card's first line was a chore tally in internal names
 
 - Symptom: "While you were away" opened with `hauled 122, harvested 166, suspected 21`.
@@ -111,6 +122,34 @@
 - Cause: The daily repayment added to one person's hunger and subtracted from another's, with no item involved.
 - Fix: The repayer must be within one tile and not across a feud or in sour opinion with the recipient, and hands over a real food item they carry themselves, whole or split by one as hauling does; the recipient notes it. No food, no repayment. No save-format change.
 - Guard: crates/hf-sim/tests/social.rs covers a carried meal moved with no creation or double use, a split stack, feud and opinion blocks, and distance; it fails without the change.
+
+## 2026-11-22: the tired no longer choose beds in a flood's way
+
+- Symptom: After a flood, many people collapsed from exhaustion in the same hour instead of lying down on the high ground they fled to.
+- Cause: A tired person was offered every reachable free bed, with ground sleep only when no bed was found, and nothing asked whether the bed lay in a flood's way. The flood-flight step turned them back from it each time, so they never lay down until rest ran out (likely loop; not confirmed by a trace).
+- Fix: The shared bed-consideration step skips a bed in a flood's way or on unsafe ground and does not count it as found, so ground sleep is offered where the person stands. Safe beds stay preferred; the night still counts as rough. No save-format change.
+- Guard: crates/hf-sim/tests/floods.rs::the_tired_sleep_on_high_ground_when_the_flood_covers_their_beds stages six tired people with beds by a pond in spate and checks all sleep away from flood water with no exhaustion event; it fails without the change.
+
+## 2026-11-22: a feud survives its only holder's journey
+
+- Symptom: A feud ended with 'nobody of one side is left in the valley' while its only holder of that side was away on a journey, and came back to find it gone.
+- Cause: The feud check counted only people alive in the valley's agent list; journeyers are held whole in the away list, so they never counted, despite a comment saying those away still hold the feud.
+- Fix: Count someone away on a journey who has a community as still here for the feud checks, including the heir check. Dead and disowned holders still end a feud.
+- Guard: crates/hf-sim/tests/feuds.rs::a_feud_survives_a_journey sends the only holder away for six days, checks the feud survives each morning with no end or inheritance event, and checks the head on return; it fails without the change.
+
+## 2026-11-22: a hearth cooked at for years gets a cooking pot
+
+- Symptom: A hearth that people cooked at for years never got a cooking pot: the pot kind existed but nothing posted one.
+- Cause: The settlement planner had no path that posted a cooking pot, and the structure cost table had no entry for one.
+- Fix: When a hearth has a cook order open or freshly posted and no cooking pot (finished or ordered) within a tile, and a vessel is in store, the planner posts a pot order on a free neighbouring tile, a clay pot whose only cost is the vessel. No vessel in store, no order. No save-format change.
+- Guard: crates/hf-sim/tests/hearth_pot.rs covers the positive case and the no-vessel case, and de-duplicates open and finished orders; the positive case fails without the change.
+
+## 2026-11-22: a role is kept until a challenger has led for three mornings
+
+- Symptom: A person's role flipped between forager and hauler within days, each flip a feed line; about a third of role events in long runs returned to the previous role within three days.
+- Cause: Each morning the role was set to whichever duty had the most minutes, with no margin, so one day's work could flip it.
+- Fix: Keep the current role unless a challenger's minutes are 25% ahead on three consecutive mornings; a defaulted counter on the duties record tracks the mornings. Taking a first role and dropping a faded role stay immediate. The duty list that weighs work choice is unchanged.
+- Guard: crates/hf-sim/tests/duties.rs::a_role_does_not_flip_on_one_day checks one and two mornings keep the role, the third switches it once with one role event; it fails without the change. Old saves load through the serde default.
 
 ## 2026-11-22: tools left at an abandoned camp teach their craft
 
