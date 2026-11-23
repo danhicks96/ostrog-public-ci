@@ -1449,10 +1449,40 @@ impl SimHost {
         match summary::catch_up_card(&s.world, &s.chronicle, from_tick.max(0) as u64, to, 12) {
             Ok(card) => {
                 d.set("text", &GString::from(card.bbcode().as_str()));
+                d.set("has_news", card.has_news);
                 d.set("from", from_tick);
                 d.set("to", to as i64);
             }
             Err(e) => godot_error!("catch up failed: {e}"),
+        }
+        d
+    }
+
+    /// The Catch Up card for a span ending now: `span` is "previous_day", "current_day",
+    /// "previous_season" or "current_season". Dictionary {text, has_news, from, to}; empty when
+    /// there is no world, the name is unknown, or there is no previous span yet.
+    #[func]
+    fn catch_up_span(&mut self, span: GString) -> VarDictionary {
+        self.settle();
+        let mut d = VarDictionary::new();
+        let Some(s) = self.session.as_ref() else {
+            return d;
+        };
+        let Some(which) = summary::CatchUpSpan::parse(&span.to_string()) else {
+            return d;
+        };
+        let now = s.world.tick();
+        match summary::catch_up_card_span(&s.world, &s.chronicle, which, 12) {
+            Ok(Some(card)) => {
+                let (from, to) =
+                    summary::catch_up_span_bounds(s.world.meta.epoch, now, which).unwrap_or((0, 0));
+                d.set("text", &GString::from(card.bbcode().as_str()));
+                d.set("has_news", card.has_news);
+                d.set("from", from.max(0));
+                d.set("to", to);
+            }
+            Ok(None) => {}
+            Err(e) => godot_error!("catch up span failed: {e}"),
         }
         d
     }

@@ -9,7 +9,7 @@ const TimelapsePanel := preload("res://scripts/timelapse_panel.gd")
 const HistoryReel := preload("res://scripts/history_reel.gd")
 const AwayMap := preload("res://scripts/away_map.gd")
 ## The key list, shown on [?] (and once, on a first launch) instead of on every HUD line (#181).
-const HELP_TEXT := "[b]Mouse & Keys[/b]\n\n[b]Mouse[/b]\nClick any person or animal to inspect them (Follow, ★ Favourite, Go to)\nClick any ground, water, or rock tile to inspect what it holds\nDrag with any mouse button to pan (dragging stops following)\nMouse wheel zooms toward the pointer\nThe bottom bar has every command (B to hide/show)\nClick any feed line or top announcement to look where it happened\n\n[b]Keys[/b]\n[Space] pause   [1 2 3] speed   [Home] settlement\n[, .] or PgUp/PgDn   level up and down\n[C] camera director   [F] follow inspected   [J] ★ favourites\n[P] people   [H] history   [T] timelapse   [L] legends\n[V] what the community has seen   [G] feed rate   [K] waiting work\n[N] alerts   [Shift+N] pause on major   [B] toggle bar\n[F5] save   [F9] load   [O] settings   [?] help\n[Ctrl+F1–8] set bookmark, [F1–8] go to it"
+const HELP_TEXT := "[b]Mouse & Keys[/b]\n\n[b]Mouse[/b]\nClick any person or animal to inspect them (Follow, ★ Favourite, Go to)\nClick any ground, water, or rock tile to inspect what it holds\nDrag with any mouse button to pan (dragging stops following)\nMouse wheel zooms toward the pointer\nThe bottom bar has every command (B to hide/show)\nClick any feed line or top announcement to look where it happened\n\n[b]Keys[/b]\n[Space] pause   [1 2 3] speed   [Home] settlement\n[, .] or PgUp/PgDn   level up and down\n[C] camera director   [F] follow inspected   [J] ★ favourites\n[P] people   [H] history   [T] timelapse   [L] legends\n[V] what the community has seen   [G] feed rate   [K] waiting work\n[N] alerts   [Shift+N] pause on major   [B] toggle bar\n[F5] save   [F9] load   [O] settings   [?] help   [U] catch up\n[Ctrl+F1–8] set bookmark, [F1–8] go to it"
 const TICKS_PER_SEC := 20.0
 const SPEEDS := [0, 1, 3, 10]
 
@@ -149,6 +149,13 @@ var catchup_panel: PanelContainer
 var catchup_hdr: HBoxContainer
 var catchup_title: Label
 var catchup_box: RichTextLabel
+## Presence (OST-012): real time and sim tick of the last input, and the tick where the last
+## stretch away began, which "Since I looked" reads from.
+var look_time := 0.0
+var look_tick := 0
+var look_anchor_tick := 0
+var catchup_span := "since_look"
+var catchup_span_btns := {}
 var summary_panel: PanelContainer
 ## The valley's ending (C60): shown once, when nobody of any community is left in it.
 var ending_shown := false
@@ -605,6 +612,9 @@ func _world_replaced() -> void:
 	selected_block = Vector3i(-1, -1, -1)
 	panels.close(&"summary")
 	panels.close(&"catchup")
+	look_time = 0.0
+	look_tick = sim.tick()
+	look_anchor_tick = look_tick
 	panels.close(&"block")
 	panels.close(&"favourites")
 	ending_shown = false
@@ -1022,6 +1032,14 @@ func _build_ui() -> void:
 	catchup_box.bbcode_enabled = true
 	catchup_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_style_text(catchup_box, 14)
+	var catchup_spans := HBoxContainer.new()
+	catchup_vbox.add_child(catchup_spans)
+	catchup_vbox.move_child(catchup_spans, 1)
+	for sp in Rules.CATCH_UP_SPANS:
+		var sid: String = sp["id"]
+		var b := _make_btn(str(sp["label"]), "Catch Up: " + str(sp["label"]), func(): _show_catch_up(sid))
+		catchup_spans.add_child(b)
+		catchup_span_btns[sid] = b
 	catchup_vbox.add_child(catchup_box)
 	layer.add_child(catchup_panel)
 
@@ -1355,6 +1373,9 @@ func _on_bar_pressed(id: String) -> void:
 		"people":
 			if panels.is_open(&"people"): panels.close(&"people"); _fx("ui_click")
 			else: _show_people()
+		"catchup":
+			if panels.is_open(&"catchup"): panels.close(&"catchup"); _fx("ui_click")
+			else: _show_catch_up("since_look")
 		"waiting":
 			if panels.is_open(&"waiting"): panels.close(&"waiting"); _fx("ui_click")
 			else: _show_waiting()
@@ -1797,15 +1818,71 @@ func _bar(v: float) -> String:
 ## Catch Up in its own panel: the headline in words, the named changes, then the folded details
 ## (Rust builds the card; `summary_since` and its raw counts are still there for the timelapse).
 func _show_summary(from_tick: int) -> void:
-	var d: Dictionary = sim.catch_up_since(from_tick)
+	look_anchor_tick = from_tick
+	_open_catch_up(sim.catch_up_since(from_tick), "since_look")
+
+## Pick a span from the Catch Up panel or the [U] control: "since_look" reads from the start of
+## the last stretch away; the others are the calendar day or season (Yesterday and Last season
+## say so when the world is too young to have one).
+func _show_catch_up(span_id: String) -> void:
+	var d: Dictionary
+	if span_id == "since_look":
+		d = sim.catch_up_since(look_anchor_tick)
+	else:
+		d = sim.catch_up_span(span_id)
+	if d.is_empty():
+		catchup_span = span_id
+		catchup_title.text = "Catch Up"
+		catchup_box.text = "[color=#9a9a9a]Nothing to show yet for this span.[/color]"
+		panels.open(&"catchup")
+		_sync_catchup_buttons()
+		_place_catchup()
+		return
+	_open_catch_up(d, span_id)
+
+func _open_catch_up(d: Dictionary, span_id: String) -> void:
 	if d.is_empty():
 		return
+	catchup_span = span_id
 	var ticks: int = int(d["to"]) - int(d["from"])
 	catchup_title.text = "While you were away  (%.1f game-hours)" % (ticks / 1200.0)
-	catchup_box.text = str(d["text"]) + "\n[color=#9a9a9a]Esc to close[/color]"
+	var body: String = str(d["text"])
+	if body.strip_edges() == "":
+		body = "[color=#9a9a9a]Nothing to tell.[/color]\n"
+	catchup_box.text = body + "\n[color=#9a9a9a]Esc to close[/color]"
 	panels.open(&"catchup")
+	_sync_catchup_buttons()
 	_place_catchup()
 	_fx("ui_page")
+
+func _sync_catchup_buttons() -> void:
+	for sid in catchup_span_btns.keys():
+		var b: Button = catchup_span_btns[sid]
+		var label := ""
+		for sp in Rules.CATCH_UP_SPANS:
+			if sp["id"] == sid:
+				label = str(sp["label"])
+		b.text = ("[%s]" % label) if sid == catchup_span else label
+
+## Back at the game after a long real-time gap with news opens Catch Up (OST-012). Watches input
+## over the whole window, since a second-monitor viewer's focus is never on the game. At most
+## once a second; the bridge is only asked after more than Rules.CATCH_UP_IDLE_S idle.
+func _input(e: InputEvent) -> void:
+	if view == null or cam == null or sim == null:
+		return
+	if not (e is InputEventMouseMotion or e is InputEventMouseButton or e is InputEventKey):
+		return
+	var now := Time.get_ticks_msec() / 1000.0
+	var idle := now - look_time
+	if idle < 1.0:
+		return
+	if look_time > 0.0 and idle > Rules.CATCH_UP_IDLE_S:
+		look_anchor_tick = look_tick
+		var d: Dictionary = sim.catch_up_since(look_tick)
+		if Rules.catch_up_due(idle, bool(d.get("has_news", false))):
+			_open_catch_up(d, "since_look")
+	look_time = now
+	look_tick = sim.tick()
 
 ## Left edge under the HUD, as tall as its text, never over the bottom bar (Rules.catch_up_rect).
 func _place_catchup() -> void:
@@ -2334,6 +2411,9 @@ func _unhandled_input(e: InputEvent) -> void:
 				view.refresh()
 				_note("relationship lines: " + ("on" if view.entities.relationships_visible else "off"))
 				_fx("ui_click")
+			KEY_U:
+				if panels.is_open(&"catchup"): panels.close(&"catchup"); _fx("ui_click")
+				else: _show_catch_up("since_look")
 			KEY_K:
 				if panels.is_open(&"waiting"): panels.close(&"waiting"); _fx("ui_click")
 				else: _show_waiting()
