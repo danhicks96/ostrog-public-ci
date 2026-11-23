@@ -143,6 +143,12 @@ var help_panel: PanelContainer
 var help_hdr: HBoxContainer
 var help_text: RichTextLabel
 var summary_box: RichTextLabel
+## Catch Up has its own panel, outside the reading group, so opening History or another reading
+## panel neither closes nor replaces it (OST-011).
+var catchup_panel: PanelContainer
+var catchup_hdr: HBoxContainer
+var catchup_title: Label
+var catchup_box: RichTextLabel
 var summary_panel: PanelContainer
 ## The valley's ending (C60): shown once, when nobody of any community is left in it.
 var ending_shown := false
@@ -598,6 +604,7 @@ func _world_replaced() -> void:
 	hover_cache_id = -2
 	selected_block = Vector3i(-1, -1, -1)
 	panels.close(&"summary")
+	panels.close(&"catchup")
 	panels.close(&"block")
 	panels.close(&"favourites")
 	ending_shown = false
@@ -990,6 +997,34 @@ func _build_ui() -> void:
 	sum_vbox.add_child(summary_box)
 	layer.add_child(summary_panel)
 
+	# Catch Up: at the left edge under the HUD like Mouse & Keys (_place_catchup), as tall as its
+	# text, clear of the centred reading panels, so History can open beside it.
+	catchup_panel = PanelContainer.new()
+	catchup_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	catchup_panel.add_theme_stylebox_override("panel", _panel_bg())
+	catchup_panel.visible = false
+	var catchup_vbox := VBoxContainer.new()
+	catchup_panel.add_child(catchup_vbox)
+	catchup_hdr = HBoxContainer.new()
+	catchup_vbox.add_child(catchup_hdr)
+	catchup_title = Label.new()
+	catchup_title.text = "While you were away"
+	_style_text(catchup_title, 14)
+	catchup_hdr.add_child(catchup_title)
+	var catchup_sp := Control.new()
+	catchup_sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	catchup_hdr.add_child(catchup_sp)
+	catchup_hdr.add_child(_make_btn("Close [Esc]", "Close Catch Up [Esc]", func():
+		panels.close(&"catchup")
+		_fx("ui_click")
+	))
+	catchup_box = RichTextLabel.new()
+	catchup_box.bbcode_enabled = true
+	catchup_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_style_text(catchup_box, 14)
+	catchup_vbox.add_child(catchup_box)
+	layer.add_child(catchup_panel)
+
 	legends_panel = PanelContainer.new()
 	legends_panel.set_anchors_preset(Control.PRESET_CENTER)
 	legends_panel.offset_left = -600; legends_panel.offset_right = 600
@@ -1075,6 +1110,8 @@ func _build_ui() -> void:
 	panels.register(&"waiting", waiting_panel, &"reading")
 	panels.register(&"help", help_panel)
 	panels.register(&"summary", summary_panel, &"reading")
+	# No group: Catch Up stays open beside History and the other reading panels (OST-011).
+	panels.register(&"catchup", catchup_panel)
 	panels.register(&"legends", legends_panel, &"reading")
 	panels.register(&"timelapse", timelapse_panel, &"reading")
 	# Its own layer above the panels, so a toast is never hidden behind one.
@@ -1757,22 +1794,29 @@ func _bar(v: float) -> String:
 	var n := int(round(clampf(v, 0.0, 1.0) * 10))
 	return "[color=#8fd48f]" + "█".repeat(n) + "[/color][color=#444]" + "█".repeat(10 - n) + "[/color]"
 
+## Catch Up in its own panel: the headline in words, the named changes, then the folded details
+## (Rust builds the card; `summary_since` and its raw counts are still there for the timelapse).
 func _show_summary(from_tick: int) -> void:
-	var d: Dictionary = sim.summary_since(from_tick)
+	var d: Dictionary = sim.catch_up_since(from_tick)
 	if d.is_empty():
 		return
 	var ticks: int = int(d["to"]) - int(d["from"])
-	var s := "[b]While you were away[/b]  (%.1f game-hours)\n\n" % (ticks / 1200.0)
-	# Counts in words, routine work left out; `counts` stays for the timelapse.
-	var words: String = d.get("counts_words", "")
-	if words != "":
-		s += words + "\n\n"
-	for l in d["lines"]:
-		s += l + "\n"
-	s += "\n[color=#9a9a9a]H or Esc to close[/color]"
-	summary_box.text = s
-	panels.open(&"summary")
+	catchup_title.text = "While you were away  (%.1f game-hours)" % (ticks / 1200.0)
+	catchup_box.text = str(d["text"]) + "\n[color=#9a9a9a]Esc to close[/color]"
+	panels.open(&"catchup")
+	_place_catchup()
 	_fx("ui_page")
+
+## Left edge under the HUD, as tall as its text, never over the bottom bar (Rules.catch_up_rect).
+func _place_catchup() -> void:
+	var bg := catchup_panel.get_theme_stylebox("panel")
+	var sep := (catchup_hdr.get_parent() as VBoxContainer).get_theme_constant("separation")
+	var chrome := catchup_hdr.get_combined_minimum_size().y + sep + bg.get_minimum_size().y
+	var r := Rules.catch_up_rect(get_viewport().get_visible_rect().size, hud.position.y + hud.size.y,
+		chrome + catchup_box.get_content_height())
+	catchup_box.custom_minimum_size.y = r.size.y - chrome
+	catchup_panel.position = r.position
+	catchup_panel.size = r.size
 
 func _show_legends(target: String = "world:0") -> void:
 	var page: String = sim.legends_page(target)
@@ -2075,6 +2119,8 @@ func _capture_timelapse() -> void:
 func _process(d: float) -> void:
 	if help_panel != null and help_panel.visible:
 		_place_help()
+	if catchup_panel != null and catchup_panel.visible:
+		_place_catchup()
 	if view:
 		view.focus_id = follow_id if follow_id >= 0 else selected_id
 		if view.name_tags != null:
