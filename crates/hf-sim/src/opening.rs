@@ -473,6 +473,7 @@ impl Identity {
             fey: None,
             tales: Vec::new(),
             accounts: Vec::new(),
+            graves_read: Vec::new(),
             resonance: None,
             denned: false,
             fed: 0,

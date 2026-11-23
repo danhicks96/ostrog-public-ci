@@ -11938,3 +11938,16 @@ Guard: `tests/camera_miss.rs::a_sample_after_the_hour_does_not_show_the_event` f
 timing check; the same file covers a death far from and inside the frame, events with no place,
 another level or another severity, and that stepping through `measure` leaves the world digest
 unchanged.
+
+## 2026-11-23 OST-165: the same grave was read again and again
+Symptom: on a 700-day probe a reader read the same grave 14 times, weeks apart, and one reader
+read graves 198 times; every reading is a Notable `grave_read` line, so the feed repeated itself.
+Cause: whether a grave had been read was answered only by the reader's kept accounts, which are
+capped at 24; a grave reading is the first kept account to go, so once it was pushed out the
+reader stood by the stone and read it afresh.
+Fix: each person keeps `graves_read`, the deaths whose graves they have read (bounded to 64,
+oldest out), and `accounts::step` skips a grave in it. What they believe of the death can still
+be forgotten; the fact that they stood and read the stone is not. Old saves load with it empty.
+Guard: `tests/accounts.rs::a_grave_is_read_once_even_when_its_account_is_forgotten` fails without
+the skip. `a_marked_grave_tells_a_newcomer_who_lies_there` now clears `graves_read` to read the
+unmarked grave afresh.
