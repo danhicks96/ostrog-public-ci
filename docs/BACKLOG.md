@@ -58,7 +58,7 @@ The read-model candidate is pending review. Do not open a second implementation.
 
 ### OST-008 · Count visible activity in the camera frame
 
-**Milestone:** Make important events easier to follow · **State:** Claim pending · **Developer:** Pending · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Iris (IV) · **Public PR:** Pending
 
 Reconcile the existing read-only frame tally rather than starting another. Count whether visible people are doing something readable or standing still, separate from whether a major event was missed.
 
