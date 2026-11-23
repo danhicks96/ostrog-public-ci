@@ -1,5 +1,17 @@
 # Fix log
 
+## 2026-11-23: a census of postings aimed at unseen targets (OST-1308)
+
+- Symptom: no measure of how often the planner sends people after animals nobody has seen or into
+  ground nobody has explored.
+- Cause: nothing watched the planner's hunt and mine postings.
+- Fix: read-only `examples/planner_census.rs`. After each hourly planning pass it diffs the
+  designations for new hunts and mines. A hunt is unseen when no living member holds a sighting of
+  the animal within two days; a mine is unseen when its 8x8 cell is not in the explored set. It also
+  reports the deepest level mined below home and food per head and ore in store at fixed days. No
+  simulation code changes, so digests do not change.
+- Guard: `tests/livestock.rs` `the_planner_census_flags_an_unseen_deer` (unseen, then seen once a
+  member has sighted it). It does not compile without the example.
 ## 2026-11-22: score a house as a room (OST-1402)
 
 - Symptom: `houses.rs` held geometry only; the one quality check was `fine_stone`, used for a
