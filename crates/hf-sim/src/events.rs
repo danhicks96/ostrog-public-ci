@@ -1092,6 +1092,9 @@ pub enum EventKind {
     Fostered {
         child: AgentId,
         by: AgentId,
+        /// Appended (#1213): 0 none, 1 grandparent, 2 parent's sibling, 3 sibling.
+        #[serde(default)]
+        kin: u8,
     },
     /// Appended (#274): a harder stone than any before, first cut.
     NewStone {
@@ -1739,7 +1742,7 @@ impl Event {
             }
             Divided { agent, into } => vec![*agent, *into],
             Crept { agent, .. } => vec![*agent],
-            Fostered { child, by } => vec![*child, *by],
+            Fostered { child, by, .. } => vec![*child, *by],
             LeftUnrested { agent, .. } => vec![*agent],
             StruckWater { agent, .. } => vec![*agent],
             Doused { agent, .. } | BeatOut { agent, .. } => vec![*agent],
