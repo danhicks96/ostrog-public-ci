@@ -72,3 +72,42 @@ fn coming_of_age_is_on_record() {
         .iter()
         .any(|e| matches!(e.kind, EventKind::CameOfAge { .. })));
 }
+
+#[test]
+fn childhood_has_three_stages_scaled_to_each_kind() {
+    use hf_sim::agents::Childhood::{Infant, Older, Small};
+    let (mut w, _adult, c) = party();
+    let t = w.meta.tick;
+    w.agents[c].age_scale = 1.0;
+    let at = |w: &mut World, years: f64| {
+        w.agents[c].born = t as i64 - (years * TICKS_PER_YEAR as f64) as i64;
+        w.agents[c].childhood(t)
+    };
+    w.agents[c].people = hf_sim::species::SpeciesId::HUMAN;
+    assert_eq!(at(&mut w, 1.0), Some(Infant));
+    assert_eq!(at(&mut w, 5.0), Some(Small));
+    assert_eq!(at(&mut w, 10.0), Some(Older));
+    assert_eq!(at(&mut w, 16.0), None);
+    // Thresholds: 2 and 7 years exactly.
+    assert_eq!(at(&mut w, 1.99), Some(Infant));
+    assert_eq!(at(&mut w, 2.0), Some(Small));
+    assert_eq!(at(&mut w, 6.99), Some(Small));
+    assert_eq!(at(&mut w, 7.0), Some(Older));
+    // A kind maturing at 30 scales them by two: infant under 4, small under 14.
+    w.agents[c].people = hf_sim::species::by_key("seamfolk").unwrap();
+    assert_eq!(at(&mut w, 3.0), Some(Infant));
+    assert_eq!(at(&mut w, 10.0), Some(Small));
+    assert_eq!(at(&mut w, 20.0), Some(Older));
+    assert_eq!(at(&mut w, 31.0), None);
+    // The helpers.
+    w.agents[c].people = hf_sim::species::SpeciesId::HUMAN;
+    at(&mut w, 1.0);
+    assert!(!w.agents[c].past_infancy(t));
+    assert!(!w.agents[c].old_enough_for(Small, t));
+    at(&mut w, 5.0);
+    assert!(w.agents[c].past_infancy(t));
+    assert!(w.agents[c].old_enough_for(Small, t));
+    assert!(!w.agents[c].old_enough_for(Older, t));
+    at(&mut w, 20.0);
+    assert!(w.agents[c].old_enough_for(Older, t));
+}
