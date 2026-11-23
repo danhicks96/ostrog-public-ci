@@ -14,6 +14,17 @@
   reads only `last_events` and the world; no simulation behaviour changes.
 - Guards: `counts_sizes_endings_deaths_and_gap` and `a_gap_crossing_a_block_counts_where_it_closes`.
 - Not run: the seeds 1-8, three-engine, 600-day baseline tables.
+## 2026-11-22: name three stages of childhood (OST-1400)
+
+- Symptom: only `LifeStage::Child` existed, so any rule that needed "an infant" or "a small child"
+  would write its own age by hand.
+- Cause: a missing helper, not a behaviour bug.
+- Fix: `agents::Childhood { Infant, Small, Older }`, `INFANT_YEARS` (2), `SMALL_YEARS` (7), and
+  `Agent::childhood`, `past_infancy`, `old_enough_for`, scaled by `stage_years().0 / ADULT_YEARS`.
+  Recorded as D101. Nothing calls them yet, no field is saved and no behaviour changes.
+- Guard: `tests/childhood.rs::childhood_has_three_stages_scaled_to_each_kind` pins the human
+  boundaries at 2 and 7 years and a kind that matures at 30 (scaled by two).
+
 
 
 ## 2026-11-23: Catch Up opened only on window focus, with no way to ask for it (OST-012)
