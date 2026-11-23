@@ -275,7 +275,7 @@ Stools and chairs are built, but nothing can look for a free one. Add a pure `ho
 
 ### OST-1308 · Census of postings aimed at unseen targets
 
-**Milestone:** Measure the simulation · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Measure the simulation · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#666](https://github.com/danhicks96/ostrog-public-ci/pull/666)
 
 Add a read-only example that watches each hourly planning pass and reports how many hunt and mine postings point at something nobody in the community has seen: a hunted animal not seen by any living member within two days, or a mine cell outside the explored set. It also reports the deepest level mined below home and food per head and ore in store at fixed days. It informs a later planner decision and changes no behaviour.
 
