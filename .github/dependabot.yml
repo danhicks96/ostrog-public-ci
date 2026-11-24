@@ -23,6 +23,7 @@ updates:
     ignore:
       # Pinned on purpose (decision D55: the sim's thread use depends on this exact version).
       - dependency-name: "rayon"
+      # 0.x crates (rusqlite, rand, rand_chacha) treat a minor bump as breaking, so ignore those too.
       # Major bumps change on-disk formats or APIs the save/update code depends on; do those
       # by hand, with a guard test.
       - dependency-name: "bincode"
@@ -30,11 +31,11 @@ updates:
       - dependency-name: "rmp-serde"
         update-types: ["version-update:semver-major"]
       - dependency-name: "rusqlite"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
       - dependency-name: "rand"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
       - dependency-name: "rand_chacha"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
       - dependency-name: "ed25519-dalek"
         update-types: ["version-update:semver-major"]
 
