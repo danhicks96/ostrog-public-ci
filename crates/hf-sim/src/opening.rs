@@ -474,6 +474,7 @@ impl Identity {
             tales: Vec::new(),
             accounts: Vec::new(),
             prayed_over: Vec::new(),
+            graves_read: Vec::new(),
             resonance: None,
             denned: false,
             fed: 0,

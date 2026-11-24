@@ -317,6 +317,8 @@ fn a_marked_grave_tells_a_newcomer_who_lies_there() {
     // still can only say someone lies there.
     w.graves[0].words = None;
     w.agents[ni].accounts.clear();
+    // OST-165: a grave already read stays read, so forget the reading to read it afresh.
+    w.agents[ni].graves_read.clear();
     w.meta.tick += TICKS_PER_HOUR;
     hf_sim::accounts::step(&mut w);
     let acc = &w.agents[idx(&w, ids[4])].accounts;
@@ -344,4 +346,68 @@ fn accounts_and_graves_survive_a_save() {
         w.agents[idx(&w, ids[1])].accounts
     );
     assert!(!back.graves.is_empty());
+}
+
+/// OST-165: the reading of a grave outlives the account of it, so forgetting what they
+/// believe of the death does not send a person back to read the same stone every few weeks.
+#[test]
+fn a_grave_is_read_once_even_when_its_account_is_forgotten() {
+    let (mut w, ids) = valley(4524, 5);
+    put(&mut w, ids[0], 60, 60);
+    put(&mut w, ids[1], 62, 60);
+    for (k, id) in ids.iter().enumerate().skip(2) {
+        put(&mut w, *id, 90, 20 + k as i32 * 3);
+    }
+    let cid = w.agents[idx(&w, ids[1])].community.unwrap();
+    for a in w.agents.iter_mut() {
+        a.rite = hf_sim::realm::culture::Rite::Bury;
+    }
+    hf_sim::systems::life::die(&mut w, ids[0], "fell".into());
+    assert!(hf_sim::systems::rites::lay_to_rest(
+        &mut w,
+        ids[0],
+        cid,
+        Some(ids[1]),
+        false
+    ));
+    let g = w.graves[0].clone();
+    w.meta.tick += TICKS_PER_DAY;
+    let r = idx(&w, ids[4]);
+    w.agents[r].came = w.meta.tick - TICKS_PER_HOUR;
+    w.agents[r].relationships.clear();
+    let p = g.pos.offset(1, 0, 0);
+    w.agents[r].pos = w.grid.surface(p.x, p.y);
+    w.meta.tick -= w.meta.tick % TICKS_PER_HOUR;
+    let reads = |w: &World| {
+        w.events
+            .pending
+            .iter()
+            .filter(|e| matches!(&e.kind, EventKind::GraveRead { agent, .. } if *agent == ids[4]))
+            .count()
+    };
+    hf_sim::accounts::step(&mut w);
+    assert_eq!(reads(&w), 1, "the newcomer reads the grave once");
+    // Thirty told accounts of other deaths push the reading out of what they keep.
+    w.agents[r].accounts.clear();
+    for _ in 0..30 {
+        w.agents[r].accounts.push(hf_sim::accounts::Account {
+            death: hf_sim::ids::EventId(u32::MAX),
+            of: None,
+            at: g.pos,
+            said: Said::Unknown,
+            teller: None,
+            how: How::Told,
+            heard: w.meta.tick,
+        });
+    }
+    w.agents[r].accounts.retain(|x| x.death != g.death);
+    for _ in 0..10 {
+        w.meta.tick += TICKS_PER_HOUR;
+        hf_sim::accounts::step(&mut w);
+    }
+    assert_eq!(
+        reads(&w),
+        1,
+        "standing there longer gives no second reading"
+    );
 }

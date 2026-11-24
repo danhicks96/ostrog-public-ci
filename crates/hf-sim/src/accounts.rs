@@ -23,6 +23,8 @@ pub const WITNESS_WITHIN: i32 = 8;
 pub const READ_WITHIN: i32 = 3;
 /// The most accounts a person keeps; the oldest told ones go first.
 pub const KEPT: usize = 24;
+/// Graves a person remembers having read (OST-165): oldest out.
+pub const GRAVES_KEPT: usize = 64;
 
 /// What is said of how someone died: the record's cause in a person's words, or what it drifted
 /// into, or what a grave lets someone guess.
@@ -417,6 +419,7 @@ pub fn step(w: &mut World) {
                 || a.came <= g.laid
                 || a.relationships.contains_key(&g.dead)
                 || a.accounts.iter().any(|x| x.death == g.death)
+                || a.graves_read.contains(&g.death)
             {
                 continue;
             }
@@ -448,7 +451,12 @@ pub fn step(w: &mut World) {
                 heard: tick,
             },
         );
-        let who = w.agents[i].id;
+        let a = &mut w.agents[i];
+        a.graves_read.push(death);
+        if a.graves_read.len() > GRAVES_KEPT {
+            a.graves_read.remove(0);
+        }
+        let who = a.id;
         w.events.push(
             tick,
             Some(at),

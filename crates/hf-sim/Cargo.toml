@@ -31,3 +31,8 @@ libc = "0.2"
 [[example]]
 name = "deaths_probe"
 test = true
+
+# The threat census's own test, run by `cargo test --workspace` for the same reason.
+[[example]]
+name = "threat_census"
+test = true

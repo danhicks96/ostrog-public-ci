@@ -1,5 +1,70 @@
 # Fix log
 
+## 2026-11-22: unused observation and problem kinds are marked reserved (OST-471)
+
+- Symptom: six observation kinds and six problem kinds looked like features but nothing writes or
+  constructs them, and nothing said so.
+- Cause: the variants were added ahead of any producer and never marked.
+- Fix: a doc comment on each reserved variant, `RESERVED` lists in `mind/learning.rs` and
+  `mind/problems.rs`, and a written/reserved table in `docs/design-minds-observation.md`. No variant
+  is added, removed or reordered; labels, saves and the simulation are unchanged.
+- Guard: `mind::learning::tests::reserved_cues_are_listed` fails if a reserved observation kind is
+  also in the hand-kept list of written kinds. The problem list has no equivalent guard yet.
+## 2026-11-23: a census of each house as a room (OST-1309)
+
+- Symptom: no measure of what the valley's houses are like as rooms, so a later room score had
+  nothing to be compared against.
+- Cause: nothing counted a house's floor, beds, sleepers and fittings together.
+- Fix: read-only `examples/room_census.rs`. For each house at fixed days it reports floor tiles,
+  beds and sleepers (most people asleep in its beds in any game hour of the day), stools, chairs,
+  tables, chests, lamps and hearths on the floor, the main wall material and fine stone, and loose
+  non-food stacks. It prints the median and spread of floor per sleeper and fittings per sleeper.
+  No simulation code changes, so digests do not change.
+- Guard: `tests/room_census.rs` `census_counts_a_staged_house`, which counts a staged house
+  exactly. It does not compile without the example.
+## 2026-11-23: a census of postings aimed at unseen targets (OST-1308)
+
+- Symptom: no measure of how often the planner sends people after animals nobody has seen or into
+  ground nobody has explored.
+- Cause: nothing watched the planner's hunt and mine postings.
+- Fix: read-only `examples/planner_census.rs`. After each hourly planning pass it diffs the
+  designations for new hunts and mines. A hunt is unseen when no living member holds a sighting of
+  the animal within two days; a mine is unseen when its 8x8 cell is not in the explored set. It also
+  reports the deepest level mined below home and food per head and ore in store at fixed days. No
+  simulation code changes, so digests do not change.
+- Guard: `tests/livestock.rs` `the_planner_census_flags_an_unseen_deer` (unseen, then seen once a
+  member has sighted it). It does not compile without the example.
+## 2026-11-22: score a house as a room (OST-1402)
+
+- Symptom: `houses.rs` held geometry only; the one quality check was `fine_stone`, used for a
+  single thought, so nothing could compare a bare hut with a furnished house.
+- Cause: no per-room measure existed.
+- Fix: `houses::RoomStats { space, furnish, light, beauty, clutter, dirt }` (each 0..1),
+  `houses::room_stats(w, plan, sleepers)` (pure, read-only) and `RoomStats::impressiveness()`
+  (0.3 space + 0.3 furnish + 0.15 light + 0.25 beauty - 0.3 clutter - 0.3 dirt, clamped -1..1).
+  `fine_stone` now shares `fine_stone_of(w, plan)`. `dirt` is 0 until a dirt source exists. Nothing
+  reads it yet, so no simulation behaviour changes. A floor counts as laid both when its own tile
+  is a floor (upper levels) and when the tile below it is built solid (ground-level houses). Only
+  lit lamps and hearths (`active`) count as light.
+- Guards: `tests/rooms.rs`: bare hut below furnished house with clutter lowering the score, laid
+  ground floor, laid upper floor and figurine, a body awaiting rites counting as clutter, and an unlit lamp giving no light.
+
+
+
+## 2026-11-22: a reproducible number for threat pacing (OST-1401)
+
+- Symptom: band, host and colony-size numbers for storyteller work were pulled by hand from a
+  probe's event dump, so no change had a before-and-after anyone could reproduce.
+- Cause: a missing report, not a behaviour bug.
+- Fix: new read-only example `crates/hf-sim/examples/threat_census.rs`
+  (`threat_census <seed> <days> <steady|relentless|whimsical>`), one CSV row per 100 days: bands
+  set out and hosts besieging counted apart, size min/mean/max, portions raided, endings by kind,
+  mean grown members of communities, food, other items and finished structures, deaths of people
+  not of old age, and the longest gap from the last ending to the next arrival (a gap counts in
+  the block where it closes). Registered with `test = true` in `crates/hf-sim/Cargo.toml`. It
+  reads only `last_events` and the world; no simulation behaviour changes.
+- Guards: `counts_sizes_endings_deaths_and_gap` and `a_gap_crossing_a_block_counts_where_it_closes`.
+- Not run: the seeds 1-8, three-engine, 600-day baseline tables.
 ## 2026-11-22: name three stages of childhood (OST-1400)
 
 - Symptom: only `LifeStage::Child` existed, so any rule that needed "an infant" or "a small child"
@@ -12000,3 +12065,15 @@ oldest out); `pilgrimage::hard_times` ignores a warning in it and names the firs
 have not. Grief and loss are unchanged. Old saves load with it empty.
 Guard: `tests/relics.rs::one_warning_sends_each_person_to_pray_once` fails without the check
 (a person went 5 times over one warning); a second warning sends each again.
+## 2026-11-23 OST-165: the same grave was read again and again
+Symptom: on a 700-day probe a reader read the same grave 14 times, weeks apart, and one reader
+read graves 198 times; every reading is a Notable `grave_read` line, so the feed repeated itself.
+Cause: whether a grave had been read was answered only by the reader's kept accounts, which are
+capped at 24; a grave reading is the first kept account to go, so once it was pushed out the
+reader stood by the stone and read it afresh.
+Fix: each person keeps `graves_read`, the deaths whose graves they have read (bounded to 64,
+oldest out), and `accounts::step` skips a grave in it. What they believe of the death can still
+be forgotten; the fact that they stood and read the stone is not. Old saves load with it empty.
+Guard: `tests/accounts.rs::a_grave_is_read_once_even_when_its_account_is_forgotten` fails without
+the skip. `a_marked_grave_tells_a_newcomer_who_lies_there` now clears `graves_read` to read the
+unmarked grave afresh.

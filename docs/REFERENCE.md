@@ -1398,66 +1398,66 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 
 | file:line | string |
 |---|---|
-| accounts.rs:60 | old age |
-| accounts.rs:62 | starv |
-| accounts.rs:64 | thirst |
-| accounts.rs:66 | froze |
-| accounts.rs:66 | cold |
-| accounts.rs:68 | poison |
-| accounts.rs:70 | fever |
-| accounts.rs:70 | sick |
-| accounts.rs:70 | fester |
-| accounts.rs:72 | bled |
-| accounts.rs:72 | wound |
-| accounts.rs:72 | killed by |
-| accounts.rs:74 | torn |
-| accounts.rs:74 | beast |
-| accounts.rs:76 | drown |
-| accounts.rs:78 | fallen rock |
-| accounts.rs:80 | fell |
-| accounts.rs:82 | lost |
-| accounts.rs:113 | {who} died of a sickness |
-| accounts.rs:114 | {who} died of something they ate |
-| accounts.rs:115 | {who} starved |
-| accounts.rs:116 | {who} died of thirst |
-| accounts.rs:117 | {who} froze |
-| accounts.rs:118 | {who} died of their wounds |
-| accounts.rs:119 | a beast killed {who} |
-| accounts.rs:120 | {who} fell to their death |
-| accounts.rs:121 | {who} drowned |
-| accounts.rs:122 | the rock came down on {who} |
-| accounts.rs:123 | {who} was lost |
-| accounts.rs:124 | {who} died old |
-| accounts.rs:125 | {who} died: {c} |
-| accounts.rs:126 | {who} was cursed |
-| accounts.rs:127 | someone killed {who} |
-| accounts.rs:128 | something took {who} |
-| accounts.rs:129 | {who} was put in the ground here, nobody can say how |
-| accounts.rs:191 | who gathered the valley's food |
-| accounts.rs:192 | who tended the fields |
-| accounts.rs:193 | who fed the table |
-| accounts.rs:194 | who raised the walls |
-| accounts.rs:195 | who dug the stone |
-| accounts.rs:196 | who made things last |
-| accounts.rs:197 | who kept the people together |
-| accounts.rs:198 | who carried the load |
-| accounts.rs:199 | who minded the animals |
-| accounts.rs:208 | someone |
-| accounts.rs:353 | {}, {phrase} |
-| accounts.rs:437 | someone |
-| accounts.rs:471 | someone |
-| accounts.rs:473 | saw it |
-| accounts.rs:474 | told by {} |
-| accounts.rs:475 | told |
-| accounts.rs:476 | read from a grave |
-| accounts.rs:478 | {} ({how}) |
-| accounts.rs:495 | The grave of {who}, day {}. The record: {cause}. |
-| accounts.rs:503 | someone |
-| accounts.rs:513 | {} and {} more |
-| accounts.rs:517 |  Said: {words} ({by}). |
-| agents.rs:465 | fur |
-| agents.rs:466 | feathers |
-| agents.rs:467 | scales |
+| accounts.rs:62 | old age |
+| accounts.rs:64 | starv |
+| accounts.rs:66 | thirst |
+| accounts.rs:68 | froze |
+| accounts.rs:68 | cold |
+| accounts.rs:70 | poison |
+| accounts.rs:72 | fever |
+| accounts.rs:72 | sick |
+| accounts.rs:72 | fester |
+| accounts.rs:74 | bled |
+| accounts.rs:74 | wound |
+| accounts.rs:74 | killed by |
+| accounts.rs:76 | torn |
+| accounts.rs:76 | beast |
+| accounts.rs:78 | drown |
+| accounts.rs:80 | fallen rock |
+| accounts.rs:82 | fell |
+| accounts.rs:84 | lost |
+| accounts.rs:115 | {who} died of a sickness |
+| accounts.rs:116 | {who} died of something they ate |
+| accounts.rs:117 | {who} starved |
+| accounts.rs:118 | {who} died of thirst |
+| accounts.rs:119 | {who} froze |
+| accounts.rs:120 | {who} died of their wounds |
+| accounts.rs:121 | a beast killed {who} |
+| accounts.rs:122 | {who} fell to their death |
+| accounts.rs:123 | {who} drowned |
+| accounts.rs:124 | the rock came down on {who} |
+| accounts.rs:125 | {who} was lost |
+| accounts.rs:126 | {who} died old |
+| accounts.rs:127 | {who} died: {c} |
+| accounts.rs:128 | {who} was cursed |
+| accounts.rs:129 | someone killed {who} |
+| accounts.rs:130 | something took {who} |
+| accounts.rs:131 | {who} was put in the ground here, nobody can say how |
+| accounts.rs:193 | who gathered the valley's food |
+| accounts.rs:194 | who tended the fields |
+| accounts.rs:195 | who fed the table |
+| accounts.rs:196 | who raised the walls |
+| accounts.rs:197 | who dug the stone |
+| accounts.rs:198 | who made things last |
+| accounts.rs:199 | who kept the people together |
+| accounts.rs:200 | who carried the load |
+| accounts.rs:201 | who minded the animals |
+| accounts.rs:210 | someone |
+| accounts.rs:355 | {}, {phrase} |
+| accounts.rs:440 | someone |
+| accounts.rs:479 | someone |
+| accounts.rs:481 | saw it |
+| accounts.rs:482 | told by {} |
+| accounts.rs:483 | told |
+| accounts.rs:484 | read from a grave |
+| accounts.rs:486 | {} ({how}) |
+| accounts.rs:503 | The grave of {who}, day {}. The record: {cause}. |
+| accounts.rs:511 | someone |
+| accounts.rs:521 | {} and {} more |
+| accounts.rs:525 |  Said: {words} ({by}). |
+| agents.rs:470 | fur |
+| agents.rs:471 | feathers |
+| agents.rs:472 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2124,24 +2124,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:574 | {name} is already back with the others |
-| opening.rs:575 | what became of {name} is already known |
-| opening.rs:587 | no sign of {who} here |
-| opening.rs:598 | {who} was alive, and is coming back |
-| opening.rs:605 | something |
-| opening.rs:609 | {who} had died there, of {cause} |
-| opening.rs:788 | coming through the portal |
-| opening.rs:940 | the herb-woman |
-| opening.rs:943 | apprenticed to {master} |
-| opening.rs:952 | the carpenter |
-| opening.rs:953 | apprenticed to {master} |
-| opening.rs:962 | the smith |
-| opening.rs:963 | apprenticed to {master} |
-| opening.rs:979 | the quarry |
-| opening.rs:980 | apprenticed to {master} |
-| opening.rs:984 | the baker |
-| opening.rs:985 | apprenticed to {master} |
-| opening.rs:1097 | brought through the portal |
+| opening.rs:575 | {name} is already back with the others |
+| opening.rs:576 | what became of {name} is already known |
+| opening.rs:588 | no sign of {who} here |
+| opening.rs:599 | {who} was alive, and is coming back |
+| opening.rs:606 | something |
+| opening.rs:610 | {who} had died there, of {cause} |
+| opening.rs:789 | coming through the portal |
+| opening.rs:941 | the herb-woman |
+| opening.rs:944 | apprenticed to {master} |
+| opening.rs:953 | the carpenter |
+| opening.rs:954 | apprenticed to {master} |
+| opening.rs:963 | the smith |
+| opening.rs:964 | apprenticed to {master} |
+| opening.rs:980 | the quarry |
+| opening.rs:981 | apprenticed to {master} |
+| opening.rs:985 | the baker |
+| opening.rs:986 | apprenticed to {master} |
+| opening.rs:1098 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
@@ -2361,14 +2361,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:440 | scenario |
-| scenario.rs:481 | brought by the founders |
-| scenario.rs:791 | scenario |
-| scenario.rs:798 | scenario |
-| scenario.rs:806 | scenario |
-| scenario.rs:825 | scenario |
-| scenario.rs:845 | scenario |
-| scenario.rs:1015 | scenario |
+| scenario.rs:442 | scenario |
+| scenario.rs:483 | brought by the founders |
+| scenario.rs:793 | scenario |
+| scenario.rs:800 | scenario |
+| scenario.rs:808 | scenario |
+| scenario.rs:827 | scenario |
+| scenario.rs:847 | scenario |
+| scenario.rs:1017 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |
@@ -2782,27 +2782,27 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | mind/intentions.rs:115 | abandoned |
 | mind/intentions.rs:116 | expired |
 | mind/intentions.rs:117 | superseded |
-| mind/problems.rs:30 | dangerous water |
-| mind/problems.rs:31 | flooding |
-| mind/problems.rs:32 | food spoiling |
-| mind/problems.rs:33 | food shortage |
-| mind/problems.rs:34 | resources depleted |
-| mind/problems.rs:35 | dangerous heat |
-| mind/problems.rs:36 | fire |
-| mind/problems.rs:37 | structural danger |
-| mind/problems.rs:38 | a problem |
-| mind/problems.rs:76 | move to safety |
-| mind/problems.rs:77 | seek shelter |
-| mind/problems.rs:78 | move supplies |
-| mind/problems.rs:79 | preserve food |
-| mind/problems.rs:80 | search for resources |
-| mind/problems.rs:81 | warn others |
-| mind/problems.rs:82 | investigate |
-| mind/problems.rs:83 | ask for help |
-| mind/problems.rs:84 | wait |
-| mind/problems.rs:85 | ignore it |
-| mind/problems.rs:86 | flee |
-| mind/problems.rs:87 | try something else |
+| mind/problems.rs:46 | dangerous water |
+| mind/problems.rs:47 | flooding |
+| mind/problems.rs:48 | food spoiling |
+| mind/problems.rs:49 | food shortage |
+| mind/problems.rs:50 | resources depleted |
+| mind/problems.rs:51 | dangerous heat |
+| mind/problems.rs:52 | fire |
+| mind/problems.rs:53 | structural danger |
+| mind/problems.rs:54 | a problem |
+| mind/problems.rs:92 | move to safety |
+| mind/problems.rs:93 | seek shelter |
+| mind/problems.rs:94 | move supplies |
+| mind/problems.rs:95 | preserve food |
+| mind/problems.rs:96 | search for resources |
+| mind/problems.rs:97 | warn others |
+| mind/problems.rs:98 | investigate |
+| mind/problems.rs:99 | ask for help |
+| mind/problems.rs:100 | wait |
+| mind/problems.rs:101 | ignore it |
+| mind/problems.rs:102 | flee |
+| mind/problems.rs:103 | try something else |
 | mind/telling.rs:62 | which {} is the bad one |
 | mind/traits.rs:28 | industrious |
 | mind/traits.rs:29 | easygoing |
