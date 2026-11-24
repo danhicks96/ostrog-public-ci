@@ -2782,27 +2782,27 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | mind/intentions.rs:115 | abandoned |
 | mind/intentions.rs:116 | expired |
 | mind/intentions.rs:117 | superseded |
-| mind/problems.rs:30 | dangerous water |
-| mind/problems.rs:31 | flooding |
-| mind/problems.rs:32 | food spoiling |
-| mind/problems.rs:33 | food shortage |
-| mind/problems.rs:34 | resources depleted |
-| mind/problems.rs:35 | dangerous heat |
-| mind/problems.rs:36 | fire |
-| mind/problems.rs:37 | structural danger |
-| mind/problems.rs:38 | a problem |
-| mind/problems.rs:76 | move to safety |
-| mind/problems.rs:77 | seek shelter |
-| mind/problems.rs:78 | move supplies |
-| mind/problems.rs:79 | preserve food |
-| mind/problems.rs:80 | search for resources |
-| mind/problems.rs:81 | warn others |
-| mind/problems.rs:82 | investigate |
-| mind/problems.rs:83 | ask for help |
-| mind/problems.rs:84 | wait |
-| mind/problems.rs:85 | ignore it |
-| mind/problems.rs:86 | flee |
-| mind/problems.rs:87 | try something else |
+| mind/problems.rs:46 | dangerous water |
+| mind/problems.rs:47 | flooding |
+| mind/problems.rs:48 | food spoiling |
+| mind/problems.rs:49 | food shortage |
+| mind/problems.rs:50 | resources depleted |
+| mind/problems.rs:51 | dangerous heat |
+| mind/problems.rs:52 | fire |
+| mind/problems.rs:53 | structural danger |
+| mind/problems.rs:54 | a problem |
+| mind/problems.rs:92 | move to safety |
+| mind/problems.rs:93 | seek shelter |
+| mind/problems.rs:94 | move supplies |
+| mind/problems.rs:95 | preserve food |
+| mind/problems.rs:96 | search for resources |
+| mind/problems.rs:97 | warn others |
+| mind/problems.rs:98 | investigate |
+| mind/problems.rs:99 | ask for help |
+| mind/problems.rs:100 | wait |
+| mind/problems.rs:101 | ignore it |
+| mind/problems.rs:102 | flee |
+| mind/problems.rs:103 | try something else |
 | mind/telling.rs:62 | which {} is the bad one |
 | mind/traits.rs:28 | industrious |
 | mind/traits.rs:29 | easygoing |

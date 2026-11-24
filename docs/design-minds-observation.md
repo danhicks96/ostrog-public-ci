@@ -42,6 +42,19 @@ The same protocol applies to the client: full snapshots establish state, then de
 work. A delta is not permission to invent a fact; it is only a changed or newly observed fact
 that the bridge actually received.
 
+Live and reserved cues (`RESERVED` in `mind/learning.rs` and `mind/problems.rs`). Reserved means
+nothing writes or constructs the kind yet; the variants keep their saved positions and labels.
+
+| Kind | Status |
+| --- | --- |
+| Observation cues WaterDepth, Flooding, Wetness, Saturation, StructuralWeakness, Soil, Tracks, Joint | written |
+| Observation cues Heat, Cold, Fire, Smoke, Spoilage, ResourceDepletion | not yet written; separate slices wire them |
+| Observation cues WaterCurrent, Pressure | reserved; wait for currents and pressure as simulation state (rule 10) |
+| Observation cues FoodExposure, Regrowth, Shelter, Other | reserved; wait for a mechanic that writes them |
+| Problems WaterHazard, Flooding | live |
+| Problem Fire | not yet constructed; a separate slice wires it |
+| Problems FoodSpoilage, FoodShortage, ResourceDepletion, HeatExposure, StructuralDanger, Other | reserved |
+
 ## 3. The problem-solving loop
 
 The canonical chain is:
