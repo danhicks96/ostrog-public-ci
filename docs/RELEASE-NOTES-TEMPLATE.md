@@ -48,8 +48,7 @@ copied into every release. Release notes link to them in one line.
 
 ## Template
 
-Copy the block below, fill it in, delete what is empty. The comment at the top stays out of the
-published text.
+Copy the block below, fill it in, delete what is empty.
 
 ```markdown
 # Ostrog <version> (build <cNN>): <headline, 12 words or fewer>
@@ -87,7 +86,7 @@ New here? See the download page for install, update and uninstall steps.
 
 ## How to write one
 
-1. List what merged since the last release: `git log <last-tag>..main --merges`. Skim the titles
+1. List what merged since the last release: `git log <last-release>..main --merges`, where `<last-release>` is the last release's tag. The repository has no tags yet, so until the first one exists use the commit the previous release was built from, or `--since=<date of the last release>`. Skim the titles
    and the fix log entries.
 2. For each, ask: would someone watching notice? If not, leave it out (it stays in the fix log).
 3. Rewrite the survivors in watcher words, one line each, using the rules above.
@@ -120,7 +119,6 @@ running a few days and the valley looks less even.
 - Changed: a plant under a mature tree, or among three or more neighbours, grows more slowly.
 
 ## The people
-- Added: bodies track moving, handling and sight separately, so a bad hand and a bad eye differ.
 - Changed: a realm story is told only when most of those sitting together have not heard it.
 - Fixed: people prayed over the same warning again and again.
 - Fixed: a grave could be "read" over and over, even after people had forgotten the story.
@@ -132,4 +130,4 @@ running a few days and the valley looks less even.
 Your 0.1.2 saves load.
 ```
 
-That is about 230 words. Real releases will have more fixes, which is fine up to the budget.
+That is about 215 words. Real releases will have more fixes, which is fine up to the budget.
