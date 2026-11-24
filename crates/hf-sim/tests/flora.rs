@@ -107,7 +107,7 @@ fn alone_with(kind: PlantKind, herb_lore: bool) -> (World, usize, TilePos) {
     (w, i, spot)
 }
 
-/// Dan's rule 3 (knowledge belongs to people): one who does not know a death cap from a
+/// design rule 3 (knowledge belongs to people): one who does not know a death cap from a
 /// chanterelle eats it and sickens, and from then on leaves death caps; one who knows herb lore
 /// never takes it.
 #[test]

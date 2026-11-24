@@ -399,7 +399,7 @@ fn a_lean_to_is_a_sleeping_place_with_a_roof_over_its_tile() {
     );
 }
 
-/// #1081 correction (Dan, 2026-11-14): the sleep choice hard-coded `Bed | Tent | Nest` and
+/// #1081 correction (the maintainer, 2026-11-14): the sleep choice hard-coded `Bed | Tent | Nest` and
 /// missed the lean-to, so a tired person with a finished lean-to in sight never slept in it.
 #[test]
 fn a_lean_to_in_sight_is_slept_in() {

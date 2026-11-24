@@ -1,4 +1,4 @@
-//! #415, Dan's rule 7 (docs/design-rules.md, D56): what would a normal person do here? Nobody
+//! #415, design rule 7 (docs/design-rules.md, D56): what would a normal person do here? Nobody
 //! wanders, loiters, talks or sits about while their food, tomorrow's food or tonight's shelter
 //! is not secured; a secure community still talks and wanders.
 

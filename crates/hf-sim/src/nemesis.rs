@@ -1,4 +1,4 @@
-//! Rivals (Dan, 2026-10-23: "a nemesis style or reputation system to go along with" gossip).
+//! Rivals (the maintainer, 2026-10-23: "a nemesis style or reputation system to go along with" gossip).
 //!
 //! A stranger who fights someone of the valley and lives remembers them. Their place keeps them
 //! as a rival with a foe; when it sends people again, the rival comes with them, bolder each

@@ -681,7 +681,7 @@ impl PlantKind {
     }
 }
 
-/// Whether this person knows `kind` for a look-alike and leaves it (#286, Dan's rule 3:
+/// Whether this person knows `kind` for a look-alike and leaves it (#286, design rule 3:
 /// knowledge belongs to people): those who know herb lore know them all; anyone else knows
 /// the ones that made them sick, that they saw make someone sick, or that they were told of.
 pub fn knows_look_alike(a: &crate::agents::Agent, kind: PlantKind) -> bool {

@@ -1,6 +1,6 @@
 # Design: homes, shelter, materials and moving camp (milestone MH, C56 to C60)
 
-Written 2026-10-19 at the start of MH, from Dan's questions of 2026-10-19 and the answers checked
+Written 2026-10-19 at the start of MH, from the maintainer's questions of 2026-10-19 and the answers checked
 against the code in docs/history/PLAN-NEXT.md section MH (what exists, with file and function, is there
 and is not repeated here). The rules that bind every part: nothing happens on a schedule or by
 order; each home, shelter, trip and move has a proposer and a recorded cause; no LLM; the world
@@ -85,7 +85,7 @@ Gates: `they_dig_in_after_a_raid`, `no_raid_no_shelter`, `a_shelter_is_shored_by
 
 ## 4. C59: the land's own materials, and a trip to fetch them
 
-- An exotic biome as a new family. Options for Dan (one to choose before C59 starts):
+- An exotic biome as a new family. Options for the maintainer (one to choose before C59 starts):
   1. Ashwood barrens: grey trees that grow on old burns, black porous cinderstone; arises where
      the world's history has a great fire or war and the climate is dry. Wood light and quick to
      burn, stone light and poor for walls.

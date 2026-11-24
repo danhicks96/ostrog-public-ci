@@ -1,4 +1,4 @@
-//! Crafts as personal knowledge (C70, Dan's rule 3, docs/design-rules.md): a craft is
+//! Crafts as personal knowledge (C70, design rule 3, docs/design-rules.md): a craft is
 //! something a person knows or does not. Only those who know a craft work its bench; when
 //! nobody of a community knows one its best hand may try, slowly and with spoilage; when the
 //! last who knows a craft dies or leaves, the record says the craft went with them; and one

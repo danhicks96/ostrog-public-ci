@@ -85,7 +85,7 @@ pub struct Band {
     #[serde(default)]
     pub captives: Vec<AgentId>,
     /// The valley's renowned things they had heard of when they set out, and where the telling
-    /// put them (#173, Dan's call: they may come for a treasure whose fame has reached them).
+    /// put them (#173, the maintainer's call: they may come for a treasure whose fame has reached them).
     #[serde(default)]
     pub heard: Vec<(crate::ids::ItemId, TilePos)>,
 }

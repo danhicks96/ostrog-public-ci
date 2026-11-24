@@ -6,7 +6,7 @@ expeditions create the activity through their own needs, skills, knowledge and r
 
 ## North Star
 
-[docs/NORTH-STAR.md](NORTH-STAR.md) (Dan, 2026-11-13, D93): every condition a watcher can see
+[docs/NORTH-STAR.md](NORTH-STAR.md) (the maintainer, 2026-11-13, D93): every condition a watcher can see
 registers in someone, moves them to act, and ripples to others; and a glance shows who they are,
 how they feel and what they are doing. It names the three cuts in the living loop, the numbers that
 measure progress toward 10/10 against The Sims, RimWorld and Dwarf Fortress, and the rule that the

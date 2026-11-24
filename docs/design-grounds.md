@@ -1,6 +1,6 @@
 # Grounds: options for #289 (terrain and ground variety)
 
-Status: proposal for Dan, written 2026-11-10 at master d5ef6f29 (WP-05 slice 5.5, the #289
+Status: proposal for the maintainer, written 2026-11-10 at master d5ef6f29 (WP-05 slice 5.5, the #289
 half). Nothing here is implemented. Issues: #289 (ground variety; closed as the detail holder,
 its list lives on), #84 (desire paths, still open), #268 (tile fertility, WP-05 5.6's
 territory). Proposed as DEC-8 below.
@@ -75,7 +75,7 @@ as one "weather ground overlay" PR that computes mud and lying snow from the wea
 and surveyed tile properties with no new saved per-tile state; item 1 (wear) as a follow-up
 proposal once the overlay exists, since it wants the same periodic pass. Defer 5 and 6.
 
-Feel questions for Dan:
+Feel questions for the maintainer:
 1. Should worn paths change movement speed at all, or are they looks and story only?
 2. Lying snow: should it slow people and stock (a real cost), or is melt-water and the look
    enough for the first slice?

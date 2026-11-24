@@ -1,0 +1,55 @@
+# The repository's main guard (docs/HYGIENE.md). Required check name: `hygiene`.
+# Runs on every pull request, including docs-only ones, and again when the title, body or base
+# is edited. It is a separate workflow so an edit never restarts the long cargo jobs in ci.yml.
+# Safety: `pull_request`, never `pull_request_target`; read-only token; no secrets; user-controlled
+# text (title, body, branch) is passed through environment variables, never interpolated into a script.
+name: hygiene
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hygiene-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scanner guard tests
+        run: |
+          python3 -I tools/tests/public_boundary_guard_test.py
+          python3 -I tools/tests/hygiene_rules_guard_test.py
+      - name: Added lines (identifiers, names, tool text, private repo name)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: python3 -I tools/hygiene/scan_identifiers.py --range "$BASE...$HEAD"
+      - name: Commit messages, authors and committers
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: python3 -I tools/hygiene/scan_identifiers.py --commits "$BASE..$HEAD"
+      - name: Head branch name
+        if: github.event_name == 'pull_request'
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: python3 -I tools/hygiene/scan_identifiers.py --branch "$BRANCH"
+      - name: PR title and description
+        if: github.event_name == 'pull_request'
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: printf '%s\n%s\n' "$TITLE" "$BODY" | python3 -I tools/hygiene/scan_identifiers.py --text -

@@ -1,4 +1,4 @@
-//! C71: the stockpile, the field, the cellar room and the quarry grown from need (Dan's rule
+//! C71: the stockpile, the field, the cellar room and the quarry grown from need (the maintainer's rule
 //! 1, D35), not set down as blocks.
 
 use hf_sim::ids::TilePos;
