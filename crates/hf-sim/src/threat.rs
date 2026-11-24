@@ -227,7 +227,7 @@ fn sites_daily(w: &mut World) {
     let year = cal.year;
     let season = cal.season;
     let Some(home) = home(w) else { return };
-    let settled = w.since_arrival() >= 4 * TICKS_PER_DAY;
+    let settled = w.since_party() >= 4 * TICKS_PER_DAY;
     let mut set_out: Vec<(u32, bool)> = Vec::new();
     // What the deity is doing to each place's harvest (deity.rs).
     let harvest: Vec<f32> = w

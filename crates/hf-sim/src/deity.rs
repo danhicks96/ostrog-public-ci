@@ -208,7 +208,7 @@ pub fn step(w: &mut World) {
             }
         }
     }
-    if tick % TICKS_PER_DAY != 4 * TICKS_PER_HOUR + 11 || w.since_arrival() < TICKS_PER_DAY {
+    if tick % TICKS_PER_DAY != 4 * TICKS_PER_HOUR + 11 || w.since_party() < TICKS_PER_DAY {
         return;
     }
     // Forget answers long over.

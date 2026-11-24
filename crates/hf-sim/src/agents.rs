@@ -221,6 +221,10 @@ pub struct Agent {
     /// #452).
     #[serde(default)]
     pub accounts: Vec<crate::accounts::Account>,
+    /// How many nights in a row they have slept on the ground; a night in a bed resets it
+    /// (systems/strain.rs, OST-357).
+    #[serde(default)]
+    pub rough_nights: u8,
     /// The warning signs they have set out to pray over, newest last, at most
     /// `pilgrimage::PRAYED_KEPT`: one warning sends a person to the shrine once (OST-505).
     #[serde(default)]
