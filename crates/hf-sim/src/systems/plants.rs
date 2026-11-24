@@ -80,14 +80,132 @@ pub fn step(w: &mut World) {
             ground * material_factor * thirst * weed * crate::plants::crop_season(p.kind, season)
         })
         .collect();
+    // Wild plants read the site as crops do: ground, water, shade under a mature tree, and a
+    // crowd of living plants within a tile. Trees take ground and crowding only. This runs every
+    // tick but asks about one stripe of plants, so one pass over the plants fills a small
+    // open-addressed table of the tiles beside the stripe's wild plants (no hashing of floats, no
+    // sorting, nothing sized by the whole valley) and counts into it.
+    // Root is irrigated like a crop above but is wild ground cover here.
+    let wild_of = |p: &crate::plants::Plant| p.alive && !p.kind.is_crop() && p.kind.grows();
+    let asked: Vec<usize> = (stripe..w.plants.len())
+        .step_by(STRIPE as usize)
+        .filter(|&i| wild_of(&w.plants[i]))
+        .collect();
+    let wild: Vec<f32> = if asked.is_empty() {
+        Vec::new()
+    } else {
+        // Tile key: exact for any in-bounds position.
+        let key = |x: i32, y: i32, z: i32| -> u64 {
+            ((x as u64 & 0xF_FFFF) << 42) | ((y as u64 & 0xF_FFFF) << 21) | (z as u64 & 0x1F_FFFF)
+        };
+        // Nine tiles per asked plant, at most half full.
+        let slots = (asked.len() * 18).next_power_of_two().max(64);
+        let shift = 64 - slots.trailing_zeros();
+        let at = |k: u64| (k.wrapping_mul(0x9E37_79B9_7F4A_7C15) >> shift) as usize;
+        // slot -> (key, index into `asked`); key 0 with owner u32::MAX is empty.
+        let mut table: Vec<(u64, u32)> = vec![(0, u32::MAX); slots];
+        // One bit per (x, y) modulo 128, set beside each asked plant: most plants are nowhere near
+        // an asked one and are turned away by a read of this 2 KB array.
+        let mut seen = [0u64; 256];
+        let bit = |x: i32, y: i32| (((x & 127) << 7) | (y & 127)) as usize;
+        for (s, &i) in asked.iter().enumerate() {
+            let q = w.plants[i].pos;
+            for dx in -1..=1 {
+                for dy in -1..=1 {
+                    let k = key(q.x + dx, q.y + dy, q.z);
+                    let mut h = at(k);
+                    while table[h].1 != u32::MAX {
+                        h = (h + 1) & (slots - 1);
+                    }
+                    table[h] = (k, s as u32);
+                    let b = bit(q.x + dx, q.y + dy);
+                    seen[b >> 6] |= 1 << (b & 63);
+                }
+            }
+        }
+        {
+            let mut crowd = vec![0u32; asked.len()];
+            let mut shaded = vec![false; asked.len()];
+            for q in w.plants.iter().filter(|q| q.alive) {
+                // Probe by tile first: the kind tests (`is_tree` builds a lore row) are only
+                // worth running for the few plants that stand beside an asked one.
+                let k = key(q.pos.x, q.pos.y, q.pos.z);
+                let b = bit(q.pos.x, q.pos.y);
+                if seen[b >> 6] & (1 << (b & 63)) == 0 {
+                    continue;
+                }
+                let mut h = at(k);
+                let mut tested = false;
+                let (mut living, mut tree) = (false, false);
+                while table[h].1 != u32::MAX {
+                    if table[h].0 == k {
+                        if !tested {
+                            living = q.kind.grows();
+                            tree = q.kind.is_green_tree() && q.mature();
+                            tested = true;
+                        }
+                        let s = table[h].1 as usize;
+                        if living {
+                            crowd[s] += 1;
+                        }
+                        if tree {
+                            shaded[s] = true;
+                        }
+                    }
+                    h = (h + 1) & (slots - 1);
+                }
+            }
+            let mut out = vec![1.0f32; asked.len()];
+            for (s, &i) in asked.iter().enumerate() {
+                let p = &w.plants[i];
+                let mut f =
+                    crate::plants::ground_factor(w.grid.get(p.pos.offset(0, 0, -1)).material);
+                if !p.kind.is_tree() {
+                    f *= if watered[i] {
+                        1.0 // already drunk above (Root)
+                    } else if crate::systems::plants::watered(w, p.pos) {
+                        1.2
+                    } else {
+                        0.8
+                    };
+                    if shaded[s] {
+                        f *= if matches!(
+                            p.kind,
+                            crate::plants::PlantKind::Fern | crate::plants::PlantKind::Mushroom
+                        ) {
+                            1.1
+                        } else {
+                            0.6
+                        };
+                    }
+                }
+                if crowd[s] > 3 {
+                    f *= 0.7;
+                }
+                out[s] = f;
+            }
+            out
+        }
+    };
+    // `wild` has one factor for each of `asked`, in plant order; `next` walks it.
+    let mut next = 0;
     for (i, p) in w.plants.iter_mut().enumerate() {
-        if p.alive && i % STRIPE as usize == stripe && !hollow.get(i).copied().unwrap_or(false) {
+        if i % STRIPE as usize != stripe {
+            continue;
+        }
+        let site = if asked.get(next) == Some(&i) {
+            next += 1;
+            wild.get(next - 1).copied().unwrap_or(1.0)
+        } else {
+            1.0
+        };
+        if p.alive && !hollow.get(i).copied().unwrap_or(false) {
             let g = if watered[i] {
                 (if drought { gf / 0.4 } else { gf }) * 1.3
             } else {
                 gf
             };
-            p.grow(STRIPE, g * suits[i], season);
+            p.grow(STRIPE, g * suits[i] * site, season);
         }
     }
     // #286: thistle, the weed of worked ground. A worked field picks it up: each empty field
@@ -147,17 +265,7 @@ pub fn watered(w: &World, p: crate::ids::TilePos) -> bool {
     if !w.channels.is_empty() && crate::channels::waters(w, p) {
         return true;
     }
-    for dz in [0, -1] {
-        for dy in -3..=3 {
-            for dx in -3..=3 {
-                let q = p.offset(dx, dy, dz);
-                if w.grid.in_bounds(q) && w.grid.get(q).is_water() {
-                    return true;
-                }
-            }
-        }
-    }
-    false
+    w.grid.water_near(p, 3)
 }
 
 /// What farmers sow at `pos` (#286): the food crop that does best on its ground (plants.rs

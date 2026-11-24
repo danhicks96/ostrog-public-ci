@@ -767,16 +767,10 @@ pub fn crop_suits(crop: PlantKind, biome: crate::world::gen::biome::Biome) -> f3
     }]
 }
 
-/// How well a crop grows in the material beneath its surface tile, 0..1.2.
-/// Guards the local-material behavior in FIXLOG 2026-10-30, M6/#493.
-///
-/// Biome is the broad climate and ground family; this factor preserves the local material
-/// differences the farmer can see and work: meadow and peat feed a crop better than loose sand,
-/// scree or frozen ground. Materials not used as surface ground keep the neutral factor so this
-/// helper remains safe for hand-built and older worlds.
-pub fn crop_ground_factor(crop: PlantKind, ground: Material) -> f32 {
+/// How well any plant grows on the material beneath it, before a crop's own taste: the table `crop_ground_factor` starts from, shared with wild plants.
+pub fn ground_factor(ground: Material) -> f32 {
     use Material as M;
-    let base: f32 = match ground {
+    match ground {
         M::MEADOW | M::SOIL | M::GRASS => 1.0,
         M::PEAT | M::WET_SOIL => 1.05,
         M::MOSS | M::MUD => 0.9,
@@ -788,7 +782,19 @@ pub fn crop_ground_factor(crop: PlantKind, ground: Material) -> f32 {
         M::SNOW => 0.35,
         M::BONE_MOSS => 0.7,
         _ => 1.0,
-    };
+    }
+}
+
+/// How well a crop grows in the material beneath its surface tile, 0..1.2.
+/// Guards the local-material behavior in FIXLOG 2026-10-30, M6/#493.
+///
+/// Biome is the broad climate and ground family; this factor preserves the local material
+/// differences the farmer can see and work: meadow and peat feed a crop better than loose sand,
+/// scree or frozen ground. Materials not used as surface ground keep the neutral factor so this
+/// helper remains safe for hand-built and older worlds.
+pub fn crop_ground_factor(crop: PlantKind, ground: Material) -> f32 {
+    use Material as M;
+    let base: f32 = ground_factor(ground);
     match crop {
         PlantKind::Oats | PlantKind::Peas if matches!(ground, M::PEAT | M::WET_SOIL | M::MUD) => {
             (base * 1.05).min(1.2)
