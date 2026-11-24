@@ -1,6 +1,6 @@
 # Ostrog release and development history
 
-Ostrog began with a second-monitor idea: a colony that would live its own life while you watched. The inhabitants, not the player, would decide what to eat, where to build, whom to trust, and whether to leave. Dwarf Fortress and RimWorld were useful comparisons for simulation depth and readability, but Ostrog's central difference was that watching, rather than giving orders, was the point. **Ostrog was designed and directed by the maintainer Hicks.** See [NOTICE](../NOTICE) for credits and licensing.
+Ostrog began with a second-monitor idea: a colony that would live its own life while you watched. The inhabitants, not the player, would decide what to eat, where to build, whom to trust, and whether to leave. Dwarf Fortress and RimWorld were useful comparisons for simulation depth and readability, but Ostrog's central difference was that watching, rather than giving orders, was the point. **Ostrog was designed and directed by the maintainer.** See [NOTICE](../NOTICE) for credits and licensing.
 
 ## What was released?
 

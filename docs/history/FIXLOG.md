@@ -12175,7 +12175,7 @@ Guard: `tests/accounts.rs::a_grave_is_read_once_even_when_its_account_is_forgott
 the skip. `a_marked_grave_tells_a_newcomer_who_lies_there` now clears `graves_read` to read the
 unmarked grave afresh.
 ## 2026-11-24 Hygiene: personal names, role nicknames and tool text were in repository files
-Symptom: the owner's first name (about 186 times), the private repository's name, "the box" and a
+Symptom: the owner's first name (about 186 times), the private repository's name, a nickname for the build machine and a
 release-notes comment naming the local AI were in docs, code comments, tests and a script default.
 Cause: the generic scanner only knew emails, IPs, home paths, hosts and tokens, and only for the
 added lines of a diff; nothing covered names, commit metadata, branch names or PR/issue text.

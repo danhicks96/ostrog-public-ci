@@ -20,7 +20,7 @@ import hashlib
 import subprocess
 import sys
 
-SKIP_PATHS = ("tools/hygiene/", "Cargo.lock", "docs/HYGIENE.md")
+SKIP_PATHS = ("tools/hygiene/", "Cargo.lock", "docs/HYGIENE.md", "tools/tests/hygiene_rules_guard_test.py")
 SKIP_SUFFIX = (".png", ".jpg", ".ogg", ".zip", ".sqlite", ".hfsave", ".lock")
 
 OK_EMAIL = re.compile(r"(@users\.noreply\.github\.com|@example\.(com|org|net)|@[\w.-]*\.(example|invalid|test|local)$|@localhost)", re.I)
