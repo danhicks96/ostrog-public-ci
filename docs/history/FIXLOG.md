@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every
