@@ -9,6 +9,8 @@
 - Fix: a break now adds a new `Broke` thought ("broke down", weight -0.25, two days), appended to
   the thought kinds; the break's direct write is gone. The quarrel's direct write is removed too:
   the `Quarrel` thought, already added from the recorded event, is its lasting cost.
+- The `Broke` thought is left out of stress (like the arrival's), or one break would feed the next;
+  `tests/stress.rs::a_contented_person_with_one_trouble_does_not_break` guards it.
 - Guard: `tests/breaks.rs::the_cost_of_a_break_lasts_beyond_a_minute` (an hour after a break the
   person is at least 0.15 below the same person who did not break; fails without the thought).
 - Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers

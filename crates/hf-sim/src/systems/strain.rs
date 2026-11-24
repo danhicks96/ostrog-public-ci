@@ -391,11 +391,16 @@ pub fn step(w: &mut World) {
             .thoughts
             .list
             .iter()
-            .filter(|t| t.weight < 0.0 && t.kind != ThoughtKind::Arrival)
+            .filter(|t| {
+                t.weight < 0.0 && !matches!(t.kind, ThoughtKind::Arrival | ThoughtKind::Broke)
+            })
             .map(|t| -t.weight)
             .sum::<f32>();
         // The arrival's stress came all at once (`arrival_shock`); its thought weighs on mood.
-        let net = a.thoughts.sum(tick) - a.thoughts.sum_of(ThoughtKind::Arrival, tick);
+        // OST-241: the `Broke` thought weighs on mood only; as stress it would feed the next break.
+        let net = a.thoughts.sum(tick)
+            - a.thoughts.sum_of(ThoughtKind::Arrival, tick)
+            - a.thoughts.sum_of(ThoughtKind::Broke, tick);
         let hardship: f32 = ((-net).max(0.0) + HARD_SHARE * gross).min(2.0);
         let calm = a.genome.calm();
         let build = hardship * 0.03 * (1.3 - calm);

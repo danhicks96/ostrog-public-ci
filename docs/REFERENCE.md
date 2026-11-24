@@ -3602,18 +3602,18 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:324 | cold |
 | systems/strain.rs:325 | loneliness |
 | systems/strain.rs:326 | discomfort |
-| systems/strain.rs:513 | from {} |
-| systems/strain.rs:517 | because they were {} |
-| systems/strain.rs:521 | from {n} |
-| systems/strain.rs:577 | {}'s {} |
-| systems/strain.rs:610 | breaking the {label} |
-| systems/strain.rs:638 | eaten in a binge |
-| systems/strain.rs:672 | set by {name} in a rage |
-| systems/strain.rs:752 | wondered where {who} is |
-| systems/strain.rs:753 | the rest of the party is not here |
-| systems/strain.rs:776 | starting a fight |
-| systems/strain.rs:824 | in a fight |
-| systems/strain.rs:849 | in a fight |
+| systems/strain.rs:518 | from {} |
+| systems/strain.rs:522 | because they were {} |
+| systems/strain.rs:526 | from {n} |
+| systems/strain.rs:582 | {}'s {} |
+| systems/strain.rs:615 | breaking the {label} |
+| systems/strain.rs:643 | eaten in a binge |
+| systems/strain.rs:677 | set by {name} in a rage |
+| systems/strain.rs:757 | wondered where {who} is |
+| systems/strain.rs:758 | the rest of the party is not here |
+| systems/strain.rs:781 | starting a fight |
+| systems/strain.rs:829 | in a fight |
+| systems/strain.rs:854 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
