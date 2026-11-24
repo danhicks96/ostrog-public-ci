@@ -144,7 +144,7 @@ jobs:
           bin=target/release/ostrog
           [ -f "$bin.exe" ] && bin="$bin.exe"
           python3 -I tools/ci_digests.py "$bin" | tee digests-${{ matrix.os }}.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: digests-${{ matrix.os }}
           path: digests-${{ matrix.os }}.txt
