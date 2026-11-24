@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3199 strings (click to open)</summary>
+<details><summary>3201 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2636,9 +2636,11 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | taken.rs:89 | hurt |
 | taken.rs:90 | nothing found |
 | taken.rs:337 | lost in the deep |
-| taken.rs:609 | taken back |
-| taken.rs:610 | known, and turned back below |
-| taken.rs:611 | not known, and turned back below |
+| taken.rs:409 | the child |
+| taken.rs:410 | hurt below, going after {child} |
+| taken.rs:641 | taken back |
+| taken.rs:642 | known, and turned back below |
+| taken.rs:643 | not known, and turned back below |
 | thin.rs:289 | known again by {} |
 | thin.rs:380 | the famine winter in {home} |
 | thin.rs:381 | {home} burning |
