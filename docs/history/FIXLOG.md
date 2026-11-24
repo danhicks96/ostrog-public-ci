@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-22: a one-tile site search for a single shelter (OST-1403)
+
+- Symptom: the only site searches were for houses, hollows and dugouts, each wanting a whole
+  rectangle, so nothing could find one tile for one person's lean-to.
+- Cause: a missing function, not a behaviour bug.
+- Fix: `houses::lean_to_site(w, who, home)` (pure, no callers yet) scans the 12 tiles round
+  `home` in (y, x) order and returns the nearest tile that is flat, walkable, dry (no water, mud
+  or flood way), unbuilt and unordered (`settlement::occupied`, now `pub(crate)`), outside house
+  plans and the palisade (ring and inside), and where `place_multiplier` is 0.8 or more. No
+  simulation behaviour changed.
+- Guards: `tests/homes.rs::a_lean_to_site_is_near_home_dry_and_not_where_one_was_hurt` (within 12,
+  dry, unfeared, repeatable, off a designation, off a place the person was hurt, none when all
+  ground is wet) and `a_lean_to_site_keeps_out_of_a_house_plan`.
+- Not covered: a palisade fixture, and a caller (a later slice).
+
 ## 2026-11-24: crows are read only when someone outdoors sees them rise (OST-1312)
 
 - Symptom: while a band was on the road and unseen, each community's reader had a one in five
