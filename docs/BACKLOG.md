@@ -307,7 +307,7 @@ A party that comes back up hurt from below is only marked injured for two days, 
 
 ### OST-1312 · Read crow omens only when someone outdoors sees them rise
 
-**Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Keep daily life believable · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#674](https://github.com/danhicks96/ostrog-public-ci/pull/674)
 
 A crow omen is read wherever the crows are, whether or not anyone could see them. Read it only when someone outdoors sees the crows rise. Keep this to the crow reading and change no other omen. A behaviour measurement is reported before this merges.
 
