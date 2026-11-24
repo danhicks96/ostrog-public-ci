@@ -911,3 +911,92 @@ fn the_burrower_turns_back_from_gem_rock() {
         assert_eq!(w.grid.get(p).material, Material::GEM_ROCK);
     }
 }
+
+// ---- A party up hurt from below carries a wound (OST-1311) ----
+
+/// A world where a hurt party of three has just come up: the first two hurt, the third not.
+fn hurt_party() -> (World, Vec<hf_sim::ids::AgentId>, String) {
+    use hf_sim::taken::{Outcome, Stage, Taken};
+    let mut w = world(4);
+    // A bare world has no community: the party still comes up at the way down.
+    let stand = w
+        .agents
+        .first()
+        .map_or_else(|| TilePos::new(10, 10, 0), |a| a.pos);
+    let child = w.spawn_agent(Species::Person, stand);
+    let party: Vec<_> = (0..3)
+        .map(|_| w.spawn_agent(Species::Person, stand))
+        .collect();
+    // Everyone is below: out of the valley and into the away list.
+    for id in party.iter().chain([&child]) {
+        let i = w.agents.iter().position(|a| a.id == *id).unwrap();
+        let a = w.agents.remove(i);
+        w.overworld.away.push(a);
+    }
+    let name = w
+        .overworld
+        .away
+        .iter()
+        .find(|a| a.id == child)
+        .unwrap()
+        .name
+        .clone();
+    let now = w.meta.tick;
+    w.gone_below.push(Taken {
+        child,
+        community: hf_sim::ids::CommunityId(0),
+        site: "the deep".into(),
+        cavern: 0,
+        taken: 1,
+        party: party.clone(),
+        stand,
+        since: now,
+        back_at: now,
+        stage: Stage::Down,
+        opener: None,
+        accused: Vec::new(),
+        going_back: false,
+    });
+    w.events.pending.clear();
+    hf_sim::taken::settle(&mut w, 0, Outcome::Hurt);
+    (w, party, name)
+}
+
+#[test]
+fn hurt_below_is_a_wound() {
+    let (w, party, name) = hurt_party();
+    let wounds = |id| {
+        w.agents
+            .iter()
+            .find(|a| a.id == id)
+            .map(|a| a.body.wounds.len())
+            .unwrap()
+    };
+    assert_eq!(wounds(party[0]), 1, "the first has one wound");
+    assert_eq!(wounds(party[1]), 1, "the second has one wound");
+    assert_eq!(wounds(party[2]), 0, "the third is not");
+    let cause = format!("hurt below, going after {name}");
+    let named = w
+        .events
+        .pending
+        .iter()
+        .filter(|e| matches!(&e.kind, EventKind::Wounded { cause: c, .. } if *c == cause))
+        .count();
+    assert_eq!(named, 2, "two wounds, each naming the child");
+}
+
+#[test]
+fn the_same_seed_gives_the_same_wounds_below() {
+    let wounds = |w: &World, id| {
+        w.agents
+            .iter()
+            .find(|a| a.id == id)
+            .map(|a| format!("{:?}", a.body.wounds))
+            .unwrap()
+    };
+    let (a, pa, _) = hurt_party();
+    let (b, pb, _) = hurt_party();
+    for k in 0..3 {
+        assert_eq!(wounds(&a, pa[k]), wounds(&b, pb[k]));
+    }
+}

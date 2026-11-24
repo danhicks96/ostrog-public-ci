@@ -146,7 +146,7 @@ Require a SawDeath witness to be awake with a clear line of sight, not merely wi
 
 ### OST-471 · Mark unused observation and problem kinds as reserved
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#644](https://github.com/danhicks96/ostrog-public-ci/pull/644)
 
 This is the reserved-marking slice of the tracking issue on unused problem and observation kinds (public #189). Add a `RESERVED` list and a doc comment on each variant that nothing writes yet, naming what would wire it, plus a live/reserved table in the minds design note. Do not wire any kind, delete or reorder a variant, or change a label, save or simulation behaviour. Verify each listed variant against every current producer and consumer before listing it.
 
@@ -291,7 +291,7 @@ Add a read-only example that reports, per house at fixed days, floor tiles, beds
 
 ### OST-1310 · Read a body's moving, manipulation and sight
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#672](https://github.com/danhicks96/ostrog-public-ci/pull/672)
 
 Add a pure `Body::capacities` that folds a body's parts and wounds into three numbers: moving, manipulation and sight. It reads the body only and changes nothing. Like the free-seat finder (OST-1307) it has no caller yet; each consumer is tracked as its own slice.
 
@@ -299,7 +299,7 @@ Add a pure `Body::capacities` that folds a body's parts and wounds into three nu
 
 ### OST-1311 · A party that comes up hurt from the deep carries a real wound
 
-**Milestone:** Keep daily life believable · **State:** Claimed · **Developer:** Ostrog CI Sim (OS) · **Public PR:** Pending
+**Milestone:** Keep daily life believable · **State:** In review · **Developer:** Ostrog CI Sim (OS) · **Public PR:** [#673](https://github.com/danhicks96/ostrog-public-ci/pull/673)
 
 A party that comes back up hurt from below is only marked injured for two days, with nothing to heal, scar or tend. Give each hurt member one deterministic wound (part, kind and severity drawn from a stream keyed by the seed, the taken child and the person), recorded with the cause. Do not change who is hurt or how often.
 
