@@ -2094,13 +2094,13 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | observances.rs:32 | winter |
 | observances.rs:230 | nobody led it |
 | observances.rs:232 | nobody came |
-| omens.rs:50 | crows coming in over the valley's rim |
-| omens.rs:66 | a kind season |
-| omens.rs:67 | the host from {site} |
-| omens.rs:68 | the beast come up from the deep |
-| omens.rs:70 | a neighbour gone out in a beast's shape |
-| omens.rs:72 | the way into {cavern} |
-| omens.rs:73 | {name} come back |
+| omens.rs:74 | crows coming in over the valley's rim |
+| omens.rs:91 | a kind season |
+| omens.rs:92 | the host from {site} |
+| omens.rs:93 | the beast come up from the deep |
+| omens.rs:95 | a neighbour gone out in a beast's shape |
+| omens.rs:97 | the way into {cavern} |
+| omens.rs:98 | {name} come back |
 | opening.rs:163 | froze |
 | opening.rs:163 | of the cold |
 | opening.rs:164 | starvation |

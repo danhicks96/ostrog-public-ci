@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-24: crows are read only when someone outdoors sees them rise (OST-1312)
+
+- Symptom: while a band was on the road and unseen, each community's reader had a one in five
+  chance an hour of reading a warning in the crows, whether or not anyone could have seen any birds.
+- Cause: the omen was a dice roll with no witness.
+- Fix: birds rise over the walking band. Someone of a community who is awake, outdoors, on the same
+  level and between 12 (a sighting) and 30 tiles (`BIRDS_SEEN`) from a walker sees it, and reads a
+  warning if devout enough to lead an observance; once for each band. The reading now belongs to
+  that person's own community and names them. No other omen changes. This changes behaviour and
+  the simulation digest.
+- Guard: `tests/omens.rs` `birds_are_read_only_when_someone_sees_them` (an outdoor devout
+  witness 25 tiles off reads it and is named; the same band with everyone indoors is not read). It
+  replaces the old test that expected a roll to read the band.
+- Measurement: see the pull request.
+
 ## 2026-11-23: a census of each house as a room (OST-1309)
 
 - Symptom: no measure of what the valley's houses are like as rooms, so a later room score had
