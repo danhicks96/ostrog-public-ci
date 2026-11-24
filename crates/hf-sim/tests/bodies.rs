@@ -206,6 +206,47 @@ fn size_scales_hunger_and_cold() {
 }
 
 #[test]
+fn capacities_follow_the_parts() {
+    use hf_sim::body::{Ailment, Body, PartState, Tissue};
+    let near = |a: f32, b: f32| (a - b).abs() < 1e-4;
+    let whole = Body::default().capacities();
+    assert_eq!(
+        (whole.moving, whole.manipulation, whole.sight),
+        (1.0, 1.0, 1.0)
+    );
+
+    let mut b = Body::default();
+    b.parts.insert(PartId::LEG_L, PartState::Lost);
+    let c = b.capacities();
+    assert!(near(c.moving, 0.6) && near(c.manipulation, 1.0), "{c:?}");
+
+    let mut b = Body::default();
+    b.parts.insert(PartId::ARM_R, PartState::Scarred);
+    assert!(near(b.capacities().manipulation, 0.85));
+
+    let mut b = Body::default();
+    b.ailments.push(Ailment::DimEyes);
+    assert!(near(b.capacities().sight, 0.6));
+
+    let mut b = Body::default();
+    b.wounds.push(Wound {
+        part: PartId::LEG_L,
+        kind: WoundKind::Break,
+        severity: 0.6,
+        bleeding: 0.0,
+        infected: false,
+        since: 0,
+        by: None,
+        tissue: Tissue::Bone,
+        treated: None,
+        in_anger: false,
+    });
+    assert!(b.capacities().moving < 0.6);
+    b.wounds.clear();
+    assert_eq!(b.capacities().moving, 1.0);
+}
+
+#[test]
 fn pain_sums_wounds_by_depth_and_eases_with_treatment() {
     use hf_sim::body::{Body, Tissue};
 

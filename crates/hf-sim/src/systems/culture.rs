@@ -52,6 +52,9 @@ pub fn step(w: &mut World) {
 /// The hours of a hearth evening.
 pub const HEARTH_HOURS: std::ops::Range<u64> = 18..21;
 
+/// The share of the others at a hearth who must lack a realm story for it to be told (OST-506).
+pub const HEARTH_FRESH_SHARE: f32 = 0.5;
+
 /// A community's finished hearth.
 pub fn hearth_of(w: &World, cid: CommunityId) -> Option<crate::ids::TilePos> {
     let home = w.communities.iter().find(|c| c.id == cid)?.home;
@@ -116,19 +119,28 @@ fn hearth_evening(w: &mut World) {
             .filter(|c| c.hearth_told.0 == day)
             .map(|c| c.hearth_told.1.clone())
             .unwrap_or_default();
-        // A story of the world their people tell (P8) that someone here has not heard counts
-        // most of all.
+        // A story of the world their people tell (P8) that most of the circle has not heard
+        // counts most of all (OST-506): one newcomer is not reason enough for everyone to hear
+        // the same battle again. A teller offers the story the most sitters lack.
         let mut story: Option<(usize, u32)> = None;
         for &t in &sitting {
             if told.contains(&w.agents[t].id) {
                 continue;
             }
-            let fresh = w.agents[t].stories.iter().copied().find(|s| {
-                sitting
+            let mut best: Option<(usize, u32)> = None;
+            for &s in &w.agents[t].stories {
+                let lacking = sitting
                     .iter()
-                    .any(|&l| l != t && !w.agents[l].stories.contains(s))
-            });
-            if let Some(s) = fresh {
+                    .filter(|&&l| l != t && !w.agents[l].stories.contains(&s))
+                    .count();
+                if lacking > 0
+                    && HEARTH_FRESH_SHARE * ((sitting.len() - 1) as f32) <= lacking as f32
+                    && best.is_none_or(|(n, _)| lacking > n)
+                {
+                    best = Some((lacking, s));
+                }
+            }
+            if let Some((_, s)) = best {
                 story = Some((t, s));
                 break;
             }

@@ -13,6 +13,29 @@
   not decide who can see the act and is not the camera's tally of visible activity.
 - Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
   need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
+## 2026-11-24: a party that comes up hurt from the deep carries a real wound (OST-1311)
+
+- Symptom: a party member who came back up hurt was only marked injured for two days, with nothing
+  to heal, scar or tend.
+- Cause: the hurt outcome set a two-day injury timer and nothing else.
+- Fix: each hurt member now takes one wound on a random body part, of a cut, bruise or break, with a
+  severity from a quarter to a half, recorded with the cause "hurt below, going after" the child.
+  Part, kind and severity come from a stream keyed by the seed, the taken child and the person, so
+  the same seed gives the same wounds; who is hurt and how often is unchanged. Wounds are already
+  saved, so older saves still load. This changes the simulation digest.
+- Guards: `tests/the_deep.rs` `hurt_below_is_a_wound` (exactly one wound each, naming the child,
+  the unhurt third untouched; it fails without the change) and
+  `the_same_seed_gives_the_same_wounds_below`.
+
+## 2026-11-24: a body's moving, manipulation and sight can be read (OST-1310)
+
+- Symptom: systems that care whether someone can walk, use their hands or see had no single place
+  to ask.
+- Cause: no such reading existed. This is a pure addition with no caller yet, so behaviour and the
+  simulation digest do not change.
+- Fix: `Body::capacities` returns moving, manipulation and sight, each from 0.1 to 1.0, from the
+  parts, wounds and ailments. First-cut numbers, to be retuned. It is saved nowhere.
+- Guard: `tests/bodies.rs` `capacities_follow_the_parts`; it does not compile without the method.
 
 ## 2026-11-22: unused observation and problem kinds are marked reserved (OST-471)
 
@@ -12068,3 +12091,38 @@ Guard: `tests/camera_miss.rs::a_sample_after_the_hour_does_not_show_the_event` f
 timing check; the same file covers a death far from and inside the frame, events with no place,
 another level or another severity, and that stepping through `measure` leaves the world digest
 unchanged.
+
+## 2026-11-23 OST-506: the whole hearth heard the same battle again for one newcomer
+Symptom: on a 700-day probe 80-92% of listener hearings of a realm story were by someone who
+had already heard it; one battle was told 90 times, two evenings running, to nearly the same
+dozen people.
+Cause: a teller's story counted as fresh if any one other sitter lacked it, so a single child or
+newcomer sent the whole circle through it again.
+Fix: a story is told only when at least half of the other sitters lack it
+(`HEARTH_FRESH_SHARE`), and a teller offers the story the most sitters lack; a story that fails
+the test falls through to the next branch of the evening as before.
+Guard: `tests/stories.rs::a_story_most_have_heard_is_not_told_again` fails without the share test
+(seven of eight knowing a story did not stop it being told); with four lacking it is told and all
+four hold it.
+## 2026-11-23 OST-505: one warning sent the same people to the shrine again and again
+Symptom: on a 700-day probe, 1,104 "afraid of the warning" pilgrimages fell on 528 (person,
+warning) pairs; one person went to the shrine seven times in five days over a single warning.
+Cause: a warning sign stays open five days and nothing recorded that a person had already gone to
+pray over it, so each free, devout person set out again every few hours (10% an hour).
+Fix: each person keeps `prayed_over`, the warning signs they set out to pray over (bounded to 8,
+oldest out); `pilgrimage::hard_times` ignores a warning in it and names the first open one they
+have not. Grief and loss are unchanged. Old saves load with it empty.
+Guard: `tests/relics.rs::one_warning_sends_each_person_to_pray_once` fails without the check
+(a person went 5 times over one warning); a second warning sends each again.
+## 2026-11-23 OST-165: the same grave was read again and again
+Symptom: on a 700-day probe a reader read the same grave 14 times, weeks apart, and one reader
+read graves 198 times; every reading is a Notable `grave_read` line, so the feed repeated itself.
+Cause: whether a grave had been read was answered only by the reader's kept accounts, which are
+capped at 24; a grave reading is the first kept account to go, so once it was pushed out the
+reader stood by the stone and read it afresh.
+Fix: each person keeps `graves_read`, the deaths whose graves they have read (bounded to 64,
+oldest out), and `accounts::step` skips a grave in it. What they believe of the death can still
+be forgotten; the fact that they stood and read the stone is not. Old saves load with it empty.
+Guard: `tests/accounts.rs::a_grave_is_read_once_even_when_its_account_is_forgotten` fails without
+the skip. `a_marked_grave_tells_a_newcomer_who_lies_there` now clears `graves_read` to read the
+unmarked grave afresh.
