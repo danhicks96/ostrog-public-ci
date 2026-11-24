@@ -1,5 +1,36 @@
 # Fix log
 
+## 2026-11-24: release notes get a short, watcher-first format
+
+- Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every
+  release, and carried ticket numbers and internal notes in a header comment.
+- Fix: `docs/RELEASE-NOTES-TEMPLATE.md` sets a headline, a few highlights, grouped one-line
+  changes, a length budget and a worked example. Docs only, no guard test applies.
+
+## 2026-11-22: wild plants read their ground, water, shade and crowding (OST-1404)
+
+- Symptom: every plant that is not a crop grew at the weather's factor alone, so a berry bush on
+  scree in an oak's shade grew as fast as one on wet meadow.
+- Cause: `systems/plants.rs::step` built a site factor only for crops; all other plants got 1.0.
+- Fix: a wild factor for living non-crop plants in the same striped pass: ground from the new
+  shared `plants::ground_factor` (the table `crop_ground_factor` already used), x1.2 with water
+  in reach and x0.8 without (trees exempt), x0.6 for a low plant with a mature green tree within
+  a tile (Fern and Mushroom x1.1), x0.7 with three or more other living plants within a tile.
+  Trees take ground and crowding only. Wild Root is ground cover, not a crop, so it reads the
+  site too (its own irrigation bonus is not doubled); stumps and fallen logs are dead wood and do
+  not count as a crowd. Recorded as D102.
+- Guard: `tests/flora.rs::wild_growth_reads_the_ground`.
+- Cost: the first version (sorted neighbour lists rebuilt every tick) made `plant_census 10` take
+  about 165 s a seed against 32 s on main. Timers showed the pass over every plant dominating
+  (the kind tests build a lore row), so the neighbour counts now come from one pass that first
+  turns away plants by a 2 KB bitmap of tiles beside the tick's stripe, then probes a small
+  table; the stripe is walked by index, and the water test reads the few chunks of its window
+  (`WorldGrid::water_near`, same answer as the tile scan, guarded by
+  `water_near_matches_a_tile_by_tile_scan`). Output is identical to the first version. Now about
+  40-50 s a seed (seed 1, release, 60,000 ticks: 4.6 s on main, 6.7 s here). The rest is the
+  per-plant ground and water lookups of the 80 or so plants asked each tick.
+- Not measured: browse and grazer counts for seeds 1-5 at 700 days.
+
 ## 2026-11-22: a one-tile site search for a single shelter (OST-1403)
 
 - Symptom: the only site searches were for houses, hollows and dugouts, each wanting a whole
@@ -12159,3 +12190,16 @@ unchanged.
 Guard: `tests/resettle.rs::grace_counts_from_the_latest_party` fails if the band gate reads the
 first portal (a band set out in the new party's first days); its control shows the same hungry
 place sending a band in an ordinary world.
+## 2026-11-24 OST-357: a week on the ground weighed the same as one night
+Symptom: someone sleeping rough for a week carried the same -0.2 "slept on the ground" thought
+as someone who slept rough once; on a 600-day probe 29 of 60 living people slept rough the last
+night, with nothing to tell a first night from a seventh.
+Cause: the thought is refreshed, not stacked, and nothing counted how many nights in a row a
+person had been without a bed.
+Fix: each person keeps `rough_nights`, the nights on the ground in a row (a night of six hours or
+more in a bed resets it), and the thought is shaped to weigh 0.05 more for each night in a row up
+to the seventh (-0.5). The thought's length and source are unchanged. Old saves load with 0, and
+the simulation changes only for people who sleep rough more than one night running.
+Guard: `tests/slept.rs::a_week_on_the_ground_weighs_more_than_one_night` fails without the extra
+weight (seven nights weighed the same as one); `a_night_in_a_bed_resets_the_rough_count` covers
+the reset.
