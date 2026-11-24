@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-24: the cost of a breakdown or a quarrel lasted one game-minute (OST-241)
+
+- Symptom: a breakdown took 0.2 off mood and a quarrel 0.15, and a game-minute later both were
+  gone, so the day after a break looked like any other.
+- Cause: both were direct writes to `mood`, which the needs pass rebuilds from its terms every
+  stripe.
+- Fix: a break now adds a new `Broke` thought ("broke down", weight -0.25, two days), appended to
+  the thought kinds; the break's direct write is gone. The quarrel's direct write is removed too:
+  the `Quarrel` thought, already added from the recorded event, is its lasting cost.
+- Guard: `tests/breaks.rs::the_cost_of_a_break_lasts_beyond_a_minute` (an hour after a break the
+  person is at least 0.15 below the same person who did not break; fails without the thought).
+- Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
+  mood after a break, which can bring a second break sooner.
+
 ## 2026-11-22: a one-tile site search for a single shelter (OST-1403)
 
 - Symptom: the only site searches were for houses, hollows and dugouts, each wanting a whole

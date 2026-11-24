@@ -526,7 +526,8 @@ pub fn step(w: &mut World) {
             let a = &mut w.agents[i];
             a.stress = 0.15;
             a.last_break = tick;
-            a.mood = (a.mood - 0.2).max(-1.0);
+            // OST-241: a direct mood write was rebuilt away a game-minute later; the cost is
+            // now the `Broke` thought added with the event below (see docs/history/FIXLOG.md).
         }
         // Whatever they were carrying for a job goes down where they stand, or the job's
         // materials would be in their hands for ever.
@@ -547,6 +548,9 @@ pub fn step(w: &mut World) {
             },
         );
         w.agents[i].remember(tick, MemKind::Hardship, Subject::None, -0.6, 0.8, Some(eid));
+        w.agents[i]
+            .thoughts
+            .add(ThoughtKind::Broke, tick, Some(eid));
         match kind {
             Break::Tantrum => {
                 // Break the nearest piece of furniture, if any is close.

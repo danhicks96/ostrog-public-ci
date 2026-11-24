@@ -1090,6 +1090,7 @@ Thoughts feed mood and stress. The bridge sends the strongest six as `{label} {w
 | Prayed | prayed at the shrine in hard times | 0.2 | 2.0 |
 | Missing | the missing | -0.2 | 4.0 |
 | Thirsty | parched | -0.3 | 0.5 |
+| Broke | broke down | -0.25 | 2.0 |
 
 #### Breaks (`systems/strain.rs`)
 
@@ -3153,7 +3154,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/act.rs:221 | forage |
 | systems/act.rs:284 | the bed was taken |
 | systems/act.rs:370 | they left |
-| systems/act.rs:542 | a poisoning from {} |
+| systems/act.rs:543 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |
@@ -3604,15 +3605,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:513 | from {} |
 | systems/strain.rs:517 | because they were {} |
 | systems/strain.rs:521 | from {n} |
-| systems/strain.rs:573 | {}'s {} |
-| systems/strain.rs:606 | breaking the {label} |
-| systems/strain.rs:634 | eaten in a binge |
-| systems/strain.rs:668 | set by {name} in a rage |
-| systems/strain.rs:748 | wondered where {who} is |
-| systems/strain.rs:749 | the rest of the party is not here |
-| systems/strain.rs:772 | starting a fight |
-| systems/strain.rs:820 | in a fight |
-| systems/strain.rs:845 | in a fight |
+| systems/strain.rs:577 | {}'s {} |
+| systems/strain.rs:610 | breaking the {label} |
+| systems/strain.rs:638 | eaten in a binge |
+| systems/strain.rs:672 | set by {name} in a rage |
+| systems/strain.rs:752 | wondered where {who} is |
+| systems/strain.rs:753 | the rest of the party is not here |
+| systems/strain.rs:776 | starting a fight |
+| systems/strain.rs:824 | in a fight |
+| systems/strain.rs:849 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
