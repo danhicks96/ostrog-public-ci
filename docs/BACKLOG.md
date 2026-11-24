@@ -553,7 +553,7 @@ Read the client's pose and emote choice for people and list, per `Activity` name
 
 ### OST-868 · Run the camera director headlessly in the alive soak
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
 
 Under `soak --alive`, feed the director the same events and suggestions the bridge does, and sample the glance at a fixed stride of 600 ticks (no rng). Tracking issue: [#420](https://github.com/danhicks96/ostrog-public-ci/issues/420). Builds on the existing glance tally in OST-008; do not duplicate it.
 
