@@ -1,5 +1,83 @@
 # Fix log
 
+## 2026-11-22: wild plants read their ground, water, shade and crowding (OST-1404)
+
+- Symptom: every plant that is not a crop grew at the weather's factor alone, so a berry bush on
+  scree in an oak's shade grew as fast as one on wet meadow.
+- Cause: `systems/plants.rs::step` built a site factor only for crops; all other plants got 1.0.
+- Fix: a wild factor for living non-crop plants in the same striped pass: ground from the new
+  shared `plants::ground_factor` (the table `crop_ground_factor` already used), x1.2 with water
+  in reach and x0.8 without (trees exempt), x0.6 for a low plant with a mature green tree within
+  a tile (Fern and Mushroom x1.1), x0.7 with three or more other living plants within a tile.
+  Trees take ground and crowding only. Wild Root is ground cover, not a crop, so it reads the
+  site too (its own irrigation bonus is not doubled); stumps and fallen logs are dead wood and do
+  not count as a crowd. Recorded as D102.
+- Guard: `tests/flora.rs::wild_growth_reads_the_ground`.
+- Cost: the first version (sorted neighbour lists rebuilt every tick) made `plant_census 10` take
+  about 165 s a seed against 32 s on main. Timers showed the pass over every plant dominating
+  (the kind tests build a lore row), so the neighbour counts now come from one pass that first
+  turns away plants by a 2 KB bitmap of tiles beside the tick's stripe, then probes a small
+  table; the stripe is walked by index, and the water test reads the few chunks of its window
+  (`WorldGrid::water_near`, same answer as the tile scan, guarded by
+  `water_near_matches_a_tile_by_tile_scan`). Output is identical to the first version. Now about
+  40-50 s a seed (seed 1, release, 60,000 ticks: 4.6 s on main, 6.7 s here). The rest is the
+  per-plant ground and water lookups of the 80 or so plants asked each tick.
+- Not measured: browse and grazer counts for seeds 1-5 at 700 days.
+
+## 2026-11-22: a one-tile site search for a single shelter (OST-1403)
+
+- Symptom: the only site searches were for houses, hollows and dugouts, each wanting a whole
+  rectangle, so nothing could find one tile for one person's lean-to.
+- Cause: a missing function, not a behaviour bug.
+- Fix: `houses::lean_to_site(w, who, home)` (pure, no callers yet) scans the 12 tiles round
+  `home` in (y, x) order and returns the nearest tile that is flat, walkable, dry (no water, mud
+  or flood way), unbuilt and unordered (`settlement::occupied`, now `pub(crate)`), outside house
+  plans and the palisade (ring and inside), and where `place_multiplier` is 0.8 or more. No
+  simulation behaviour changed.
+- Guards: `tests/homes.rs::a_lean_to_site_is_near_home_dry_and_not_where_one_was_hurt` (within 12,
+  dry, unfeared, repeatable, off a designation, off a place the person was hurt, none when all
+  ground is wet) and `a_lean_to_site_keeps_out_of_a_house_plan`.
+- Not covered: a palisade fixture, and a caller (a later slice).
+
+## 2026-11-24: crows are read only when someone outdoors sees them rise (OST-1312)
+
+- Symptom: while a band was on the road and unseen, each community's reader had a one in five
+  chance an hour of reading a warning in the crows, whether or not anyone could have seen any birds.
+- Cause: the omen was a dice roll with no witness.
+- Fix: birds rise over the walking band. Someone of a community who is awake, outdoors, on the same
+  level and between 12 (a sighting) and 30 tiles (`BIRDS_SEEN`) from a walker sees it, and reads a
+  warning if devout enough to lead an observance; once for each band. The reading now belongs to
+  that person's own community and names them. No other omen changes. This changes behaviour and
+  the simulation digest.
+- Guard: `tests/omens.rs` `birds_are_read_only_when_someone_sees_them` (an outdoor devout
+  witness 25 tiles off reads it and is named; the same band with everyone indoors is not read). It
+  replaces the old test that expected a roll to read the band.
+- Measurement: see the pull request.
+
+## 2026-11-24: a party that comes up hurt from the deep carries a real wound (OST-1311)
+
+- Symptom: a party member who came back up hurt was only marked injured for two days, with nothing
+  to heal, scar or tend.
+- Cause: the hurt outcome set a two-day injury timer and nothing else.
+- Fix: each hurt member now takes one wound on a random body part, of a cut, bruise or break, with a
+  severity from a quarter to a half, recorded with the cause "hurt below, going after" the child.
+  Part, kind and severity come from a stream keyed by the seed, the taken child and the person, so
+  the same seed gives the same wounds; who is hurt and how often is unchanged. Wounds are already
+  saved, so older saves still load. This changes the simulation digest.
+- Guards: `tests/the_deep.rs` `hurt_below_is_a_wound` (exactly one wound each, naming the child,
+  the unhurt third untouched; it fails without the change) and
+  `the_same_seed_gives_the_same_wounds_below`.
+
+## 2026-11-24: a body's moving, manipulation and sight can be read (OST-1310)
+
+- Symptom: systems that care whether someone can walk, use their hands or see had no single place
+  to ask.
+- Cause: no such reading existed. This is a pure addition with no caller yet, so behaviour and the
+  simulation digest do not change.
+- Fix: `Body::capacities` returns moving, manipulation and sight, each from 0.1 to 1.0, from the
+  parts, wounds and ailments. First-cut numbers, to be retuned. It is saved nowhere.
+- Guard: `tests/bodies.rs` `capacities_follow_the_parts`; it does not compile without the method.
+
 ## 2026-11-22: unused observation and problem kinds are marked reserved (OST-471)
 
 - Symptom: six observation kinds and six problem kinds looked like features but nothing writes or

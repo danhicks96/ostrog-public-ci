@@ -476,3 +476,110 @@ fn a_lean_to_in_sight_is_slept_in() {
         "a tired person with a finished lean-to in sight sleeps in it, not on the ground"
     );
 }
+
+/// The one-tile site search keeps near home, off wet ground, off ordered ground and house
+/// plans, and away from the place this person was hurt.
+#[test]
+fn a_lean_to_site_is_near_home_dry_and_not_where_one_was_hurt() {
+    use hf_sim::mind::memory::{MemKind, Memory, Subject};
+    let (mut w, cid) = valley(10820, None);
+    let home = w.communities.iter().find(|c| c.id == cid).unwrap().home;
+    let i = w
+        .agents
+        .iter()
+        .position(|a| a.community == Some(cid))
+        .unwrap();
+    let who = w.agents[i].clone();
+
+    let first = hf_sim::houses::lean_to_site(&w, &who, home).expect("open flat ground has a site");
+    assert!(first.dist(home) <= 12, "within 12 tiles of home");
+    assert!(w.grid.walkable(first));
+    assert!(!w.grid.get(first).is_water());
+    assert!(!hf_sim::systems::decide::unsafe_ground(&w, first));
+    assert!(who.place_multiplier(first, w.meta.tick) >= 0.8);
+    assert_eq!(
+        hf_sim::houses::lean_to_site(&w, &who, home),
+        Some(first),
+        "the same world gives the same tile"
+    );
+
+    // An order on that tile moves the site off it.
+    let did = w.alloc_designation_id();
+    w.designations.push(hf_sim::work::Designation {
+        id: did,
+        kind: DesignationKind::Chop,
+        pos: first,
+        requirements: vec![],
+        work_left: 10,
+        work_total: 10,
+        max_workers: 1,
+        priority: 5,
+        created: w.tick(),
+        failures: 0,
+        done: false,
+        community: None,
+        owner: None,
+    });
+    let moved = hf_sim::houses::lean_to_site(&w, &who, home).unwrap();
+    assert_ne!(moved, first, "not on a designation");
+    w.designations.clear();
+
+    // A bad memory of that place pushes the site out of the feared ground.
+    let mut hurt = who.clone();
+    hurt.memories.long.push(Memory {
+        kind: MemKind::Hardship,
+        subject: Subject::Place(first),
+        valence: -1.0,
+        strength: 1.0,
+        formed: w.meta.tick,
+        reinforced: 0,
+        last: w.meta.tick,
+        origins: Vec::new(),
+    });
+    assert!(
+        hurt.place_multiplier(first, w.meta.tick) < 0.8,
+        "it is feared"
+    );
+    let away = hf_sim::houses::lean_to_site(&w, &hurt, home).unwrap();
+    assert_ne!(away, first);
+    assert!(hurt.place_multiplier(away, w.meta.tick) >= 0.8);
+
+    // Open water on every tile near home leaves no site at all.
+    let mut flooded = w.clone();
+    for y in (home.y - 13)..=(home.y + 13) {
+        for x in (home.x - 13)..=(home.x + 13) {
+            let gz = flooded.grid.ground_z(x, y);
+            let p = TilePos::new(x, y, gz + 1);
+            let mut t = flooded.grid.get(p);
+            t.flags.0 |= hf_sim::world::TileFlags::WATER;
+            flooded.grid.set(p, t);
+        }
+    }
+    assert_eq!(hf_sim::houses::lean_to_site(&flooded, &who, home), None);
+}
+
+/// A tile inside a planned house is not a lean-to site.
+#[test]
+fn a_lean_to_site_keeps_out_of_a_house_plan() {
+    let (mut w, cid) = valley(10821, None);
+    let home = w.communities.iter().find(|c| c.id == cid).unwrap().home;
+    let who = w
+        .agents
+        .iter()
+        .find(|a| a.community == Some(cid))
+        .unwrap()
+        .clone();
+    let first = hf_sim::houses::lean_to_site(&w, &who, home).unwrap();
+    let plan = hf_sim::society::HousePlan {
+        floor: vec![first],
+        ..Default::default()
+    };
+    w.communities
+        .iter_mut()
+        .find(|c| c.id == cid)
+        .unwrap()
+        .house_plans
+        .push(plan);
+    let moved = hf_sim::houses::lean_to_site(&w, &who, home).unwrap();
+    assert_ne!(moved, first, "not inside a house plan");
+}

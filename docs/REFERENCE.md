@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3199 strings (click to open)</summary>
+<details><summary>3201 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1502,15 +1502,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | body.rs:324 | {} of its {} left |
 | body.rs:326 | {}% of its mass |
 | body.rs:328 | {} of {} segments |
-| body.rs:448 | , infected |
-| body.rs:453 | fever {}% |
-| body.rs:456 | blood {}% |
-| body.rs:463 | {} set crooked |
-| body.rs:464 | {} lost |
-| body.rs:466 | {} replaced by {what} |
-| body.rs:475 | {} scar{} |
-| body.rs:477 | s |
-| body.rs:485 | sound |
+| body.rs:501 | , infected |
+| body.rs:506 | fever {}% |
+| body.rs:509 | blood {}% |
+| body.rs:516 | {} set crooked |
+| body.rs:517 | {} lost |
+| body.rs:519 | {} replaced by {what} |
+| body.rs:528 | {} scar{} |
+| body.rs:530 | s |
+| body.rs:538 | sound |
 | building.rs:160 | with nothing left to hold it |
 | building.rs:162 | under the weight of the snow |
 | building.rs:200 | when the roof came down |
@@ -2094,13 +2094,13 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | observances.rs:32 | winter |
 | observances.rs:230 | nobody led it |
 | observances.rs:232 | nobody came |
-| omens.rs:50 | crows coming in over the valley's rim |
-| omens.rs:66 | a kind season |
-| omens.rs:67 | the host from {site} |
-| omens.rs:68 | the beast come up from the deep |
-| omens.rs:70 | a neighbour gone out in a beast's shape |
-| omens.rs:72 | the way into {cavern} |
-| omens.rs:73 | {name} come back |
+| omens.rs:74 | crows coming in over the valley's rim |
+| omens.rs:91 | a kind season |
+| omens.rs:92 | the host from {site} |
+| omens.rs:93 | the beast come up from the deep |
+| omens.rs:95 | a neighbour gone out in a beast's shape |
+| omens.rs:97 | the way into {cavern} |
+| omens.rs:98 | {name} come back |
 | opening.rs:163 | froze |
 | opening.rs:163 | of the cold |
 | opening.rs:164 | starvation |
@@ -2636,9 +2636,11 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | taken.rs:89 | hurt |
 | taken.rs:90 | nothing found |
 | taken.rs:337 | lost in the deep |
-| taken.rs:609 | taken back |
-| taken.rs:610 | known, and turned back below |
-| taken.rs:611 | not known, and turned back below |
+| taken.rs:409 | the child |
+| taken.rs:410 | hurt below, going after {child} |
+| taken.rs:641 | taken back |
+| taken.rs:642 | known, and turned back below |
+| taken.rs:643 | not known, and turned back below |
 | thin.rs:289 | known again by {} |
 | thin.rs:380 | the famine winter in {home} |
 | thin.rs:381 | {home} burning |

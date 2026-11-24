@@ -49,44 +49,14 @@ fn a_warning_read_by_the_one_followed_in_the_spirit_frightens_those_near() {
     assert!(w.agents[other].feelings.of(F::Fear) > 0.0);
 }
 
-#[test]
-fn a_band_on_the_road_is_read_as_a_warning_before_it_is_seen() {
+fn band(id: u32, members: Vec<hf_sim::ids::AgentId>, tick: u64, w: &World) -> hf_sim::threat::Band {
     use hf_sim::threat::{Band, BandState};
-    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
-    let mut w = World::generate(2984, GenParams::small());
-    w.flatten(2, 2, 60, 60, 1);
-    w.meta.founding_site = TilePos::new(30, 30, 2);
-    w.rebuild_caches();
-    let ids = w.found_party(3);
-    w.meta.autoplan = false;
-    let reader = ids[0];
-    w.communities[0].leaders[Domain::Spirit as usize] = Some(reader);
-    let omens = |w: &mut World, days: u64| -> usize {
-        let start = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY;
-        let mut n = 0;
-        for h in 0..days * 24 {
-            w.meta.tick = start + h * TICKS_PER_HOUR + 53;
-            w.last_events.clear();
-            w.events.drain();
-            hf_sim::omens::observe(w);
-            n += w
-                .events
-                .pending
-                .iter()
-                .filter(|e| matches!(&e.kind, EventKind::Omen { good: false, of, .. } if of.contains("crows")))
-                .count();
-        }
-        n
-    };
-    // No band: the birds are only birds.
-    assert_eq!(omens(&mut w, 5), 0);
-    let tick = w.meta.tick;
-    w.bands.push(Band {
-        id: 7,
+    Band {
+        id,
         site: w.overworld.sites[0].id,
         site_name: "Tollmoor".into(),
-        members: Vec::new(),
-        size: 3,
+        members,
+        size: 1,
         camp: TilePos::new(8, 8, 2),
         state: BandState::Approaching,
         formed: tick,
@@ -106,8 +76,73 @@ fn a_band_on_the_road_is_read_as_a_warning_before_it_is_seen() {
         heard: Vec::new(),
         host: false,
         captives: Vec::new(),
-    });
-    // On the road: read once, by day, for this band.
-    assert_eq!(omens(&mut w, 2), 1);
-    assert!(w.faith.foretold.contains(&7));
+    }
+}
+
+/// OST-1312: birds are read only when someone outdoors and devout sees them rise.
+#[test]
+fn birds_are_read_only_when_someone_sees_them() {
+    use hf_sim::mind::beliefs::{Source, Topic};
+    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
+    let mut w = World::generate(2984, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.rebuild_caches();
+    let ids = w.found_party(4);
+    w.meta.autoplan = false;
+    let at = |w: &World, id| w.agents.iter().position(|a| a.id == id).unwrap();
+    let (devout, walker) = (ids[0], ids[3]);
+    for id in &ids[1..3] {
+        let i = at(&w, *id);
+        w.agents[i].pos = w.grid.surface(2, 2);
+    }
+    let d = at(&w, devout);
+    w.agents[d].pos = w.grid.surface(30, 30);
+    w.agents[d]
+        .beliefs
+        .hold(Topic::DeitySigns, 0.8, 0.7, Source::Culture(0), 0);
+    let wi = at(&w, walker);
+    w.agents[wi].pos = w.grid.surface(55, 30);
+    w.agents[wi].community = None;
+    w.agents[wi].band = Some(7);
+    let tick = w.meta.tick;
+    let b = band(7, vec![walker], tick, &w);
+    w.bands.push(b);
+    let day = |w: &mut World| -> Vec<hf_sim::ids::AgentId> {
+        let start = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY;
+        let mut out = Vec::new();
+        for h in 0..24 {
+            w.meta.tick = start + h * TICKS_PER_HOUR + 53;
+            w.last_events.clear();
+            w.events.drain();
+            hf_sim::omens::observe(w);
+            for e in &w.events.pending {
+                if let EventKind::Omen { reader, of, .. } = &e.kind {
+                    if of.contains("crows") {
+                        out.push(*reader);
+                    }
+                }
+            }
+        }
+        out
+    };
+    // 25 tiles off, outdoors, devout: one omen, naming them.
+    assert_eq!(day(&mut w), vec![devout]);
+    // The same band with everyone indoors: none.
+    w.faith.foretold.clear();
+    for k in 0..w.agents.len() {
+        if w.agents[k].band.is_none() {
+            let p = w.agents[k].pos;
+            w.roofs.insert(
+                p,
+                hf_sim::building::Roof {
+                    material: hf_sim::world::Material::THATCH,
+                    quality: 0.7,
+                    built: 0,
+                    snow: 0.0,
+                },
+            );
+        }
+    }
+    assert!(day(&mut w).is_empty());
 }
