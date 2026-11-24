@@ -8,6 +8,7 @@ C:\\Users\\<user>, host.example. Inline suppression markers do not bypass these 
   scan_identifiers.py --range BASE...HEAD     added lines of a git range (CI)
   scan_identifiers.py --staged                added lines of the staged changes (pre-commit)
   scan_identifiers.py --text FILE|-           a PR/issue title and body or any text
+  scan_identifiers.py --tree                  every line of every tracked file (audit; not run in CI)
   scan_identifiers.py --commits BASE..HEAD    commit messages, authors and committers of a range
   scan_identifiers.py --branch NAME           a pull request's head branch name
 What is enforced is listed in docs/HYGIENE.md.
@@ -54,9 +55,12 @@ _AI = ["cla" + "ude", "anthro" + "pic", "chat" + "gpt", "open" + "ai", "co" + "p
 AI_BRAND = re.compile(r"(?<![A-Za-z])(?:" + "|".join(_AI) + r")(?![a-z])", re.I)
 ROBOT = re.compile("\U0001F916")
 # The private working repository's name. The public development repository's own name is fine.
-PRIVATE_REPO = re.compile(r"\b[\w.-]+/(?:ostrog(?![\w-])|ostrog-dev\b|hearth" + "fall\\b)", re.I)
-THE_BOX = re.compile(r"\bthe box\b", re.I)
-FOOTER = re.compile(r"generated (?:with|by)\b.*\b(?:" + "|".join(_AI[:2]) + r")|-projects-attribution|requested by \*\*|project thread|\b(?:cmsg|chan|session|env)_[0-9A-Za-z]{8,}", re.I)
+# Only "<owner login>/<private name>" counts (the owner login is matched by hash), or a github.com URL.
+PRIVATE_REPO = re.compile(r"\b([\w.-]+)/(?:ostrog(?![\w.-])|ostrog-dev(?![\w.-])|hearth" + "fall(?![\\w.-]))", re.I)
+GITHUB_PRIVATE = re.compile(r"github\.com/[\w.-]+/(?:ostrog(?![\w.-])|ostrog-dev(?![\w.-])|hearth" + "fall(?![\\w.-]))", re.I)
+LOGIN_HASH = "02956b4e38bb77dba47ba3b0d70d42daa4f385d3462d60bfb3254ab75ba90561"
+THE_BOX = re.compile(r"\bthe box\b(?![\w-])", re.I)  # "the box-ci" is a status name, not a nickname
+FOOTER = re.compile(r"generated (?:with|by)\b.*\b(?:" + "|".join(_AI[:2]) + r")|-projects-attribution|requested by \*\*|project thread|\b(?:cmsg|chan|session|env)_(?=[0-9A-Za-z]*\d)[0-9A-Za-z]{16,}\b", re.I)
 AI_TRAILER = re.compile(r"^\s*(?:co-authored-by|claude-session|generated-by|assisted-by)\s*:", re.I)
 BAD_BRANCH = re.compile(r"^(?:" + "|".join(["cla" + "ude", "co" + "pilot", "co" + "dex", "gem" + "ini"]) + r")/", re.I)
 
@@ -65,7 +69,9 @@ def content_rules(path, line):
     out = []
     if AI_BRAND.search(line) or ROBOT.search(line):
         out.append("AI tool or vendor name")
-    if PRIVATE_REPO.search(line) and not re.search(r"ostrog-public-ci", line):
+    if GITHUB_PRIVATE.search(line) or any(
+            hashlib.sha256((NAME_SALT + m.group(1).lower()).encode()).hexdigest() == LOGIN_HASH
+            for m in PRIVATE_REPO.finditer(line)):
         out.append("private repository name")
     if THE_BOX.search(line) and not path.endswith((".gd", ".tscn")):
         out.append('"the box" (name the role, e.g. "the build server")')
@@ -130,6 +136,16 @@ def main():
         text = sys.stdin.read() if a[1] == "-" else open(a[1], encoding="utf-8", errors="replace").read()
         for i, line in enumerate(text.splitlines(), 1):
             check(a[1] if a[1] != "-" else "text", i, line, hits, text_rules(line))
+    elif a[:1] == ["--tree"]:
+        for path in subprocess.run(["git", "ls-files"], capture_output=True, text=True, check=True).stdout.splitlines():
+            if path.startswith(SKIP_PATHS) or path.endswith(SKIP_SUFFIX):
+                continue
+            try:
+                lines = open(path, encoding="utf-8", errors="strict").read().splitlines()
+            except (UnicodeDecodeError, OSError):
+                continue
+            for n, line in enumerate(lines, 1):
+                check(path, n, line, hits, content_rules(path, line))
     elif a[:1] == ["--commits"]:
         check_commits(a[1], hits)
     elif a[:1] == ["--branch"]:
@@ -146,7 +162,7 @@ def main():
     if hits:
         print("Hygiene check failed. Remove or reword what is named below (matched text is not shown).")
         print("Use placeholders such as user@example.com, 192.0.2.1, /home/user, host.example. See docs/HYGIENE.md.")
-        print("\n".join(sorted(set(hits))[:60]))
+        print("\n".join(sorted(set(hits))[:200]))
         sys.exit(1)
 
 main()

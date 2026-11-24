@@ -12,7 +12,8 @@ ROOT = Path(__file__).resolve().parents[2]
 SCAN = str(ROOT / "tools/hygiene/scan_identifiers.py")
 NAME = "".join(map(chr, (68, 97, 110)))            # the owner's first name
 BRAND = "Cla" + "ude"
-REPO = "dan" + "hicks96/os" + "trog"               # not followed by -public-ci
+OWNER_LOGIN = "dan" + "hicks96"
+REPO = OWNER_LOGIN + "/os" + "trog"
 
 
 def run(args, text=None, cwd=None):
@@ -43,6 +44,24 @@ class TextRules(unittest.TestCase):
     def test_private_repo(self):
         self.bad(f"see {REPO}/pull/1")
         self.assertEqual(run(["--text", "-"], "see example-owner/ostrog-public-ci/pull/1").returncode, 0)
+
+    def ok(self, text):
+        self.assertEqual(run(["--text", "-"], text).returncode, 0, text)
+
+    def test_private_repo_false_positives(self):
+        self.ok("palette/ostrog.json and app_userdata/Ostrog and godot/ostrog/x")
+        self.ok("see https://github.com/example-owner/ostrog-public-ci/pull/1")
+        self.bad("clone https://github.com/example-owner/os" + "trog and push")
+        self.bad(f"gh api repos/{OWNER_LOGIN}/os" + "trog/commits")
+
+    def test_the_box_false_positives(self):
+        self.ok("the box-ci status on the head")
+        self.bad("run it on the box")
+
+    def test_thread_id_false_positives(self):
+        self.ok("env_variables and session_snapshot and chan_count")
+        self.bad("thread=cmsg_012TReBor8XMdHXqVNRKr1qxRqzUjGAjr7rSALDZrPHsAB")
+        self.bad("session_013fHBkxMuHiWiNPmf5TgWaM")
 
     def test_footer_and_attribution(self):
         self.bad(f"Generated with [{BRAND} Code](https://example.invalid)")
