@@ -1126,10 +1126,10 @@ Narratives:
 
 | where | narrative |
 |---|---|
-| systems/culture.rs:535 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
-| systems/culture.rs:556 | We sow and cook more than we need, because {who} starved. |
-| systems/culture.rs:575 | We take in no strangers, since {who} led people away: {cause}. |
-| systems/culture.rs:620 | We do not eat {k}, because {who} fell ill of it and went hungry. |
+| systems/culture.rs:547 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
+| systems/culture.rs:568 | We sow and cook more than we need, because {who} starved. |
+| systems/culture.rs:587 | We take in no strangers, since {who} led people away: {cause}. |
+| systems/culture.rs:632 | We do not eat {k}, because {who} fell ill of it and went hungry. |
 
 #### The Engine (`engine.rs`)
 
@@ -1398,66 +1398,66 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 
 | file:line | string |
 |---|---|
-| accounts.rs:60 | old age |
-| accounts.rs:62 | starv |
-| accounts.rs:64 | thirst |
-| accounts.rs:66 | froze |
-| accounts.rs:66 | cold |
-| accounts.rs:68 | poison |
-| accounts.rs:70 | fever |
-| accounts.rs:70 | sick |
-| accounts.rs:70 | fester |
-| accounts.rs:72 | bled |
-| accounts.rs:72 | wound |
-| accounts.rs:72 | killed by |
-| accounts.rs:74 | torn |
-| accounts.rs:74 | beast |
-| accounts.rs:76 | drown |
-| accounts.rs:78 | fallen rock |
-| accounts.rs:80 | fell |
-| accounts.rs:82 | lost |
-| accounts.rs:113 | {who} died of a sickness |
-| accounts.rs:114 | {who} died of something they ate |
-| accounts.rs:115 | {who} starved |
-| accounts.rs:116 | {who} died of thirst |
-| accounts.rs:117 | {who} froze |
-| accounts.rs:118 | {who} died of their wounds |
-| accounts.rs:119 | a beast killed {who} |
-| accounts.rs:120 | {who} fell to their death |
-| accounts.rs:121 | {who} drowned |
-| accounts.rs:122 | the rock came down on {who} |
-| accounts.rs:123 | {who} was lost |
-| accounts.rs:124 | {who} died old |
-| accounts.rs:125 | {who} died: {c} |
-| accounts.rs:126 | {who} was cursed |
-| accounts.rs:127 | someone killed {who} |
-| accounts.rs:128 | something took {who} |
-| accounts.rs:129 | {who} was put in the ground here, nobody can say how |
-| accounts.rs:191 | who gathered the valley's food |
-| accounts.rs:192 | who tended the fields |
-| accounts.rs:193 | who fed the table |
-| accounts.rs:194 | who raised the walls |
-| accounts.rs:195 | who dug the stone |
-| accounts.rs:196 | who made things last |
-| accounts.rs:197 | who kept the people together |
-| accounts.rs:198 | who carried the load |
-| accounts.rs:199 | who minded the animals |
-| accounts.rs:208 | someone |
-| accounts.rs:353 | {}, {phrase} |
-| accounts.rs:437 | someone |
-| accounts.rs:471 | someone |
-| accounts.rs:473 | saw it |
-| accounts.rs:474 | told by {} |
-| accounts.rs:475 | told |
-| accounts.rs:476 | read from a grave |
-| accounts.rs:478 | {} ({how}) |
-| accounts.rs:495 | The grave of {who}, day {}. The record: {cause}. |
-| accounts.rs:503 | someone |
-| accounts.rs:513 | {} and {} more |
-| accounts.rs:517 |  Said: {words} ({by}). |
-| agents.rs:461 | fur |
-| agents.rs:462 | feathers |
-| agents.rs:463 | scales |
+| accounts.rs:62 | old age |
+| accounts.rs:64 | starv |
+| accounts.rs:66 | thirst |
+| accounts.rs:68 | froze |
+| accounts.rs:68 | cold |
+| accounts.rs:70 | poison |
+| accounts.rs:72 | fever |
+| accounts.rs:72 | sick |
+| accounts.rs:72 | fester |
+| accounts.rs:74 | bled |
+| accounts.rs:74 | wound |
+| accounts.rs:74 | killed by |
+| accounts.rs:76 | torn |
+| accounts.rs:76 | beast |
+| accounts.rs:78 | drown |
+| accounts.rs:80 | fallen rock |
+| accounts.rs:82 | fell |
+| accounts.rs:84 | lost |
+| accounts.rs:115 | {who} died of a sickness |
+| accounts.rs:116 | {who} died of something they ate |
+| accounts.rs:117 | {who} starved |
+| accounts.rs:118 | {who} died of thirst |
+| accounts.rs:119 | {who} froze |
+| accounts.rs:120 | {who} died of their wounds |
+| accounts.rs:121 | a beast killed {who} |
+| accounts.rs:122 | {who} fell to their death |
+| accounts.rs:123 | {who} drowned |
+| accounts.rs:124 | the rock came down on {who} |
+| accounts.rs:125 | {who} was lost |
+| accounts.rs:126 | {who} died old |
+| accounts.rs:127 | {who} died: {c} |
+| accounts.rs:128 | {who} was cursed |
+| accounts.rs:129 | someone killed {who} |
+| accounts.rs:130 | something took {who} |
+| accounts.rs:131 | {who} was put in the ground here, nobody can say how |
+| accounts.rs:193 | who gathered the valley's food |
+| accounts.rs:194 | who tended the fields |
+| accounts.rs:195 | who fed the table |
+| accounts.rs:196 | who raised the walls |
+| accounts.rs:197 | who dug the stone |
+| accounts.rs:198 | who made things last |
+| accounts.rs:199 | who kept the people together |
+| accounts.rs:200 | who carried the load |
+| accounts.rs:201 | who minded the animals |
+| accounts.rs:210 | someone |
+| accounts.rs:355 | {}, {phrase} |
+| accounts.rs:440 | someone |
+| accounts.rs:479 | someone |
+| accounts.rs:481 | saw it |
+| accounts.rs:482 | told by {} |
+| accounts.rs:483 | told |
+| accounts.rs:484 | read from a grave |
+| accounts.rs:486 | {} ({how}) |
+| accounts.rs:503 | The grave of {who}, day {}. The record: {cause}. |
+| accounts.rs:511 | someone |
+| accounts.rs:521 | {} and {} more |
+| accounts.rs:525 |  Said: {words} ({by}). |
+| agents.rs:470 | fur |
+| agents.rs:471 | feathers |
+| agents.rs:472 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -1502,15 +1502,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | body.rs:324 | {} of its {} left |
 | body.rs:326 | {}% of its mass |
 | body.rs:328 | {} of {} segments |
-| body.rs:448 | , infected |
-| body.rs:453 | fever {}% |
-| body.rs:456 | blood {}% |
-| body.rs:463 | {} set crooked |
-| body.rs:464 | {} lost |
-| body.rs:466 | {} replaced by {what} |
-| body.rs:475 | {} scar{} |
-| body.rs:477 | s |
-| body.rs:485 | sound |
+| body.rs:501 | , infected |
+| body.rs:506 | fever {}% |
+| body.rs:509 | blood {}% |
+| body.rs:516 | {} set crooked |
+| body.rs:517 | {} lost |
+| body.rs:519 | {} replaced by {what} |
+| body.rs:528 | {} scar{} |
+| body.rs:530 | s |
+| body.rs:538 | sound |
 | building.rs:160 | with nothing left to hold it |
 | building.rs:162 | under the weight of the snow |
 | building.rs:200 | when the roof came down |
@@ -2124,24 +2124,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:573 | {name} is already back with the others |
-| opening.rs:574 | what became of {name} is already known |
-| opening.rs:586 | no sign of {who} here |
-| opening.rs:597 | {who} was alive, and is coming back |
-| opening.rs:604 | something |
-| opening.rs:608 | {who} had died there, of {cause} |
-| opening.rs:787 | coming through the portal |
-| opening.rs:939 | the herb-woman |
-| opening.rs:942 | apprenticed to {master} |
-| opening.rs:951 | the carpenter |
-| opening.rs:952 | apprenticed to {master} |
-| opening.rs:961 | the smith |
-| opening.rs:962 | apprenticed to {master} |
-| opening.rs:978 | the quarry |
-| opening.rs:979 | apprenticed to {master} |
-| opening.rs:983 | the baker |
-| opening.rs:984 | apprenticed to {master} |
-| opening.rs:1096 | brought through the portal |
+| opening.rs:575 | {name} is already back with the others |
+| opening.rs:576 | what became of {name} is already known |
+| opening.rs:588 | no sign of {who} here |
+| opening.rs:599 | {who} was alive, and is coming back |
+| opening.rs:606 | something |
+| opening.rs:610 | {who} had died there, of {cause} |
+| opening.rs:789 | coming through the portal |
+| opening.rs:941 | the herb-woman |
+| opening.rs:944 | apprenticed to {master} |
+| opening.rs:953 | the carpenter |
+| opening.rs:954 | apprenticed to {master} |
+| opening.rs:963 | the smith |
+| opening.rs:964 | apprenticed to {master} |
+| opening.rs:980 | the quarry |
+| opening.rs:981 | apprenticed to {master} |
+| opening.rs:985 | the baker |
+| opening.rs:986 | apprenticed to {master} |
+| opening.rs:1098 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
@@ -2188,10 +2188,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | past.rs:602 | the hungry winter |
 | past.rs:603 | the raiders |
 | past.rs:613 | the fire |
-| pilgrimage.rs:57 | in grief |
-| pilgrimage.rs:60 | afraid of the warning read to them |
-| pilgrimage.rs:63 | troubled by what was lost |
-| pilgrimage.rs:71 | the shrine |
+| pilgrimage.rs:61 | in grief |
+| pilgrimage.rs:69 | afraid of the warning read to them |
+| pilgrimage.rs:72 | troubled by what was lost |
+| pilgrimage.rs:80 | the shrine |
 | plan.rs:57 | body |
 | plan.rs:82 | a part id or an old part name |
 | plan.rs:87 | part id out of range |
@@ -2361,14 +2361,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:438 | scenario |
-| scenario.rs:479 | brought by the founders |
-| scenario.rs:789 | scenario |
-| scenario.rs:796 | scenario |
-| scenario.rs:804 | scenario |
-| scenario.rs:823 | scenario |
-| scenario.rs:843 | scenario |
-| scenario.rs:1013 | scenario |
+| scenario.rs:442 | scenario |
+| scenario.rs:483 | brought by the founders |
+| scenario.rs:793 | scenario |
+| scenario.rs:800 | scenario |
+| scenario.rs:808 | scenario |
+| scenario.rs:827 | scenario |
+| scenario.rs:847 | scenario |
+| scenario.rs:1017 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |
@@ -2784,27 +2784,27 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | mind/intentions.rs:115 | abandoned |
 | mind/intentions.rs:116 | expired |
 | mind/intentions.rs:117 | superseded |
-| mind/problems.rs:30 | dangerous water |
-| mind/problems.rs:31 | flooding |
-| mind/problems.rs:32 | food spoiling |
-| mind/problems.rs:33 | food shortage |
-| mind/problems.rs:34 | resources depleted |
-| mind/problems.rs:35 | dangerous heat |
-| mind/problems.rs:36 | fire |
-| mind/problems.rs:37 | structural danger |
-| mind/problems.rs:38 | a problem |
-| mind/problems.rs:76 | move to safety |
-| mind/problems.rs:77 | seek shelter |
-| mind/problems.rs:78 | move supplies |
-| mind/problems.rs:79 | preserve food |
-| mind/problems.rs:80 | search for resources |
-| mind/problems.rs:81 | warn others |
-| mind/problems.rs:82 | investigate |
-| mind/problems.rs:83 | ask for help |
-| mind/problems.rs:84 | wait |
-| mind/problems.rs:85 | ignore it |
-| mind/problems.rs:86 | flee |
-| mind/problems.rs:87 | try something else |
+| mind/problems.rs:46 | dangerous water |
+| mind/problems.rs:47 | flooding |
+| mind/problems.rs:48 | food spoiling |
+| mind/problems.rs:49 | food shortage |
+| mind/problems.rs:50 | resources depleted |
+| mind/problems.rs:51 | dangerous heat |
+| mind/problems.rs:52 | fire |
+| mind/problems.rs:53 | structural danger |
+| mind/problems.rs:54 | a problem |
+| mind/problems.rs:92 | move to safety |
+| mind/problems.rs:93 | seek shelter |
+| mind/problems.rs:94 | move supplies |
+| mind/problems.rs:95 | preserve food |
+| mind/problems.rs:96 | search for resources |
+| mind/problems.rs:97 | warn others |
+| mind/problems.rs:98 | investigate |
+| mind/problems.rs:99 | ask for help |
+| mind/problems.rs:100 | wait |
+| mind/problems.rs:101 | ignore it |
+| mind/problems.rs:102 | flee |
+| mind/problems.rs:103 | try something else |
 | mind/telling.rs:62 | which {} is the bad one |
 | mind/traits.rs:28 | industrious |
 | mind/traits.rs:29 | easygoing |
@@ -3242,23 +3242,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/crafts.rs:242 | gone |
 | systems/crafts.rs:337 | refused to learn {} from {} |
 | systems/crafts.rs:345 | taught by {} |
-| systems/culture.rs:158 | how their people tell it: {telling} |
-| systems/culture.rs:214 | told by {tname} at the hearth |
-| systems/culture.rs:222 | the tale that {} |
-| systems/culture.rs:243 | how they came to hold that {} |
-| systems/culture.rs:246 | what they remember of the other side of the portal |
-| systems/culture.rs:291 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
-| systems/culture.rs:322 | hold that {} |
-| systems/culture.rs:528 | first |
-| systems/culture.rs:529 | second |
-| systems/culture.rs:530 | third |
-| systems/culture.rs:531 | fourth |
-| systems/culture.rs:532 | fifth |
-| systems/culture.rs:533 | {n}th |
-| systems/culture.rs:551 | starvation |
-| systems/culture.rs:831 | ale |
-| systems/culture.rs:833 | berry wine |
-| systems/culture.rs:836 | drunk |
+| systems/culture.rs:170 | how their people tell it: {telling} |
+| systems/culture.rs:226 | told by {tname} at the hearth |
+| systems/culture.rs:234 | the tale that {} |
+| systems/culture.rs:255 | how they came to hold that {} |
+| systems/culture.rs:258 | what they remember of the other side of the portal |
+| systems/culture.rs:303 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
+| systems/culture.rs:334 | hold that {} |
+| systems/culture.rs:540 | first |
+| systems/culture.rs:541 | second |
+| systems/culture.rs:542 | third |
+| systems/culture.rs:543 | fourth |
+| systems/culture.rs:544 | fifth |
+| systems/culture.rs:545 | {n}th |
+| systems/culture.rs:563 | starvation |
+| systems/culture.rs:843 | ale |
+| systems/culture.rs:845 | berry wine |
+| systems/culture.rs:848 | drunk |
 | systems/decide.rs:99 | someone |
 | systems/decide.rs:103 | search_for_the_lost |
 | systems/decide.rs:104 | go looking for one of the lost near {at} |
