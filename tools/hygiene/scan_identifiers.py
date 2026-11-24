@@ -89,14 +89,15 @@ def check(label, lineno, line, hits, extra=()):
         hits.append(f"{label}:{lineno}: {name}")
 
 def check_commits(rng, hits):
-    fmt = "%H%x1f%an%x1f%ae%x1f%cn%x1f%ce%x1f%B%x1e"
+    fmt = "%H%x1f%an%x1f%ae%x1f%cn%x1f%ce%x1f%P%x1f%B%x1e"
     raw = subprocess.run(["git", "log", "--no-color", "--format=" + fmt, rng],
                          capture_output=True, text=True, errors="replace", check=True).stdout
     for rec in (r for r in raw.split("\x1e") if r.strip()):
-        sha, an, ae, cn, ce, body = (rec.strip("\n").split("\x1f") + [""] * 6)[:6]
+        sha, an, ae, cn, ce, parents, body = (rec.strip("\n").split("\x1f") + [""] * 7)[:7]
         c = sha[:9]
-        for who, name, mail in (("author", an, ae), ("committer", cn, ce)):
-            if not re.search(r"@users\.noreply\.github\.com$|@example\.(com|org|net)$", mail, re.I):
+        merge = len(parents.split()) > 1  # merge commits (incl. the web "Update branch"/merge button) carry the clicker's identity
+        for who, name, mail in (() if merge else (("author", an, ae), ("committer", cn, ce))):
+            if not re.search(r"@users\.noreply\.github\.com$|^noreply@github\.com$|@example\.(com|org|net)$|@[\w.-]*\.(example|invalid|test)$", mail, re.I):
                 hits.append(f"commit {c}: {who} email is not a noreply address (use the neutral identity)")
             if has_owner_name(name) or AI_BRAND.search(name):
                 hits.append(f"commit {c}: {who} name is not neutral (use the neutral identity)")

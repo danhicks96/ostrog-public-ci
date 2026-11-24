@@ -73,12 +73,25 @@ class CommitRules(unittest.TestCase):
         d = self.repo("Ostrog CI", "ci@users.noreply.github.com", "Fix a thing")
         self.assertEqual(run(["--commits", "HEAD~1..HEAD"], cwd=d).returncode, 0)
 
+    def test_lane_identity_passes(self):
+        d = self.repo("Ostrog CI", "ci@ostrog.invalid", "Fix a thing")
+        self.assertEqual(run(["--commits", "HEAD~1..HEAD"], cwd=d).returncode, 0)
+
+    def test_web_merge_commit_identity_is_not_checked(self):
+        d = self.repo("Ostrog CI", "ci@users.noreply.github.com", "Fix")
+        g = lambda *a: subprocess.run(["git", *a], cwd=d, check=True, capture_output=True,
+                                      env={**os.environ, "GIT_CONFIG_GLOBAL": "/dev/null"})
+        g("checkout", "-q", "-b", "side", "HEAD~1"); (Path(d) / "b").write_text("b\n"); g("add", "b")
+        g("commit", "-qm", "side")
+        g("-c", f"user.name={NAME} Smith", "-c", "user.email=p@mail.org", "merge", "--no-ff", "-q", "master", "-m", "Merge branch")
+        self.assertEqual(run(["--commits", "HEAD~2..HEAD"], cwd=d).returncode, 0)
+
     def test_ai_trailer(self):
         d = self.repo("Ostrog CI", "ci@users.noreply.github.com", f"Fix\n\nCo-Authored-By: {BRAND} <x@example.com>")
         self.assertEqual(run(["--commits", "HEAD~1..HEAD"], cwd=d).returncode, 1)
 
     def test_personal_email_and_name(self):
-        d = self.repo("Ostrog CI", "someone@mail.invalid", "Fix")
+        d = self.repo("Ostrog CI", "someone@mail.org", "Fix")
         self.assertEqual(run(["--commits", "HEAD~1..HEAD"], cwd=d).returncode, 1)
         d = self.repo(NAME + " Smith", "ci@users.noreply.github.com", "Fix")
         self.assertEqual(run(["--commits", "HEAD~1..HEAD"], cwd=d).returncode, 1)
