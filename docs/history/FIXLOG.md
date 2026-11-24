@@ -1,5 +1,15 @@
 # Fix log
 
+## 2026-11-24: a body's moving, manipulation and sight can be read (OST-1310)
+
+- Symptom: systems that care whether someone can walk, use their hands or see had no single place
+  to ask.
+- Cause: no such reading existed. This is a pure addition with no caller yet, so behaviour and the
+  simulation digest do not change.
+- Fix: `Body::capacities` returns moving, manipulation and sight, each from 0.1 to 1.0, from the
+  parts, wounds and ailments. First-cut numbers, to be retuned. It is saved nowhere.
+- Guard: `tests/bodies.rs` `capacities_follow_the_parts`; it does not compile without the method.
+
 ## 2026-11-22: unused observation and problem kinds are marked reserved (OST-471)
 
 - Symptom: six observation kinds and six problem kinds looked like features but nothing writes or
