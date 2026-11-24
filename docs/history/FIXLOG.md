@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-24: release notes get a short, watcher-first format
+
+- Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every
+  release, and carried ticket numbers and internal notes in a header comment.
+- Fix: `docs/RELEASE-NOTES-TEMPLATE.md` sets a headline, a few highlights, grouped one-line
+  changes, a length budget and a worked example. Docs only, no guard test applies.
+
 ## 2026-11-22: wild plants read their ground, water, shade and crowding (OST-1404)
 
 - Symptom: every plant that is not a crop grew at the weather's factor alone, so a berry bush on
