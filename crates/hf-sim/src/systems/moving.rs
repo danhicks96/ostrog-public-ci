@@ -46,9 +46,7 @@ pub fn observe(w: &mut World) {
                     )
                 })
             }
-            EventKind::CaveIn { at, .. }
-            | EventKind::Collapse { at, .. }
-            | EventKind::UpperFloorFell { at, .. } => {
+            EventKind::Collapse { at, .. } | EventKind::UpperFloorFell { at, .. } => {
                 nearest_community(w, *at, 45).map(|c| (c, "the rock came down".to_string()))
             }
             EventKind::Breached { .. } => {

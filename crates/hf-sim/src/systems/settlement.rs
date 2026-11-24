@@ -1379,6 +1379,47 @@ fn plan_community(w: &mut World, cid: crate::ids::CommunityId) {
             d.requirements = vec![];
             w.designations.push(d);
         }
+
+        // 8a'. A pot for the fire: a hearth with a Cook order open
+        // or freshly posted this pass stands in for "cooked at lately" (no new state needed).
+        // If it has no CookingPot, finished or ordered, within a tile, and a Vessel is in
+        // store, post a clay pot costing that vessel.
+        let cooking = cooks_open > 0
+            || w.designations
+                .iter()
+                .any(|d| d.kind == DesignationKind::Cook && d.pos == hp);
+        if cooking {
+            let pot_near = w.structures.iter().any(|s| {
+                s.kind == StructureKind::CookingPot && here.holds(s.pos) && s.pos.dist(hp) <= 1
+            }) || w.designations.iter().any(|d| {
+                matches!(
+                    d.kind,
+                    DesignationKind::BuildStructure(StructureKind::CookingPot, _)
+                ) && d.pos.dist(hp) <= 1
+            });
+            if !pot_near && count_kind(w, &here, ItemKind::Vessel) > 0 {
+                // The structure's only cost is the vessel (`structure_cost`), so it is a clay
+                // pot whatever the vessel was made of; no other store item is consumed.
+                let mat = Material::CLAY;
+                let blocked = |p: TilePos| {
+                    w.structures.iter().any(|s| s.pos == p)
+                        || w.designations.iter().any(|d| d.pos == p)
+                };
+                let spot = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+                    .into_iter()
+                    .map(|(dx, dy)| hp.offset(dx, dy, 0))
+                    .find(|p| w.grid.walkable(*p) && !blocked(*p));
+                if let Some(spot) = spot {
+                    let d = make(
+                        w,
+                        DesignationKind::BuildStructure(StructureKind::CookingPot, mat),
+                        spot,
+                        7,
+                    );
+                    w.designations.push(d);
+                }
+            }
+        }
     }
 
     // 8a. Fires are met by whoever is there and knows what to do (decide.rs, techniques).

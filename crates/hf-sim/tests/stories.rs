@@ -202,3 +202,77 @@ fn a_story_told_at_the_hearth_is_heard_as_their_people_tell_it() {
     assert_eq!(st.culture, c, "the stranger's people's own telling");
     assert!(what.ends_with(&hf_sim::realm::stories::telling(&w.realm, st)));
 }
+
+/// A hearth of `n` sitters, all of one people; the first holds story S and so do all but
+/// `lacking` of the rest. Returns the story told that evening to the circle, if any.
+fn hearth_with(
+    seed: u64,
+    n: usize,
+    lacking: usize,
+) -> (World, Vec<hf_sim::ids::AgentId>, Option<u32>) {
+    use hf_sim::mind::activity::Activity;
+    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
+    let mut w = old_world(seed);
+    let c = w.realm.stories.last().map(|s| s.culture).expect("stories");
+    let cid = w
+        .agents
+        .iter()
+        .find_map(|a| a.community)
+        .expect("a community");
+    let home = w.communities.iter().find(|x| x.id == cid).unwrap().home;
+    if hf_sim::systems::culture::hearth_of(&w, cid).is_none() {
+        w.place_structure(
+            hf_sim::structures::StructureKind::Hearth,
+            home,
+            hf_sim::world::Material::STONE_BLOCK,
+            true,
+        );
+    }
+    let h = hf_sim::systems::culture::hearth_of(&w, cid).unwrap();
+    for a in w.agents.iter_mut() {
+        a.pos = hf_sim::ids::TilePos::new(h.x + 20, h.y + 20, h.z);
+    }
+    let mut ids = Vec::new();
+    for _ in 0..n {
+        let id = w.spawn_agent(hf_sim::agents::Species::Person, h.offset(1, 0, 0));
+        hf_sim::species::raise_in(&mut w, id, c);
+        ids.push(id);
+    }
+    let s = w.agents.iter().find(|a| a.id == ids[0]).unwrap().stories[0];
+    for (k, id) in ids.iter().enumerate() {
+        let a = w.agents.iter_mut().find(|a| a.id == *id).unwrap();
+        a.community = Some(cid);
+        a.activity = Activity::Idle;
+        a.pos = h.offset(1, 0, 0);
+        a.stories.clear();
+        if k < n - lacking {
+            a.stories.push(s);
+        }
+    }
+    let day = w.meta.tick / TICKS_PER_DAY + 1;
+    w.meta.tick = day * TICKS_PER_DAY + 19 * TICKS_PER_HOUR + TICKS_PER_HOUR / 2;
+    hf_sim::systems::culture::step(&mut w);
+    let told = w.events.pending.iter().find_map(|e| match &e.kind {
+        hf_sim::events::EventKind::HearthTale { what, .. }
+            if what.starts_with("how their people tell it: ") =>
+        {
+            Some(s)
+        }
+        _ => None,
+    });
+    (w, ids, told)
+}
+
+#[test]
+fn a_story_most_have_heard_is_not_told_again() {
+    // Eight at the fire, seven know it: one newcomer is not enough to tell it to everyone.
+    let (_, _, told) = hearth_with(41, 8, 1);
+    assert!(told.is_none(), "a story seven of eight know is not told");
+    // Four of the eight lack it: it is told, and all four now hold it.
+    let (w, ids, told) = hearth_with(41, 8, 4);
+    let s = told.expect("a story half the circle lacks is told");
+    for id in &ids {
+        let a = w.agents.iter().find(|a| a.id == *id).unwrap();
+        assert!(a.stories.contains(&s), "everyone now holds it");
+    }
+}

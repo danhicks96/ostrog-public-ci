@@ -712,21 +712,8 @@ fn event_because(
     line: &str,
 ) -> String {
     use hf_sim::events::EventKind as K;
-    let cause_id = match &e.kind {
-        K::Possessed { cause, .. }
-        | K::TrueDream { cause, .. }
-        | K::Drenched { cause, .. }
-        | K::VerminDrawn { cause, .. }
-        | K::VerminBite { cause, .. }
-        | K::Festered { cause, .. }
-        | K::Weakened { cause, .. }
-        | K::SickenedWeak { cause, .. }
-        | K::RainSpoiled { cause, .. }
-        | K::HealerLost { cause, .. }
-        | K::WoundFestered { cause, .. } => Some(*cause),
-        K::CustomFormed { origin, .. } | K::CustomAdopted { origin, .. } => Some(*origin),
-        _ => None,
-    };
+    // The recorded cause (the list lives in view::causes, shared with the "why?" chain).
+    let cause_id = hf_sim::view::causes::cause_of(&e.kind);
     if let Some(cid) = cause_id {
         if let Ok(Some((hid, ctick, detail))) = chronicle.row(cid) {
             if let Some(cev) = hf_sim::view::history::event_from_row(hid, ctick, &detail) {
@@ -796,11 +783,16 @@ fn communities_line(w: &World) -> String {
                 .iter()
                 .filter(|a| a.community == Some(c.id))
                 .count();
-            if away > 0 {
+            let mut line = if away > 0 {
                 format!("{} {} ({} away)", c.name, here, away)
             } else {
                 format!("{} {}", c.name, here)
+            };
+            if let Some(word) = hf_sim::society::cohesion_word(c.cohesion) {
+                line.push_str(", ");
+                line.push_str(word);
             }
+            line
         })
         .collect();
     parts.join(" · ")
@@ -1443,6 +1435,58 @@ impl SimHost {
         self.summary_range(from_tick, to, 12)
     }
 
+    /// The Catch Up card since `from_tick`: Dictionary {text, from, to}, `text` being the card in
+    /// reading order (headline in words, named changes, folded details) as BBCode. Empty when
+    /// there is no world. `summary_since` and its raw `counts` stay as they were.
+    #[func]
+    fn catch_up_since(&mut self, from_tick: i64) -> VarDictionary {
+        self.settle();
+        let mut d = VarDictionary::new();
+        let Some(s) = self.session.as_ref() else {
+            return d;
+        };
+        let to = s.world.tick();
+        match summary::catch_up_card(&s.world, &s.chronicle, from_tick.max(0) as u64, to, 12) {
+            Ok(card) => {
+                d.set("text", &GString::from(card.bbcode().as_str()));
+                d.set("has_news", card.has_news);
+                d.set("from", from_tick);
+                d.set("to", to as i64);
+            }
+            Err(e) => godot_error!("catch up failed: {e}"),
+        }
+        d
+    }
+
+    /// The Catch Up card for a span ending now: `span` is "previous_day", "current_day",
+    /// "previous_season" or "current_season". Dictionary {text, has_news, from, to}; empty when
+    /// there is no world, the name is unknown, or there is no previous span yet.
+    #[func]
+    fn catch_up_span(&mut self, span: GString) -> VarDictionary {
+        self.settle();
+        let mut d = VarDictionary::new();
+        let Some(s) = self.session.as_ref() else {
+            return d;
+        };
+        let Some(which) = summary::CatchUpSpan::parse(&span.to_string()) else {
+            return d;
+        };
+        let now = s.world.tick();
+        match summary::catch_up_card_span(&s.world, &s.chronicle, which, 12) {
+            Ok(Some(card)) => {
+                let (from, to) =
+                    summary::catch_up_span_bounds(s.world.meta.epoch, now, which).unwrap_or((0, 0));
+                d.set("text", &GString::from(card.bbcode().as_str()));
+                d.set("has_news", card.has_news);
+                d.set("from", from.max(0));
+                d.set("to", to);
+            }
+            Ok(None) => {}
+            Err(e) => godot_error!("catch up span failed: {e}"),
+        }
+        d
+    }
+
     /// The record the viewer has been told of between two ticks (after `from_tick`, up to and
     /// including `to_tick`), in the shape of `summary_since`, with at most `max_major` lines.
     /// The timelapse stores it beside each sample as that sample's event markers (#484).
@@ -1599,8 +1643,12 @@ impl SimHost {
         if let Ok(list) =
             hf_sim::view::history::major(&s.world, &s.chronicle, limit.max(1) as usize)
         {
-            for (_, tick, line, detail) in list {
+            for (hid, tick, line, detail) in list {
                 let mut text = format!("{}  {}", hf_sim::view::history::when(&s.world, tick), line);
+                // An event the record gives a cause for opens its chain.
+                if hf_sim::view::causes::has_cause(&s.chronicle, hid) {
+                    text.push_str(&format!("  [url=why:{hid}]why?[/url]"));
+                }
                 if let Some(dd) = detail {
                     text.push_str("\n    ");
                     text.push_str(&dd);
@@ -1882,6 +1930,12 @@ impl SimHost {
         }
         d.set("known_list", &known);
         d.set("mood", a.mood);
+        d.set(
+            "mood_word",
+            &GString::from(hf_sim::view::why::mood_word(hf_sim::view::why::mood_band(
+                a,
+            ))),
+        );
         d.set(
             "tool",
             &GString::from(
@@ -3698,6 +3752,7 @@ impl SimHost {
             max_major,
         ) {
             Ok(sum) => {
+                let counts_words = sum.counts_in_words();
                 let mut counts = VarDictionary::new();
                 for (k, n) in sum.counts {
                     counts.set(&GString::from(k.as_str()), n);
@@ -3726,6 +3781,7 @@ impl SimHost {
                     }
                 }
                 d.set("counts", &counts);
+                d.set("counts_words", &GString::from(counts_words.as_str()));
                 d.set("lines", &lines);
                 d.set("from", from_tick);
                 d.set("to", to as i64);

@@ -221,6 +221,15 @@ pub struct Agent {
     /// #452).
     #[serde(default)]
     pub accounts: Vec<crate::accounts::Account>,
+    /// The warning signs they have set out to pray over, newest last, at most
+    /// `pilgrimage::PRAYED_KEPT`: one warning sends a person to the shrine once (OST-505).
+    #[serde(default)]
+    pub prayed_over: Vec<crate::ids::EventId>,
+    /// The deaths whose graves they have read, newest last, at most `accounts::GRAVES_KEPT`:
+    /// kept apart from `accounts` so forgetting what they believe does not send them back to
+    /// read the same stone again (accounts.rs, OST-165).
+    #[serde(default)]
+    pub graves_read: Vec<crate::ids::EventId>,
     /// A hidden potential carried through the portal, if any (resonance.rs, #308): shown
     /// nowhere until it shows itself.
     #[serde(default)]
@@ -237,8 +246,9 @@ pub struct Agent {
     /// The clothes they wear are leather or fur (C34): warmer.
     #[serde(default)]
     pub furred: bool,
-    /// How soaked they are, 0..1 (#1261 tracks the rise and dry-off; this crate only reads it
-    /// for the cold-chill factor in `cold_step`). 0 in an old save.
+    /// How soaked they are, 0..1 (OST-903): rain wets those outdoors, a roof or a hearth dries
+    /// them (hazards.rs `cold_step`); it also feeds the cold-chill factor there. 0 in
+    /// an old save.
     #[serde(default)]
     pub wet: f32,
     #[serde(default)]
@@ -349,6 +359,18 @@ fn one() -> f32 {
 
 pub const ADULT_YEARS: u64 = 15;
 pub const ELDER_YEARS: u64 = 50;
+/// A child is an infant below this many (human) years, a small child below `SMALL_YEARS`, an
+/// older child after (D101). Scaled for other kinds by their maturity.
+pub const INFANT_YEARS: u64 = 2;
+pub const SMALL_YEARS: u64 = 7;
+
+/// How far a child has come, below grown. Not saved, so not position-bound.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Childhood {
+    Infant,
+    Small,
+    Older,
+}
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum LifeStage {
@@ -509,6 +531,33 @@ impl Agent {
     pub fn ailing_years(&self) -> (u64, u64) {
         let (_, elder) = self.stage_years();
         (elder, elder + elder / 10)
+    }
+
+    /// How far along a child is, or `None` for one not a child. The human stage ages are
+    /// scaled by the kind's maturity over a human's `ADULT_YEARS`.
+    pub fn childhood(&self, now: u64) -> Option<Childhood> {
+        if self.stage(now) != LifeStage::Child {
+            return None;
+        }
+        let scale = self.stage_years().0 as f32 / ADULT_YEARS as f32;
+        let y = self.age_years(now) as f32;
+        Some(if y < INFANT_YEARS as f32 * scale {
+            Childhood::Infant
+        } else if y < SMALL_YEARS as f32 * scale {
+            Childhood::Small
+        } else {
+            Childhood::Older
+        })
+    }
+
+    /// Past the infant stage: a small or older child, or grown.
+    pub fn past_infancy(&self, now: u64) -> bool {
+        self.childhood(now) != Some(Childhood::Infant)
+    }
+
+    /// Grown, or a child at least as far along as `stage`.
+    pub fn old_enough_for(&self, stage: Childhood, now: u64) -> bool {
+        self.childhood(now).is_none_or(|c| c >= stage)
     }
 
     pub fn stage(&self, now: u64) -> LifeStage {

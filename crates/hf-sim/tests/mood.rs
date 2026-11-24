@@ -54,3 +54,39 @@ fn an_old_memory_without_last_loads() {
     assert_eq!(m.formed, 12345);
     assert_eq!(m.last, 0, "absent from an old save, defaults to 0");
 }
+
+#[test]
+fn mood_terms_sum_to_mood() {
+    use hf_sim::agents::Species;
+    use hf_sim::ids::TilePos;
+    use hf_sim::world::gen::GenParams;
+    use hf_sim::World;
+    let mut w = World::generate(5101, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.rebuild_caches();
+    let ids = w.found_party(3);
+    let i = w
+        .agents
+        .iter()
+        .position(|a| a.id == ids[0] && a.species == Species::Person)
+        .unwrap();
+    w.agents[i].needs.hunger = 0.1;
+    w.agents[i].needs.thirst = 0.2;
+    let stripe = hf_sim::systems::needs::STRIPE as usize;
+    // Step until this person's stripe has run once.
+    for _ in 0..stripe {
+        hf_sim::systems::needs::step(&mut w);
+        w.meta.tick += 1;
+    }
+    let a = &w.agents[i];
+    // Nothing but the needs stripe ran, and a person's needs change only on their own stripe, so
+    // the terms read now are the terms the stripe summed.
+    let t = hf_sim::systems::needs::mood_terms(a, w.meta.tick);
+    let sum: f32 = t.iter().sum();
+    assert!(
+        (sum.clamp(-1.0, 1.0) - a.mood).abs() < 1e-6,
+        "terms {t:?} sum {sum} vs mood {}",
+        a.mood
+    );
+}

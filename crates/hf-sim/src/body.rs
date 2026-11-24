@@ -344,7 +344,60 @@ impl Default for Body {
     }
 }
 
+/// What a body can still do, one number per question a system may ask (OST-1310): can they walk,
+/// use their hands, see. Each is 0.1..1.0. Pure; saved nowhere.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Capacities {
+    pub moving: f32,
+    pub manipulation: f32,
+    pub sight: f32,
+}
+
 impl Body {
+    /// Moving, manipulation and sight from the parts, wounds and ailments (tissue depth
+    /// is read as it is). First-cut numbers, to be retuned.
+    pub fn capacities(&self) -> Capacities {
+        let limbs = |pair: [Part; 2]| -> f32 {
+            let mut c = 1.0f32;
+            for part in pair {
+                match self.parts.get(&part) {
+                    Some(PartState::Lost) => c -= 0.4,
+                    Some(PartState::Replaced(_)) => c -= 0.15,
+                    Some(PartState::Scarred) => c -= 0.15,
+                    None => {}
+                }
+            }
+            for w in self.wounds.iter().filter(|w| pair.contains(&w.part)) {
+                let k = match w.tissue {
+                    Tissue::Bone => 0.8,
+                    Tissue::Muscle => 0.5,
+                    Tissue::Skin | Tissue::Organ => 0.2,
+                };
+                c -= w.severity * k;
+            }
+            if self.blood < 0.7 {
+                c *= 0.85;
+            }
+            if self.ailments.contains(&Ailment::BadBack) {
+                c *= 0.8;
+            }
+            c.clamp(0.1, 1.0)
+        };
+        let mut sight = 1.0f32;
+        if self.ailments.contains(&Ailment::DimEyes) {
+            sight *= 0.6;
+        }
+        for w in self.wounds.iter().filter(|w| w.part == Part::HEAD) {
+            if matches!(w.tissue, Tissue::Bone | Tissue::Organ) {
+                sight -= 0.5 * w.severity;
+            }
+        }
+        Capacities {
+            moving: limbs([Part::LEG_L, Part::LEG_R]),
+            manipulation: limbs([Part::ARM_L, Part::ARM_R]),
+            sight: sight.clamp(0.1, 1.0),
+        }
+    }
     pub fn worst_wound(&self) -> f32 {
         self.wounds.iter().map(|w| w.severity).fold(0.0, f32::max)
     }
