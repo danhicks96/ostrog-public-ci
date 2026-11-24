@@ -1,6 +1,6 @@
-# Gentle housekeeping: draft and open pull requests and issues with no activity get a label
-# after 60 days and close after 30 more. Nothing is closed in the first 60 days, and items
-# labelled keep, pinned or security are never touched.
+# Gentle housekeeping for pull requests only: no activity for 60 days gets a label, 30 more
+# days closes it. Issues are never touched (the backlog is intentionally idle). PRs labelled
+# keep, pinned or security are exempt.
 name: stale
 
 on:
@@ -19,12 +19,12 @@ jobs:
     steps:
       - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9
         with:
-          days-before-stale: 60
-          days-before-close: 30
+          days-before-pr-stale: 60
+          days-before-pr-close: 30
+          # Issues are never marked stale or closed: the backlog is intentionally idle.
+          days-before-issue-stale: -1
+          days-before-issue-close: -1
           operations-per-run: 60
-          exempt-issue-labels: keep,pinned,security
           exempt-pr-labels: keep,pinned,security
-          stale-issue-label: stale
           stale-pr-label: stale
-          stale-issue-message: "No activity for 60 days, so this is marked stale. It closes in 30 days unless something changes. Outside issues are not being taken yet."
           stale-pr-message: "No activity for 60 days, so this is marked stale. It closes in 30 days unless it is updated."

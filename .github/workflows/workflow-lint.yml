@@ -29,6 +29,7 @@ jobs:
         run: |
           ver=1.7.9
           curl -fsSL "https://github.com/rhysd/actionlint/releases/download/v${ver}/actionlint_${ver}_linux_amd64.tar.gz" -o /tmp/al.tgz
+          echo "233b280d05e100837f4af1433c7b40a5dcb306e3aa68fb4f17f8a7f45a7df7b4  /tmp/al.tgz" | sha256sum -c -
           tar -xzf /tmp/al.tgz -C /tmp actionlint
           /tmp/actionlint -color
 
@@ -44,5 +45,5 @@ jobs:
           python-version: "3.12"
       - name: zizmor
         run: |
-          python3 -m pip install --quiet "zizmor>=1.0,<2"
+          python3 -m pip install --quiet "zizmor==1.33.1"
           zizmor --offline --min-severity medium .github

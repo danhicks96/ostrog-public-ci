@@ -14,7 +14,7 @@ version in a comment), and skip the Rust build, so none of them slows `ci`.
 | CodeQL (actions, rust) | `workflows/codeql.yml` | Injection and unsafe patterns in workflows and Rust; no build needed | Weekly, PRs touching `.github/` | Public repo, or Code Security plus repo variable `CODEQL_ENABLED=true` |
 | OpenSSF Scorecard | `workflows/scorecard.yml` | Grades repo hygiene, branch protection and pinning | Weekly | Public repo (skipped while private) |
 | Labeler | `workflows/labeler.yml`, `labeler.yml` | Triage noise: labels PRs by changed paths. Never runs PR code | PRs | nothing |
-| Stale handling | `workflows/stale.yml` | Old open items; labels at 60 days, closes 30 days later, exempts `keep`, `pinned`, `security` | Weekly | nothing |
+| Stale handling | `workflows/stale.yml` | Old open pull requests only (issues are never touched); labels at 60 days, closes 30 days later, exempts `keep`, `pinned`, `security` | Weekly | nothing |
 | CODEOWNERS | `CODEOWNERS` | Review requests for `.github/`, hygiene, licences | PRs | Code-owner review only matters if the ruleset requires it |
 | Security policy | `/SECURITY.md` | Tells reporters to use private reporting | n/a | Private vulnerability reporting switched on |
 | Issue and PR templates | `ISSUE_TEMPLATE/`, `PULL_REQUEST_TEMPLATE.md` | Reminds contributors of the rules and to share no private information | n/a | nothing |
