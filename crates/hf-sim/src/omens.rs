@@ -3,21 +3,29 @@
 //! warning, gladness for a blessing. The reading is on record.
 //!
 //! Outside pressure is read before it is seen (#297 ask 4, threat.rs): while a band is on the
-//! road to the valley and nobody has sighted it, each community's reader has a one in five
-//! chance each daylight hour of reading a warning in the birds, once for each band. A warning
-//! read this way is a sign like any other (faith.rs), borne out if the band costs a life.
-//! FIXLOG 2026-10-27 "the omens never foretold a band".
+//! road to the valley and nobody has sighted it, birds rise over the strangers; someone of a
+//! community who is awake, outdoors and within `BIRDS_SEEN` tiles of a walker (beyond the 12 of
+//! a sighting) sees it, and reads a warning in it if devout enough (`observances::LEADS_AT`),
+//! once for each band. A warning read this way is a sign like any other (faith.rs), borne out
+//! if the band costs a life. Crows were once read by a roll, not by anyone seeing them
+//! (OST-1312).
 
 use crate::events::{EventKind, Severity};
 use crate::mind::feelings::{gain, FeelingKind};
 use crate::World;
 
-/// Chance each daylight hour that a band on the road is read in the signs.
-pub const FORETOLD_A_HOUR: f64 = 0.2;
+/// How far off someone outdoors can see birds lift over strangers walking in.
+pub const BIRDS_SEEN: i32 = 30;
+
+type Sign = (
+    String,
+    bool,
+    Option<crate::ids::TilePos>,
+    Option<crate::ids::AgentId>,
+);
 
 /// A band on the road, not yet sighted, read as a warning (once for each band).
-fn foretell(w: &mut World) -> Vec<(String, bool, Option<crate::ids::TilePos>)> {
-    use rand::Rng;
+fn foretell(w: &mut World) -> Vec<Sign> {
     let tick = w.meta.tick;
     let hour = (tick % crate::time::TICKS_PER_DAY) / crate::time::TICKS_PER_HOUR;
     if tick % crate::time::TICKS_PER_HOUR != 53 || !(6..=20).contains(&hour) {
@@ -35,13 +43,29 @@ fn foretell(w: &mut World) -> Vec<(String, bool, Option<crate::ids::TilePos>)> {
         .collect();
     let mut out = Vec::new();
     for id in road {
-        let mut r = crate::rng::stream(
-            w.meta.seed,
-            &[crate::rng::purpose::AGENT_SOCIAL, 0x2974, id as u64, tick],
-        );
-        if !r.gen_bool(FORETOLD_A_HOUR) {
+        let Some(band) = w.bands.iter().find(|b| b.id == id) else {
             continue;
-        }
+        };
+        let walkers: Vec<crate::ids::TilePos> = band
+            .members
+            .iter()
+            .filter_map(|m| w.agents.iter().find(|a| a.id == *m && a.alive))
+            .map(|a| a.pos)
+            .collect();
+        let seer = (0..w.agents.len()).find(|&k| {
+            let a = &w.agents[k];
+            a.alive
+                && a.community.is_some()
+                && a.band.is_none()
+                && !a.activity.is_asleep()
+                && !crate::systems::hazards::indoors(w, a.pos)
+                && walkers
+                    .iter()
+                    .any(|p| p.z == a.pos.z && a.pos.dist(*p) > 12 && a.pos.dist(*p) <= BIRDS_SEEN)
+                && crate::observances::devotion(w, k) >= crate::observances::LEADS_AT
+        });
+        let Some(k) = seer else { continue };
+        let seer = w.agents[k].id;
         w.faith.foretold.push(id);
         if w.faith.foretold.len() > 32 {
             w.faith.foretold.remove(0);
@@ -50,6 +74,7 @@ fn foretell(w: &mut World) -> Vec<(String, bool, Option<crate::ids::TilePos>)> {
             "crows coming in over the valley's rim".to_string(),
             false,
             None,
+            Some(seer),
         ));
     }
     out
@@ -58,7 +83,7 @@ fn foretell(w: &mut World) -> Vec<(String, bool, Option<crate::ids::TilePos>)> {
 pub fn observe(w: &mut World) {
     let tick = w.meta.tick;
     let foretold = foretell(w);
-    let signs: Vec<(String, bool, Option<crate::ids::TilePos>)> = w
+    let signs: Vec<Sign> = w
         .last_events
         .iter()
         .filter_map(|e| {
@@ -73,11 +98,11 @@ pub fn observe(w: &mut World) {
                 EventKind::RivalReturned { name, .. } => (format!("{name} come back"), false),
                 _ => return None,
             };
-            Some((what, good, e.at))
+            Some((what, good, e.at, None))
         })
         .chain(foretold)
         .collect();
-    for (what, good, at) in signs {
+    for (what, good, at, seen_by) in signs {
         let cids: Vec<_> = w
             .communities
             .iter()
@@ -87,6 +112,15 @@ pub fn observe(w: &mut World) {
         let cids: Vec<_> = cids
             .into_iter()
             .map(|(id, home)| (id, crate::faith::reader_of(w, id), home))
+            // Someone who saw it themselves: their own community, and they are named.
+            .filter_map(|(id, reader, home)| match seen_by {
+                Some(s) => w
+                    .agents
+                    .iter()
+                    .any(|a| a.id == s && a.community == Some(id))
+                    .then_some((id, Some(s), home)),
+                None => Some((id, reader, home)),
+            })
             .collect();
         for (cid, reader, home) in cids {
             let Some(reader) = reader else { continue };
