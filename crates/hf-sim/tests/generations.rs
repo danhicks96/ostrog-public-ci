@@ -245,3 +245,98 @@ fn a_newborn_is_known_to_grandparents_and_siblings() {
         "the newborn holds no relation to an unrelated neighbour"
     );
 }
+
+/// OST-901: the births() crowd gate counted every living `Species::Person` on the whole map,
+/// including a band of raiders camped at the edge who are not of anyone's community
+/// (spawned with `community: None`, see threat.rs). That let strangers who will never share
+/// a nursery halve a small community's own birth chance. The gate must count per community.
+#[test]
+fn strangers_do_not_crowd_the_nursery() {
+    use hf_sim::rng::{purpose, stream};
+    use rand::Rng;
+
+    let mut w = World::generate(1194, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.plants.clear();
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.meta.autoplan = false;
+    let ids = w.found_party(2);
+    let (a, b) = (ids[0], ids[1]);
+    {
+        let ia = w.agents.iter().position(|x| x.id == a).unwrap();
+        let ib = w.agents.iter().position(|x| x.id == b).unwrap();
+        w.agents[ia].partner = Some(b);
+        w.agents[ib].partner = Some(a);
+        w.agents[ia].last_birth = 0;
+        w.agents[ib].last_birth = 0;
+        w.agents[ia].needs.hunger = 1.0;
+        w.agents[ib].needs.hunger = 1.0;
+        // Twenty years old at tick 0, so the whole search range below keeps both inside the
+        // sixteen-to-forty-five fertile years.
+        w.agents[ia].born = -(20 * hf_sim::time::TICKS_PER_YEAR as i64);
+        w.agents[ib].born = -(20 * hf_sim::time::TICKS_PER_YEAR as i64);
+    }
+    // A band of raiders camped at the edge of the valley: spawned as Species::Person (as
+    // threat.rs spawns bands), joining no community. The couple's own community stays at two.
+    for i in 0..40 {
+        let p = TilePos::new(5 + i % 10, 5 + i / 10, 2);
+        w.spawn_agent(Species::Person, p);
+    }
+    let valley_people = w
+        .agents
+        .iter()
+        .filter(|x| x.alive && x.species == Species::Person)
+        .count();
+    assert!(
+        valley_people >= 40,
+        "the valley's own census should be crowded: {valley_people}"
+    );
+    let community_people = w
+        .agents
+        .iter()
+        .filter(|x| x.alive && x.species == Species::Person && x.community == w.agents[0].community)
+        .count();
+    assert!(
+        community_people < 40,
+        "the couple's own community should not be crowded: {community_people}"
+    );
+
+    // Find a day whose birth-chance draw falls strictly between the halved and the uncrowded
+    // thresholds, so a per-community gate and a valley-wide gate disagree on it.
+    let per_day = w.meta.life_speed / (3.0 * hf_sim::time::DAYS_PER_YEAR as f32);
+    let five_am = hf_sim::time::TICKS_PER_HOUR * 5;
+    let mut chosen_tick = None;
+    for day in 0u64..500 {
+        let tick = day * hf_sim::time::TICKS_PER_DAY + five_am;
+        let mut r = stream(
+            w.meta.seed,
+            &[purpose::AGENT_BIRTH, a.0 as u64, b.0 as u64, day],
+        );
+        let v: f32 = r.gen();
+        if v >= per_day * 0.5 && v < per_day {
+            chosen_tick = Some(tick);
+            break;
+        }
+    }
+    let tick = chosen_tick.expect("a distinguishing day exists within the search range");
+    // `World::step` advances `meta.tick` by one before running the systems, so set the tick
+    // one short of the chosen five-o'-clock moment to land births() on it.
+    w.meta.tick = tick - 1;
+    w.rebuild_caches();
+    let before = w
+        .agents
+        .iter()
+        .filter(|x| x.species == Species::Person)
+        .count();
+    w.step();
+    let after = w
+        .agents
+        .iter()
+        .filter(|x| x.species == Species::Person)
+        .count();
+    assert_eq!(
+        after,
+        before + 1,
+        "a band of raiders at the edge of the valley halved the community's own birth chance"
+    );
+}

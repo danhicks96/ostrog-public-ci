@@ -84,20 +84,25 @@ pub fn devotion(w: &World, k: usize) -> f32 {
 }
 
 /// Who leads it, of those gathered: the keeper or the one followed in the spirit, awake; else
-/// the most devout awake, if they lean toward the signs at all.
+/// the most devout awake, if they lean toward the signs at all. Leading the rite is a grown
+/// person's standing: both must be of age (OST-1301).
 fn leader(w: &World, cid: CommunityId, members: &[usize]) -> Option<usize> {
     // The keeper, else the one followed in the spirit (faith.rs `reader_of`).
     let followed = crate::faith::reader_of(w, cid);
     if let Some(i) = followed.and_then(|id| members.iter().copied().find(|&k| w.agents[k].id == id))
     {
-        if !w.agents[i].activity.is_asleep() {
+        if !w.agents[i].activity.is_asleep() && w.agents[i].of_age(w.meta.tick) {
             return Some(i);
         }
     }
     members
         .iter()
         .copied()
-        .filter(|&k| !w.agents[k].activity.is_asleep() && devotion(w, k) > 0.0)
+        .filter(|&k| {
+            !w.agents[k].activity.is_asleep()
+                && w.agents[k].of_age(w.meta.tick)
+                && devotion(w, k) > 0.0
+        })
         .max_by(|&a, &b| {
             devotion(w, a)
                 .total_cmp(&devotion(w, b))

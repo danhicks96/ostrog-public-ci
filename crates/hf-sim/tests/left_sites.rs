@@ -1,9 +1,12 @@
 //! C72: a moved community's old site stands as a ruin and weathers; who comes on it wonders;
 //! a community that moves carries what it can.
 
+use hf_sim::agents::Species;
 use hf_sim::events::EventKind;
 use hf_sim::ids::TilePos;
 use hf_sim::items::{ItemKind, ItemPlace};
+use hf_sim::legend::Story;
+use hf_sim::mind::techniques::{Learned, Technique};
 use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::world::gen::GenParams;
 use hf_sim::world::Material;
@@ -282,5 +285,123 @@ fn a_baby_does_not_wonder_at_the_left_houses() {
         !evs.iter()
             .any(|e| matches!(&e.kind, EventKind::RuinWondered { agent, .. } if *agent == id)),
         "a two-day-old does not wonder at ruins"
+    );
+}
+
+#[test]
+fn the_tools_left_at_the_old_camp_teach_their_craft() {
+    let (mut w, cid) = big_valley(7301);
+    let home = ready_to_move(&mut w, cid);
+    let o = home.offset(-10, -8, 0);
+    let floor = o.offset(2, 2, 0);
+    let maker = w
+        .agents
+        .iter()
+        .find(|a| a.community == Some(cid))
+        .unwrap()
+        .id;
+    {
+        let a = w.agents.iter_mut().find(|a| a.id == maker).unwrap();
+        a.techniques
+            .learn(Technique::Smithing, Learned::Studied, 0.8, w.meta.tick);
+    }
+    // A smith-made iron tool, sitting on the house floor, forgotten when they go.
+    let tool_id = w.create_item(ItemKind::Tool, 1, ItemPlace::Ground(floor), 0.7, "test");
+    {
+        let it = w.items.iter_mut().find(|it| it.id == tool_id).unwrap();
+        it.story = Some(Box::new(Story {
+            maker: Some(maker),
+            maker_name: "a smith".to_string(),
+            made: w.meta.tick,
+            wear: 0.8,
+            ..Default::default()
+        }));
+    }
+    // Food left on the same floor: it has no maker and no recipe, so it stays plain.
+    let food_pos = o.offset(3, 2, 0);
+    let food_id = w.create_item(
+        ItemKind::GrainSheaf,
+        4,
+        ItemPlace::Ground(food_pos),
+        0.6,
+        "test",
+    );
+
+    hf_sim::systems::moving::consider(&mut w, cid);
+    assert_eq!(w.left_sites.len(), 1);
+
+    let tool = w
+        .items
+        .iter()
+        .find(|it| it.id == tool_id)
+        .expect("the tool stayed on the abandoned floor");
+    assert_eq!(
+        tool.story.as_ref().and_then(|s| s.teaches),
+        Some(Technique::Smithing),
+        "the smith's tool, left behind, carries their craft on"
+    );
+    assert!(
+        tool.story.as_ref().unwrap().origin.contains("left at"),
+        "{}",
+        tool.story.as_ref().unwrap().origin
+    );
+    if let Some(food) = w.items.iter().find(|it| it.id == food_id) {
+        assert!(
+            food.story.as_ref().and_then(|s| s.teaches).is_none(),
+            "food left behind gets no teaches"
+        );
+    }
+
+    // A curious newcomer, not of the community that left it, studies it and can learn
+    // smithing.
+    let tool_pos = w
+        .items
+        .iter()
+        .find(|it| it.id == tool_id)
+        .and_then(|it| match it.place {
+            ItemPlace::Ground(p) => Some(p),
+            _ => None,
+        })
+        .unwrap();
+    let student = w.spawn_agent(Species::Person, tool_pos);
+    let ia = w.agents.iter().position(|a| a.id == student).unwrap();
+    w.agents[ia].techniques = Default::default();
+    if !w.agents[ia].traits.has(hf_sim::mind::Trait::Curious) {
+        w.agents[ia].traits.list.push(hf_sim::mind::Trait::Curious);
+    }
+    w.agents[ia].knowledge.note(
+        hf_sim::mind::knowledge::Known::Item(tool_id),
+        tool_pos,
+        w.meta.tick,
+        0,
+    );
+    w.ensure_nav();
+    let mut learned = false;
+    for _ in 0..8 * TICKS_PER_DAY {
+        let ia = w.agents.iter().position(|x| x.id == student).unwrap();
+        w.agents[ia].needs.hunger = 1.0;
+        w.agents[ia].needs.rest = 1.0;
+        w.agents[ia].needs.social = 1.0;
+        w.step();
+        for e in &w.last_events {
+            if let EventKind::Studied {
+                agent,
+                success,
+                learned: l,
+                ..
+            } = &e.kind
+            {
+                if *agent == student && *success && l == Technique::Smithing.name() {
+                    learned = true;
+                }
+            }
+        }
+        if learned {
+            break;
+        }
+    }
+    assert!(
+        learned,
+        "a curious member of another community studies the smith's tool and learns smithing"
     );
 }

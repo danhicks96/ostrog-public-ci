@@ -404,13 +404,8 @@ fn births(w: &mut World) {
         .filter_map(|a| a.partner.map(|p| (a.id, p)))
         .filter(|(a, b)| a < b)
         .collect();
-    let people = w
-        .agents
-        .iter()
-        .filter(|a| a.alive && a.species == Species::Person)
-        .count();
     for (a, b) in couples {
-        let (ok, fed, age_ok, last) = {
+        let (ok, fed, age_ok, last, community) = {
             let pa = w.agents.iter().find(|x| x.id == a);
             let pb = w.agents.iter().find(|x| x.id == b);
             match (pa, pb) {
@@ -421,9 +416,15 @@ fn births(w: &mut World) {
                         && pb.fertile_years().contains(&pb.age_years(tick))
                         && crate::species::fertile(pa.people, pb.people);
                     let fed = fed_for_birth(w, pa, pb);
-                    (true, fed, fertile, pa.last_birth.max(pb.last_birth))
+                    (
+                        true,
+                        fed,
+                        fertile,
+                        pa.last_birth.max(pb.last_birth),
+                        pa.community,
+                    )
                 }
-                _ => (false, false, false, 0),
+                _ => (false, false, false, 0, None),
             }
         };
         if !ok || !fed || !age_ok {
@@ -444,7 +445,15 @@ fn births(w: &mut World) {
             ],
         );
         let per_day = w.meta.life_speed / (3.0 * crate::time::DAYS_PER_YEAR as f32);
-        let crowd = if people >= 40 { 0.5 } else { 1.0 };
+        // OST-901: crowding is a per-community effect, not a valley-wide census. A band of
+        // raiders camped at the edge (spawned as Species::Person with community == None,
+        // see threat.rs) must not halve the births of a community they are not part of.
+        let community_people = w
+            .agents
+            .iter()
+            .filter(|x| x.alive && x.species == Species::Person && x.community == community)
+            .count();
+        let crowd = if community_people >= 40 { 0.5 } else { 1.0 };
         if r.gen::<f32>() < per_day * crowd {
             let _ = w.give_birth(a, b);
         }
