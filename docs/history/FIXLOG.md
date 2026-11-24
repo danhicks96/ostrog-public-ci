@@ -1,5 +1,16 @@
 # Fix log
 
+## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
+
+- Symptom: "has come to suspect" was written every few nights for the same two people, each time
+  with a new row and a cooler opinion, so the feed filled with one story.
+- Cause: `conditions::suspect` wrote a memory, an opinion change and an event on every call.
+- Fix: each agent keeps `suspicions` (of, evidence tag, tick), at most 16. The same evidence
+  against the same person within 20 days only deepens the long memory (+0.1, capped) with no
+  event and no opinion change; a new kind of evidence still counts as new.
+- Guard: `tests/true_dream.rs::a_suspicion_is_not_repeated_without_new_evidence` fails with the
+  window set to zero.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every

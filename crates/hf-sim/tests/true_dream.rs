@@ -244,3 +244,48 @@ fn the_unbinding_lifts_the_true_dream_from_one_suspected() {
         "the lifting is recorded"
     );
 }
+
+#[test]
+fn a_suspicion_is_not_repeated_without_new_evidence() {
+    let mut w = World::opening_world(61);
+    let cid = w.communities[0].id;
+    let who = w
+        .agents
+        .iter()
+        .find(|a| a.community == Some(cid))
+        .unwrap()
+        .id;
+    let i = hollow_sleeper(&mut w, who);
+    let mut d = 1;
+    while !hf_sim::conditions::has(&w, i, C::TrueDream) {
+        at(&mut w, d, 1);
+        keep_sleeping(&mut w, i);
+        d += 1;
+        assert!(d < 200, "never marked");
+    }
+    w.events.pending.clear();
+    for n in 0..15 {
+        at(&mut w, d + n, 1);
+        keep_sleeping(&mut w, i);
+    }
+    let by_first = |w: &World| {
+        let mut by: Vec<AgentId> = w
+            .events
+            .pending
+            .iter()
+            .filter_map(|e| match &e.kind {
+                EventKind::Suspected { by, of, .. } if *of == who => Some(*by),
+                _ => None,
+            })
+            .collect();
+        by.sort();
+        by.dedup();
+        by.len()
+    };
+    let total = pending(
+        &w,
+        |k| matches!(k, EventKind::Suspected { of, .. } if *of == who),
+    );
+    assert_eq!(by_first(&w), 1, "one neighbour suspects");
+    assert_eq!(total, 1, "and only once over fifteen nights");
+}
