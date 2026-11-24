@@ -15,14 +15,30 @@ pub const ATTEMPT_CAP: usize = 8;
 pub enum ProblemKind {
     WaterHazard,
     Flooding,
+    /// Reserved: never constructed; wire when food spoilage is detected.
     FoodSpoilage,
+    /// Reserved: never constructed; wire when a food stock mechanic exists.
     FoodShortage,
+    /// Reserved: never constructed; wire when resource depletion is detected.
     ResourceDepletion,
+    /// Reserved: never constructed; wire when heat exposure is detected.
     HeatExposure,
     Fire,
+    /// Reserved: never constructed; wire when structural failure is detected.
     StructuralDanger,
+    /// Reserved: never constructed; wire when a catch-all is needed.
     Other,
 }
+
+/// Problem kinds nothing constructs yet.
+pub const RESERVED: &[ProblemKind] = &[
+    ProblemKind::FoodSpoilage,
+    ProblemKind::FoodShortage,
+    ProblemKind::ResourceDepletion,
+    ProblemKind::HeatExposure,
+    ProblemKind::StructuralDanger,
+    ProblemKind::Other,
+];
 
 impl ProblemKind {
     pub fn label(self) -> &'static str {

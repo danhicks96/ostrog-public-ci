@@ -1,5 +1,15 @@
 # Fix log
 
+## 2026-11-22: unused observation and problem kinds are marked reserved (OST-471)
+
+- Symptom: six observation kinds and six problem kinds looked like features but nothing writes or
+  constructs them, and nothing said so.
+- Cause: the variants were added ahead of any producer and never marked.
+- Fix: a doc comment on each reserved variant, `RESERVED` lists in `mind/learning.rs` and
+  `mind/problems.rs`, and a written/reserved table in `docs/design-minds-observation.md`. No variant
+  is added, removed or reordered; labels, saves and the simulation are unchanged.
+- Guard: `mind::learning::tests::reserved_cues_are_listed` fails if a reserved observation kind is
+  also in the hand-kept list of written kinds. The problem list has no equivalent guard yet.
 ## 2026-11-23: a census of each house as a room (OST-1309)
 
 - Symptom: no measure of what the valley's houses are like as rooms, so a later room score had
