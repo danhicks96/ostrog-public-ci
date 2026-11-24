@@ -2737,7 +2737,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | why.rs:230 | over {} at {:.2} |
 | why.rs:241 | {}: put off until food and shelter are secure |
 | why.rs:243 | {}: put off while the arrival is fresh |
-| world_state.rs:630 | returned |
+| world_state.rs:644 | returned |
 | mind/attention.rs:42 | the ground |
 | mind/attention.rs:43 | animal sign |
 | mind/attention.rs:44 | a stuck building |

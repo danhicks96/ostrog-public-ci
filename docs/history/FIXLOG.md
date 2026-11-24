@@ -12175,6 +12175,21 @@ Guard: `tests/accounts.rs::a_grave_is_read_once_even_when_its_account_is_forgott
 the skip. `a_marked_grave_tells_a_newcomer_who_lies_there` now clears `graves_read` to read the
 unmarked grave afresh.
 
+## 2026-11-24 OST-130: every "first days" grace counted from the first portal
+Symptom: a party arriving in year 10 would get none of the first days a new valley gets: no
+newcomer grace, bands that already know of the valley, the deity's first day over, fate's
+settled days spent.
+Cause: `World::since_arrival` is the tick minus the first portal's, and the four graces (newcomer
+grace in `systems/society.rs`, bands in `threat.rs`, the deity in `deity.rs`, fate in `fate.rs`)
+read it.
+Fix: `WorldMeta.arrived` (0 on old saves, meaning the first portal) holds the tick the latest party
+arrived, and `World::since_party` counts from the later of it and the epoch; the four graces
+use it. The calendar and every other `since_arrival` caller are unchanged, so years still count
+from the first portal. Nothing sets `arrived` yet, so no world changes and the digests are
+unchanged.
+Guard: `tests/resettle.rs::grace_counts_from_the_latest_party` fails if the band gate reads the
+first portal (a band set out in the new party's first days); its control shows the same hungry
+place sending a band in an ordinary world.
 ## 2026-11-24 OST-357: a week on the ground weighed the same as one night
 Symptom: someone sleeping rough for a week carried the same -0.2 "slept on the ground" thought
 as someone who slept rough once; on a 600-day probe 29 of 60 living people slept rough the last
