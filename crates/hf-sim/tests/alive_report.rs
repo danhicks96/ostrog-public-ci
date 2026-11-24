@@ -2220,3 +2220,57 @@ fn death_with_a_held_lesson_is_counted() {
     assert_eq!(key(&r, "cause_repeat"), 1.0);
     assert_eq!(key(&r, "lesson_ignored"), 1.0);
 }
+
+/// OST-867: the table of what the client draws names every activity, in the order of the
+/// counters, and marks the activities drawn as plain standing.
+#[test]
+fn the_readable_table_names_every_activity_and_marks_plain_standing() {
+    use hf_sim::view::alive::{drawn, work_drawn};
+    use hf_sim::work::DesignationKind;
+    let (w, idx) = party(1);
+    let _ = (&w, &idx);
+    let pos = TilePos::new(1, 1, 2);
+    let all = [
+        Activity::Idle,
+        Activity::Going {
+            to: pos,
+            then: Box::new(Activity::Idle),
+        },
+        Activity::Eating {
+            item: ItemId(1),
+            ticks_left: 1,
+        },
+        Activity::Foraging {
+            plant: pos,
+            ticks_left: 1,
+        },
+        Activity::Sleeping {
+            bed: None,
+            until: 1,
+        },
+        Activity::Talking {
+            with: AgentId(1),
+            ticks_left: 1,
+        },
+        Activity::Loitering { ticks_left: 1 },
+        Activity::Wandering { to: pos },
+        Activity::Drinking {
+            ticks_left: 1,
+            back: None,
+        },
+    ];
+    for a in &all {
+        assert_eq!(drawn(a).activity, a.name());
+    }
+    assert!(drawn(&Activity::Idle).plain_standing);
+    assert!(drawn(&Activity::Loitering { ticks_left: 1 }).plain_standing);
+    assert!(
+        !drawn(&Activity::Talking {
+            with: AgentId(1),
+            ticks_left: 1
+        })
+        .plain_standing
+    );
+    assert_eq!(work_drawn(&DesignationKind::Chop).0, "swing");
+    assert_eq!(work_drawn(&DesignationKind::Cook).0, "tap");
+}

@@ -142,6 +142,121 @@ fn slot(a: &Activity) -> usize {
     }
 }
 
+/// What the client draws for each activity (OST-867). Index = the activity's counter slot, so
+/// the rows are in `slot` order. `still` is the frame shown when the person is not moving and
+/// `moving` the one shown while walking; `plain_standing` is true when `still` is the plain
+/// standing loop, which a watcher cannot tell from doing nothing. Read from
+/// `godot/scripts/render/entity_layer.gd` (the pose match in `"person"`) and
+/// `crates/hf-godot/src/lib.rs::person_pose`. A fight, a fresh wound and the dead override all
+/// of these; a person who carries something while moving is drawn with the carry cycle.
+pub struct Drawn {
+    pub activity: &'static str,
+    pub still: &'static str,
+    pub moving: &'static str,
+    pub plain_standing: bool,
+}
+
+pub const READABLE: [Drawn; ACTIVITIES] = [
+    Drawn {
+        activity: "idle",
+        still: "stand loop with a glance",
+        moving: "walk",
+        plain_standing: true,
+    },
+    Drawn {
+        activity: "going",
+        still: "stand loop with a glance",
+        moving: "walk",
+        plain_standing: true,
+    },
+    Drawn {
+        activity: "eating",
+        still: "eating cycle",
+        moving: "walk",
+        plain_standing: false,
+    },
+    Drawn {
+        activity: "foraging",
+        still: "stoop cycle",
+        moving: "walk",
+        plain_standing: false,
+    },
+    Drawn {
+        activity: "sleeping",
+        still: "sleep, breathing and stirring",
+        moving: "walk",
+        plain_standing: false,
+    },
+    Drawn {
+        activity: "talking",
+        still: "talking cycle",
+        moving: "walk",
+        plain_standing: false,
+    },
+    Drawn {
+        activity: "loitering",
+        still: "stand loop with a glance",
+        moving: "walk",
+        plain_standing: true,
+    },
+    Drawn {
+        activity: "wandering",
+        still: "stand loop with a glance",
+        moving: "walk",
+        plain_standing: true,
+    },
+    Drawn {
+        activity: "working",
+        still: "see `work_drawn`; stand loop when not at the work step",
+        moving: "walk, or carry cycle",
+        plain_standing: false,
+    },
+    Drawn {
+        activity: "drinking",
+        still: "drinking cycle",
+        moving: "walk",
+        plain_standing: false,
+    },
+];
+
+/// What the client draws for this activity.
+pub fn drawn(a: &Activity) -> &'static Drawn {
+    &READABLE[slot(a)]
+}
+
+/// The frame and the emote the client shows at the work step of a designation of this kind
+/// (the `"person"` pose-2 branch and the bridge's `agent_row` code). Every kind is listed so that
+/// a new one must be given a place here.
+pub fn work_drawn(kind: &crate::work::DesignationKind) -> (&'static str, &'static str) {
+    use crate::work::DesignationKind as K;
+    match kind {
+        K::Chop => ("swing", "tool"),
+        K::Mine | K::DigStairs | K::DigEarth | K::DigChannel => ("swing", "sledgehammer"),
+        K::BuildWall(_)
+        | K::BuildDoor
+        | K::BuildStairs(_)
+        | K::BuildFloor(_)
+        | K::BuildRoof(_)
+        | K::BuildStructure(..) => ("tap", "hammer"),
+        K::Craft(_) => ("tap", "saw"),
+        K::Cook => ("tap", "vessel"),
+        K::Sow | K::Harvest => ("stoop", "tool"),
+        K::BeatOut => ("stoop", "bucket"),
+        K::Douse => ("stoop", "bucket"),
+        K::Tend(_) => ("tend cycle", "poultice"),
+        K::Hunt(_) => ("stoop", "weapon"),
+        K::Study(_) => ("stoop", "record"),
+        K::ClearRoof
+        | K::Haul
+        | K::Engrave
+        | K::Fish
+        | K::Snare
+        | K::Tame(_)
+        | K::FetchWater
+        | K::Uproot => ("stoop", "none"),
+    }
+}
+
 /// What the run has shown so far. Plain vectors, kept in the order the hours were observed.
 #[derive(Clone, Debug, PartialEq)]
 pub struct AliveTally {
