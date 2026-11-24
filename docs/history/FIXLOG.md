@@ -12184,3 +12184,32 @@ script reads `OSTROG_GITHUB_REPO` instead of a private default. The `hygiene` ch
 `.github/workflows/hygiene.yml` (re-runs on edits) with rules for added lines, PR title and body,
 commit messages and authors, and branch names; `issue-hygiene.yml` checks issues. See docs/HYGIENE.md.
 Guard: `tools/tests/hygiene_rules_guard_test.py` fails without each rule.
+
+## 2026-11-24 OST-130: every "first days" grace counted from the first portal
+Symptom: a party arriving in year 10 would get none of the first days a new valley gets: no
+newcomer grace, bands that already know of the valley, the deity's first day over, fate's
+settled days spent.
+Cause: `World::since_arrival` is the tick minus the first portal's, and the four graces (newcomer
+grace in `systems/society.rs`, bands in `threat.rs`, the deity in `deity.rs`, fate in `fate.rs`)
+read it.
+Fix: `WorldMeta.arrived` (0 on old saves, meaning the first portal) holds the tick the latest party
+arrived, and `World::since_party` counts from the later of it and the epoch; the four graces
+use it. The calendar and every other `since_arrival` caller are unchanged, so years still count
+from the first portal. Nothing sets `arrived` yet, so no world changes and the digests are
+unchanged.
+Guard: `tests/resettle.rs::grace_counts_from_the_latest_party` fails if the band gate reads the
+first portal (a band set out in the new party's first days); its control shows the same hungry
+place sending a band in an ordinary world.
+## 2026-11-24 OST-357: a week on the ground weighed the same as one night
+Symptom: someone sleeping rough for a week carried the same -0.2 "slept on the ground" thought
+as someone who slept rough once; on a 600-day probe 29 of 60 living people slept rough the last
+night, with nothing to tell a first night from a seventh.
+Cause: the thought is refreshed, not stacked, and nothing counted how many nights in a row a
+person had been without a bed.
+Fix: each person keeps `rough_nights`, the nights on the ground in a row (a night of six hours or
+more in a bed resets it), and the thought is shaped to weigh 0.05 more for each night in a row up
+to the seventh (-0.5). The thought's length and source are unchanged. Old saves load with 0, and
+the simulation changes only for people who sleep rough more than one night running.
+Guard: `tests/slept.rs::a_week_on_the_ground_weighs_more_than_one_night` fails without the extra
+weight (seven nights weighed the same as one); `a_night_in_a_bed_resets_the_rough_count` covers
+the reset.
