@@ -12055,6 +12055,16 @@ timing check; the same file covers a death far from and inside the frame, events
 another level or another severity, and that stepping through `measure` leaves the world digest
 unchanged.
 
+## 2026-11-23 OST-505: one warning sent the same people to the shrine again and again
+Symptom: on a 700-day probe, 1,104 "afraid of the warning" pilgrimages fell on 528 (person,
+warning) pairs; one person went to the shrine seven times in five days over a single warning.
+Cause: a warning sign stays open five days and nothing recorded that a person had already gone to
+pray over it, so each free, devout person set out again every few hours (10% an hour).
+Fix: each person keeps `prayed_over`, the warning signs they set out to pray over (bounded to 8,
+oldest out); `pilgrimage::hard_times` ignores a warning in it and names the first open one they
+have not. Grief and loss are unchanged. Old saves load with it empty.
+Guard: `tests/relics.rs::one_warning_sends_each_person_to_pray_once` fails without the check
+(a person went 5 times over one warning); a second warning sends each again.
 ## 2026-11-23 OST-165: the same grave was read again and again
 Symptom: on a 700-day probe a reader read the same grave 14 times, weeks apart, and one reader
 read graves 198 times; every reading is a Notable `grave_read` line, so the feed repeated itself.

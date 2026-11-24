@@ -221,6 +221,10 @@ pub struct Agent {
     /// #452).
     #[serde(default)]
     pub accounts: Vec<crate::accounts::Account>,
+    /// The warning signs they have set out to pray over, newest last, at most
+    /// `pilgrimage::PRAYED_KEPT`: one warning sends a person to the shrine once (OST-505).
+    #[serde(default)]
+    pub prayed_over: Vec<crate::ids::EventId>,
     /// The deaths whose graves they have read, newest last, at most `accounts::GRAVES_KEPT`:
     /// kept apart from `accounts` so forgetting what they believe does not send them back to
     /// read the same stone again (accounts.rs, OST-165).
