@@ -221,6 +221,11 @@ pub struct Agent {
     /// #452).
     #[serde(default)]
     pub accounts: Vec<crate::accounts::Account>,
+    /// The deaths whose graves they have read, newest last, at most `accounts::GRAVES_KEPT`:
+    /// kept apart from `accounts` so forgetting what they believe does not send them back to
+    /// read the same stone again (accounts.rs, OST-165).
+    #[serde(default)]
+    pub graves_read: Vec<crate::ids::EventId>,
     /// A hidden potential carried through the portal, if any (resonance.rs, #308): shown
     /// nowhere until it shows itself.
     #[serde(default)]
