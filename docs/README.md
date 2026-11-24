@@ -11,6 +11,6 @@
 | Plans | PLAN-FINISH, BACKLOG, plan/ (not included in this source snapshot) (work packages) |
 | Status | STATUS |
 | Reference | [REFERENCE](REFERENCE.md): build, run, flags, every string and asset (generated tables) |
-| Release | release-updater, release-notes-*, [privacy/](privacy/) |
+| Release | release-updater, release-notes-*, [RELEASE-NOTES-TEMPLATE](RELEASE-NOTES-TEMPLATE.md) (how to write them), [privacy/](privacy/) |
 | Evidence | reviews/ (not included in this source snapshot) (checkpoint reviews, screenshots) and soak/ (not included in this source snapshot) |
 | History (archive) | [history/](history/): FIXLOG, ITERATION_LOG, handoffs, superseded plans, old test sets |
