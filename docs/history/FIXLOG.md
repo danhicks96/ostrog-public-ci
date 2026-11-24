@@ -12055,6 +12055,18 @@ timing check; the same file covers a death far from and inside the frame, events
 another level or another severity, and that stepping through `measure` leaves the world digest
 unchanged.
 
+## 2026-11-23 OST-506: the whole hearth heard the same battle again for one newcomer
+Symptom: on a 700-day probe 80-92% of listener hearings of a realm story were by someone who
+had already heard it; one battle was told 90 times, two evenings running, to nearly the same
+dozen people.
+Cause: a teller's story counted as fresh if any one other sitter lacked it, so a single child or
+newcomer sent the whole circle through it again.
+Fix: a story is told only when at least half of the other sitters lack it
+(`HEARTH_FRESH_SHARE`), and a teller offers the story the most sitters lack; a story that fails
+the test falls through to the next branch of the evening as before.
+Guard: `tests/stories.rs::a_story_most_have_heard_is_not_told_again` fails without the share test
+(seven of eight knowing a story did not stop it being told); with four lacking it is told and all
+four hold it.
 ## 2026-11-23 OST-505: one warning sent the same people to the shrine again and again
 Symptom: on a 700-day probe, 1,104 "afraid of the warning" pilgrimages fell on 528 (person,
 warning) pairs; one person went to the shrine seven times in five days over a single warning.
