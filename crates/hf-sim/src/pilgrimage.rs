@@ -38,6 +38,9 @@ pub struct Pilgrim {
     pub event: EventId,
 }
 
+/// Warnings a person remembers having gone to pray over (OST-505): oldest out.
+pub const PRAYED_KEPT: usize = 8;
+
 /// Whether agent `k` may leave the day's work to pray or gather apart: everything secured
 /// (#415, `systems::decide::is_secured`: their hunger, the community's stores, a bed or roof
 /// before dark), and able to walk there.
@@ -46,21 +49,27 @@ pub fn free_to_go(w: &World, k: usize) -> bool {
     crate::systems::decide::is_secured(w, k) && !a.injured(w.meta.tick) && !a.body.needs_care()
 }
 
-/// What makes the times hard for agent `k`, if they are.
-fn hard_times(w: &World, k: usize, cid: CommunityId) -> Option<&'static str> {
+/// What makes the times hard for agent `k`, if they are, and for a warning the sign they have
+/// not yet prayed over (OST-505): a warning they have already gone to pray over is no hard time.
+fn hard_times(w: &World, k: usize, cid: CommunityId) -> Option<(&'static str, Option<EventId>)> {
     let a = &w.agents[k];
     if a.feelings
         .list
         .iter()
         .any(|f| f.kind == FeelingKind::Grief && f.strength >= 0.3)
     {
-        return Some("in grief");
+        return Some(("in grief", None));
     }
-    if w.faith.signs.iter().any(|s| s.community == cid && !s.good) {
-        return Some("afraid of the warning read to them");
+    if let Some(sign) = w
+        .faith
+        .signs
+        .iter()
+        .find(|s| s.community == cid && !s.good && !a.prayed_over.contains(&s.event))
+    {
+        return Some(("afraid of the warning read to them", Some(sign.event)));
     }
     if a.thoughts.has(ThoughtKind::ShrineLost) || a.thoughts.has(ThoughtKind::RelicLost) {
-        return Some("troubled by what was lost");
+        return Some(("troubled by what was lost", None));
     }
     None
 }
@@ -101,7 +110,7 @@ pub fn step(w: &mut World) {
         {
             continue;
         }
-        let Some(why) = hard_times(w, k, cid) else {
+        let Some((why, sign)) = hard_times(w, k, cid) else {
             continue;
         };
         if !free_to_go(w, k) {
@@ -139,6 +148,13 @@ pub fn step(w: &mut World) {
             continue;
         }
         let id = w.agents[k].id;
+        if let Some(sign) = sign {
+            let a = &mut w.agents[k];
+            a.prayed_over.push(sign);
+            if a.prayed_over.len() > PRAYED_KEPT {
+                a.prayed_over.remove(0);
+            }
+        }
         w.agents[k].activity = Activity::Going {
             to: spot,
             then: Box::new(Activity::Loitering {
