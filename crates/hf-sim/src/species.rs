@@ -197,7 +197,7 @@ pub fn validate(s: &SpeciesDef) -> Result<(), String> {
     let bad = |what: &str| Err(format!("{name}: {what}"));
     match crate::plan::plan(&s.plan) {
         None => return bad(&format!("no body plan {}", s.plan)),
-        // The soft, swarm and segmented bodies are beasts' only (#423, the default Dan may
+        // The soft, swarm and segmented bodies are beasts' only (#423, the default the maintainer may
         // overrule): every species in this library is a people's.
         Some(p) if !p.for_people() => {
             return bad(&format!("a {} body is a beast's, not a people's", s.plan))

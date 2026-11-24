@@ -101,6 +101,7 @@ def main() -> None:
                 "PATH": str(bin_dir) + os.pathsep + env.get("PATH", ""),
                 "GH_TOKEN": "test-token-never-an-argument",
                 "GH_RECORD": str(record),
+                "OSTROG_GITHUB_REPO": "example-owner/example-releases",
                 "OSTROG_RELEASE_PUBLIC_KEY_FILE": str(public_key),
             }
         )
@@ -132,7 +133,7 @@ def main() -> None:
         staged_args = record.read_text(encoding="utf-8")
         assert "release\ncreate\nc161" in staged_args
         assert "--verify-tag" in staged_args
-        assert "--repo\ndanhicks96/ostrog" in staged_args
+        assert "--repo\nexample-owner/example-releases" in staged_args
         assert "ostrog-windows-x64.zip" in staged_args
         assert "ostrog-windows-x64-portable.zip" in staged_args
         assert "windows-x64.json" not in staged_args
@@ -177,7 +178,7 @@ def main() -> None:
         args = record.read_text(encoding="utf-8")
         assert "release\ncreate\nc161" in args
         assert "--verify-tag" in args
-        assert "--repo\ndanhicks96/ostrog" in args
+        assert "--repo\nexample-owner/example-releases" in args
         assert "ostrog-windows-x64.zip" in args
         assert "ostrog-windows-x64-portable.zip" in args
         assert "windows-x64.json" in args

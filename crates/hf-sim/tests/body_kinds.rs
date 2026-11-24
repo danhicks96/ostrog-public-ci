@@ -128,7 +128,7 @@ fn bad_kinds_are_refused() {
     }
 }
 
-/// Beasts only (the default Dan may overrule): no people's species may have one of the new
+/// Beasts only (the default the maintainer may overrule): no people's species may have one of the new
 /// bodies, from a file or from the generator.
 #[test]
 fn a_people_has_a_skeleton() {
