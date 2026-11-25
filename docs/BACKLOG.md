@@ -172,7 +172,7 @@ Going through ice is always fatal. Split the same seeded fall into survival or d
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Witnessing or surviving an ice fall creates no lasting fear. Form person-specific fear from the recorded fall and genuine witnesses, scaled by kinship and dispositions. Keep the felt fear distinct from a learned warning about this particular pond. Tracking issue: [#104](https://github.com/danhicks96/ostrog-public-ci/issues/104).
+Witnessing or surviving an ice fall creates no lasting fear. Form person-specific fear from the recorded fall and genuine witnesses, scaled by kinship and dispositions. Keep the felt fear distinct from a learned warning about this particular pond. Tracking issue: [#104](https://github.com/danhicks96/ostrog-public-ci/issues/104). Intake review: Until the shared witness helper lands, use the existing seen test inline: living Person, awake, same level, within twelve tiles and clear line of sight.
 
 **Acceptance:** Test `crates/hf-sim/tests/fears.rs::seeing_a_neighbour_drown_through_the_ice_leaves_a_fear_of_ice`. Test `fears.rs::a_sleeper_in_the_house_does_not_see_it`. Done when: both pass.
 
@@ -180,9 +180,9 @@ Witnessing or surviving an ice fall creates no lasting fear. Form person-specifi
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Fear of ice does not affect fishing choices. Add the bounded fear factor to icy fishing work, combining it with a learned warning by minimum rather than multiplying the same experience twice. Severe hunger and empty stores retain the recorded survival override. Tracking issue: [#120](https://github.com/danhicks96/ostrog-public-ci/issues/120).
+Fear of ice does not affect fishing choices. Add the bounded fear factor to icy fishing work, combining it with a learned warning by minimum rather than multiplying the same experience twice. Severe hunger and empty stores retain the recorded survival override. Tracking issue: [#120](https://github.com/danhicks96/ostrog-public-ci/issues/120). Intake review: Extract a shared fish::is_ice helper used by both the catch and fear factor, so later thickness changes cannot make them disagree.
 
-**Acceptance:** Test `crates/hf-sim/tests/fears.rs::seeing_a_neighbour_drown_through_the_ice_makes_ice_fishing_rarer`: the witness's share of ice orders falls ≥ 60% over 20 days. Test `fears.rs::the_starving_still_fish_the_ice_and_say_they_were_afraid`. Done when: both pass, and the alive report's `ice_witness_return` (a sibling item) on seeds 5-8 shows the witnesses' ice mornings at least halved.
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::seeing_a_neighbour_drown_through_the_ice_makes_ice_fishing_rarer`: the witness's share of ice orders falls ≥ 60% over 20 days. Test `fears.rs::the_starving_still_fish_the_ice_and_say_they_were_afraid`. Done when: both pass, and the alive report's `ice_witness_return` (a sibling item) on seeds 5-8 shows the witnesses' ice mornings at least halved. Intake-review acceptance: For the same fishing order on open water, the fear factor is exactly 1.0.
 
 ### OST-352 · Warnings pass between people but fears do not: fears told by the trusted, and taken up by children
 
