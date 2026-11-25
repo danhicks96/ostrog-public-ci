@@ -1,6 +1,6 @@
 # Fluids: options for #323 (water and lava that move)
 
-Status: proposal for Dan, written 2026-11-09 at master 589dbe5c (WP-05 slice 5.2). Nothing here is
+Status: proposal for the maintainer, written 2026-11-09 at master 589dbe5c (WP-05 slice 5.2). Nothing here is
 implemented. Issues: #323 (water and lava do not move), #325 (irrigation), #272 and #273 (aquifers
 and breaches, partly shipped), #189 and WP-01 (frame budget). Proposed as DEC-7 below.
 
@@ -80,22 +80,22 @@ worth doing after W1 exists and has a measured cost; steam where it meets water 
    sequencing advice says, and only after the WP-01 worst-tick work closes (the gate is the same
    budget). Success is a cap on awake tiles that holds the gate in the 500-person profile.
 3. **Lava: L0 now, L1 as a later content slice, L2 not until W1 has shipped.** No lava is promised
-   for 1.0 unless Dan says so.
+   for 1.0 unless the maintainer says so.
 
-## Proposed DEC-7 (default unless Dan objects)
+## Proposed DEC-7 (default unless the maintainer objects)
 
 Fluids stay off the critical path to a release: water keeps the bodies-and-catchments model and
 gains dug channels (W0); a bounded flow region (W1) is a prototype gated on the frame budget; lava
 is deferred (L0, then L1). Agents may proceed on slice 5.3 on this default.
 
-## Questions for Dan (feel, not engineering)
+## Questions for the maintainer (feel, not engineering)
 
 1. **Is lava that flows a requirement for the first release, or a later goal?** The recommendation
    assumes later; if it is a requirement, W1 and L2 move up and the release plan changes.
 2. **Is a player mistake that floods the stores a wanted fail state?** It is what makes walls and
    channels matter (and needs W1); without it, water is scenery that can be irrigated with.
 
-If Dan does not answer, the default above stands.
+If the maintainer does not answer, the default above stands.
 
 ## Not in scope
 

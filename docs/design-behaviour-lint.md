@@ -1,7 +1,7 @@
 # Behaviour lint: a canary for "the world is alive"
 
 Unit tests prove a mechanism works. None of them can tell you that the colony went quiet after the
-first house — which is exactly the defect the box already recorded in STATUS.md and the thing you
+first house — which is exactly the defect the build server already recorded in STATUS.md and the thing you
 see when you watch it. The per-day event histogram that exposed it should be a permanent gate: a
 **behaviour lint** that runs the simulation over a fixed window, on fixed seeds, and asserts that
 the world stayed alive, purposeful and legible.

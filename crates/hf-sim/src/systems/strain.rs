@@ -41,16 +41,14 @@ pub fn observe(w: &mut World) {
                     }
                 }
                 if *hours >= 6.0 {
-                    add(
-                        w,
-                        *agent,
-                        if in_bed {
-                            ThoughtKind::SleptInBed
-                        } else {
-                            ThoughtKind::SleptRough
-                        },
-                        src,
-                    );
+                    if in_bed {
+                        add(w, *agent, ThoughtKind::SleptInBed, src);
+                        if let Some(a) = w.agents.iter_mut().find(|a| a.id == *agent) {
+                            a.rough_nights = 0;
+                        }
+                    } else {
+                        slept_rough(w, *agent, src);
+                    }
                 }
             }
             EventKind::Quarrelled { a, b } => {
@@ -184,6 +182,28 @@ pub fn observe(w: &mut World) {
             }
             _ => {}
         }
+    }
+}
+
+/// A night on the ground (OST-357): the thought weighs a little more for each night in a row,
+/// up to the seventh, so a week without a bed is not read as one bad night.
+fn slept_rough(w: &mut World, who: AgentId, src: Option<crate::ids::EventId>) {
+    let tick = w.meta.tick;
+    let Some(a) = w.agents.iter_mut().find(|a| a.id == who && a.alive) else {
+        return;
+    };
+    a.rough_nights = a.rough_nights.saturating_add(1);
+    let (weight, days) = ThoughtKind::SleptRough.shape();
+    let extra = 0.05 * f32::from(a.rough_nights.saturating_sub(1).min(6));
+    a.thoughts
+        .add_shaped(ThoughtKind::SleptRough, weight - extra, days, tick);
+    if let Some(t) = a
+        .thoughts
+        .list
+        .iter_mut()
+        .find(|t| t.kind == ThoughtKind::SleptRough)
+    {
+        t.source = src;
     }
 }
 

@@ -250,7 +250,7 @@ below -1 °C, wet soil in rain, snow lying on exposed covers in a cold winter.
 Fire spreads no more across ground the watcher sees under snow, and block facts
 name the snow, the frost and the wet where the look exists. No rendering change
 (the client drew these looks already), no new materials or saved fields.
-Movement costs for snow and mud are deliberately not in this slice (Dan's open
+Movement costs for snow and mud are deliberately not in this slice (the maintainer's open
 question in docs/design-grounds.md).
 
 ## 2026-11-16 — Industry weighs on standing about (#906, #907, alive audit draft B4b/B4c)

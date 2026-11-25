@@ -100,7 +100,7 @@ history rows go to the chronicle. Target: under 20 MB of snapshot for a 1,000-ye
 - `history_only_from_simulation` extended: every realm event's references resolve, every
   ruin has an ending event, every named figure in a lay exists.
 - `figure_promoted_keeps_identity`.
-- Budget: map plus 1,000 years under 60 s on the box (aim 20 s); `ostrog realm` reports it.
+- Budget: map plus 1,000 years under 60 s on the build server (aim 20 s); `ostrog realm` reports it.
 
 ## Checkpoints
 
