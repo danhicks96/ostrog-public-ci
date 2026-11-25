@@ -152,6 +152,150 @@ This is the reserved-marking slice of the tracking issue on unused problem and o
 
 **Acceptance:** A test fails if a kind listed as reserved is also written by perception or learning. Existing tests, the enum-order check and the generated reference check pass. Saved state is unchanged.
 
+### OST-403 · Friendship and enmity are not things a person has, only a number read off at a glance
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Relationships have only a number and an inferred label. Store append-only tie kinds with defaulted state and derive friendship, close friendship, rivalry and enmity daily with the proposed hysteresis and persistence. Add no behavior reader in this slice. Tracking issue: [#328](https://github.com/danhicks96/ostrog-public-ci/issues/328).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::friend_label_needs_time_and_holds_through_a_bad_day`: opinion held at 0.5 gives Friend on day 5, not day 4; one day at 0.3 does not clear it; a week at 0.2 does. Done when the test passes and the digest is unchanged apart from the stored labels (no behaviour reads them).
+
+### OST-404 · Someone taught a craft at the bench five times by the same hand never becomes their apprentice
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Repeated teaching never makes a mentor and apprentice. Keep a bounded recent teaching history, form the two directed tie kinds after three teachings in twenty days, prefer the established apprenticeship at the bench, and clear it after death, departure or sixty days without teaching. Tracking issue: [#331](https://github.com/danhicks96/ostrog-public-ci/issues/331).
+
+**Acceptance:** Test `crates/hf-sim/tests/crafts.rs::three_lessons_make_an_apprentice`: the same teacher teaching the same pupil three times in 10 days sets both labels and pushes one event; a fourth lesson goes to the apprentice over an equal stranger. Done when the test passes.
+
+### OST-405 · Choosing whom to talk to ignores friendship and rivalry, so best friends and rivals look the same on screen
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Choosing company ignores friendship and rivalry. Apply the proposed close-friend, friend and mentoring factors to talk choice, and avoid rivals or enemies unless anger supplies a reason to approach. Tracking issue: [#333](https://github.com/danhicks96/ostrog-public-ci/issues/333).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::friends_seek_each_other_and_rivals_keep_apart`: with a CloseFriend, a stranger and a Rival equally near, over 20 decisions the friend is chosen most and the rival never. Done when the test passes and the census's talk partners per person show a top partner share above 25% (measured, not tuned here).
+
+### OST-406 · Grief reaches anyone with opinion above 0.3 anywhere in the valley, friend or not, seen or not
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Grief strength uses opinion alone. Read established tie kinds for close friends, friends and mentoring; reserve weaker opinion-based grief for sufficiently liked people and none for rivals or enemies. Preserve the existing radius and leave news delivery to its own slice. Tracking issue: [#336](https://github.com/danhicks96/ostrog-public-ci/issues/336).
+
+**Acceptance:** Test `crates/hf-sim/tests/feelings.rs::a_friend_grieves_more_than_an_acquaintance`: a CloseFriend and a liked acquaintance (+0.5) of the dead: grief strength 0.7 vs at most 0.15. Done when the test passes.
+
+### OST-408 · What happens in a talk depends only on ill will and foul mood, never on who the person is
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Talk outcomes do not reflect the initiator's personality or feelings about the other. Add deterministic interaction weights from dispositions, ties, feelings and mood, retaining the existing Chat/Quarrel probability while those are the only interactions. Tracking issue: [#341](https://github.com/danhicks96/ostrog-public-ci/issues/341).
+
+**Acceptance:** Tests in `crates/hf-sim/tests/social.rs`: `weights_reproduce_the_old_quarrel_chance` (for 20 sampled states, P(Quarrel) within 1e-6 of `0.02 + 0.35·ill + 0.2·foul`); `the_angry_choose_harsher_words` (anger about the other raises Quarrel's share). Done when both pass and the digest is unchanged.
+
+### OST-409 · Nobody can turn down a friendly word or a rough one: every talk lands as it was meant
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+An interaction cannot be rebuffed. Add a receiver-side acceptance rule and bounded Rebuffed contribution, and record non-chat interaction outcomes. Existing Chat and Quarrel remain received and keep their current events. Tracking issue: [#344](https://github.com/danhicks96/ostrog-public-ci/issues/344).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::a_rebuff_stings`: with a test-only variant forced to be refused, the initiator gains a `Rebuffed` bond and one `Interacted { took: false }` event is pushed. Done when the test passes and the digest is unchanged (no live variant can be refused yet).
+
+### OST-410 · Nobody goes over to someone for a reason: company is chosen by fondness and nearness alone
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+People approach others without an intended interaction. Add an optional saved talking intent and an Approach goal using explicit reasons, preserving the leisure gate except for urgent comfort of close kin. Resolve the selected intent at the end of the talk. Tracking issue: [#346](https://github.com/danhicks96/ostrog-public-ci/issues/346).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::someone_walks_over_with_a_purpose`: a test-only reason makes A walk 10 tiles to B and the talk end resolves A's chosen interaction. Done when the test passes and the digest is unchanged (no live reasons yet).
+
+### OST-412 · When someone's partner dies, no friend comes to sit with them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Friends and kin never come to comfort the grieving. Add a Comfort reason and resolver, reducing grief and creating a bounded consoling contribution and thought when accepted. Respect withdrawal or dislike and record the interaction outcome. Tracking issue: [#351](https://github.com/danhicks96/ostrog-public-ci/issues/351).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::a_friend_comforts_the_grieving`: A's partner dies; within 2 days B (A's close friend, idle, 12 tiles away) walks to A and comforts; A's grief falls and A's opinion of B gains a `Consoled` bond. Done when the test passes.
+
+### OST-413 · Anger at someone never comes out as words: rivals only quarrel by chance at the end of a chat
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Anger at someone cannot become an intentional insult. Add an Insult weight and approach reason, a bounded negative contribution and reaction, with the existing quarrel/fight escalation when the receiver is also angry or a rival. Tracking issue: [#354](https://github.com/danhicks96/ostrog-public-ci/issues/354).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::anger_at_someone_comes_out_as_an_insult`: A angry at B (0.7) and near B insults B within a day; B holds an `Insulted` bond. Done when the test passes.
+
+### OST-414 · The cheerful and the dour talk exactly alike: nobody jokes, and nobody's joke falls flat
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Cheerful and dour people talk alike. Add a cheerfulness-weighted Joke interaction: a receptive person shares laughter and gladness, while a grieving or cold receiver can rebuff it and the joke falls flat. Tracking issue: [#357](https://github.com/danhicks96/ostrog-public-ci/issues/357).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::a_joke_lands_with_a_friend_and_falls_flat_with_the_grieving`. Done when the test passes.
+
+### OST-415 · Someone who regrets a quarrel can only make amends by tending the other if they happen to be hurt
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Regret can lead only to tending someone hurt. Add an Apologise reason and acceptance rule; acceptance clears the matching quarrel contributions and regret and uses the existing MadeUp event. Refusal leaves regret and allows a delayed retry. Tracking issue: [#359](https://github.com/danhicks96/ostrog-public-ci/issues/359).
+
+**Acceptance:** Test `crates/hf-sim/tests/conscience.rs::regret_leads_to_an_apology`: after a quarrel A regrets, A walks to B within 2 days and apologises; with B's opinion of A at -0.2 it is accepted and both `Quarrelled` bonds are gone; with B at -0.8 it is refused. Done when the test passes and `made_up` fires at least 20 times on seed 5 over 600 days.
+
+### OST-416 · Nobody hungry ever asks a friend for food, even one who owes them a good turn
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A hungry person cannot ask a friend for food. Add an AskForHelp reason and resolver that checks food, affection or debt and feud constraints, transfers one real reserved or carried food portion, and records repayment, help or refusal without creating food. Tracking issue: [#362](https://github.com/danhicks96/ostrog-public-ci/issues/362).
+
+**Acceptance:** Tests in `crates/hf-sim/tests/social.rs`: `asking_for_food_moves_a_real_item` (helper's carried food count falls by one, asker's hunger rises by eating it); `a_feud_refuses_help` (the existing `a_good_turn_is_repaid_when_the_one_owed_goes_hungry` is rewritten to go through the verb). Done when both pass and the ledger drift check in the soak stays 0 days.
+
+### OST-417 · Nobody ever gives anyone anything except a ring from the store on the morning they pair
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+People give no gifts beyond pairing rings. Add disposition- and relationship-based gift reasons and acceptance, preserving item identity, reservations and custody history. Record a bounded contribution and thought, with the proposed special occasions and per-giver cooldown. Tracking issue: [#364](https://github.com/danhicks96/ostrog-public-ci/issues/364).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::a_carving_given_to_a_friend_carries_the_deed`: A holds a carving and has a close friend B nearby; within 5 days the carving is `Held(B)` and its story names the gift. Done when the test passes and the ledger drift check stays 0.
+
+### OST-418 · The new social verbs are untuned: count them on seeds 1-8 and set their weights
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The new social verbs have no measured rates. Count each interaction and acceptance outcome with disposition splits on seeds 1-8 under all three deities for 600 days. Tune the weights against the issue targets and record proposed values and measured comparisons. Tracking issue: [#367](https://github.com/danhicks96/ostrog-public-ci/issues/367).
+
+**Acceptance:** Test: the OST-412 to OST-417 tests pass with the tuned weights. Done when each verb fires 100+ times per seed and under a fifth of Chat's count; warm initiators comfort at least twice as often as cold ones; insults are under a third of all non-chat verbs; breaks per run do not rise by more than 10%.
+
+### OST-420 · How fast people pair is not measured anywhere in the repo: add it to the ties section of the alive report
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The repository does not measure the path from first talk to pairing. Track each unordered pair's first talk and talk count until Paired, then report days and talks as medians and quartiles and pairings within ten days after arrival. This is read-only measurement. Tracking issue: [#372](https://github.com/danhicks96/ostrog-public-ci/issues/372).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::courtship_stats_from_a_built_log`: a built list of 4 talks then a pairing 9 days after the first gives median 9 days, 4 talks (the counting is a pub fn the example calls, e.g. `hf_sim::social::courtship_stats`). Done when the census run on seed 5 reproduces the probe's median (16 days) within 1 day.
+
+### OST-421 · Liking and love are the same number, so a best friend and a sweetheart cannot be told apart
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Friendship and romantic attraction use the same value. Add defaulted romance and per-person romantic inclination, plus stable pair attraction based on disposition fit and a seeded term. Exclude close kin, children and incompatible kinds; add no behavior consumer yet. Tracking issue: [#375](https://github.com/danhicks96/ostrog-public-ci/issues/375).
+
+**Acceptance:** Test `crates/hf-sim/tests/romance.rs::attraction_is_stable_and_not_universal` (new file): attraction(a, b) == attraction(b, a), unchanged after a save and load; among 30 built adults, fewer than half of pairs exceed 0.6. Done when the test passes and the digest changes only by the new stored fields.
+
+### OST-422 · Two people become partners the morning their opinions cross +0.15, and neither is asked
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The daily matcher pairs people without a proposal or refusal. Move the existing pairing effects to a shared pair helper and replace matching with a Propose interaction after established courtship. Acceptance uses mutual romance and mourning gates; refusal leaves a bounded rebuff and lowers romance. Tracking issue: [#377](https://github.com/danhicks96/ostrog-public-ci/issues/377).
+
+**Acceptance:** Tests in `crates/hf-sim/tests/romance.rs`: `nobody_pairs_without_courting` (two at +1.0 opinion, familiarity 1.0, no courting, 60 days: not paired); `a_proposal_can_be_refused` (proposer's romance 0.8, receiver's 0.3: refused, `Rebuffed` held). The existing pairing guards in `crates/hf-sim/tests/qa_1020_medium.rs` (widow re-pairing, leaving ends a pairing) are rewritten to court first. Done when the tests pass and the OST-420 census shows median first talk to pairing above 25 days on seed 5.
+
+### OST-423 · Courtship rates are untuned: set them so pairings take weeks to months without emptying the nursery
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Courtship duration is untuned. After the pairing census and courtship rules land, run seeds 1-8 under all three deities for 600 days, tune interaction and romance thresholds against the stated duration and population targets, and record the proposed decision and measurements. Tracking issue: [#380](https://github.com/danhicks96/ostrog-public-ci/issues/380).
+
+**Acceptance:** Test: OST-421 to OST-422 tests pass with tuned constants. Done when, across seeds 1-8: median first talk to pairing 30-90 days; at least 1 refused proposal per 100 days per seed; share of adults paired at day 300 within 15 points of the pre-change census; births per run not lower than before.
+
 ### OST-901 · Count births per community, not per valley
 
 **Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#634](https://github.com/danhicks96/ostrog-public-ci/pull/634)
