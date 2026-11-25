@@ -662,7 +662,7 @@ pub fn limbs(w: &mut World) {
                 if let Some(ill) = b.illness.as_mut() {
                     ill.severity = (ill.severity - 0.45).max(0.02);
                 }
-                w.events.push(
+                let ev = w.events.push(
                     tick,
                     Some(at),
                     Severity::Major,
@@ -671,6 +671,14 @@ pub fn limbs(w: &mut World) {
                         by,
                         part: part.label().into(),
                     },
+                );
+                part_story(
+                    &mut w.agents[i],
+                    part,
+                    tick,
+                    crate::partlog::Change::Lost,
+                    ev,
+                    "taken to save them",
                 );
                 // #404 (2026-10-27 fix-404-feuds-in-play): lost to a wound struck in a fight.
                 if let Some(s) = struck_by {
@@ -718,7 +726,7 @@ pub fn limbs(w: &mut World) {
             .parts
             .insert(part, PartState::Replaced(what.to_string()));
         let by = w.agents[c].id;
-        w.events.push(
+        let ev = w.events.push(
             tick,
             Some(at),
             Severity::Notable,
@@ -728,7 +736,42 @@ pub fn limbs(w: &mut World) {
                 what: what.into(),
             },
         );
+        part_story(
+            &mut w.agents[i],
+            part,
+            tick,
+            crate::partlog::Change::Replaced,
+            ev,
+            what,
+        );
     }
+}
+
+/// Keep the story of a lost or replaced arm on its hand (partlog.rs), pointing at the chronicle
+/// event. Only arms for now: the foot and the rest of the tree follow.
+fn part_story(
+    a: &mut crate::agents::Agent,
+    part: Part,
+    tick: u64,
+    change: crate::partlog::Change,
+    ev: crate::ids::EventId,
+    note: &str,
+) {
+    use crate::partlog::{Entry, PartKey, Region, Side, Spot};
+    let side = if part == Part::ARM_L {
+        Side::Left
+    } else if part == Part::ARM_R {
+        Side::Right
+    } else {
+        return;
+    };
+    a.part_log.record(Entry {
+        part: PartKey::new(side, Region::Hand, Spot::Whole),
+        tick,
+        change,
+        event: Some(ev),
+        note: note.to_string(),
+    });
 }
 
 fn daily(w: &mut World) {

@@ -57,6 +57,7 @@ pub mod observances;
 pub mod omens;
 pub mod opening;
 pub mod par;
+pub mod partlog;
 pub mod past;
 pub mod paths;
 pub mod pilgrimage;

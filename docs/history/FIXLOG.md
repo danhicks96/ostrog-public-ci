@@ -1,5 +1,15 @@
 # Fix log
 
+## 2026-11-25: every part of a body can carry a history (Body & Gear slice 0a)
+
+- Symptom: a lost or replaced limb reached the chronicle, but the person kept no record of it
+  on the part itself, and nothing named a hand, finger or nail, so a part's story could not be
+  followed to its event or back.
+- Fix: `partlog.rs` gives each part one identity (side, region, spot) and a bounded, saved list
+  of entries that point at chronicle events; a taken arm and a made hand now write one on the
+  hand. The list is skipped from saves while empty, so old saves and digests are unchanged.
+  Guarded by `tests/partlog.rs` and `tests/limbs.rs`.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every

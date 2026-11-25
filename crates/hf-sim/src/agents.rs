@@ -247,6 +247,10 @@ pub struct Agent {
     /// Clothes wear out over a season and a half; new ones come from the loom.
     #[serde(default = "one")]
     pub clothes_wear: f32,
+    /// What happened to each part of their body (partlog.rs); empty until something is
+    /// recorded, and then not written while empty.
+    #[serde(default, skip_serializing_if = "crate::partlog::PartLog::is_empty")]
+    pub part_log: crate::partlog::PartLog,
     /// The clothes they wear are leather or fur (C34): warmer.
     #[serde(default)]
     pub furred: bool,
