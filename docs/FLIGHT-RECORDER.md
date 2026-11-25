@@ -37,3 +37,5 @@ An empty result means no matching retained evidence, not that no action took pla
 If a world stalls, check daily failure counts first. Choose a tick span around the spike,
 look at one affected person, and compare scored choices, attempted endpoints, and recorded failures.
 Where causality is not captured, use a fixed seed or disposable save and reproduce it.
+
+A clean close records the retained raw sequence interval (first included, end excluded). Raw queries compare the whole retained interval before applying display filters, so partial copies missing the beginning, end, or all raw records report incomplete coverage. Summary queries do not inspect raw files. Old captures without a close receipt cannot certify raw coverage.

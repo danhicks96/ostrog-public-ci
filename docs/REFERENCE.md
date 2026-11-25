@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3241 strings (click to open)</summary>
+<details><summary>3243 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1849,27 +1849,29 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | feuds.rs:330 | five years without a new grievance, and let go |
 | fish.rs:130 | drowned through the ice |
 | fish.rs:139 | fish |
-| flight_recorder.rs:46 | survey.jsonl |
-| flight_recorder.rs:65 | {v} /  |
-| flight_recorder.rs:67 | summary budget exhausted |
-| flight_recorder.rs:87 | t |
-| flight_recorder.rs:87 | evicted |
-| flight_recorder.rs:87 | from_tick |
-| flight_recorder.rs:87 | through_tick |
-| flight_recorder.rs:92 | trace-{:010}.jsonl |
-| flight_recorder.rs:125 | t |
-| flight_recorder.rs:125 | trace_incomplete |
-| flight_recorder.rs:125 | from_tick |
-| flight_recorder.rs:141 | t |
-| flight_recorder.rs:142 | header |
-| flight_recorder.rs:142 | day |
-| flight_recorder.rs:150 | seq |
-| flight_recorder.rs:151 | {value} /  |
-| flight_recorder.rs:156 | trace record exceeds segment budget |
-| flight_recorder.rs:184 | t |
-| flight_recorder.rs:184 | closed |
-| flight_recorder.rs:184 | last_observed_tick |
-| flight_recorder.rs:184 | raw_incomplete_from |
+| flight_recorder.rs:47 | survey.jsonl |
+| flight_recorder.rs:66 | {v} /  |
+| flight_recorder.rs:68 | summary budget exhausted |
+| flight_recorder.rs:88 | t |
+| flight_recorder.rs:88 | evicted |
+| flight_recorder.rs:88 | from_tick |
+| flight_recorder.rs:88 | through_tick |
+| flight_recorder.rs:93 | trace-{:010}.jsonl |
+| flight_recorder.rs:127 | t |
+| flight_recorder.rs:127 | trace_incomplete |
+| flight_recorder.rs:127 | from_tick |
+| flight_recorder.rs:143 | t |
+| flight_recorder.rs:144 | header |
+| flight_recorder.rs:144 | day |
+| flight_recorder.rs:152 | seq |
+| flight_recorder.rs:153 | {value} /  |
+| flight_recorder.rs:158 | trace record exceeds segment budget |
+| flight_recorder.rs:186 | t |
+| flight_recorder.rs:186 | closed |
+| flight_recorder.rs:186 | last_observed_tick |
+| flight_recorder.rs:186 | raw_incomplete_from |
+| flight_recorder.rs:187 | raw_retained_first_seq |
+| flight_recorder.rs:188 | raw_next_seq |
 | floods.rs:72 | the stream |
 | floods.rs:73 | the lake |
 | floods.rs:74 | the pond |

@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-25: detect partially copied flight evidence (OST-1500)
+
+- Symptom: a clean cover survey could mask missing raw events at either edge or every raw segment.
+- Fix: the writer records its retained raw sequence bounds at close; the raw reader checks them before filtering.
+- Guard: intact and empty captures stay distinguishable from copies with missing prefix, suffix, or all raw rows.
+
 ## 2026-11-25: retain unattended decision evidence (OST-1500)
 
 - Symptom: the live Why lens is transient; normal decision logging rotates day summaries

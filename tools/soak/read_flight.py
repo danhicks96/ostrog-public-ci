@@ -33,7 +33,8 @@ def query(args):
     issues, evidence, coverage = [], [], []
     header = closed = None
     summary = []
-    first = last = previous = None
+    first = last = previous = first_seq = None
+    raw_count = 0
     truncated = False
 
     def relevant(row):
@@ -69,11 +70,16 @@ def query(args):
             for row in rows(path, issues):
                 seq = row.get("seq")
                 tick = row.get("tick")
-                if isinstance(seq, int):
+                if type(seq) is int and seq >= 0:
+                    raw_count += 1
+                    if first_seq is None:
+                        first_seq = seq
                     if previous is not None and seq != previous + 1:
                         issues.append({"file": path.name, "reason": "sequence gap",
                                        "before": previous, "after": seq})
                     previous = seq
+                else:
+                    issues.append({"file": path.name, "reason": "invalid raw sequence"})
                 if isinstance(tick, int):
                     first = tick if first is None else min(first, tick)
                     last = tick if last is None else max(last, tick)
@@ -83,11 +89,24 @@ def query(args):
                     else:
                         truncated = True
 
+        if closed is not None:
+            expected_first = closed.get("raw_retained_first_seq")
+            expected_next = closed.get("raw_next_seq")
+            if (type(expected_first) is not int or type(expected_next) is not int
+                    or not 0 <= expected_first <= expected_next):
+                issues.append({"file": "survey.jsonl", "reason": "missing or invalid raw bounds receipt"})
+            elif (raw_count != expected_next - expected_first
+                  or (raw_count and (first_seq != expected_first or previous != expected_next - 1))):
+                issues.append({"file": "survey.jsonl", "reason": "raw records do not match close receipt",
+                               "expected_span": [expected_first, expected_next],
+                               "available_count": raw_count})
+
     return {
         "header": header,
         "closed": closed,
         "coverage_notices": coverage,
         "raw_tick_span": [first, last],
+        "raw_coverage_checked": not args.summary,
         "issues": issues,
         "recording_may_be_incomplete": closed is None or header is None or bool(issues)
         or bool(coverage),

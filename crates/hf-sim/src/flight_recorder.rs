@@ -12,6 +12,7 @@ const SEGMENTS: usize = 4;
 struct Segment {
     path: PathBuf,
     first_tick: u64,
+    first_seq: u64,
     last_tick: u64,
     bytes: u64,
 }
@@ -99,6 +100,7 @@ impl Recorder {
         self.segments.push_back(Segment {
             path,
             first_tick: tick,
+            first_seq: self.seq,
             last_tick: tick,
             bytes: 0,
         });
@@ -182,6 +184,8 @@ impl Recorder {
         self.flush();
         self.survey_line(&json!({
             "t": "closed", "last_observed_tick": self.last_tick, "raw_incomplete_from": self.lost_from_tick,
+            "raw_retained_first_seq": self.segments.front().map_or(self.seq, |segment| segment.first_seq),
+            "raw_next_seq": self.seq,
         }));
     }
 }
