@@ -385,6 +385,14 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 
 **First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
 
+### OST-205 · Let the worst need bite in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#708](https://github.com/danhicks96/ostrog-public-ci/pull/708)
+
+The needs term of mood was a plain mean of the six needs centred on half-full, so one need at zero with the rest full still read as mildly pleased. It is now centred on "fine" and the neediest need bites on its own.
+
+**Acceptance:** A person with hunger at zero and every other need full, no memories or thoughts, has mood at most -0.3; with every need at 0.85 the needs term is mildly positive. A FIXLOG entry is added and any simulation digest change is explained in the PR.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
