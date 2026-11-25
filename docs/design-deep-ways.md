@@ -65,7 +65,7 @@ Built in `crates/hf-sim/src/stirring.rs`; replaces the two-day clock for new bre
 A save from before this slice keeps its old due-tick entries and they come up as they would
 have.
 
-## Assumptions (Dan can overrule)
+## Assumptions (the maintainer can overrule)
 
 - Warning at 12, rising at 30. With three people working at a breach that is a warning in two
   hours and a rising in about four; one person passing now and then never wakes it.

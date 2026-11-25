@@ -152,7 +152,7 @@ fn a_thousand_years_is_quick() {
     let (rl, _) = sites::run(3, &m, 1000);
     assert!(rl.year == 1000);
     // Fifteen seconds, not ten (#251: the tester's laptop sits at 9.9 s in a debug build, so
-    // one run in four failed on timing noise; the box takes about a third of that).
+    // one run in four failed on timing noise; the build server takes about a third of that).
     assert!(
         t.report("a thousand years").as_secs_f32() < 15.0,
         "{:?} of CPU",

@@ -46,7 +46,7 @@ pub fn step(w: &mut World) {
             continue;
         };
         // A thing with a story does not rot: a trophy is tanned, a keepsake kept (FIXLOG
-        // 2026-10-20 #170, C62, Dan's call: the White Hart's hide rotted in twenty days, unnamed).
+        // 2026-10-20 #170, C62, the maintainer's call: the White Hart's hide rotted in twenty days, unnamed).
         if it.story.is_some() {
             continue;
         }

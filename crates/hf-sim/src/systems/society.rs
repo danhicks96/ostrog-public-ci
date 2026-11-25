@@ -58,7 +58,7 @@ fn newcomers(w: &mut World) {
     // The day key keeps the absolute tick (one roll per world-day); the grace period after the
     // arrival counts from the arrival.
     let day = tick / TICKS_PER_DAY;
-    let days_here = w.since_arrival() / TICKS_PER_DAY;
+    let days_here = w.since_party() / TICKS_PER_DAY;
     // One roll per day at 07:00: about one arrival every three days early on, rarer later.
     if (tick % TICKS_PER_DAY) / TICKS_PER_HOUR != 7 || days_here < 3 {
         return;

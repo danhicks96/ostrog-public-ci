@@ -50,6 +50,10 @@ pub struct WorldMeta {
     /// below it; the calendar people see counts from it. 0 for worlds with no arrival.
     #[serde(default)]
     pub epoch: u64,
+    /// The tick the latest party arrived (OST-130): 0 means the first portal, so `epoch`.
+    /// The "first days" graces count from it; the calendar still counts from `epoch`.
+    #[serde(default)]
+    pub arrived: u64,
     /// The new-game choices this world was made from (setup.rs); None for older saves and
     /// worlds made without an arrival.
     #[serde(default)]
@@ -279,6 +283,7 @@ impl World {
             life_speed: 1.0,
             engine: crate::engine::Engine::default(),
             epoch,
+            arrived: 0,
             setup: None,
             flora_draw: Some(g.flora_draw),
         };
@@ -402,6 +407,15 @@ impl World {
 
     pub fn since_arrival(&self) -> u64 {
         self.meta.tick.saturating_sub(self.meta.epoch)
+    }
+
+    /// Ticks since the latest party arrived (OST-130): the first portal's, unless a later party
+    /// has settled the valley. The newcomer grace, the first days no band knows of the valley,
+    /// the deity's first day and fate's settled days count from here; years do not.
+    pub fn since_party(&self) -> u64 {
+        self.meta
+            .tick
+            .saturating_sub(self.meta.epoch.max(self.meta.arrived))
     }
 
     /// The calendar people live by: counted from the arrival. The epoch is a whole number of

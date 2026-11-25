@@ -1,4 +1,4 @@
-# Dan's standing design rules
+# Standing design rules
 
 The owner's rules for how Ostrog works. They bind every checkpoint; where the code does not
 yet follow one, the gap is named here and in docs/history/PLAN-NEXT.md. Each rule has its decision
@@ -6,7 +6,7 @@ number in DECISIONS.md.
 
 ## 1. Everything built after the arrival is grown, not set down (D35)
 
-Dan, 2026-10-21: "Everything built 'after' the colonists arrive should be organic, everything
+The maintainer, 2026-10-21: "Everything built 'after' the colonists arrive should be organic, everything
 before they arrive are structures which were built (aka prefabs are okay) before them and thus
 artifacts and abandoned or maybe some colony hermit crabbed in them elsewhere, but those are the
 only potential prefab buildings."
@@ -26,7 +26,7 @@ only potential prefab buildings."
 
 ## 2. Tile by tile means the whole material chain, as in RimWorld and Dwarf Fortress (D36)
 
-Dan, 2026-10-21: "'Grows tile by tile' means they harvest/mine what is needed, craft the
+The maintainer, 2026-10-21: "'Grows tile by tile' means they harvest/mine what is needed, craft the
 materials, refine them and then place them ... just like in rim and df."
 
 - People cut, quarry or gather the raw material; refine it at a bench (logs sawn to planks,
@@ -38,7 +38,7 @@ materials, refine them and then place them ... just like in rim and df."
 
 ## 3. Knowledge belongs to people (D37)
 
-Dan, 2026-10-21: "Knowledge/research belongs to those who learn how to do the things or
+The maintainer, 2026-10-21: "Knowledge/research belongs to those who learn how to do the things or
 experiment on how to do things, if those experts get kidnapped or die or something bad happens
 to them, their knowledge goes with them, so it is in the interest of a colony to teach others,
 even if some traits/memories may produce pushback from some who would prefer to do other
@@ -81,7 +81,7 @@ history. The complete breadth contract is `docs/OBJECT_CATALOG.md`.
 
 ## 6. The people are the players (D43)
 
-Dan, 2026-10-22 (#266): "The people in the game are the players. They should change the world,
+The maintainer, 2026-10-22 (#266): "The people in the game are the players. They should change the world,
 not find it ready-made." Nothing the survivors could have made themselves is pre-placed; what
 was there before them is the ancients', readable as a ruin and said to be theirs. The test for
 any starting feature: could the survivors have made this? Then it is not pre-placed. Was it
@@ -96,7 +96,7 @@ reacting to what the people do.
 
 ## 7. What would a normal person do here? (D56)
 
-Dan, 2026-10-27 (#415): "What would a normal human do if...? ... wandering about when they
+The maintainer, 2026-10-27 (#415): "What would a normal human do if...? ... wandering about when they
 don't have a ready supply of food or shelter is probably going to ensure death." Every
 behaviour is checked against it. A person dropped into a strange land finds food and a place
 to sleep before dark, stays near what they found, keeps their group together, and puts off
@@ -158,6 +158,6 @@ must come from actual adjacency, permeability, pressure, temperature or fluid st
 
 ## 5. Working rules
 
-- Push the working branch to GitHub after every commit, so GitHub is always in sync (Dan,
+- Push the working branch to GitHub after every commit, so GitHub is always in sync (the maintainer,
   2026-10-21).
-- Merge on GitHub once checks pass, without waiting for Dan (Dan, 2026-10-20).
+- Merge on GitHub once checks pass, without waiting for the maintainer (the maintainer, 2026-10-20).

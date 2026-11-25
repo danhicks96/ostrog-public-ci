@@ -89,7 +89,7 @@ pub fn step(w: &mut World) {
         if n == 0 {
             continue;
         }
-        let settled = w.since_arrival() >= 10 * TICKS_PER_DAY;
+        let settled = w.since_party() >= 10 * TICKS_PER_DAY;
         let c = w.communities.iter_mut().find(|c| c.id == cid).unwrap();
         let was_more = c.peak > 1;
         c.peak = c.peak.max(n);
