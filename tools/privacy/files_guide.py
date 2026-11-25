@@ -24,7 +24,7 @@ What a player is shown, and what is held back:
   - The playtest rows are held back until the game can make those files (slices 9.2 and 9.3):
     a guide must not describe an option the game does not have. Set PLAYTEST_IN_GAME then.
   - Nothing else from the register: its status notes, open items and promises are for the team
-    until the 9.11 audit is done and Dan signs off (9.10).
+    until the 9.11 audit is done and the maintainer signs off (9.10).
 """
 
 import html

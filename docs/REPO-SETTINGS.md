@@ -22,7 +22,7 @@ Only the repo owner can set these. Do them in this order; items 1-4 work on a pr
      via Actions > ci > Run workflow first). Do **not** require `box-ci`, `digest` or the soaks.
    - Require branches to be up to date before merging: on only if you want strict, which makes
      each PR re-test after another merge.
-   - Bypass list: your own account (so the box's `tools/merge/gated_merge.sh` and emergency
+   - Bypass list: your own account (so the build server's `tools/merge/gated_merge.sh` and emergency
      fixes can still push).
 5. **Settings > Code security:** Secret scanning on, **Push protection** on, Dependabot alerts
    on, Private vulnerability reporting on. Do not supply confidential inputs to public jobs.
@@ -46,7 +46,7 @@ How auto-merge works with these settings: a PR from this repo by an allowed logi
 `gh pr merge --auto --merge` from automerge.yml. GitHub waits for the required checks `rust`,
 `hygiene` and `export-structure`,
 then merges with a merge commit. Nothing merges if `rust` fails. Merges made this way do not
-create the `cNN` tag or run the mirror checkpoint; the box's checkpoint script catches up later
+create the `cNN` tag or run the mirror checkpoint; the build server's checkpoint script catches up later
 (`tools/checkpoint.sh`).
 
 Not tested end to end: Actions could not be run from the session that wrote this. First use:

@@ -385,6 +385,14 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 
 **Acceptance:** A marked sleeper and one neighbour over 15 nights give exactly one suspected event; a bite on night 16 gives a second. A FIXLOG entry is added.
 
+### OST-1500 · Record and query unattended simulation diagnostics
+
+**Priority:** High · **Milestone:** Verify long-running simulations · **State:** Claimed · **Developer:** Ostrog CI (OC) · **Public PR:** Pending
+
+Extend the opt-in decision logger with a Flight Recorder for machine soaks and desktop debugging. Survey provides world summaries and points to anomalies; focused Trace explains actual choices, attempts, failures and outcomes with stable tick and entity references; verified Replay is a follow-up that refuses to claim equivalence on divergence or missing inputs. Local read-only queries should recover useful evidence without opening the game or loading an entire recording. Keep diagnostics separate from narrative history, the Why lens, and the camera director. Any future in-game consumer reads simulation signals independently of the recorder.
+
+**First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
@@ -598,6 +606,16 @@ Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on 
 Add `crates/hf-sim/examples/biography_census.rs`: for each colonist who lived at least 100 game-days, count `view::biography` lines and check that every child's birth, pairing, partner's death and their own death is present. Tracking issue: [#405](https://github.com/danhicks96/ostrog-public-ci/issues/405).
 
 **Acceptance:** 95% of such lives fit in 60 lines and 100% keep the listed events, or the shortfall is reported with examples. Simulation state is unchanged.
+
+## Repository usability and diagnostics
+
+### OST-1501 · Map where game data lives and how to change it
+
+**Priority:** High · **Milestone:** Make the repo easier to navigate and profile · **State:** Claimed · **Developer:** Ostrog CI (OC) · **Public PR:** Pending
+
+Give contributors a linked, text-first architecture map from the README. Start with world generation and the tick loop, person decisions and feedback, and the boundaries for Godot, the chronicle, saves and debug output. Add a registry of the remaining domains so missing maps are visible. For each map, document the source of truth, writers, readers, cadence, cross-thread and save boundaries, what is retained or rebuilt, and where to test and measure expensive copies, updates or writes.
+
+**First implementation acceptance:** A contributor can trace a person decision and world change from source to screen and save without knowing the directory layout. The same PR updates maps when ownership, timing, shape, storage or consumers change. Verify links and machine-checkable anchors, reuse existing generated reference tooling where practical, and test that one fixture change to a mapped contract detects stale docs without requiring edits for unrelated refactors. Keep the docs source-only and distinguish measured costs from investigation leads.
 
 ## Gated by a published release
 

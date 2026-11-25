@@ -1,6 +1,6 @@
 # Organic people: lived pasts, beliefs with sources, learning by trying
 
-Written 2026-10-16 from Dan's direction: people figure things out and try things; fire and
+Written 2026-10-16 from the maintainer's direction: people figure things out and try things; fire and
 famine are resolved by what individuals know and choose, not by a settlement planner; adults
 arrive with lived lives that contribute to how they act without deciding it; losing is fun.
 
@@ -21,7 +21,7 @@ a kind grandparent or teacher, a famine winter, a house fire, a death in the fam
 apprenticeship, a love, a child, a betrayal, a flight. Each event becomes a long memory whose
 strength fades with years but never to nothing, and whose origin is that chronicle row.
 
-The same event can take two people opposite ways. Dan's family is the reference case: two sons
+The same event can take two people opposite ways. A real family is the reference case: two sons
 of an alcoholic father, one drinks and one never does. So an event does not set a belief
 directly; it opens a question ("what is drink to me"), and the answer is drawn from temperament
 (genome), from whether a counter-model existed (a grandparent, a teacher, a friend who lived
@@ -149,7 +149,7 @@ the centuries simulated before arrival, so the world's peoples already have lore
 may fear, worship or doubt it, before the party steps through. The wizard therefore asks for the
 deity before the history pass runs.
 
-Open question for Dan: whether people inside the world can come to sense the deity from patterns
+Open question for the maintainer: whether people inside the world can come to sense the deity from patterns
 (three hard winters, a fire after a quarrel) and believe in, fear or bargain with it, through the
 Phase 21 invention of gods from unexplained events. Recommended, because it ties the storyteller
 into the lore. A pantheon of several deities is backlog E13.
