@@ -1,5 +1,5 @@
 """Ostrog's sound kit: small, deterministic synthesis building blocks in numpy alone (no
-scipy on the box). Everything is project-original and seeded by name, so a rebuild gives the
+scipy on the build server). Everything is project-original and seeded by name, so a rebuild gives the
 same files. Sample rate 44.1 kHz; mono arrays of float64 in -1..1 unless stated.
 
 Filtering is done in the frequency domain (rfft, multiply, irfft), which is exact for whole

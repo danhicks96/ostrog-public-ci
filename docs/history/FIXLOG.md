@@ -827,7 +827,7 @@
 
 - **Symptom**: standing out in cold rain chilled a person at exactly the same rate as standing out
   dry in the same cold. Wet clothes should make a cold spell dangerous; the sim gave them no edge.
-- **Found by**: the 2026-11-13 alive audit (#1262), with a corrected test threshold from Dan's
+- **Found by**: the 2026-11-13 alive audit (#1262), with a corrected test threshold from the maintainer's
   review comment on the issue (the originally proposed 0.08 absolute gap over 3 hours could not be
   met by the proposed 1.8x factor; the corrected spec is 6 hours, a 1.7x-1.9x ratio and at least a
   0.07 absolute gap).
@@ -1737,11 +1737,11 @@
   samples over two hours) separates the nearest rank from the minimum, and
   `an_empty_tally_gives_every_key_as_zero` guards the empty-slice cases.
 
-## 2026-11-14 #1739 (D95): trees matured at about 3.5 game years, not Dan's three
+## 2026-11-14 #1739 (D95): trees matured at about 3.5 game years, not the maintainer's three
 
 - **Symptom**: `P::Tree`'s `days_to_mature` of 40 (`plants.rs`), under the season and sky
   factors `systems/weather.rs` applies, matures a sapling in about 3.5 game years rather than
-  the three years Dwarf Fortress uses and Dan decided on.
+  the three years Dwarf Fortress uses and the maintainer decided on.
 - **Found by**: the 2026-11-14 alive audit (#1739), reading `plants.rs` and `weather.rs`.
 - **Cause (checked)**: the constant was set without deriving it from the season/sky factors.
 - **Fix**: `crates/hf-sim/src/plants.rs`. Scaled `days_to_mature` by 6/7 (40 -> 3.5yr; target
@@ -2314,7 +2314,7 @@
   started. Every later start downloaded the whole archive again, verified it, unpacked it into a new
   `.ostrog-update\staging\package-<pid>-1` that was never removed (68 MB each) and started the
   old version: `.ostrog-update` held 303 MB after two starts.
-- **Found by**: the local AI (Windows), WP-02 2.9 part 2 on Dan's network against the wildcard-DNS test paths.
+- **Found by**: the local AI (Windows), WP-02 2.9 part 2 on a private network against the wildcard-DNS test paths.
 - **Cause (checked)**: `StagedUpdate::commit` refuses with `BackupAlreadyExists` when
   `.ostrog-update\backup` exists, and nothing removed the backup after an update that started,
   so the first update's copy of the old app (168 MB) blocked every later one. A failed commit also
@@ -2887,7 +2887,7 @@
   at a time (at that point in generation no column on seeds 1 to 4 stands two levels off a
   neighbour, and every column is within one level of everything two tiles around it). The guard
   drove `scree::apply` on a synthetic cliff, so it passed anyway.
-- **Fix** (Dan's choice of the options on #698, "knolls get scree"): a bare top that steps to its
+- **Fix** (the maintainer's choice of the options on #698, "knolls get scree"): a bare top that steps to its
   neighbours on two or more sides (a knoll or a ridge edge) is also eligible, and takes loose rock
   only where the patch noise is high: over `KNOLL_LOOSE` (0.62, about a fifth of such tops on seeds
   1 to 4) as gravel, over `KNOLL_SCREE` (0.70, about a twelfth) as scree. The noise is spatially
@@ -3456,9 +3456,9 @@
   `the_weather_ground_overlay_matches_the_look` (a hot winter day A/B: snowfall
   suppresses the grass fuel, clear sky restores it, a roof holds the snow off;
   rain wets and frost freezes the bare earth; mud stays mud in rain).
-- **Judgement calls, stated for Dan** (DECISIONS D85): the overlay wets only
+- **Judgement calls, stated for the maintainer** (DECISIONS D85): the overlay wets only
   while it rains, matching the client's instant swap — the doc's "a bounded
-  while after" persistence waits until the client shows mud after rain or Dan
+  while after" persistence waits until the client shows mud after rain or the maintainer
   asks, so facts and looks never part; whether lying snow and mud should slow
   people and stock (the doc's second feel question) is not taken — no movement
   cost is in this slice. **Digests change**: winter fires behave differently;
@@ -3488,7 +3488,7 @@
   p99 151.95 ms, max 202.48 ms, 357 frames over 33 ms): the harness is working and the gate is
   honestly **not yet passing**, as expected before WP-06.2's renderer work.
 - **Open**: this slice does not claim the gate passes. The saved 500 mixed-kind profile must be
-  run on Dan's laptop GPU and the software-GL box, with both CSVs attached to the release evidence.
+  run on a laptop GPU and the software-GL box, with both CSVs attached to the release evidence.
 
 ## 2026-11-10 #268 WP-05 5.6: one temperature, lapsed by height
 
@@ -4422,7 +4422,7 @@ Each fixed in the commit named; guards are in the tests named in that commit.
 
 - Symptom: a community's next house could be planned in stone when the blocks lay at another
   community's home, so its builders walked to a neighbour's pile or waited on stone they did not
-  have. Not seen in a soak; found reading the house rule for Dan's questions of 2026-10-19.
+  have. Not seen in a soak; found reading the house rule for the maintainer's questions of 2026-10-19.
 - Found by: code reading of `systems/settlement.rs` `plan_community` (the house rule counted
   `StoneBlock` on the ground anywhere in the valley), then the guard below, which failed before
   the fix: 21 of 21 planned wall tiles were stone with 30 blocks lying 55 tiles away.
@@ -4856,7 +4856,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Found by: QA round 2026-10-20, #170 (code reading), confirmed by the guards below.
 - Cause: checked. `systems/spoil.rs` `step` rotted any stack that keeps days; `systems/hazards.rs`
   `burn_out` consumed what burned with no event for a thing with a story.
-- Fix (D32, Dan's call): `spoil::step` passes over storied things. `burn_out` names each storied
+- Fix (D32, the maintainer's call): `spoil::step` passes over storied things. `burn_out` names each storied
   thing that burns in a major `Burned` event, by its name or its noun.
 - Guards: `tests/qa_1020_medium.rs` `a_storied_hide_does_not_rot` and
   `a_storied_hide_lost_to_fire_is_named` (both fail without).
@@ -4882,7 +4882,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Found by: QA round 2026-10-20, #172 (code reading), confirmed by the guard below.
 - Cause: checked. `systems/work.rs`, the `Cook` effect, took the first cookable stack carried
   and `consume_item(id, 2)`, which takes what there is; the planner fetched two.
-- Fix (D33, Dan's call: one raw thing is a meal): the planner fetches one; the effect cooks the
+- Fix (D33, the maintainer's call: one raw thing is a meal): the planner fetches one; the effect cooks the
   stack of the kind and material the plan picked up (the first cookable in hand only if that
   is gone) and takes exactly one. The meal is of that food. More meals come of the same raw
   food than before (one each, not one for two); the C62 soaks record the effect.
@@ -4914,7 +4914,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Found by: QA round 2026-10-20, #173 (code reading), confirmed by the guards below.
 - Cause: checked. `threat.rs` `raids` built its targets from `w.items` directly, and its split
   made a new item with `quality: 0.5, material: AIR`.
-- Fix (D34, Dan's call): a band keeps what it has seen (`Band::seen`, from `look_about`: food
+- Fix (D34, the maintainer's call): a band keeps what it has seen (`Band::seen`, from `look_about`: food
   in a member's sight by `perception::can_see`, each band step) and what it heard of before it
   set out (`Band::heard`, from `heard_of`: the valley's renowned things, a name or spoken of,
   lying within thirty tiles of home, with where they lay). A raider goes first for a treasure
@@ -5001,7 +5001,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Found by: QA round 2026-10-20, #182 (code reading, confirmed in play).
 - Cause: checked. `main.gd` `_build_ui` fixed `offset_top` at -230; nothing read `pos` or
   `minor_dropped`.
-- Fix: `main.gd`: the box is sized to its text each time it changes and hidden when empty; a
+- Fix: `main.gd`: the build server is sized to its text each time it changes and hidden when empty; a
   click on a line moves the camera to the line's place and level (`_on_feed_input`); the lines
   let pass in the last 45 seconds show as "+N quieter lines" (`rules.gd` `feed_text`).
 - Guard: `tools/gd_test.gd` `test_feed_counts_what_it_drops`.
@@ -5224,7 +5224,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 ## 2026-10-21 #205: perception was 86 % of a 500-person tick
 
 - Symptom: 500 fed people took 2.16 ms a tick on a laptop (2.27 ms in the cloud container),
-  over the 2 ms gate, with perception 86 % of it and 10 to 15 times the box's spike count.
+  over the 2 ms gate, with perception 86 % of it and 10 to 15 times the build server's spike count.
 - Found by: QA round 2026-10-20, #205 (set AP).
 - Cause: checked by instrumenting a look. Each look traced a sight line to every thing in range
   even where many shared a tile, traced one to every belief in range before asking whether the
@@ -5245,7 +5245,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: every community built the same 7×6 house whatever its household: two people and
   eight got the same floor, the same six beds, the same door on the same side. Hollows were dug
   to a fixed 3×4 room; a folk with no rock face near built a surface house instead.
-- Found by: Dan's design rule (docs/design-rules.md rule 1, D35): what is built after people
+- Found by: the maintainer's design rule (docs/design-rules.md rule 1, D35): what is built after people
   arrive is grown tile by tile from need, never prefab.
 - Cause: `systems/settlement.rs` built every house from fixed offsets of its origin
   (`HOUSE_W`, `HOUSE_H`), and hollows from a fixed room.
@@ -5270,7 +5270,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: a wall, a door, a bed or a table took logs or stone blocks from the ground straight
   into place; nothing was sawn, dressed or made first.
-- Found by: Dan's design rule (docs/design-rules.md rule 2, D36): they harvest or mine what is
+- Found by: the maintainer's design rule (docs/design-rules.md rule 2, D36): they harvest or mine what is
   needed, craft and refine it, then place it, as in RimWorld and Dwarf Fortress.
 - Cause: `work/designation.rs` `structure_cost` and the planner's `make()` costs named raw
   materials; mining yielded finished `StoneBlock`.
@@ -5621,7 +5621,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: anyone of a community could saw planks, dress stone, smelt, forge, weave, pot or
   brew; nothing was lost when a smith died; nobody taught anyone.
-- Found by: Dan's design rule (docs/design-rules.md rule 3, D37): knowledge belongs to people.
+- Found by: the maintainer's design rule (docs/design-rules.md rule 3, D37): knowledge belongs to people.
 - Cause: `Recipe` carried a `Skill` only; `decide.rs` scored a Craft order for everyone.
 - Fix: `recipes::craft_of` names the craft; `decide.rs` skips a craft order the person does not
   know unless `crafts::may_try` (nobody of theirs knows it, the order has waited a day, they
@@ -5708,7 +5708,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: every community got a 4 by 3 stockpile extended in rows of four, 6 by 4 field plots
   chained eastward, a 5 by 3 cellar room with the lamp in a set corner, and a quarry shaft at
   home + (9, -7) with a gallery within four tiles, whatever the ground and the need.
-- Found by: Dan's design rule (docs/design-rules.md rule 1, D35), open since C67.
+- Found by: the maintainer's design rule (docs/design-rules.md rule 1, D35), open since C67.
 - Cause: `systems/settlement.rs` steps 1, 1b, 6c, 7 and `quarry` placed fixed footprints.
 - Fix: `grounds::grow` grows a patch outward from a seed over open ground on its level, nearest
   the seed first, round what is in the way, as many tiles as the need; the stockpile is a tile
@@ -5858,7 +5858,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: after a raid a community dug a shelter for the stores (C58) but never walled its
   houses; the staged demo scene wrote the autosave ring, and a launched client could open on
   its preset mine shaft.
-- Found by: the M5 plan (defence after raids); Dan (#266) for the demo.
+- Found by: the M5 plan (defence after raids); the maintainer (#266) for the demo.
 - Fix (D42): `ProjectKind::Wall`, proposed in `projects::wall` after strangers took from the
   store by one who holds strangers a danger (or will not fight them), once the community is
   eight with a house; `settlement::palisade` grows the ring round what stands (the houses'
@@ -5912,7 +5912,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: the C73 soaks: every raided valley proposed and mostly built a wall, none closed in
   600 days (seed 3 stood at 85 of 91 tiles by day 200).
 - Found by: the C73 soak table and ring saves (FIXLOG Open, C73).
-- Cause: the last ring orders waited at priority 5 behind all other work; the box's clamp
+- Cause: the last ring orders waited at priority 5 behind all other work; the build server's clamp
   five tiles from the map edge cut the ring through a house standing near the edge, its roof
   and chest on the line.
 - Fix: once half the ring stands, its remaining wall and gate orders are raised to 8, as a
@@ -6048,9 +6048,9 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 ## 2026-10-23 fix-324: people crossed a drop as if the map were flat (#324)
 
-- Symptom: Dan, 2026-10-22: "you don't see people climbing down when they walk across the map
+- Symptom: the maintainer, 2026-10-22: "you don't see people climbing down when they walk across the map
   where there is clearly a drop off, they just walk like it is 2d map."
-- Found by: Dan; the tester's issue traced the sim side.
+- Found by: the maintainer; the tester's issue traced the sim side.
 - Cause: the sim does change levels (natural ramps at every one-level slope, world/gen/ramps.rs,
   and stairs), but the client was sent only `from_x`/`from_y`, so a step up or down was drawn
   as a slide across flat ground; and nothing could fall: open air under someone moved them
@@ -6095,7 +6095,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: a community dwindling to nothing read as a list of deaths; "died out" said nothing
   of why, and the last survivor was one more name.
-- Found by: Dan's design note #353 ("losing is fun").
+- Found by: the maintainer's design note #353 ("losing is fun").
 - Cause: not built.
 - Fix: fate.rs: daily, each community is thriving, struggling (under three meals a head
   lying in store), failing (half its peak gone or under one a head) or collapsed (three
@@ -6109,7 +6109,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: everyone of a community was always present; leaving was for good, except a
   community's own caravan.
-- Found by: Dan's idea, filed as #347.
+- Found by: the maintainer's idea, filed as #347.
 - Cause: not built (membership and presence were one fact).
 - Fix: journeys.rs: from day fifteen, a curious or solitary adult of a community of four or
   more, on about one day in 120, sets out alone for a peopled place beyond the valley their
@@ -6193,7 +6193,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: a raider who fought someone and went home was gone for good; every band was new
   faces, so no enmity could build across raids.
-- Found by: Dan, 2026-10-23, asking for a nemesis system alongside gossip.
+- Found by: the maintainer, 2026-10-23, asking for a nemesis system alongside gossip.
 - Cause: not built.
 - Fix: nemesis.rs (D49): rivals made in a fight with a stranger who lives (`rival_made`), come
   back with their people (`rival_returned`), seek their foe (`rival_met`, with a title earned),
@@ -6442,7 +6442,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: each person knew what they saw, and each community what ground it had explored, but
   nothing held what the valley knew of the peoples beyond it, apart from the places someone
   had travelled to.
-- Found by: Dan's design (#349, folded into epic #377).
+- Found by: the maintainer's design (#349, folded into epic #377).
 - Cause: not built.
 - Fix: known.rs: when strangers are sighted, their place goes on the community's tracker
   (`Community::known_others`): its name, first and last seen, the most that came, whether any
@@ -6456,7 +6456,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: a split put each person in one community or the other; one whose partner or
   family stayed behind simply belonged to the new one.
-- Found by: Dan's idea in #348, folded into epic #377.
+- Found by: the maintainer's idea in #348, folded into epic #377.
 - Cause: not built (`Agent::community` is one community).
 - Fix: ties.rs: one who went with a split while kin stayed keeps a tie to the old community
   (`Agent::tie`, `torn`); by day, one day in ten, they go across to it; the tie lapses when no
@@ -6467,7 +6467,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 ## 2026-10-23 fix-352: every landing was a valley (#352, epic #377)
 
 - Symptom: the ground was one shape of noise everywhere; every world was a valley.
-- Found by: Dan's design (#352), folded into epic #377.
+- Found by: the maintainer's design (#352), folded into epic #377.
 - Cause: not built.
 - Fix: `GenParams::landform` (heightmap.rs): a valley (as before, and the default for worlds
   made directly), a plain (low and even), a plateau (raised ground with falls at its edges), a
@@ -6627,9 +6627,9 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 ## 2026-10-26 fix-390-depth: lakes, streams and swamps were one level deep (#390)
 
-- Symptom: every water body was a single sheet on the surface; a swamp in Dan's screenshot was
+- Symptom: every water body was a single sheet on the surface; a swamp in the maintainer's screenshot was
   not even one level deep, and a lake had nothing under its surface tile to break into a cut.
-- Found by: Dan, 2026-10-26, on #390.
+- Found by: the maintainer, 2026-10-26, on #390.
 - Cause: `world/gen/hydrology.rs` `apply` puts water only on the tile above each water column's
   ground; nothing gave it depth.
 - Fix: `world/gen/hydrology.rs` `deepen`, run after the biomes are laid (`world/gen/mod.rs`):
@@ -6643,9 +6643,9 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 ## 2026-10-26 fix-390-break: a shaft dug beside a lake stayed dry (#390)
 
-- Symptom: Dan's screenshot (Merebank, Year 1 Spring day 1): a staircase dug two levels down
+- Symptom: the maintainer's screenshot (Merebank, Year 1 Spring day 1): a staircase dug two levels down
   two tiles from a lake, and nothing happened; people tunnelled on beside the water.
-- Found by: Dan, 2026-10-26, #390.
+- Found by: the maintainer, 2026-10-26, #390.
 - Cause: the only water a cut could let in was the rock's own (`aquifer.rs` `observe`, #272);
   surface water had no link to a cut beside or under it.
 - Fix: `aquifer.rs` `break_in`, called from `observe` for every `mined` row before the wet-rock
@@ -6677,8 +6677,8 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 ## 2026-10-26 fix-390-site: the way down was sited beside the water (#390)
 
-- Symptom: the quarry's stair shaft in Dan's screenshot was two tiles from a lake.
-- Found by: Dan, 2026-10-26, #390.
+- Symptom: the quarry's stair shaft in the maintainer's screenshot was two tiles from a lake.
+- Found by: the maintainer, 2026-10-26, #390.
 - Cause: `systems/settlement.rs` `quarry` took the nearest open tile with stone under it,
   six or more tiles from home, whatever was beside it; `find_dugout_site` likewise.
 - Fix: both skip a site with standing water within two tiles of it, across or up to four
@@ -6702,7 +6702,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: every shallow water edge in the valley spread one ring outward after twelve hours of
   any rain, every four hours more; a drizzle and a storm flooded alike, and a hilltop pond rose
   as fast as the stream.
-- Found by: Dan, 2026-10-26, #393.
+- Found by: the maintainer, 2026-10-26, #393.
 - Cause: `systems/hazards.rs` `flood_step` counted hours of rain and nothing else: the weather
   had no strength, and the water no catchment.
 - Fix: the weather has a strength (`Weather::drizzle`, one rain in three; `rainfall`: a drizzle
@@ -6728,7 +6728,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: snow built up and melted on roofs only (`building.rs`); a winter's snow had no
   effect on the streams, and there was no spring flood.
-- Found by: Dan, 2026-10-26, #393.
+- Found by: the maintainer, 2026-10-26, #393.
 - Cause: nothing kept snow on the ground; the flood rule read only the hours of rain.
 - Fix: `floods.rs` `Waters::snow`, the snow lying on the valley's ground in units of rain: each
   hour of snowfall adds one (`SNOWFALL`), each hour above freezing melts a quarter of a unit
@@ -6744,7 +6744,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: flood water was one shallow ring at a time on any loose ground beside any water; it
   never went to low ground first, never carried anything off, never put anyone in danger, and
   always drained away to nothing.
-- Found by: Dan, 2026-10-26, #393.
+- Found by: the maintainer, 2026-10-26, #393.
 - Cause: the rule had no level for the water or the ground (`hazards.rs` `flood_step` before
   #393's first part).
 - Fix: `floods.rs`. `rise` takes one ring an hour of the lowest ground the water reaches, so a
@@ -6762,7 +6762,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 ## 2026-10-26 fix-393-drought: a stream ran the same through any drought (#393, part)
 
 - Symptom: water only ever rose; a summer without rain left every creek as full as in spring.
-- Found by: Dan, 2026-10-26, #393.
+- Found by: the maintainer, 2026-10-26, #393.
 - Cause: nothing took water away but the recession of a flood.
 - Fix: `floods.rs` `hour`: every dry hour above freezing lowers each body by `EVAP` (0.004 of a
   level at ten degrees, a tenth more for each degree over), down to two levels. `drought`: a
@@ -6778,7 +6778,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: the record had one "the water has risen" row for any flood and nothing for a spring
   flood or a river in spate; the planners would site a house or a field on ground a flood had
   just covered.
-- Found by: Dan, 2026-10-26, #393.
+- Found by: the maintainer, 2026-10-26, #393.
 - Cause: nothing kept where the water had been, and floods had no kinds to tell apart.
 - Fix: `floods.rs` `high_water`: a body going into spate is on record once (`high_water`,
   Major) until it falls back within its banks, as the spring flood when the hour's melt is more
@@ -6978,8 +6978,8 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   a building, or the closure test must reckon with it.
 
 - Perceive's cost grows with the days at 500 people (#238, C69 review: 539 us a tick on day 1
-  to 909 on day 4 on the box, 70 to 85% of the tick; the tester's laptop sees 2.1 to 2.6 ms
-  means over five days against the 2 ms gate). The gate holds on the box; what a look costs
+  to 909 on day 4 on the build server, 70 to 85% of the tick; the tester's laptop sees 2.1 to 2.6 ms
+  means over five days against the 2 ms gate). The gate holds on the build server; what a look costs
   once a mind is full is the thing to look at in a perception checkpoint.
 
 - A workshop proposal that finds no place in five days closes and is made again: in the MH
@@ -7453,7 +7453,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: GitHub Actions stopped starting jobs (the account's billing), so pushes and pull
   requests went untested; `.github/workflows/ci.yml` was made manual-only.
-- Found by: Dan, 2026-10-27.
+- Found by: the maintainer, 2026-10-27.
 - Cause: the account's Actions billing, outside the repository (not examined further).
 - Fix: tools/boxci: a Docker image with the pinned toolchain, numpy, Pillow, Godot 4.6.3 and gh,
   and `runner.sh`, which every 3 minutes fetches, runs the full `tools/ci.sh` on the master head
@@ -7587,7 +7587,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   curse there is nobody to take the shape. The same four openings under Hask over 200 days:
   one `cursed` in each of seeds 1, 2 and 4, then `shifted` 66, 1 and 2 times (seed 1's curse
   spread by 75 bites); seed 3 had no killing.
-- Not changed, for Dan: the deity counts a killing by its death's cause ("killed by",
+- Not changed, for the maintainer: the deity counts a killing by its death's cause ("killed by",
   "fight", "stranger"). Those words are written only when a beast is felled
   (`combat.rs`, "killed by" the one who struck); a person who dies of wounds another gave dies
   "bled out", which the deity does not count. So under Hask the curse falls on whoever fells a
@@ -7705,7 +7705,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
   says so and runs `cargo test --workspace` as before (a fresh clone, the Windows machine).
   tools/boxci/Dockerfile installs cargo-nextest 0.9.148 (release tarball, SHA-256 checked) and
   sets `NEXTEST_TEST_THREADS=16`; tools/boxci/README.md "Parallel tests" has the host install.
-- Guard: none; the tests and their pass or fail are unchanged. Measured on the box host (load
+- Guard: none; the tests and their pass or fail are unchanged. Measured on the build server host (load
   about 24 from other builds): all 662 tests in 16 min 38 s with 16 threads, the longest two
   tests being the end of it (thin `what_happens_there_is_true_to_the_record` 783 s, pacing
   `deity_answers_its_triggers` 718 s; see the next entry). The box-ci runner, rebuilt with
@@ -7749,7 +7749,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: each checkpoint merge waited for `tools/ci.sh` in `tools/checkpoint.sh` on master
   (about half an hour) after box-ci had already tested the same tree on the pull request.
-- Found by: the box CI runner's proposal (the runner's "same tree as" results show merge
+- Found by: the build server CI runner's proposal (the runner's "same tree as" results show merge
   commits whose tree is the PR head's).
 - Cause: `tools/checkpoint.sh` always ran `tools/ci.sh`, and `tools/merge/gated_merge.sh` did
   not require the PR head to be tested or up to date with master, so the checkpoint's run was
@@ -7769,7 +7769,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 
 - Symptom: `tools/ci.sh` with nextest failed at realm_peoples `a_thousand_years_is_quick`:
   17.7 s against its 15 s budget (it passed in the run before, on a less loaded box).
-- Found by: `tools/ci.sh` on the box host, ci-speed branch, 2026-10-27.
+- Found by: `tools/ci.sh` on the build server host, ci-speed branch, 2026-10-27.
 - Cause: the five tests that assert on wall-clock time (realm `a_world_map_is_quick`,
   realm_peoples `a_thousand_years_is_quick`, realm_figures
   `a_thousand_years_bring_tens_of_thousands_of_figures`, history_pass `history_pass_budget`,
@@ -7787,7 +7787,7 @@ Guards in `tests/qa_1020.rs`; the four named fail with their fixes undone by han
 - Symptom: size was a height and mass range per species and changed nothing in play for
   animals: a deer and a hare went to the same bushes and took nothing from them, and every
   animal read the human range for its mass.
-- Found by: issue #422 (Dan, 2026-10-27), read against the code: `systems/needs.rs` `step`
+- Found by: issue #422 (the maintainer, 2026-10-27), read against the code: `systems/needs.rs` `step`
   skipped every animal; `systems/animals.rs` sent grazers to a plant half the time and they ate
   nothing there; `Agent::mass_kg` read the species library, which holds only people.
 - Cause: confirmed in the code above; animals never had a size or a hunger of their own.
@@ -7974,7 +7974,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   community held under two days' food, and at dusk with no bed or roof; a hungry person with no
   food known walked at random from wherever they stood, and a starving wanderer walked on past
   food they knew of.
-- Found by: the census `crates/hf-sim/examples/normal_person.rs` (Dan's rule 7, "what would a
+- Found by: the census `crates/hf-sim/examples/normal_person.rs` (design rule 7, "what would a
   normal person do here?"), person-hours awake and at leisure (wander, loiter, talk, idle) under
   each condition, sampled hourly. Before, on master: the four 60-day openings spent 22,694
   person-hours hungry or short of stores, 16,104 of them (71%) at leisure (wander 3,358, loiter
@@ -8203,7 +8203,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
   In the last pair both worst ticks were `perceive`, which this change does not touch: at that
   load a process is set aside by the scheduler for hundreds of milliseconds, and the worst
-  tick measures the box. Per system there, settlement's worst 28 to 15 ms (humans) and
+  tick measures the build server. Per system there, settlement's worst 28 to 15 ms (humans) and
   `decide`'s 20 to 11 ms; the means equal.
 - Guard: `tests/threads.rs`
   `five_hundred_people_on_one_thread_and_on_six_give_the_same_world` (two days, the digest at
@@ -8377,7 +8377,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   `health::catch_at`, as badly as the plant; one who dies of it dies of a poisoning) and from
   then on leaves that kind (`Agent::shuns`); `systems/perceive.rs` does not note one as food
   for whoever knows it: herb lore, or having been sick from it (`plants::knows_look_alike`,
-  Dan's rule 3). `systems/settlement.rs` has fibre plants (reeds and nettles) cut for the loom,
+  design rule 3). `systems/settlement.rs` has fibre plants (reeds and nettles) cut for the loom,
   dye plants when the loom has no dyestuff, and healing herbs while someone of the community
   knows herb lore or the poultice and poultices run short; `systems/work.rs` Harvest gives what
   the row says (fibre of its material, `ItemKind::Dye` of its colour, a poultice in the hands of
@@ -8537,7 +8537,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 - Fix: `systems/act.rs` `ate_look_alike`: everyone awake within eight tiles on the level and in
   sight learns the plant on the spot, as learning by watching works; `social.rs`
   `tell_look_alike`: in each talk each tells the other one look-alike they know and the other
-  does not, so it travels person to person (Dan's rule 3); `arcs.rs` `troubles`: a poisoning is
+  does not, so it travels person to person (design rule 3); `arcs.rs` `troubles`: a poisoning is
   not a fever in the houses. `tests/pacing.rs` is back on seeds 3, 7 and 13.
 - Census (60 days, seeds 1 to 4, on this branch with master c7d56c9): poisonings 146 before,
   47 after (death cap 37 to 12, hemlock 42 to 12, nightshade 33 to 12, lily of the valley 34
@@ -8568,7 +8568,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
 - Symptom: people needed no water. The only use of water was dousing fires; no rule built a
   well, so (#405) no cut ever struck water and nobody needed it to.
-- Found by: the #405 work, filed as #433 (Dan's rule 7, docs/design-rules.md: what would a
+- Found by: the #405 work, filed as #433 (design rule 7, docs/design-rules.md: what would a
   normal person do? Water comes first).
 - Cause: not built.
 - Fix: `mind/needs.rs`: thirst beside hunger, four waking hours from drunk to parched (a
@@ -8588,7 +8588,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 - Symptom: with thirst built, a household whose water lay far off had only the walk; nobody
   carried water home, nobody dug a well (`StructureKind::Well` was never ordered), and a
   community moving camp took the first flat place it found, water or not.
-- Found by: #433's list (Dan's rule 7: a normal person carries water home, digs a well when
+- Found by: #433's list (design rule 7: a normal person carries water home, digs a well when
   none is close, and settles near water).
 - Cause: not built.
 - Fix: `wells.rs` and `systems/projects.rs` `well`: a community with no fresh water within
@@ -8696,7 +8696,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
 - Symptom: 281 to 728 `Parched` rows a seed in 200 days, each a hardship memory, most of
   them a minute at empty on the way to the water.
-- Found by: the #433 census; Dan's call through the coordinator: only an hour at empty counts.
+- Found by: the #433 census; the maintainer's call through the coordinator: only an hour at empty counts.
 - Cause: `Parched` was written the moment thirst reached zero (`systems/needs.rs`).
 - Fix: `systems/life.rs` `thirst`: `Parched` and its hardship memory once an hour at empty;
   a lapse that ends in a drink within the hour leaves nothing. A day and a half still kills.
@@ -8986,7 +8986,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   hourly sample beside `stall_person_hours`, adds a `starving` column to the per-game-day CSV
   after `stalled`, and the summary line reports
   `starving person-hours {pct}% (worst day {N})` beside the stalled figure. No failure
-  threshold added — the cut-off is Dan's call.
+  threshold added — the cut-off is the maintainer's call.
 - Guard: none — CLI harness change with no unit-test seam; verified by soak run output
   quoted here. On unmodified master, `ostrog soak --opening --seed 3 --days 60` printed
   `stalled person-hours 0.00% (worst day 0.0%), ledger drift days 0, ...` with no starving
@@ -9838,7 +9838,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
 ## 2026-10-31 #430: the Windows watch-copy still required a manual rebuild
 
-- Symptom: the box published a Windows `hf_godot.dll` for each master checkpoint, but opening the
+- Symptom: the build server published a Windows `hf_godot.dll` for each master checkpoint, but opening the
   latest viewer still required a manual pull, commit-matched DLL copy, or local Cargo build.
 - Found by: issue #430 and inspection of `tools/prebuilt/README.md`, which documented the manual
   consumer steps but had no launcher.
@@ -10315,7 +10315,7 @@ with the cause unconfirmed; the assertion is restored as it was.
   freak-out pole, no survival-snap pole, no dread of the missing. A fed newcomer could spend
   the first day at leisure while the party had nothing secured, and the seven scattered
   survivors were nobody's thought.
-- Found by: issue #395's design brief (Dan's observation: people abruptly translocated show
+- Found by: issue #395's design brief (the maintainer's observation: people abruptly translocated show
   neither the freak-out nor the survival snap nor anything in between). Checked against
   `systems/strain.rs` `arrival_shock`: every survivor got the same mild dip; the stress spike
   capped at 0.20 against a break threshold of at least 0.55, so the shock alone never broke
@@ -10915,7 +10915,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
 - Symptom: the valley page of the setup wizard showed seed 7 on every New game (1 with no
   launcher flag), so every game began from the same few valleys unless the player typed a seed.
-- Found by: Dan, playing the master build from his watch launcher (#559).
+- Found by: the maintainer, playing the master build from his watch launcher (#559).
 - Cause: confirmed in `godot/scripts/main.gd` `_ready`: a hands-on launch with no valid
   autosave opened the wizard on `seed_v`, which is `--seed=N` when given and 1 otherwise, and the
   launcher passes `--seed=7` (to skip the autosaves). Nothing rolled a seed. Paging back and
@@ -10935,7 +10935,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
 - Symptom: on the wizard's valley page, clicking another place on the world map left the
   valley picture the same land; only the portal's red mark moved, and some colours shifted.
-- Found by: Dan, playing the master build (#560); measured on seeds 1, 7 and 42: between the
+- Found by: the maintainer, playing the master build (#560); measured on seeds 1, 7 and 42: between the
   seed's own region and seven other habitable regions, 15% to 68% of the preview's columns
   changed biome, but the hills and valleys stood in the same places (the heightmap does not
   read the climate).
@@ -11125,7 +11125,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
 - Symptom: the first slice's windowed check `identical seed/tick/filter produce equivalent
   viewport PNGs` (`tools/timelapse_visual.gd`), never run before this branch, failed in five of
-  six runs on the box: the first sample of a fresh world and a re-capture at the same
+  six runs on the build server: the first sample of a fresh world and a re-capture at the same
   tick differed in 19,233 pixels, all rain streaks. Separately, each launch or load started a
   new series directory named from the first sample's state digest, so series were never
   resumed and nothing bounded how many accumulated on disk; and a sample landed on whatever
@@ -11315,7 +11315,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 
 ## 2026-11-02 #582: time-budget tests measured the machine, not the code
 
-- Symptom: with eight agents building on the box (load average 120 to 230 on 32 cores),
+- Symptom: with eight agents building on the build server (load average 120 to 230 on 32 cores),
   `realm_figures::a_thousand_years_bring_tens_of_thousands_of_figures`,
   `realm_peoples::a_thousand_years_is_quick` and earlier `history_pass::history_pass_budget`
   failed on PRs that do not touch the realm or the history pass (#577, #581), and stopped
@@ -11639,7 +11639,7 @@ with the cause unconfirmed; the assertion is restored as it was.
 - Fix: three beasts appended to `Species` (enum order kept): `Slime` (plan soft), `Rats` (plan
   swarm) and `Centipede` (plan segmented), with sizes in `size.rs` (the rats' size is the whole
   swarm's), mapped in `plan::beast_plan`, so each is born whole with its form (scenario.rs
-  `spawn_agent`). What each does, by Dan's rule 7 (`systems/animals.rs`): the cave slime shrinks
+  `spawn_agent`). What each does, by design rule 7 (`systems/animals.rs`): the cave slime shrinks
   from firelight, feeds when hungry on the mushrooms and pale fungus of its cavern (`browses`,
   `graze_bite`) and on any small creature it comes on (`engulf`), and rests by the pool when fed,
   one turn in two; the centipede keeps from fire and from anyone within three tiles, hunts the
@@ -12185,6 +12185,16 @@ be forgotten; the fact that they stood and read the stone is not. Old saves load
 Guard: `tests/accounts.rs::a_grave_is_read_once_even_when_its_account_is_forgotten` fails without
 the skip. `a_marked_grave_tells_a_newcomer_who_lies_there` now clears `graves_read` to read the
 unmarked grave afresh.
+## 2026-11-24 Hygiene: personal names, role nicknames and tool text were in repository files
+Symptom: the owner's first name (about 186 times), the private repository's name, a nickname for the build machine and a
+release-notes comment naming the local AI were in docs, code comments, tests and a script default.
+Cause: the generic scanner only knew emails, IPs, home paths, hosts and tokens, and only for the
+added lines of a diff; nothing covered names, commit metadata, branch names or PR/issue text.
+Fix: those files are reworded ("the maintainer", "design rule N", "the build server"); the release
+script reads `OSTROG_GITHUB_REPO` instead of a private default. The `hygiene` check moved to
+`.github/workflows/hygiene.yml` (re-runs on edits) with rules for added lines, PR title and body,
+commit messages and authors, and branch names; `issue-hygiene.yml` checks issues. See docs/HYGIENE.md.
+Guard: `tools/tests/hygiene_rules_guard_test.py` fails without each rule.
 
 ## 2026-11-24 OST-130: every "first days" grace counted from the first portal
 Symptom: a party arriving in year 10 would get none of the first days a new valley gets: no

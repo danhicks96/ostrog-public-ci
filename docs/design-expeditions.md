@@ -1,7 +1,7 @@
 # Phase 10 design — expeditions (the test agent branch)
 
-Working spec for the Windows agent. The box owns the same phase on master; where this spec
-and the box diverge, the merged branch keeps the better evidence (matrix rows, not prose).
+Working spec for the Windows agent. The build server owns the same phase on master; where this spec
+and the build server diverge, the merged branch keeps the better evidence (matrix rows, not prose).
 Conventions in force: ticks only (docs/TIME.md), `rng::stream` purpose tags (D7), ledger for
 every item (zero drift), history recorded never invented (D9), `#[serde(default)]` for new
 fields (D14, no format bump).
@@ -82,6 +82,6 @@ fields (D14, no format bump).
   edge where the caravan last stood (the overworld itself stays a widget, not a scene
   change, until footage says otherwise).
 - This machine runs the client on a real display with the gl_compatibility renderer: the
-  Windows half of matrix rows 1/7/12 is only evidenceable here (the box renders via Xvfb
+  Windows half of matrix rows 1/7/12 is only evidenceable here (the build server renders via Xvfb
   software GL and its GPU refuses frames). Golden shots + a glance review land in
   docs/reviews/ with seed and tick recorded (D13).

@@ -1,4 +1,4 @@
-//! Ground taken a tile at a time from need (C71, Dan's rule 1, D35): a stockpile, a field, a
+//! Ground taken a tile at a time from need (C71, design rule 1, D35): a stockpile, a field, a
 //! cellar room or a quarry's gallery is not a block of a set size but a patch that starts at a
 //! seed and spreads over the ground there is, as much as there is need for, and grows later as
 //! the need does. Houses grow the same way in houses.rs.

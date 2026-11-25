@@ -28,7 +28,7 @@ else
   echo "usage: $0 TAG [MANIFEST] ARCHIVE PORTABLE CHECKSUMS NOTES" >&2
   exit 2
 fi
-REPO="${OSTROG_GITHUB_REPO:-danhicks96/ostrog}"
+REPO="${OSTROG_GITHUB_REPO:?set OSTROG_GITHUB_REPO to the release repository (owner/name)}"
 : "${GH_TOKEN:?set GH_TOKEN only in the release environment}"
 
 for path in "$ARCHIVE" "$PORTABLE" "$CHECKSUMS" "$NOTES"; do

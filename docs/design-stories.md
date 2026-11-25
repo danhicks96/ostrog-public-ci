@@ -71,7 +71,7 @@ of persistent trace (a grave).
    how they died, from the record, then what people say of it, with who says it. The feed
    tells a telling that changed ("In Kella's telling to Bram, Halgar was cursed").
 
-## Assumptions (Dan can overrule)
+## Assumptions (the maintainer can overrule)
 
 - Only burial leaves a grave. Burning, laying out under the sky and the hall of the dead leave
   no marker in this slice.

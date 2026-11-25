@@ -2,7 +2,7 @@
 //! a tile at a time over the ground they found, until there was room for those it was for; its
 //! walls are whatever closes that floor in, and its door faces home. A household that outgrows
 //! its house claims more floor beside it, and the old wall between gets a door. Nothing here
-//! is a template: the shape is the ground's and the household's (Dan, 2026-10-21: everything
+//! is a template: the shape is the ground's and the household's (the maintainer, 2026-10-21: everything
 //! built after the colonists arrive is grown, not set down whole).
 //!
 //! Houses from saves before C67 have no recorded floor: they are the 7×6 they were built as.

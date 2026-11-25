@@ -6,7 +6,7 @@ download-page text and the report schema are generated from it (the companion
 [FILES-ON-YOUR-COMPUTER.md](FILES-ON-YOUR-COMPUTER.md) explains every file the install creates), and a CI check fails if they disagree
 (slice 9.9). If a field is not in this table, the game must not collect or send it.
 
-Status of this register: **proposed**. Dan signs off the field list in slice 9.1; until then nothing
+Status of this register: **proposed**. The maintainer signs off the field list in slice 9.1; until then nothing
 in the game may collect anything.
 
 ## Principles
@@ -41,7 +41,7 @@ in the game may collect anything.
 | `game_version`, `commit` | `0.4.1`, `c176` | Which build had the problem | Routine | |
 | `os_family` | `Windows` | Is a problem platform-specific | Routine | Family only, no version string |
 | `cpu_cores_bucket`, `ram_gb_bucket` | `8-15`, `16-31` | Performance by machine class | Routine | Buckets, not exact values |
-| `gpu_vendor` | `NVIDIA` | Frame-time problems by GPU family | Routine | Vendor only. A model string is not collected unless Dan approves it in 9.1 |
+| `gpu_vendor` | `NVIDIA` | Frame-time problems by GPU family | Routine | Vendor only. A model string is not collected unless the maintainer approves it in 9.1 |
 | `seed`, `region`, `history_years`, `settings` | `3`, `valley`, `150`, in-game options | Reproduce what the player saw (the simulation is deterministic) | Routine | In-game options only; no paths |
 | `session_minutes`, `days_played`, `speed_use` | `47`, `12`, share of time at 1x/3x/10x/paused | How the game is watched; whether long unattended sessions work | Routine | Totals only, no timeline |
 | `frame_ms_p50/p95/p99/max`, `tick_ms_mean/worst`, `rss_mb_peak` | `9.1`, `14`, `2400` | Do real machines meet the performance gates | Routine | |
@@ -68,7 +68,7 @@ programs or processes, location, hardware serials, anything outside the game win
 
 ## Rules for changing this register
 A new field needs: a question it answers; a row here; the schema and the generated pages updated; and
-Dan's approval if it is free text, a file, an identifier, or anything not a count or bucket. Removing a
+The maintainer's approval if it is free text, a file, an identifier, or anything not a count or bucket. Removing a
 field needs only the PR. The consistency check (9.9) must pass.
 
 ## Draft of the text players see (first-run screen)
