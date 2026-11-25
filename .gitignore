@@ -16,7 +16,7 @@ MIRROR_PENDING.md
 !/crates/hf-sim/tests/fixtures/saves/*.hfsave
 !/crates/hf-sim/tests/fixtures/saves/*.hfsave/**
 # Godot-generated import settings and UID sidecars from the editor import pass.
-# Regenerated automatically; not tracked (same convention as the box's checkout).
+# Regenerated automatically; not tracked (same convention as the build server's checkout).
 /godot/assets/**/*.import
 /godot/scripts/*.uid
 # Windows export output: 100 MB+ binaries. Built locally, never committed.

@@ -82,6 +82,7 @@ else
   python3 -I tools/check_export_structure.py
 fi
 python3 -I tools/tests/public_boundary_guard_test.py
+python3 -I tools/tests/hygiene_rules_guard_test.py
 python3 -I tools/tests/repo_settings_guard_test.py
 # Saved enums keep their variants' positions: each enum at the last tag is an unchanged prefix
 # of the same enum here (a merge once put a branch's new variants before master's, 2026-10-26).

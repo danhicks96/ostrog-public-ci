@@ -85,7 +85,7 @@ pub struct Band {
     #[serde(default)]
     pub captives: Vec<AgentId>,
     /// The valley's renowned things they had heard of when they set out, and where the telling
-    /// put them (#173, Dan's call: they may come for a treasure whose fame has reached them).
+    /// put them (#173, the maintainer's call: they may come for a treasure whose fame has reached them).
     #[serde(default)]
     pub heard: Vec<(crate::ids::ItemId, TilePos)>,
 }
@@ -227,7 +227,7 @@ fn sites_daily(w: &mut World) {
     let year = cal.year;
     let season = cal.season;
     let Some(home) = home(w) else { return };
-    let settled = w.since_arrival() >= 4 * TICKS_PER_DAY;
+    let settled = w.since_party() >= 4 * TICKS_PER_DAY;
     let mut set_out: Vec<(u32, bool)> = Vec::new();
     // What the deity is doing to each place's harvest (deity.rs).
     let harvest: Vec<f32> = w

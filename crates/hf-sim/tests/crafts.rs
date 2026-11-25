@@ -1,4 +1,4 @@
-//! C70: crafts as personal knowledge (Dan's rule 3, D39).
+//! C70: crafts as personal knowledge (design rule 3, D39).
 
 use hf_sim::events::EventKind;
 use hf_sim::ids::TilePos;

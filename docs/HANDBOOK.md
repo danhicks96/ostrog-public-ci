@@ -11,7 +11,7 @@ intent while adding situated observation, weighted personal responses, problem/r
 local fluids, and the production-art acceptance gate. All active work is on D:; C: and P: paths
 below are historical records, not working locations. Mockups are direction, not shipped art.
 
-Written 2026-10-18 by the Linux box agent for Dan's archive, for testers, and for any developer who
+Written 2026-10-18 by the Linux build-server agent for the maintainer's archive, for testers, and for any developer who
 has to pick the project up cold. It describes master at commit `8b4f93f` (C33 merged, tag `c33`)
 and the two checkpoints built after it on their own branches, `c34-crafts` and `c35-masterworks`
 (section 5.3). Where this document and the code disagree, the code is right and this document is
@@ -64,7 +64,7 @@ friends talking by the river, a child following a parent, a mining party lamp-li
 down, a caravan leaving at dawn." Look back an hour later and "understand what changed from the
 event feed and the history view, without the game ever having asked for a decision."
 
-Dan's acceptance test (epic #46): leave it running on a second monitor for 15 to 30 minutes and
+The maintainer's acceptance test (epic #46): leave it running on a second monitor for 15 to 30 minutes and
 there should be at least one story worth telling, without forcing it.
 
 ### An example of what that means
@@ -155,7 +155,7 @@ them. Each has a test or a CI check behind it where that is possible.
 - Pure observation. The player never gives orders. People choose. Scope grows in the simulation,
   the world and the presentation, never in player commands.
 - Branch per checkpoint, PR with a merge commit, tag, checkpoint to the mirror (section 11).
-- The AI tester on Dan's Windows PC is the hands-on evidence. There is no human test pass.
+- The AI tester on the Windows test PC is the hands-on evidence. There is no human test pass.
 
 ### What would undermine it (VISION.md)
 
@@ -175,7 +175,7 @@ relationships, labour).
 
 ### Words the game uses (docs/design-glossary.md)
 
-Dan chose the vocabulary. In anything the player reads:
+The maintainer chose the vocabulary. In anything the player reads:
 - "survivor", never pawn, colonist, settler or dwarf;
 - "the starting survivors" for the three who begin together;
 - "the missing" for the other seven;
@@ -193,7 +193,7 @@ Internal type names and design prose may still say "settler".
 
 ### The finish bar
 
-On 2026-10-17, after an honest assessment, Dan set the bar: Ostrog should exceed Dwarf
+On 2026-10-17, after an honest assessment, the maintainer set the bar: Ostrog should exceed Dwarf
 Fortress and RimWorld on every axis, with a Dwarf-Fortress-scale world, pure observation and hybrid
 art. The assessment at the time was that Ostrog "leads on organic, traceable causation and
 history provenance, but trails DF badly on world generation, physical simulation, industry and
@@ -337,7 +337,7 @@ siblings, and formative events such as a parent who drank, a famine winter, a ho
 apprenticeship, a marriage, a child who died. Each formative event is a chronicle row dated before
 the arrival. An event does not set a belief; it opens a question ("what is drink to me") that is
 answered from temperament, whether someone else showed another way, and chance. The reference case
-is Dan's: two sons of a father who drank, one who drinks and one who never does.
+is the maintainer's: two sons of a father who drank, one who drinks and one who never does.
 
 ### Daily life
 
@@ -978,7 +978,7 @@ design is `docs/design-peoples.md`.
 
 ### 5.4 Branches and worktrees today
 
-On GitHub (private, `danhicks96/ostrog`):
+On GitHub (private repository):
 - `master` at 8b4f93f;
 - the merged checkpoint branches (kept, not deleted);
 - `c34-crafts` and `c35-masterworks` (no PRs yet);
@@ -986,7 +986,7 @@ On GitHub (private, `danhicks96/ostrog`):
 
 Tags: `c1` to `c33` (no `c7`) and `phase-17b`.
 
-On the box, each checkpoint has a git worktree at `<src>/ostrog-<branch>` (C22 to
+On the build server, each checkpoint has a git worktree at `<src>/ostrog-<branch>` (C22 to
 C35 plus `ostrog-qa3*` and `ostrog-bisect`). The main checkout is
 `<src>/ostrog` on master. The old worktrees should eventually be moved to
 `<src>/ostrog_to_delete/` (nothing is deleted outright) and `git worktree prune`
@@ -1585,7 +1585,7 @@ Unknown flags are reported, never silently ignored.
 ### 9.4 Screenshots
 
 `tools/shots/shot.sh OUT.png [client flags]` draws on an Xvfb display (`HF_DISPLAY`, default `:96`),
-because the box's real GPU display refuses frames from a session that is not its own. It reimports
+because the build server's real GPU display refuses frames from a session that is not its own. It reimports
 assets when needed (checking every file, because Godot's import crashes about once in twenty runs,
 issue 42), runs with the OpenGL renderer, and fails unless the log says `SHOT_SAVED`. Example used
 for review frames:
@@ -1606,13 +1606,13 @@ In order:
 7. the GDScript compile check (`tools/gd_check.gd`, all scripts must load);
 8. prints `CI OK`.
 
-On GitHub only the Rust half ran, and Actions is now manual-only. The suite runs on the box in
+On GitHub only the Rust half ran, and Actions is now manual-only. The suite runs on the build server in
 the `hf-boxci` container (tools/boxci/README.md), which posts a `box-ci` status on the master
 head and every open pull request's head.
 
 `cargo test` stops at the first failing test binary, so after a failure run
 `cargo test --workspace --no-fail-fast` to see them all. The full suite takes 25 to 35 minutes on
-the box.
+the build server.
 
 The README's generated tables (every string the game shows, every asset, the bridge layout, the
 pipeline) are rewritten by `python3 tools/docs/readme_tables.py`. Run it after adding an item kind,
@@ -1682,8 +1682,8 @@ animals too: the M3 review once wrongly blamed wolves for deaths that were deer 
 
 ### 10.4 The AI tester and the test sets
 
-The hands-on tester is an AI on Dan's Windows PC. It is called the test agent in the docs; the 2026-10-17 QA
-round was filed by the local AI under Dan's GitHub account. It tests tagged master builds only and files
+The hands-on tester is an AI on the Windows test PC. It is called the test agent in the docs; the 2026-10-17 QA
+round was filed by the local AI under the maintainer's GitHub account. It tests tagged master builds only and files
 one GitHub issue per finding, labelled `test-agent-test`, with commit, tag, machine, command, expected
 and actual, and a screenshot or log.
 
@@ -1751,7 +1751,7 @@ once those are merged to master.
   `docs/reviews/<topic>-<date>/README.md` with measurements and frames, update STATUS.md and the
   design doc, add a tester set, and regenerate the README tables.
 - Merging: open a PR against master, wait for MERGEABLE, `gh pr merge N --merge` (always a merge
-  commit), check that the head commit's subject is `Merge pull request #N from danhicks96/<branch>`,
+  commit), check that the head commit's subject is `Merge pull request #N from <owner>/<branch>`,
   then tag `cN` on it and push the tag.
 - Checkpoint from master: `tools/checkpoint.sh`. It runs CI, pushes, makes a git bundle of the whole
   history, mirrors the source and releases to `<mirror>`, verifies the
@@ -1927,7 +1927,7 @@ Records that are stale:
 
 - Historical private development records are retained separately.
 - A full copy with the whole git history is on the mirror at
-  `<mirror>/ostrog.bundle` (from Dan's Windows PC, the mirror
+  `<mirror>/ostrog.bundle` (from the Windows PC, the mirror
   drive's `<mirror>` folder). `CHECKPOINT.txt` there names the last verified commit.
   To restore:
 

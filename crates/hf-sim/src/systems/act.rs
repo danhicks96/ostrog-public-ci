@@ -529,7 +529,7 @@ fn remove_sleeping_bed(
 }
 
 /// `i` ate some of a look-alike plant at `at`, taking it for food (#286): they sicken, and
-/// from now on they know it and leave it (`plants::knows_look_alike`; Dan's rule 3, knowledge
+/// from now on they know it and leave it (`plants::knows_look_alike`; design rule 3, knowledge
 /// belongs to people). The sickness is as bad as the plant is.
 fn ate_look_alike(
     w: &mut World,

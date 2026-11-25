@@ -36,7 +36,7 @@ each later section can say exactly what changes.
 12. The readability gate
 13. Performance and size
 14. Roadmap
-15. Decisions for Dan
+15. Decisions for the maintainer
 
 ---
 
@@ -1130,7 +1130,7 @@ Justification:
   history.
 - Undead armies also duplicate what M5's sieges will do with real armies.
 
-Ghosts (8.3) and the curses (8.2) give the same unease from recorded causes. If Dan wants undead,
+Ghosts (8.3) and the curses (8.2) give the same unease from recorded causes. If the maintainer wants undead,
 the narrowest honest form is the Below's dead: things that died in the underworld and do not
 stay down, confined to that layer and recorded as its nature in the species file. They would
 never be raised by anyone.
@@ -1434,7 +1434,7 @@ new stone, in `world/gen/caverns.rs` and `strata.rs`. M6 then builds fluids and 
 
 ## 15. Decided 2026-10-18
 
-Dan's answer: take every recommended option and ship it; put the options I recommended against in
+The maintainer's answer: take every recommended option and ship it; put the options I recommended against in
 the backlog, because he wants them later (docs/BACKLOG.md, E14).
 
 | # | Decision | Shipped in this milestone | Backlog (E14) |

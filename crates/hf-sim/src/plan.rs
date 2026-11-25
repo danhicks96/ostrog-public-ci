@@ -447,7 +447,7 @@ pub fn parse(name: &str, text: &str) -> Result<Plan, String> {
 
 /// The parts each kind of body has (#423). A skeleton has a head, a torso and a pair of hands,
 /// and none of the counted parts. A soft body is its mass alone; a swarm its members alone; a
-/// chain a head and its segments. None of the new kinds is more than one tile (#421, Dan
+/// chain a head and its segments. None of the new kinds is more than one tile (#421, the maintainer
 /// 2026-10-31), and a swarm or chain has at least two of what it is counted in.
 fn check_kind(name: &str, plan: &Plan) -> Result<(), String> {
     let only =
