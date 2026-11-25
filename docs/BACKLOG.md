@@ -369,6 +369,182 @@ A week sleeping on the ground weighs the same as one night, because the thought 
 
 **Acceptance:** Seven rough nights in a row weigh more than one; a night in a bed resets the count. A FIXLOG entry is added and any simulation digest change is explained in the PR.
 
+### OST-354 · Every house gets a table, two stools and a chest unasked: build furniture only when someone takes it up
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The planner posts tables, stools and chests automatically. Instead leave furnishing suggestions that a person adopts for their disposition, a relevant want or a recent meal on the ground. Record a Furnish project with its adopter and retain the real production and placement chain. Tracking issue: [#130](https://github.com/danhicks96/ostrog-public-ci/issues/130).
+
+**Acceptance:** Test `crates/hf-sim/tests/suggestions.rs::a_table_is_built_only_when_someone_takes_it_up`. Test `suggestions.rs::an_orderly_householder_takes_up_the_table`. Done when: both pass, and `builders_census` shows furniture ≥ 90% decided by a person.
+
+### OST-355 · A house is the colony's, raised for a figurehead: let a household take up its own, one each at a time
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Home proposals use a community figurehead and one community-wide construction slot. Let a household member with a relevant want propose its own home, size it for the household and record its owners. Allow one active home per household and at most two per community. Tracking issue: [#133](https://github.com/danhicks96/ostrog-public-ci/issues/133).
+
+**Acceptance:** Test `crates/hf-sim/tests/suggestions.rs::the_one_who_took_up_the_house_sleeps_in_it`. Test `suggestions.rs::two_households_may_build_at_once_but_not_three`. Done when: both pass, and seeds 1-4 at 300 days show no rise in rough nights against today's `sleep_rough` census.
+
+### OST-358 · After nights on the ground with no bed to be had, nobody puts up a shelter for themselves: let them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Someone repeatedly sleeping rough cannot put up a shelter. Offer RaiseShelter after at least two rough nights when no free reachable bed is known, food is secure and no owned sleeping-place order is unfinished. Reuse the existing lean-to site search and post an owned material-backed construction order. Tracking issue: [#144](https://github.com/danhicks96/ostrog-public-ci/issues/144).
+
+**Acceptance:** Test `crates/hf-sim/tests/lean_to.rs::three_nights_on_the_ground_with_logs_and_hides_at_hand_raise_a_lean_to`. Test `lean_to.rs::nobody_raises_a_lean_to_beside_a_free_bed_they_know`. Test `lean_to.rs::a_hungry_camp_gathers_food_before_poles`. Done when: all three pass, and the `sleep_rough` census on seeds 1-4 at 300 days shows rough nights at least halved.
+
+### OST-359 · A lean-to someone built for themselves would go to whoever reaches it first that night: make it theirs
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A personally built lean-to could be used by whoever arrives first. Carry the owner of a completed sleeping-place construction order onto its structure so the own-bed and other-owner preference rules apply. Tracking issue: [#147](https://github.com/danhicks96/ostrog-public-ci/issues/147).
+
+**Acceptance:** Test `crates/hf-sim/tests/lean_to.rs::a_lean_to_is_its_builders_bed_and_others_do_not_take_it`. Done when: it passes.
+
+### OST-361 · Nothing measures whether people sleep in the same bed from night to night: extend the sleep_rough census
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The rough-sleep census does not measure habitual beds or contention. Record each sleeper and bed per night, report the share of bed-nights in each sleeper's most-used bed, distinct beds per person per ten nights, and failures caused by a taken bed. Tracking issue: [#156](https://github.com/danhicks96/ostrog-public-ci/issues/156).
+
+**Acceptance:** Test `crates/hf-sim/tests/sleep_bed.rs::sleep_census_counts_bed_changes`, through a helper on a scripted two-night case. Done when: the census prints the baseline for seeds 1-4 at 120 days.
+
+### OST-362 · People pass their own bed for a nearer free one, and lie in others' beds: prefer one's own and avoid another's
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Sleep choice favors the nearest available bed without respecting ownership. Include the person's own bed among candidates, prefer it by a factor of 1.5, reduce another present living owner's bed to 0.25, and retain normal weight for absent or dead owners. Compose this with room quality and propose the D72 amendment. Tracking issue: [#160](https://github.com/danhicks96/ostrog-public-ci/issues/160).
+
+**Acceptance:** Test `crates/hf-sim/tests/sleep_bed.rs::ones_own_bed_is_chosen_over_a_nearer_free_one`. Test `sleep_bed.rs::anothers_bed_is_taken_only_when_no_other_is_free`. Done when: both pass, and the OST-361 census shows ≥ 85% of bed-nights in one's own bed and "bed was taken" ≤ 1 per 100 bed-nights on seeds 1-4.
+
+### OST-363 · The one whose name is on a house proposal gets no more of the house than anyone: make it their household's
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The proposer of a house has no household priority in it. Record the proposer, partner, children below coming of age and fosterling as the household at marking out, then let them claim the finished house's beds before others through the claims system. Tracking issue: [#164](https://github.com/danhicks96/ostrog-public-ci/issues/164).
+
+**Acceptance:** Test `crates/hf-sim/tests/ownership.rs::the_proposers_household_owns_the_house_and_sleeps_in_it`. Done when: it passes.
+
+### OST-365 · Nothing says how good anyone's home is: add a pure home-worth reading and a census of it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Fine stone is the only home-quality input. Add a pure bounded personal home_worth reading for an owned sleeping place and roof, using the existing room statistics for space, furnishings, walls, light and carvings. Add a census of per-person values every fifty days without duplicating the room-score implementation. Tracking issue: [#194](https://github.com/danhicks96/ostrog-public-ci/issues/194).
+
+**Acceptance:** Test `crates/hf-sim/tests/home_worth.rs::a_roofed_house_with_table_and_lamps_is_worth_more_than_a_lean_to`. Test `home_worth.rs::home_worth_is_pure`. Done when: both pass and the census prints for seeds 1-4.
+
+### OST-366 · A family in a good stone house and one on bare grass feel the same: add pride and shame of home
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A fine house and bare ground feel alike. Refresh HomeProud for worth at least 0.7, and HomePoor for worth at most 0.25 after ten days since arrival. Replace the FineHouse producer with the personal home-worth reading while retaining its saved enum variant. Tracking issue: [#208](https://github.com/danhicks96/ostrog-public-ci/issues/208).
+
+**Acceptance:** Test `crates/hf-sim/tests/home_worth.rs::a_fine_house_gives_pride_and_a_lean_to_after_ten_days_gives_shame`. Done when: it passes, and on seeds 1-4 after day 100 ≥ 10% hold each.
+
+### OST-367 · Nobody envies a neighbour's better house: add envy, with a slow and bounded souring toward the envied
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A familiar neighbor's better home never causes envy. Add bounded, saved envy toward at most two familiar people when the worth gap reaches 0.35, with disposition-weighted daily onset, a thought and at most -0.4 opinion souring. End it when the gap closes or other causes improve opinion enough. Tracking issue: [#223](https://github.com/danhicks96/ostrog-public-ci/issues/223).
+
+**Acceptance:** Test `crates/hf-sim/tests/home_worth.rs::a_poor_sleeper_beside_a_fine_house_comes_to_envy_its_owner`. Test `home_worth.rs::envy_stops_when_the_gap_closes_and_its_souring_is_bounded`. Done when: both pass, and envy affects 2-15% of adults on seeds 1-4 after day 100.
+
+### OST-368 · Envy would only sour people, never move them: let it turn into a want to keep up
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Envy would otherwise only sour people. Let it form OwnBed or HomeForHousehold for someone without a house, or MakeFine(carpentry) for a householder who knows the craft. The recorded cause names the envied home. Tracking issue: [#233](https://github.com/danhicks96/ostrog-public-ci/issues/233).
+
+**Acceptance:** Test `crates/hf-sim/tests/home_worth.rs::envy_of_a_better_house_becomes_a_want_to_keep_up`. Done when: it passes.
+
+### OST-369 · Evenings are spent only at the community hearth: let a proud householder have a friend round
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Evening company gathers only at the community hearth. Offer a proud householder's table as an evening gathering place and let a nearby known friend join. After an hour together, record ordinary talk and at most one HadRound event per host per day, under the existing leisure-security gate. Tracking issue: [#238](https://github.com/danhicks96/ostrog-public-ci/issues/238).
+
+**Acceptance:** Test `crates/hf-sim/tests/home_worth.rs::a_proud_householder_has_a_friend_round_of_an_evening`. Done when: it passes.
+
+### OST-371 · Nothing counts how long people sleep rough or what they do about it: add streaks and answers to the census
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The sleep census lacks consecutive rough-night streaks. Track the per-person streak distribution in bands 1, 2-3, 4-7 and 8+, and the longest streak with its person. Add answer counts once the logged rough-answer chooser is available; this measurement changes no simulation state. Tracking issue: [#244](https://github.com/danhicks96/ostrog-public-ci/issues/244).
+
+**Acceptance:** Test `crates/hf-sim/tests/sleep_bed.rs::sleep_census_counts_rough_streaks`, through the helper on a planted case. Done when: the baseline prints for seeds 1-8 at 300 days.
+
+### OST-372 · Turned out of a bed someone else reached first, a person just gets up: remember who, and mind it a little
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Someone turned out of a taken bed remembers neither the occupant nor the slight. Identify the earlier sleeper, lower opinion of them a little, more when the bed belongs to the rejected sleeper, and name them in the reason without adding to failure counters. Tracking issue: [#247](https://github.com/danhicks96/ostrog-public-ci/issues/247).
+
+**Acceptance:** Test `crates/hf-sim/tests/rough.rs::turned_out_of_a_bed_one_thinks_a_little_less_of_who_was_in_it`. Done when: it passes.
+
+### OST-373 · There is no choice of how to answer a night on the ground: add a pure chooser, logged only
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+There is no personal choice of how to answer repeated rough nights. Add a pure deterministic Answer chooser for enduring, building, asking to share, taking a bed, sulking or leaving, using dispositions and known circumstances. Initially record only the selected answer in the Why trace; enactment belongs to later slices. Tracking issue: [#250](https://github.com/danhicks96/ostrog-public-ci/issues/250).
+
+**Acceptance:** Test `crates/hf-sim/tests/rough.rs::opposite_temperaments_answer_a_rough_night_differently`. Test `rough.rs::the_answer_is_the_same_at_1_and_6_threads`. Digests are unchanged. Done when: all pass.
+
+### OST-374 · Nobody ever asks a friend with a spare bed to put them up: add asking to share, with gratitude and a debt
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nobody asks a friend for a spare bed. Enact AskToShare by walking to a host; on acceptance grant up to five nights of hospitality, gratitude and a debt, and on refusal remember it and lower opinion. Save the guest relationship and record the outcome as AskedToShare. Tracking issue: [#252](https://github.com/danhicks96/ostrog-public-ci/issues/252).
+
+**Acceptance:** Test `crates/hf-sim/tests/rough.rs::a_liked_householder_with_a_free_bed_takes_in_a_friend`. Test `rough.rs::a_refusal_is_remembered`. Done when: both pass.
+
+### OST-375 · Nobody ever sleeps in an empty bed that is someone else's: allow it, with a grievance and an accusation
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nobody takes another person's empty bed. Enact TakeBed while keeping ordinary ownership preferences elsewhere. When the owner finds out, record the grievance and hardship memory, and make an accusation when the owner's theft belief treats it as wrong. Record the taking event. Tracking issue: [#255](https://github.com/danhicks96/ostrog-public-ci/issues/255).
+
+**Acceptance:** Test `crates/hf-sim/tests/rough.rs::a_cold_independent_one_sleeps_in_an_away_neighbours_bed_and_is_resented`. Test `rough.rs::an_owner_who_holds_taking_wrong_accuses`. Done when: both pass.
+
+### OST-376 · However long the nights on the ground, no member ever walks out: allow leaving, with a reason
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Community members never walk out over prolonged rough sleeping. Enact Leave only after eight rough nights, resentment toward at least two householders, no partner or child in the community and no held role. Reuse the existing leaving path, record why, and let close ties miss the departed. Tracking issue: [#257](https://github.com/danhicks96/ostrog-public-ci/issues/257).
+
+**Acceptance:** Test `crates/hf-sim/tests/rough.rs::a_bitter_one_with_no_ties_walks_out_after_a_month_on_the_ground`. Test `rough.rs::a_parent_never_walks_out_over_a_bed`. Done when: both pass, and walk-outs over beds are ≤ 1 per seed per 100 days.
+
+### OST-566 · Partners own beds in different houses and sleep apart wherever a bed is free: move a partner's claim into the other's house and let partners share one bed
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Partners can own beds in different houses and cannot share one. Move a partner's claim to a free bed in the other's house, releasing the previous claim; with no free bed keep existing claims. Prefer a partner's bed and allow exactly the owning couple to share an ordinary Bed. Tracking issue: [#575](https://github.com/danhicks96/ostrog-public-ci/issues/575).
+
+**Acceptance:** Test `crates/hf-sim/tests/ownership.rs::partners_share_a_house_and_its_beds`: partners A and B own beds in two different houses, A's house has a free bed; after the 06:30 claim step both own beds in A's house plan. A second case: A and B both choose A's one `Bed` the same night; neither gets a `PlanFailed` "the bed was taken", and both push `Slept { in_bed: true }`. Measured: not a sim change beyond sleeping places; the sibling item's census shows partners' bed-nights in one house plan. development-history entry.
+
+### OST-567 · Children sleep in whatever free bed is nearest: a child with no bed claims a free bed in a house where a parent owns one
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Children claim whichever free bed is near. Give a child without an owned bed first choice of a free bed in a parent's house, using the lowest structure identifier for ties and stable agent order. Fall back to the existing habit rule when no parent owns a suitable bed. Tracking issue: [#576](https://github.com/danhicks96/ostrog-public-ci/issues/576).
+
+**Acceptance:** Test `crates/hf-sim/tests/ownership.rs::a_child_sleeps_in_a_parents_house`: a child with no bed, the mother owning a bed in house A that has one more free bed, and a nearer free bed outside A; after the 06:30 claim step the child owns house A's free bed and not the nearer one. Measured: not a sim change beyond bed claims. development-history entry.
+
+### OST-568 · An owned bed would stay with the dead, the departed and the long gone: release it on death, leaving, exile, a camp move or ten nights unused
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Bed claims would remain with dead, departed or long-absent owners. Release claims after death, leaving, exile or a camp move, and after ten nights unused while the owner remains in the valley. Time travelling does not count; clear the person's bed cache together with ownership and emit no event. Tracking issue: [#577](https://github.com/danhicks96/ostrog-public-ci/issues/577).
+
+**Acceptance:** Test `crates/hf-sim/tests/ownership.rs::a_bed_left_ten_days_is_let_go_but_not_by_a_traveller`: an owner who sleeps elsewhere in the valley for 10 days has `owner == None` after the next claim step; an owner in `overworld.away` for 20 days still owns it; a dead owner's bed is unowned after the next claim step. Measured: the sibling item's census's "bed was taken" count does not rise against its baseline on seeds 1-4. development-history entry.
+
+### OST-569 · A householder's house would go nowhere when they die: pass it to the partner, else the eldest child of age, with an Inherited line
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A house has no succession when its householder dies or leaves. Pass it to a living partner, including one temporarily away, else the eldest child of age in the valley. With no heir clear ownership; otherwise put the heir first and emit one existing Inherited event naming the house. Tracking issue: [#578](https://github.com/danhicks96/ostrog-public-ci/issues/578).
+
+**Acceptance:** Test `crates/hf-sim/tests/ownership.rs::a_dead_householders_house_passes_to_the_partner`: the householder dies with a living partner: after the claim step `house_owners[ix][0]` is the partner and exactly one `Inherited` with `what == "the house"` is pushed. With no partner and a child of age, the child heads it; with neither, the entry is empty and no event is pushed. Measured: count of `inherited` rows whose `what` is "the house" on seeds 1-4 at 300 days, printed in the PR. development-history entry.
+
 ### OST-241 · Make a break's cost last
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** Pending
