@@ -3427,7 +3427,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/health.rs:710 | a made limb |
 | systems/health.rs:712 | a wooden leg |
 | systems/health.rs:714 | a wooden hand |
-| systems/learn.rs:192 | from watching {dname} |
+| systems/learn.rs:207 | from watching {dname} |
 | systems/life.rs:91 | worn out |
 | systems/life.rs:114 | worn |
 | systems/life.rs:162 | starvation |

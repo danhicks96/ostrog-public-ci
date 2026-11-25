@@ -11,6 +11,21 @@ use rand::Rng;
 pub fn observe(w: &mut World) {
     let tick = w.meta.tick;
     let seed = w.meta.seed;
+    // One of twenty index stripes each hour for the day's first twenty hours. Every
+    // person, including travellers, is visited once a day; an elapsed-day clock handles
+    // changing indices and saves without double ageing or presenting fading as evidence.
+    if tick.is_multiple_of(crate::time::TICKS_PER_HOUR) {
+        let stripe = (tick / crate::time::TICKS_PER_HOUR % 24) as usize;
+        if stripe < 20 {
+            for agents in [&mut w.agents, &mut w.overworld.away] {
+                for a in agents.iter_mut().skip(stripe).step_by(20) {
+                    if a.alive && a.species == crate::agents::Species::Person {
+                        a.learning.fade(tick);
+                    }
+                }
+            }
+        }
+    }
     let seen: Vec<(
         Technique,
         crate::ids::AgentId,

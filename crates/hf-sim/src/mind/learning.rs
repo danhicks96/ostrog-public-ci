@@ -137,9 +137,37 @@ pub struct Lesson {
 pub struct Learning {
     pub observations: Vec<Observation>,
     pub lessons: Vec<Lesson>,
+    /// Last game-day aged, separate from when evidence was actually tested.
+    #[serde(default, skip_serializing_if = "zero_day")]
+    last_faded_day: u64,
+}
+
+fn zero_day(day: &u64) -> bool {
+    *day == 0
 }
 
 impl Learning {
+    /// Soften untested lessons once per elapsed game-day, freeing nearly forgotten ones.
+    /// The saved clock prevents repeated calls or a resumed game from ageing a day twice.
+    pub fn fade(&mut self, now: u64) {
+        let day = now / crate::time::TICKS_PER_DAY;
+        if self.lessons.is_empty() || day <= self.last_faded_day {
+            return;
+        }
+        self.lessons.retain_mut(|lesson| {
+            let since = self
+                .last_faded_day
+                .max(lesson.last_tested / crate::time::TICKS_PER_DAY);
+            let days = day.saturating_sub(since);
+            if days == 0 {
+                return true;
+            }
+            lesson.confidence = (lesson.confidence * libm::powf(0.98, days as f32)).max(0.05);
+            lesson.confidence >= 0.06
+        });
+        self.last_faded_day = day;
+    }
+
     /// Keep the most useful recent evidence without allowing an active mind to grow forever.
     pub fn observe(&mut self, mut observation: Observation) {
         observation.strength = observation.strength.clamp(0.0, 1.0);
@@ -377,5 +405,56 @@ mod tests {
             Some(EventId(11)),
         );
         assert!(bystander.lessons.is_empty());
+    }
+
+    #[test]
+    fn lesson_fading_ages_a_day_only_once_and_frees_faint_lessons() {
+        let mut learning = Learning::default();
+        learning.learn(
+            ObservationKind::WaterDepth,
+            OutcomeKind::Harm,
+            None,
+            true,
+            0,
+            None,
+        );
+        learning.lessons[0].confidence = 0.6;
+        learning.fade(20 * crate::time::TICKS_PER_DAY);
+        let confidence = learning.lessons[0].confidence;
+        assert!((0.39..0.41).contains(&confidence));
+        learning.fade(20 * crate::time::TICKS_PER_DAY);
+        learning.fade(crate::time::TICKS_PER_DAY);
+        assert_eq!(learning.lessons[0].confidence, confidence);
+        assert_eq!(learning.lessons[0].last_tested, 0);
+        learning.fade(150 * crate::time::TICKS_PER_DAY);
+        assert!(learning.lessons.is_empty());
+    }
+
+    #[test]
+    fn learning_saved_before_the_fade_clock_still_loads() {
+        #[derive(Serialize)]
+        struct OldLearning<'a> {
+            observations: &'a [Observation],
+            lessons: &'a [Lesson],
+        }
+        let mut learning = Learning::default();
+        learning.learn(
+            ObservationKind::WaterDepth,
+            OutcomeKind::Harm,
+            None,
+            true,
+            0,
+            None,
+        );
+        let old = OldLearning {
+            observations: &learning.observations,
+            lessons: &learning.lessons,
+        };
+        let bytes = rmp_serde::to_vec_named(&old).unwrap();
+        let mut back: Learning = rmp_serde::from_slice(&bytes).unwrap();
+        assert_eq!(back.last_faded_day, 0);
+        assert_eq!(back.lessons, learning.lessons);
+        back.fade(20 * crate::time::TICKS_PER_DAY);
+        assert!(back.lessons[0].confidence < learning.lessons[0].confidence);
     }
 }

@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-25: untested lessons slowly lose confidence (OST-450)
+
+- Symptom: an old, untested lesson kept its original confidence indefinitely.
+- Cause: confidence changed only when confirmed or contradicted.
+- Fix: multiply by 0.98 for each elapsed game-day without a new test, with a 0.05 floor;
+  lessons below 0.06 are removed to free their ledger slot. Twenty hourly index stripes
+  visit living people, including travellers, once per day. A defaulted saved day clock
+  prevents repeated ageing of the same days and leaves `last_tested` as real evidence time.
+  Existing saves default that clock to zero and age from each lesson's own last test.
+- Guards: `tests/e16_phase1.rs::an_untested_lesson_fades` fails without the change and
+  compares an untested lesson with one confirmed on day ten. Unit guards cover repeated
+  calls, faint-lesson removal and loading learning records from before the saved clock.
+- Digests change when lessons age, including the saved clock needed for an identical resume.
+
 ## 2026-11-24: the soak can run the camera director (OST-868)
 
 - Symptom: only the game client ran the director, so no headless run could say where the camera

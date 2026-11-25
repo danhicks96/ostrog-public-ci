@@ -88,6 +88,100 @@ fn observations_and_lessons_belong_to_one_person_and_survive_save_encoding() {
 }
 
 #[test]
+fn an_untested_lesson_fades() {
+    use hf_sim::mind::{ObservationKind, OutcomeKind};
+    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
+    let run = |threads, resume| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let mut w = World::generate(1501, GenParams::small());
+                let ids = w.found_party(2);
+                let idx: Vec<_> = ids
+                    .iter()
+                    .map(|id| w.agents.iter().position(|a| a.id == *id).unwrap())
+                    .collect();
+                hf_sim::systems::flush::step(&mut w);
+                w.last_events.clear();
+                for &i in &idx {
+                    w.agents[i].learning.learn(
+                        ObservationKind::WaterDepth,
+                        OutcomeKind::Harm,
+                        None,
+                        true,
+                        0,
+                        None,
+                    );
+                    w.agents[i].learning.lessons[0].confidence = 0.6;
+                }
+                for day in 1..=20 {
+                    if day == 10 {
+                        w.agents[idx[1]].learning.learn(
+                            ObservationKind::WaterDepth,
+                            OutcomeKind::Harm,
+                            None,
+                            true,
+                            day * TICKS_PER_DAY,
+                            None,
+                        );
+                    }
+                    for hour in 0..24 {
+                        w.meta.tick = day * TICKS_PER_DAY + hour * TICKS_PER_HOUR;
+                        hf_sim::systems::learn::observe(&mut w);
+                    }
+                    if resume && day == 10 {
+                        w = decode(&encode(&Snapshot::capture(&w)).unwrap())
+                            .unwrap()
+                            .restore();
+                    }
+                }
+                let old = w.agents[idx[0]].learning.lessons[0].confidence;
+                let confirmed = w.agents[idx[1]].learning.lessons[0].confidence;
+                assert!(old < 0.45 && old > 0.39, "old lesson: {old}");
+                assert!(confirmed > 0.45, "recent confirmation: {confirmed}");
+                assert_eq!(
+                    w.agents[idx[0]].learning.lessons[0].last_tested, 0,
+                    "forgetting is not new evidence"
+                );
+                hf_sim::digest::digest(&w)
+            })
+    };
+    let expected = run(1, false);
+    assert_eq!(expected, run(4, false));
+    assert_eq!(expected, run(1, true));
+    assert_eq!(expected, run(4, true));
+}
+
+#[test]
+fn travelling_people_keep_aging_their_own_lessons() {
+    use hf_sim::mind::{ObservationKind, OutcomeKind};
+    let mut w = World::generate(1502, GenParams::small());
+    let who = w.found_party(1)[0];
+    let i = w.agents.iter().position(|a| a.id == who).unwrap();
+    let mut traveller = w.agents.remove(i);
+    traveller.learning.learn(
+        ObservationKind::WaterDepth,
+        OutcomeKind::Harm,
+        None,
+        true,
+        0,
+        None,
+    );
+    traveller.learning.lessons[0].confidence = 0.6;
+    w.overworld.away.push(traveller);
+    w.last_events.clear();
+    for hour in 0..24 {
+        w.meta.tick = hf_sim::time::TICKS_PER_DAY + hour * hf_sim::time::TICKS_PER_HOUR;
+        hf_sim::systems::learn::observe(&mut w);
+    }
+    let confidence = w.overworld.away[0].learning.lessons[0].confidence;
+    assert!((confidence - 0.588).abs() < 0.00001, "{confidence}");
+}
+
+#[test]
 fn saves_from_before_learning_default_to_no_personal_evidence() {
     let fixture =
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/saves/v2.hfsave");
