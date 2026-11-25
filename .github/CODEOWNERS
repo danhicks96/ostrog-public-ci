@@ -1,0 +1,7 @@
+# Review requests go to the maintainer. Takes effect for required reviews only if the ruleset asks for code owner review.
+*                    @danhicks96
+/.github/            @danhicks96
+/tools/hygiene/      @danhicks96
+/deny.toml           @danhicks96
+/LICENSE*            @danhicks96
+/NOTICE              @danhicks96
