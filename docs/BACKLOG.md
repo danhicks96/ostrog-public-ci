@@ -152,6 +152,174 @@ This is the reserved-marking slice of the tracking issue on unused problem and o
 
 **Acceptance:** A test fails if a kind listed as reserved is also written by perception or learning. Existing tests, the enum-order check and the generated reference check pass. Saved state is unchanged.
 
+### OST-348 · Nothing counts whether people go back to where they saw someone die: add witness-return keys, starting with the ice
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nothing measures witnesses returning to deadly ice. Track actual nearby witnesses of each ice death and their ice-fishing mornings in the preceding and following twenty days, with raw witness and fish counts in the read-only alive report. Tracking issue: [#523](https://github.com/danhicks96/ostrog-public-ci/issues/523).
+
+**Acceptance:** Test `crates/hf-sim/tests/alive_scenarios.rs::a_witness_returning_to_the_ice_is_counted`, on a sibling item's shared `thin_ice` scene. Done when: the soak's alive lines on seeds 5-8 reproduce the drowning counts above ±1 and print the four keys.
+
+### OST-349 · Going through the ice is always death, a flat 1% a morning, so nobody can live to fear it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Going through ice is always fatal. Split the same seeded fall into survival or death using health, skill and nearby company, recording the existing shared fall event. A survivor becomes cold, remembers the place and goes home. Keep thickness-dependent fall odds when that prerequisite lands. Tracking issue: [#524](https://github.com/danhicks96/ostrog-public-ci/issues/524).
+
+**Acceptance:** Test `crates/hf-sim/tests/fishing.rs::a_fall_through_the_ice_can_be_survived_and_is_recorded`. Test `fishing.rs::ice_deaths_per_morning_stay_near_one_in_a_hundred` (10,000 seeded mornings, 0.7-1.3%). Done when: both pass and the digest change is logged.
+
+### OST-350 · Watching a neighbour drown through the ice leaves no fear: form fear of ice from what was seen or survived
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Witnessing or surviving an ice fall creates no lasting fear. Form person-specific fear from the recorded fall and genuine witnesses, scaled by kinship and dispositions. Keep the felt fear distinct from a learned warning about this particular pond. Tracking issue: [#104](https://github.com/danhicks96/ostrog-public-ci/issues/104).
+
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::seeing_a_neighbour_drown_through_the_ice_leaves_a_fear_of_ice`. Test `fears.rs::a_sleeper_in_the_house_does_not_see_it`. Done when: both pass.
+
+### OST-351 · People afraid of the ice still take every ice-fishing order: weigh fear against it, unless starving
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Fear of ice does not affect fishing choices. Add the bounded fear factor to icy fishing work, combining it with a learned warning by minimum rather than multiplying the same experience twice. Severe hunger and empty stores retain the recorded survival override. Tracking issue: [#120](https://github.com/danhicks96/ostrog-public-ci/issues/120).
+
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::seeing_a_neighbour_drown_through_the_ice_makes_ice_fishing_rarer`: the witness's share of ice orders falls ≥ 60% over 20 days. Test `fears.rs::the_starving_still_fish_the_ice_and_say_they_were_afraid`. Done when: both pass, and the alive report's `ice_witness_return` (a sibling item) on seeds 5-8 shows the witnesses' ice mornings at least halved.
+
+### OST-352 · Warnings pass between people but fears do not: fears told by the trusted, and taken up by children
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+People share warnings but not fears. Let a trusted teller pass their strongest fear in ordinary talk, with a stronger uptake by children, keeping its teller and outcome in the personal telling record. Tracking issue: [#123](https://github.com/danhicks96/ostrog-public-ci/issues/123).
+
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::a_trusted_teller_passes_a_fear_and_a_stranger_does_not`. Test `fears.rs::a_child_takes_up_a_parents_fear_of_the_ice`. Done when: both pass.
+
+### OST-446 · Taking the flux from foul water teaches the drinker nothing about that water
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Foul-water illness leaves no personal lesson. Append a distinct FoulWater cue and connect a real flux illness to an observation and lesson at the water tile, linked to its illness event. A later drink without sickness can weaken an existing lesson; add no choice reader yet. Tracking issue: [#145](https://github.com/danhicks96/ostrog-public-ci/issues/145).
+
+**Acceptance:** Test: `crates/hf-sim/tests/foul_sickens.rs::the_flux_teaches_the_drinker`. Force a fouled pond and a flux roll. The drinker holds a `FoulWater`/`Illness` lesson at the drunk tile with confidence 0.35, and a bystander holds none. Done when that test and `learning.rs` `separate_learning_records_do_not_broadcast_knowledge` pass, and `tools/enum_order.py` is green.
+
+### OST-447 · Someone made ill by a pond goes back to drink from it once the foul tag is forgotten
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+After forgetting a foul-water tag, a person drinks there again. Treat a strong personal illness lesson about the same water body as foul and raise its desperation threshold, without leaking another person's knowledge or changing ordinary sources. Tracking issue: [#150](https://github.com/danhicks96/ostrog-public-ci/issues/150).
+
+**Acceptance:** Test: `crates/hf-sim/tests/foul_water.rs::a_lesson_outlasts_the_forgotten_tag`. Give a person a `FoulWater` lesson (confidence 0.6) at pond A and remove the foul `Known::Water` beliefs. With pond B (fresh) 20 tiles further, `nearest_knowing` picks B at thirst 0.55 and still picks B at 0.8. A control with no lesson picks A. Done when the test passes and, in the seed 7 and 8 soaks, `flux_foul_repeat` (a related item) falls by at least half.
+
+### OST-448 · Nobody who sees a neighbour go through the ice learns anything about that ice
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Witnesses of an ice fall learn nothing about that water. Use the shared fall event and genuine awake witnesses to form a Cold/Death lesson at the water tile; include a surviving fisher when supported. People behind walls or told only later do not learn directly. Tracking issue: [#155](https://github.com/danhicks96/ostrog-public-ci/issues/155).
+
+**Acceptance:** Test: `crates/hf-sim/tests/fishing.rs::those_who_saw_the_ice_give_way_learn_it`. Three people stand beside a pond: one fishing, one watching in sight, one behind a wall within 8 tiles. After a forced fall through the ice, only the watcher holds a `Cold`/`Death` lesson at the water tile. Done when the test passes.
+
+### OST-449 · A person who saw the ice take someone still takes the next fishing order on that ice
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+An ice lesson does not influence fishing. Read the strongest nearby Cold harm/death lesson for icy work, scaled by caution, preserving open-water work and the survival override. Compose fear and learning without double-counting and explain the reason in the existing trace. Tracking issue: [#161](https://github.com/danhicks96/ostrog-public-ci/issues/161).
+
+**Acceptance:** Test: `crates/hf-sim/tests/fishing.rs::a_witness_will_not_fish_the_ice_that_took_someone`. Two people, the same open `Fish` order on ice. One holds a `Cold`/`Death` lesson at 0.6 confidence. Their `learned` factor is at most 0.5, and the control's is 1.0. A cautious (0.9) and a bold (0.1) witness get different factors. Done when the test passes and, in the seed 1-8 soak, no community has a second ice death within 10 days of the first.
+
+### OST-450 · A lesson keeps its confidence for ever unless the same thing happens again
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Untested lessons retain confidence indefinitely. Add deterministic daily confidence fading from the last test, a lower bound and removal of weak lessons, spread across the existing observation stage. A confirming experience renews the lesson. Tracking issue: [#166](https://github.com/danhicks96/ostrog-public-ci/issues/166).
+
+**Acceptance:** Test: `crates/hf-sim/tests/e16_phase1.rs::an_untested_lesson_fades`. A lesson at 0.6, untested for 20 days, is under 0.45. A lesson confirmed on day 10 is above that. Done when the test passes.
+
+### OST-451 · Measure the lessons' effect on eight seeds and all three deities, and tune it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The effects of lessons need measured tuning. Compare eight seeds under all three deities for 600 days, including ice deaths, fishing, repeated foul-water illness, thirst and starvation. Record final factors and proposed decisions without accepting increased survival losses beyond the stated bound. Tracking issue: [#231](https://github.com/danhicks96/ostrog-public-ci/issues/231).
+
+**Acceptance:** No new test. The numbers: `flux_foul_repeat / flux_foul` at most 20%; no second ice death within 10 days in the same community; thirst and starvation deaths within 10% of main. Done when the table and the decision log row are in the PR.
+
+### OST-453 · Talk can pass on a technique or a bad plant, but never a lesson like "the ice on that pond kills"
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Talk cannot pass a learned danger. Add a lesson telling for the strongest serious lesson the listener lacks, using existing willingness, trust and refusal rules. Keep who told it, bound the listener's confidence by the teller's, and retain the proposed mishearing behavior. Tracking issue: [#169](https://github.com/danhicks96/ostrog-public-ci/issues/169).
+
+**Acceptance:** Test: `crates/hf-sim/tests/social_learning.rs::a_lesson_is_told_and_kept_with_its_teller`. A holds a `Cold`/`Death` lesson at 0.7. B trusts A. After A and B talk (forced rng), B holds the lesson at most at 0.42, and B's `told` names A. A feuding pair passes nothing. Done when the test passes and `tools/enum_order.py` is green.
+
+### OST-454 · A rival tells a lesson as truly as a friend does
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A rival shares a lesson as honestly as a friend. Apply the existing opinion bands to withholding or distorting a lesson's location, and mark a misleading source when later direct evidence corrects it. Tracking issue: [#170](https://github.com/danhicks96/ostrog-public-ci/issues/170).
+
+**Acceptance:** Test: `crates/hf-sim/tests/social_learning.rs::a_rival_tells_the_ice_lesson_wrong`. A teller at opinion −0.8 gives a lesson whose `at` is not the true tile. One at −0.4 gives nothing. A friend gives the true tile. Done when the test passes.
+
+### OST-455 · A death told truly as "drowned" warns nobody, while the same death retold as "taken" makes the place feared
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Only a distorted drowning story warns a listener. A true account linked to an ice fall teaches a bounded Cold/Death lesson with direct or told evidence. Keep dark accounts' existing hardship effect and avoid adding an ice lesson to them. Tracking issue: [#171](https://github.com/danhicks96/ostrog-public-ci/issues/171).
+
+**Acceptance:** Test: `crates/hf-sim/tests/accounts.rs::a_told_drowning_teaches_the_ice`. B hears from A a true account of an ice death: B holds a `Cold`/`Death` lesson at the account's place, confidence 0.3 or less. A drifted "taken" account still gives the Hardship memory and no lesson. Done when the test passes.
+
+### OST-562 · A miner caught below by a cave-in goes back down an unlit gallery the next day: fear of the dark, from a cave-in or the FearsTheDark trait, keeps them out unless a lamp is lit
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A cave-in or fear-of-dark trait does not hold someone back from an unlit mine. Form the matching Dark fear and reduce underground work without a nearby active lamp, retaining the proposed nighttime wandering factor and old trait compatibility. Tracking issue: [#571](https://github.com/danhicks96/ostrog-public-ci/issues/571).
+
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::a_dark_fear_keeps_one_out_of_an_unlit_gallery_unless_a_lamp_is_there`. A person hurt in a `RoofFell` below ground holds Dark 0.5. At Dark 0.8, `fears::lean` for a Mine order in an unlit gallery is at most 0.45, and 1.0 with a lit Lamp 3 tiles away. A `FearsTheDark` person holds Dark 0.8 after one daily pass. Measured: Mine and DigStairs orders taken by Dark holders in unlit ground, seeds 1-4, 600 days. development-history entry.
+
+### OST-563 · Someone burned standing in a fire runs at the next one as readily as anyone: a burn leaves a fear of fire that holds them back when others can fight it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A burn leaves no fear when the next fire starts. Form Fire fear from a recorded burn in a fire and apply its bounded response factor, leaving others able to meet the fire and preserving emergency availability. Tracking issue: [#572](https://github.com/danhicks96/ostrog-public-ci/issues/572).
+
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::one_burned_hangs_back_from_the_next_fire_when_others_can_fight_it`. A burn "in the fire" gives Fire 0.6. A new fire with two people who know BeatFlames at equal distance, one holding Fire 0.6: the other responds first. Alone, the afraid one still responds within the hour. Measured: not a census key; the digest change is noted in the development history. development-history entry.
+
+### OST-564 · A builder who fell two storeys and broke a bone takes the next upper-floor order as readily as anyone: a bad fall leaves a fear of heights
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A serious fall does not affect later high work. Give an injured survivor a Heights fear after an effective fall of at least two levels and apply its bounded factor to work above the ground. Tracking issue: [#573](https://github.com/danhicks96/ostrog-public-ci/issues/573).
+
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::one_who_fell_will_not_work_the_upper_floor`. A forced 2-level fall onto dry ground that leaves a wound gives Heights 0.6. One level gives none. At Heights 0.8, `fears::lean` for a build order one storey up is at most 0.55, and 1.0 for one at ground level. Measured: not a census key; the digest change is noted in the development history. development-history entry.
+
+### OST-565 · A fear once formed is never beaten: five safe mornings doing the feared work halve it, with a FacedFear thought and an OvercameFear line
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A learned fear can never be overcome. Count safe completions of the feared act, halve the fear after five, and record the thought and event. New harm renews it and resets the safe count; discard sufficiently weak fears. Tracking issue: [#574](https://github.com/danhicks96/ostrog-public-ci/issues/574).
+
+**Acceptance:** Test `crates/hf-sim/tests/fears.rs::five_safe_mornings_on_the_ice_halve_the_fear`. A holder of Ice 0.6 makes five unharmed `Fished { ice: true }` trips: strength is 0.3, `faced` is 0 and one `OvercameFear` was pushed. A survived `WentThroughIce` after the third trip resets `faced` to 0 and leaves strength ≥ 0.6. Measured: at least one `OvercameFear` per seed on seeds 1-4 at 600 days. development-history entry.
+
+### OST-607 · Going through the ice is a flat 1% roll, whether the ice is one night old or a whole winter thick
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The chance of breaking through ice ignores its thickness. Use the proposed piecewise chance below five, between five and ten, and above ten centimeters while preserving the existing random stream. Ice thinner than two centimeters remains open water. Tracking issue: [#168](https://github.com/danhicks96/ostrog-public-ci/issues/168).
+
+**Acceptance:** Test: `crates/hf-sim/tests/fishing.rs::thin_ice_gives_way_thick_ice_holds`. 1,000 forced trips on 3 cm ice give 1-6% deaths. 1,000 on 20 cm ice give none. Done when: the test passes; the seed 1-8 soak with all three deities shows at most 2 `ice_deaths` per seed (a sibling item); each of those deaths falls within the first 3 or last 3 days of winter.
+
+### OST-609 · Find out why the same people take the flux from foul water up to ten times
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Repeated foul-water flux has several plausible causes and no measured answer. Add opt-in diagnostic evidence for prior belief, thirst, desperation, source level and previous foul knowledge, then run seed 7 for 300 days and report the cause shares without changing ordinary simulation state. Tracking issue: [#203](https://github.com/danhicks96/ostrog-public-ci/issues/203).
+
+**Acceptance:** Done when the tally (share of repeat cases due to (a), (b), (c) or something else) is posted on a sibling item and fix log. The digest is unchanged with debug logging off: the existing `tests/debuglog.rs` guard still passes.
+
+### OST-611 · A place taboo, once formed, should keep its keepers off that ice or water
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A place taboo does not influence its adopters. Add a bounded seasonal factor for an adopted taboo on the same water body, read by fishing and drinking choices. Keep the desperation escape and personal adoption requirements. Tracking issue: [#235](https://github.com/danhicks96/ostrog-public-ci/issues/235).
+
+**Acceptance:** Test: `crates/hf-sim/tests/culture.rs::a_taboo_keeps_them_off_the_winter_ice`. A keeper's fishing factor on the tabooed pond in winter is 0.1 or less, and 1.0 in summer. A member who has not adopted it gets 1.0. Done when the test passes.
+
 ### OST-901 · Count births per community, not per valley
 
 **Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#634](https://github.com/danhicks96/ostrog-public-ci/pull/634)
