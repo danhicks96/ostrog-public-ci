@@ -1,0 +1,21 @@
+docs:
+  - changed-files:
+      - any-glob-to-any-file: ["docs/**", "*.md"]
+ci:
+  - changed-files:
+      - any-glob-to-any-file: [".github/**", "tools/ci*", "tools/hygiene/**"]
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: ["Cargo.toml", "Cargo.lock", "deny.toml", "tools/requirements-*.txt"]
+rust:
+  - changed-files:
+      - any-glob-to-any-file: ["crates/**"]
+godot:
+  - changed-files:
+      - any-glob-to-any-file: ["godot/**"]
+data:
+  - changed-files:
+      - any-glob-to-any-file: ["data/**"]
+tools:
+  - changed-files:
+      - any-glob-to-any-file: ["tools/**"]
