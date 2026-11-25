@@ -1,0 +1,21 @@
+# Labels pull requests by the paths they change (config: .github/labeler.yml).
+name: labeler
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+# pull_request_target runs with write access, so this job never checks out or runs PR code:
+# the labeler action only reads the list of changed file names through the API.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
+        with:
+          sync-labels: true
