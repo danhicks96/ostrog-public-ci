@@ -1086,6 +1086,16 @@ pub fn cold_step(w: &mut World) {
             if !shaded || over > 4.0 {
                 a.thoughts.add(ThoughtKind::Hot, tick, None);
             }
+            a.learning.observe(crate::mind::learning::Observation {
+                tick,
+                pos: a.pos,
+                kind: crate::mind::learning::ObservationKind::Heat,
+                strength: (over / 10.0).min(1.0),
+                evidence: crate::mind::learning::Evidence::Direct,
+                event: None,
+                full: false,
+                reading: None,
+            });
         }
         if a.needs.warmth < 0.35 {
             a.thoughts.add(ThoughtKind::Cold, tick, None);

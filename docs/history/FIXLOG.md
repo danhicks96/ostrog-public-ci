@@ -1,5 +1,18 @@
 # Fix log
 
+## 2026-11-25: remember the heat personally felt outdoors (OST-472)
+
+- Symptom: dangerous outdoor heat wore down comfort and produced a hot thought, but left
+  no observation from which the person could later learn.
+- Cause: the existing hourly heat branch never wrote to the person's observation ledger.
+- Fix: that branch records direct heat at the exposed person's tile, using the same
+  shade-adjusted degrees above their comfort for a strength clamped to one. Indoors and
+  sleeping people remain outside this branch. The existing ledger refreshes an unchanged
+  cue instead of filling with copies. No event or lesson is invented.
+- Guard: `tests/hazards.rs::heat_is_noticed_as_heat` covers outdoor exposure, indoor and
+  sleeping exclusions, and refresh in place. It fails on the previous implementation.
+- Digests change when exposed people record heat; the observations use existing saved state.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every

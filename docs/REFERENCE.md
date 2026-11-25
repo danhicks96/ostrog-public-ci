@@ -3406,14 +3406,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:714 | they noticed dangerous water |
 | systems/hazards.rs:831 | drowned in the flood |
 | systems/hazards.rs:833 | drowned in the flooded workings |
-| systems/hazards.rs:1115 | from the cold |
-| systems/hazards.rs:1123 | froze |
-| systems/hazards.rs:1142 | below ground |
-| systems/hazards.rs:1147 | hearth |
-| systems/hazards.rs:1149 | roofed, no hearth |
-| systems/hazards.rs:1153 | roofed, open side |
-| systems/hazards.rs:1159 | tent/nest |
-| systems/hazards.rs:1161 | open |
+| systems/hazards.rs:1125 | from the cold |
+| systems/hazards.rs:1133 | froze |
+| systems/hazards.rs:1152 | below ground |
+| systems/hazards.rs:1157 | hearth |
+| systems/hazards.rs:1159 | roofed, no hearth |
+| systems/hazards.rs:1163 | roofed, open side |
+| systems/hazards.rs:1169 | tent/nest |
+| systems/hazards.rs:1171 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |

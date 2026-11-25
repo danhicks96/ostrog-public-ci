@@ -285,6 +285,87 @@ fn a_tree_shades_from_the_heat() {
 }
 
 #[test]
+fn heat_is_noticed_as_heat() {
+    use hf_sim::mind::{Activity, Evidence, ObservationKind};
+    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let mut w = meadow(1730);
+                let ids = w.found_party(3);
+                w.build_house(40, 40, 7, 6, 1, Material::WOOD, Material::WOOD);
+                w.rebuild_caches();
+                let (outside, inside, sleeping) = (
+                    w.agents.iter().position(|a| a.id == ids[0]).unwrap(),
+                    w.agents.iter().position(|a| a.id == ids[1]).unwrap(),
+                    w.agents.iter().position(|a| a.id == ids[2]).unwrap(),
+                );
+                w.agents[outside].pos = TilePos::new(10, 10, 2);
+                w.agents[inside].pos = TilePos::new(43, 42, 2);
+                w.agents[sleeping].pos = TilePos::new(10, 12, 2);
+                for i in [outside, inside] {
+                    w.agents[i].activity = Activity::Idle;
+                }
+                w.agents[sleeping].activity = Activity::Sleeping {
+                    bed: None,
+                    until: w.meta.tick + 4 * TICKS_PER_HOUR,
+                };
+                w.weather.temperature_c = 38.0;
+                w.weather.sky = hf_sim::systems::weather::Sky::Clear;
+                assert!(!hf_sim::systems::hazards::indoors(
+                    &w,
+                    w.agents[outside].pos
+                ));
+                assert!(hf_sim::systems::hazards::indoors(&w, w.agents[inside].pos));
+                w.meta.tick += TICKS_PER_HOUR;
+                hf_sim::systems::hazards::cold_step(&mut w);
+                let heat = w.agents[outside]
+                    .learning
+                    .observations
+                    .iter()
+                    .find(|o| o.kind == ObservationKind::Heat)
+                    .expect("an awake person notices the heat they are exposed to");
+                assert_eq!(heat.pos, w.agents[outside].pos);
+                assert_eq!(heat.evidence, Evidence::Direct);
+                assert_eq!(heat.event, None);
+                assert!(heat.strength > 0.0 && heat.strength <= 1.0);
+                for i in [inside, sleeping] {
+                    assert!(w.agents[i]
+                        .learning
+                        .observations
+                        .iter()
+                        .all(|o| o.kind != ObservationKind::Heat));
+                }
+                // The same unchanged cue refreshes one entry rather than filling the ledger.
+                w.meta.tick += TICKS_PER_HOUR;
+                hf_sim::systems::hazards::cold_step(&mut w);
+                let heat: Vec<_> = w.agents[outside]
+                    .learning
+                    .observations
+                    .iter()
+                    .filter(|o| o.kind == ObservationKind::Heat)
+                    .collect();
+                assert_eq!(heat.len(), 1);
+                assert_eq!(heat[0].tick, w.meta.tick);
+                // Finish a normal tick before saving: staged weather is not saved state.
+                w.step();
+                let mut back = decode(&encode(&Snapshot::capture(&w)).unwrap())
+                    .unwrap()
+                    .restore();
+                assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                w.run(TICKS_PER_HOUR);
+                back.run(TICKS_PER_HOUR);
+                assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                hf_sim::digest::digest(&w)
+            })
+    };
+    assert_eq!(run(1), run(4));
+}
+
+#[test]
 fn fire_spreads_unchecked() {
     // Nobody on the map: a grass fire in a dry summer spreads until it runs out of grass.
     let mut w = meadow(1703);
