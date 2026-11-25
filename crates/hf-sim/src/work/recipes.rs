@@ -538,7 +538,7 @@ pub fn recipe(id: u8) -> &'static Recipe {
     &RECIPES[id as usize]
 }
 
-/// The craft a recipe asks of its maker (C70, Dan's rule 3): None, anyone may make it.
+/// The craft a recipe asks of its maker (C70, design rule 3): None, anyone may make it.
 pub fn craft_of(r: u8) -> Option<crate::mind::Technique> {
     use crate::mind::Technique as T;
     Some(match r {

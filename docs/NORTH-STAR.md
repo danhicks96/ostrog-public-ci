@@ -1,6 +1,6 @@
 # North Star: people who feel alive
 
-Dan, 2026-11-13 (D93): the findings of the alive audit are the project's North Star. Every work
+The maintainer, 2026-11-13 (D93): the findings of the alive audit are the project's North Star. Every work
 package is judged against it, and the alive work is broken into bite-sized slices so that each one is
 built, tested and committed before the next is taken.
 

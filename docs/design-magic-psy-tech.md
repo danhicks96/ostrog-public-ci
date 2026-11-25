@@ -76,7 +76,7 @@ Built in `crates/hf-sim/src/resonance.rs`; epic #508 steps 1 to 4 for one potent
    the morning and may not by evening, or after it has fired twice. Sleep brings it back. Nothing
    tells the player which it was: the record shows a refusal one day and a collapse another.
 
-## Assumptions (Dan can overrule)
+## Assumptions (the maintainer can overrule)
 
 - The rate is the epic's: two in ten of the arrivals, drawn per person (so a party may have
   none or several). Newcomers and those born in the valley carry nothing in this slice.

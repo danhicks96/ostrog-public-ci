@@ -397,7 +397,7 @@ fn storied(
 #[test]
 fn a_storied_hide_does_not_rot() {
     // #170: the White Hart's hide rotted in twenty days in the open, and was "1 hides" in the
-    // day's line. Dan, 2026-10-20: a thing with a story does not rot.
+    // day's line. The maintainer, 2026-10-20: a thing with a story does not rot.
     use hf_sim::items::ItemKind;
     let mut w = meadow(17001, 1);
     let at = TilePos::new(50, 50, 2);
@@ -500,7 +500,7 @@ fn hauling_onto_a_stack_respects_cap_and_quality() {
 #[test]
 fn the_cook_cooks_the_planned_food_one_to_a_meal() {
     // #172: the cook cooked the first cookable thing in hand, not the food the plan fetched,
-    // and took "two" (one, when one was carried). Dan, 2026-10-20: one raw thing is a meal.
+    // and took "two" (one, when one was carried). The maintainer, 2026-10-20: one raw thing is a meal.
     use hf_sim::agents::Species;
     use hf_sim::items::{ItemKind, ItemPlace};
     use hf_sim::structures::StructureKind;
@@ -726,7 +726,7 @@ fn raiders_do_not_take_ordinary_food_they_never_saw() {
 
 #[test]
 fn raiders_seek_a_renowned_piece_they_have_heard_of() {
-    // #173, Dan's call: word of the valley's treasures may reach them, and they come for one.
+    // #173, the maintainer's call: word of the valley's treasures may reach them, and they come for one.
     use hf_sim::items::ItemKind;
     let camp = TilePos::new(8, 8, 2);
     let mut w = camped_band(17302, camp);

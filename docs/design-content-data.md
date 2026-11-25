@@ -1,13 +1,13 @@
 # Content as data and composable parts: options for DEC-5
 
-Status: proposal for Dan, written 2026-11-08 at c169 (WP-05 slice 5.7). Nothing here is implemented.
+Status: proposal for the maintainer, written 2026-11-08 at c169 (WP-05 slice 5.7). Nothing here is implemented.
 Issues: #269 (content is data-driven), #337 (build content from composable parts). Related: #267,
 #280, #284, #328, #333, M9 (#380) and the renderer art slices that wait on this (WP-06 6.6).
 
 ## What is being decided
 
 DEC-5 carries a default: the dev writes an options document with a recommendation and proceeds. Most
-of this is an engineering choice, so the recommendation below can start without waiting. Dan is
+of this is an engineering choice, so the recommendation below can start without waiting. The maintainer is
 asked only about how it changes what the game feels like (the two questions at the end).
 
 ## Facts at c169 (measured, commands at the bottom)
@@ -90,7 +90,7 @@ Take B for #269 and option 2 for #337, in this order, each its own slice with it
 Why not items first: the larger save surface makes it the wrong place to learn the pattern. Why not
 all domains at once: each conversion needs its own digest proof and soak, and merges are serial.
 
-## Questions for Dan (feel, not engineering)
+## Questions for the maintainer (feel, not engineering)
 
 1. **Assembled variety.** Content built from parts can be produced in large numbers, but an
    assembled entry has no hand-written character unless someone gives it a name, a line and a
@@ -100,7 +100,7 @@ all domains at once: each conversion needs its own digest proof and soak, and me
    but never renamed or reused. Are you comfortable with that rule for content, including names you
    may later want to change?
 
-If Dan does not answer, the default stands: proceed with the recommendation, treating the first
+If the maintainer does not answer, the default stands: proceed with the recommendation, treating the first
 answer as "mixed authored and assembled" and the second as "yes".
 
 ## Not in scope
