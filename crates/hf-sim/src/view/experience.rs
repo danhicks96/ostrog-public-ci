@@ -221,6 +221,7 @@ fn observation_label(kind: ObservationKind) -> String {
         ObservationKind::Soil => "the ground",
         ObservationKind::Tracks => "animal sign",
         ObservationKind::Joint => "a stuck building site",
+        ObservationKind::FoulWater => "foul water",
     }
     .to_string()
 }

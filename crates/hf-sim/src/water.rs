@@ -327,6 +327,7 @@ pub fn drink(w: &mut World, i: usize) -> bool {
             .find(|q| w.grid.in_bounds(*q) && fresh(w, *q))
     });
     let tick = w.meta.tick;
+    let was_ill = w.agents[i].body.illness.is_some();
     // Tagged with what the drink taught them (#453 part 4): a fouled tile tasted is
     // remembered foul.
     let tag = source.map(|p| {
@@ -353,6 +354,7 @@ pub fn drink(w: &mut World, i: usize) -> bool {
     // tile of open water, and they are none. The roll is once per drink, keyed by agent and
     // day like health.rs's daily rolls, and the Sickness lever leans it.
     if let Some(p) = source {
+        let mut illness_event = None;
         if w.waters.foul.contains_key(&p) {
             let sickness = w.lean(crate::deity::Lever::Sickness, crate::deity::Scope::Valley);
             let mut r = crate::rng::stream(
@@ -364,6 +366,7 @@ pub fn drink(w: &mut World, i: usize) -> bool {
                 ],
             );
             if r.gen::<f32>() < FLUX_CHANCE * sickness {
+                let pending = w.events.pending.len();
                 crate::systems::health::catch_at(
                     w,
                     i,
@@ -371,7 +374,54 @@ pub fn drink(w: &mut World, i: usize) -> bool {
                     0.35,
                     "the flux from foul water",
                 );
+                illness_event = w.events.pending[pending..].iter().find_map(|e| {
+                    matches!(
+                        e.kind,
+                        crate::events::EventKind::FellIll { agent, .. }
+                            if agent == w.agents[i].id
+                    )
+                    .then_some(e.id)
+                });
             }
+        }
+        use crate::mind::{Evidence, Observation, ObservationKind, OutcomeKind};
+        let a = &mut w.agents[i];
+        if let Some(event) = illness_event {
+            a.learning.observe(Observation {
+                tick,
+                pos: p,
+                kind: ObservationKind::FoulWater,
+                strength: 1.0,
+                evidence: Evidence::Direct,
+                event: Some(event),
+                full: true,
+                reading: None,
+            });
+            a.learning.learn(
+                ObservationKind::FoulWater,
+                OutcomeKind::Illness,
+                Some(p),
+                true,
+                tick,
+                Some(event),
+            );
+        } else if !was_ill
+            && a.learning.lessons.iter().any(|lesson| {
+                lesson.cue == ObservationKind::FoulWater
+                    && lesson.outcome == OutcomeKind::Illness
+                    && lesson.pos == Some(p)
+            })
+        {
+            // No new illness is counter-evidence only to a lesson already held. An already
+            // sick person cannot test whether this particular drink would sicken them.
+            a.learning.learn(
+                ObservationKind::FoulWater,
+                OutcomeKind::Illness,
+                Some(p),
+                false,
+                tick,
+                None,
+            );
         }
     }
     true

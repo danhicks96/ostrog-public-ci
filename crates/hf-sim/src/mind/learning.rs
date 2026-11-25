@@ -45,6 +45,8 @@ pub enum ObservationKind {
     Tracks,
     /// Why a building site is stuck, read by one who knows building (#569).
     Joint,
+    /// Water personally drunk before an illness, kept separate from food spoilage.
+    FoulWater,
 }
 
 /// Cues no code writes yet. Each wiring slice removes its kind here and from the test's
@@ -274,6 +276,7 @@ mod tests {
             ObservationKind::Soil,
             ObservationKind::Tracks,
             ObservationKind::Joint,
+            ObservationKind::FoulWater,
         ];
         assert_eq!(RESERVED.len(), 6);
         for k in RESERVED {

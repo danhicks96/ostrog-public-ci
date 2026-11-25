@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-25: foul-water illness becomes the drinker's own lesson (OST-446)
+
+- Symptom: a person could take the flux from a fouled pond with no observation or lesson
+  linking that illness to the water they drank.
+- Cause: the drink action updated the water tag and rolled illness, but kept no learning
+  evidence about the outcome.
+- Fix: append the FoulWater cue, separate from food spoilage. Only an actual new FellIll
+  event creates a direct observation and illness lesson at the source tile, starting at
+  confidence 0.35 and linked to that event. A later drink without new illness weakens an
+  existing lesson; an already sick person supplies no new evidence. Bystanders learn nothing.
+  No choice consumer is added. Saved observations and lessons change digests when this occurs;
+  old enum positions and old saves are preserved.
+- Guards: `tests/foul_sickens.rs::the_flux_teaches_the_drinker` fails without the change;
+  safe-drink, immune-drinker and save/evidence round-trip cases cover the other outcomes.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every

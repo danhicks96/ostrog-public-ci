@@ -93,6 +93,94 @@ fn a_drink_from_fouled_water_brings_the_flux() {
 }
 
 #[test]
+fn the_flux_teaches_the_drinker() {
+    use hf_sim::mind::{Evidence, OutcomeKind};
+    let (mut w, fouled) = fouled_pond(4543);
+    let i = drinker_beside(&mut w, fouled);
+    let bystander = w.found_party(1)[0];
+    let j = w.agents.iter().position(|a| a.id == bystander).unwrap();
+    w.agents[j].pos = w.agents[i].pos.offset(0, 1, 0);
+    assert!(hf_sim::water::drink(&mut w, i));
+    assert_eq!(w.agents[i].body.illness.unwrap().kind, IllnessKind::Flux);
+    let lesson = w.agents[i]
+        .learning
+        .lessons
+        .iter()
+        .find(|lesson| lesson.outcome == OutcomeKind::Illness && lesson.pos == Some(fouled))
+        .expect("the illness taught the drinker about the water they drank");
+    assert_eq!(lesson.confidence, 0.35);
+    assert_eq!(lesson.cue, hf_sim::mind::ObservationKind::FoulWater);
+    let event = w
+        .events
+        .pending
+        .iter()
+        .find(|e| matches!(e.kind, hf_sim::events::EventKind::FellIll { agent, .. } if agent == w.agents[i].id))
+        .expect("the actual illness event");
+    assert_eq!(lesson.origins, vec![event.id]);
+    let observation = w.agents[i]
+        .learning
+        .observations
+        .iter()
+        .find(|o| o.pos == fouled && o.event == Some(event.id))
+        .expect("a direct observation at the water");
+    assert_eq!(observation.evidence, Evidence::Direct);
+    assert!(
+        w.agents[j].learning.lessons.is_empty(),
+        "knowledge stays personal"
+    );
+}
+
+#[test]
+fn a_safe_drink_weakens_an_existing_water_lesson() {
+    let (mut w, fouled) = fouled_pond(4543);
+    let i = drinker_beside(&mut w, fouled);
+    assert!(hf_sim::water::drink(&mut w, i));
+    assert_eq!(w.agents[i].learning.lessons.len(), 1);
+    w.agents[i].body.illness = None;
+    w.waters.foul.remove(&fouled);
+    w.meta.tick += 1;
+    assert!(hf_sim::water::drink(&mut w, i));
+    let lesson = &w.agents[i].learning.lessons[0];
+    assert!(lesson.confidence < 0.35);
+    assert_eq!(lesson.contradictions, 1);
+    assert!(w.agents[i].body.illness.is_none());
+}
+
+#[test]
+fn no_illness_event_means_no_new_illness_lesson() {
+    let (mut w, fouled) = fouled_pond(4543);
+    let i = drinker_beside(&mut w, fouled);
+    w.agents[i].immune.push(IllnessKind::Flux);
+    assert!(hf_sim::water::drink(&mut w, i));
+    assert!(w.agents[i].body.illness.is_none());
+    assert!(w.agents[i].learning.lessons.is_empty());
+    assert!(!w.events.pending.iter().any(|e| matches!(
+        e.kind,
+        hf_sim::events::EventKind::FellIll { agent, .. } if agent == w.agents[i].id
+    )));
+}
+
+#[test]
+fn the_water_lesson_and_its_evidence_survive_a_save() {
+    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+    let (mut w, fouled) = fouled_pond(4543);
+    let i = drinker_beside(&mut w, fouled);
+    assert!(hf_sim::water::drink(&mut w, i));
+    let back = decode(&encode(&Snapshot::capture(&w)).unwrap())
+        .unwrap()
+        .restore();
+    assert_eq!(
+        w.agents[i].learning.lessons,
+        back.agents[i].learning.lessons
+    );
+    assert_eq!(
+        w.agents[i].learning.observations,
+        back.agents[i].learning.observations
+    );
+    assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+}
+
+#[test]
 fn a_drink_from_fresh_water_brings_nothing() {
     let (mut w, _fouled) = fouled_pond(4536);
     // Across the pond from the rot: the first open-water neighbour west of this shore is a

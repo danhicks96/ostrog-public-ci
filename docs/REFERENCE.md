@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3201 strings (click to open)</summary>
+<details><summary>3202 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2707,7 +2707,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | underground.rs:559 | since they touched the underworld's rock in {} |
 | underground.rs:608 | deep_caverns |
 | water.rs:74 | a stand at {stand} does not reach {source} (#608) |
-| water.rs:372 | the flux from foul water |
+| water.rs:375 | the flux from foul water |
 | wells.rs:96 | found no place by home to dig it |
 | wells.rs:134 | dug {MAX_DEPTH} levels down and found no water |
 | wells.rs:150 | dug {depth} levels down to the hard rock and found it dry |
@@ -4083,33 +4083,34 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/experience.rs:221 | the ground |
 | view/experience.rs:222 | animal sign |
 | view/experience.rs:223 | a stuck building site |
-| view/experience.rs:232 | good ground: crops would do well here |
-| view/experience.rs:235 | fair ground: crops would grow at {pct}% of the pace |
-| view/experience.rs:238 | poor ground: crops would grow at {pct}% of the pace |
-| view/experience.rs:241 | a {} passed near |
-| view/experience.rs:244 | stuck for want of {count} {} |
-| view/experience.rs:251 | harm |
-| view/experience.rs:252 | illness |
-| view/experience.rs:253 | loss |
-| view/experience.rs:254 | displacement |
-| view/experience.rs:255 | death |
-| view/experience.rs:256 | safety |
-| view/experience.rs:257 | benefit |
-| view/experience.rs:258 | discovery |
-| view/experience.rs:259 | no change |
-| view/experience.rs:266 | directly observed |
-| view/experience.rs:267 | inferred |
-| view/experience.rs:268 | told by Agent#{} |
-| view/experience.rs:269 | misled by Agent#{} |
-| view/experience.rs:270 | remembered event #{} |
-| view/experience.rs:276 | open |
-| view/experience.rs:277 | attempted |
-| view/experience.rs:278 | resolved |
-| view/experience.rs:279 | failed |
-| view/experience.rs:280 | abandoned |
-| view/experience.rs:287 | pending |
-| view/experience.rs:288 | succeeded |
-| view/experience.rs:289 | failed |
+| view/experience.rs:224 | foul water |
+| view/experience.rs:233 | good ground: crops would do well here |
+| view/experience.rs:236 | fair ground: crops would grow at {pct}% of the pace |
+| view/experience.rs:239 | poor ground: crops would grow at {pct}% of the pace |
+| view/experience.rs:242 | a {} passed near |
+| view/experience.rs:245 | stuck for want of {count} {} |
+| view/experience.rs:252 | harm |
+| view/experience.rs:253 | illness |
+| view/experience.rs:254 | loss |
+| view/experience.rs:255 | displacement |
+| view/experience.rs:256 | death |
+| view/experience.rs:257 | safety |
+| view/experience.rs:258 | benefit |
+| view/experience.rs:259 | discovery |
+| view/experience.rs:260 | no change |
+| view/experience.rs:267 | directly observed |
+| view/experience.rs:268 | inferred |
+| view/experience.rs:269 | told by Agent#{} |
+| view/experience.rs:270 | misled by Agent#{} |
+| view/experience.rs:271 | remembered event #{} |
+| view/experience.rs:277 | open |
+| view/experience.rs:278 | attempted |
+| view/experience.rs:279 | resolved |
+| view/experience.rs:280 | failed |
+| view/experience.rs:281 | abandoned |
+| view/experience.rs:288 | pending |
+| view/experience.rs:289 | succeeded |
+| view/experience.rs:290 | failed |
 | view/fold.rs:18 | suspected:{} |
 | view/fold.rs:19 | true_dream:{what} |
 | view/fold.rs:21 | carried_off:{}:{}:{} |
