@@ -569,7 +569,7 @@ Read the client's pose and emote choice for people and list, per `Activity` name
 
 ### OST-868 · Run the camera director headlessly in the alive soak
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** [#691](https://github.com/danhicks96/ostrog-public-ci/pull/691)
 
 Add `soak --alive`: feed the director the same events and suggestions the bridge does, sample the glance at a fixed stride of 600 ticks (no rng), and print the alive report's keys as `ALIVE key value` lines. The per-person glance keys (`glance_readable`, `glance_standing`, `glance_eventful`) do not exist yet and are not part of this entry; they come later and read the table in OST-867. Tracking issue: [#420](https://github.com/danhicks96/ostrog-public-ci/issues/420). Builds on the existing glance tally in OST-008; do not duplicate it.
 
