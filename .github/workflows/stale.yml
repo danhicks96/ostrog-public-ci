@@ -1,0 +1,29 @@
+# Gentle housekeeping for pull requests only: no activity for 60 days gets a label, 30 more
+# days closes it. Issues are never touched (the backlog is intentionally idle). PRs labelled
+# keep, pinned or security are exempt.
+name: stale
+
+on:
+  schedule:
+    - cron: '11 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9
+        with:
+          days-before-pr-stale: 60
+          days-before-pr-close: 30
+          # Issues are never marked stale or closed: the backlog is intentionally idle.
+          days-before-issue-stale: -1
+          days-before-issue-close: -1
+          operations-per-run: 60
+          exempt-pr-labels: keep,pinned,security
+          stale-pr-label: stale
+          stale-pr-message: "No activity for 60 days, so this is marked stale. It closes in 30 days unless it is updated."
