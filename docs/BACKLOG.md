@@ -164,7 +164,7 @@ Bond values and stack caps are provisional. Measure seeds 1-8 under all three de
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Loved people who travel or depart are never missed. Add a Longing thought about an absent living partner, parent, child or close tie after three days; weight it by opinion and time apart, with a lower bound for partners and children. Refresh it daily in stable order without random draws. Tracking issue: [#318](https://github.com/danhicks96/ostrog-public-ci/issues/318).
+Loved people who travel or depart are never missed. Add a Longing thought about an absent living partner, parent, child or close tie after three days; weight it by opinion and time apart, with a lower bound for partners and children. Refresh it daily in stable order without random draws. Tracking issue: [#318](https://github.com/danhicks96/ostrog-public-ci/issues/318). Intake review: Captives held away for at least three days are included; immediate reactions and rescue or ransom are separate slices.
 
 **Acceptance:** Tests in `crates/hf-sim/tests/social.rs`: `a_partner_away_is_missed` (partner sent away 6 days: the one at home has `Longing` about them from day 4); `an_exiled_partner_is_missed_and_the_ache_lessens` (weight after 60 days less than half of day 1, never zero). Done when both pass.
 
