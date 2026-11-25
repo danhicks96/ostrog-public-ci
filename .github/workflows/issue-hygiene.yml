@@ -1,0 +1,40 @@
+# Issue titles and bodies get the same text rules as pull requests (docs/HYGIENE.md). A failing
+# issue gets one comment naming the rule (never the matched text) and a failed run; the issue is
+# not closed or edited. Safety: only the issue's own text is read, through environment variables.
+name: issue-hygiene
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  issue-hygiene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Scan title and body
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+          NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if printf '%s\n%s\n' "$TITLE" "$BODY" | python3 -I tools/hygiene/scan_identifiers.py --text - > report.txt 2>&1; then
+            exit 0
+          fi
+          { echo "This issue contains text the repository does not allow (see docs/HYGIENE.md). Please edit it:"; echo; sed 's/^/    /' report.txt; } > comment.txt
+          # One comment per issue: skip when an earlier run already left it.
+          if ! gh api "repos/$REPO/issues/$NUMBER/comments" --jq '.[].body' | grep -q 'does not allow (see docs/HYGIENE.md)'; then
+            gh issue comment "$NUMBER" --repo "$REPO" --body-file comment.txt || true
+          fi
+          cat report.txt
+          exit 1

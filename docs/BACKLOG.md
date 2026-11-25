@@ -353,6 +353,38 @@ The People panel lists only the living, so someone followed for years disappears
 
 **Acceptance:** A built list of three dead rows fills the tab with three Inspect buttons and no Follow, and the "this season" filter keeps one. A FIXLOG entry is added if behaviour changes.
 
+### OST-130 · Count the first-days grace from the latest party
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+Every "first days" grace (newcomer grace, bands not yet knowing of the valley, the deity's first day, fate's settled days) counts from the first portal, so a party arriving years later would get none. Add the tick of the latest party's arrival (zero on old saves, meaning the first portal) and count those four graces from it. Calendar years keep counting from the first portal. Nothing sets the new tick yet.
+
+**Acceptance:** With the latest arrival set to today in a world opened 400 days ago, no band sets out within four days and the calendar year is unchanged. The world digest is unchanged. A FIXLOG entry is added.
+
+### OST-357 · Count consecutive nights on the ground
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+A week sleeping on the ground weighs the same as one night, because the thought is refreshed rather than stacked and nothing remembers how many nights in a row a person has slept rough. Give each person a count of consecutive rough nights (reset by a night in a bed) and make the slept-on-the-ground thought weigh a little more for each night in a row, up to a cap.
+
+**Acceptance:** Seven rough nights in a row weigh more than one; a night in a bed resets the count. A FIXLOG entry is added and any simulation digest change is explained in the PR.
+
+### OST-241 · Make a break's cost last
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** Pending
+
+A breakdown and a quarrel each knock a fixed amount off mood, and the next needs pass rebuilds mood from its terms a game-minute later, so both costs vanish at once. Replace the two direct writes with a thought that decays over days, so the cost of a break is felt the next morning.
+
+**Acceptance:** An hour after a break the person is at least 0.15 lower in mood than the same person without it. A FIXLOG entry is added and any simulation digest change is explained in the PR.
+
+### OST-1500 · Record and query unattended simulation diagnostics
+
+**Priority:** High · **Milestone:** Verify long-running simulations · **State:** Claimed · **Developer:** Ostrog CI (OC) · **Public PR:** Pending
+
+Extend the opt-in decision logger with a Flight Recorder for machine soaks and desktop debugging. Survey provides world summaries and points to anomalies; focused Trace explains actual choices, attempts, failures and outcomes with stable tick and entity references; verified Replay is a follow-up that refuses to claim equivalence on divergence or missing inputs. Local read-only queries should recover useful evidence without opening the game or loading an entire recording. Keep diagnostics separate from narrative history, the Why lens, and the camera director. Any future in-game consumer reads simulation signals independently of the recorder.
+
+**First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
@@ -537,15 +569,15 @@ Read the client's pose and emote choice for people and list, per `Activity` name
 
 ### OST-868 · Run the camera director headlessly in the alive soak
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** [#691](https://github.com/danhicks96/ostrog-public-ci/pull/691)
 
-Under `soak --alive`, feed the director the same events and suggestions the bridge does, and sample the glance at a fixed stride of 600 ticks (no rng). Tracking issue: [#420](https://github.com/danhicks96/ostrog-public-ci/issues/420). Builds on the existing glance tally in OST-008; do not duplicate it.
+Add `soak --alive`: feed the director the same events and suggestions the bridge does, sample the glance at a fixed stride of 600 ticks (no rng), and print the alive report's keys as `ALIVE key value` lines. The per-person glance keys (`glance_readable`, `glance_standing`, `glance_eventful`) do not exist yet and are not part of this entry; they come later and read the table in OST-867. Tracking issue: [#420](https://github.com/danhicks96/ostrog-public-ci/issues/420). Builds on the existing glance tally in OST-008; do not duplicate it.
 
-**Acceptance:** A two-day opening soak prints the glance keys with 96 samples. A saved ring's digest is the same with and without `--alive`.
+**Acceptance:** A watched run samples the camera once per 600 ticks. A world stepped with the observation has the same digest as one without. `ostrog soak --alive` prints the existing alive keys, including the `glance_missed_major` ones.
 
 ### OST-864 · Count how many feed lines a day are the same news again
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
 
 Extend the alive report with, per game-day, the number of lines that reach the feed at notable or above, the number after folding, and the top fold keys. Tracking issue: [#408](https://github.com/danhicks96/ostrog-public-ci/issues/408). Uses the existing `view::known::told` and `view::fold::fold`.
 
@@ -566,6 +598,16 @@ Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on 
 Add `crates/hf-sim/examples/biography_census.rs`: for each colonist who lived at least 100 game-days, count `view::biography` lines and check that every child's birth, pairing, partner's death and their own death is present. Tracking issue: [#405](https://github.com/danhicks96/ostrog-public-ci/issues/405).
 
 **Acceptance:** 95% of such lives fit in 60 lines and 100% keep the listed events, or the shortfall is reported with examples. Simulation state is unchanged.
+
+## Repository usability and diagnostics
+
+### OST-1501 · Map where game data lives and how to change it
+
+**Priority:** High · **Milestone:** Make the repo easier to navigate and profile · **State:** Claimed · **Developer:** Ostrog CI (OC) · **Public PR:** Pending
+
+Give contributors a linked, text-first architecture map from the README. Start with world generation and the tick loop, person decisions and feedback, and the boundaries for Godot, the chronicle, saves and debug output. Add a registry of the remaining domains so missing maps are visible. For each map, document the source of truth, writers, readers, cadence, cross-thread and save boundaries, what is retained or rebuilt, and where to test and measure expensive copies, updates or writes.
+
+**First implementation acceptance:** A contributor can trace a person decision and world change from source to screen and save without knowing the directory layout. The same PR updates maps when ownership, timing, shape, storage or consumers change. Verify links and machine-checkable anchors, reuse existing generated reference tooling where practical, and test that one fixture change to a mapped contract detects stale docs without requiring edits for unrelated refactors. Keep the docs source-only and distinguish measured costs from investigation leads.
 
 ## Gated by a published release
 

@@ -473,6 +473,7 @@ impl Identity {
             fey: None,
             tales: Vec::new(),
             accounts: Vec::new(),
+            rough_nights: 0,
             prayed_over: Vec::new(),
             graves_read: Vec::new(),
             resonance: None,
@@ -936,7 +937,7 @@ impl World {
                         a.techniques
                             .learn(Technique::CarryWater, Learned::Past, 0.45, now);
                     }
-                    // The crafts of a trade (C70, Dan's rule 3): arrivals bring what their
+                    // The crafts of a trade (C70, design rule 3): arrivals bring what their
                     // apprenticeship taught them.
                     F::Apprenticed { craft, master } if craft == "the herb-woman" => {
                         a.techniques

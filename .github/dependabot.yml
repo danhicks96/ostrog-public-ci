@@ -1,0 +1,75 @@
+# Dependabot version updates. Keep this light: a Cargo bump re-runs the long Rust CI, so
+# updates are weekly, grouped, and capped in number. Security updates (turned on in repo
+# settings) ignore these caps and open straight away.
+version: 2
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 3
+    labels: ["dependencies", "rust"]
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps(dev)"
+    groups:
+      cargo-minor-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      # Pinned on purpose (decision D55: the sim's thread use depends on this exact version).
+      - dependency-name: "rayon"
+      # 0.x crates (rusqlite, rand, rand_chacha) treat a minor bump as breaking, so ignore those too.
+      # Major bumps change on-disk formats or APIs the save/update code depends on; do those
+      # by hand, with a guard test.
+      - dependency-name: "bincode"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "rmp-serde"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "rusqlite"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "rand"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "rand_chacha"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "ed25519-dalek"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:30"
+      timezone: "Etc/UTC"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 2
+    labels: ["dependencies", "github_actions"]
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions-minor-patch:
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "pip"
+    directory: "/tools"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 1
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "deps(tools)"
+    groups:
+      pip-minor-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      # Pinned exactly so the generated art inputs keep matching their recorded hashes.
+      - dependency-name: "numpy"
+      - dependency-name: "Pillow"

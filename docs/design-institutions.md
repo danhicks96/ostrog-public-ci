@@ -64,7 +64,7 @@ Built in `crates/hf-sim/src/duties.rs`; replaces `assign_roles`.
    the role and the other duties, with the hours behind each, so the player can see why.
 5. The healer is whoever has tended the hurt, not the best cook.
 
-## Assumptions (Dan can overrule)
+## Assumptions (the maintainer can overrule)
 
 - Two hours of a kind of work over the last days (the tally keeps 85 percent a day, so about
   six days' worth) makes it a duty; a third of the top kind makes it a second duty.

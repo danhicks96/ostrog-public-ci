@@ -1,6 +1,6 @@
 //! Time budgets that measure the code, not the machine (#582). A budget test asserts on the
 //! CPU time its own thread spent, which a busy machine does not inflate: elapsed wall time
-//! also counts the time the scheduler gave to other processes, so with eight builds on the box
+//! also counts the time the scheduler gave to other processes, so with eight builds on the build server
 //! (load 120 to 230) the realm budgets failed for PRs that never touched the realm.
 //!
 //! Included with `#[path = "support/cpu.rs"] mod cpu;` by each test that needs it (hf-godot's

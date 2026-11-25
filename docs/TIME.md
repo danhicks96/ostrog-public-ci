@@ -20,7 +20,7 @@ system quotes this table. Nothing in the simulation reads the wall clock.
 | 1× (default) | 20 | 24 min |
 | 3× ("workday") | 60 | 8 min |
 | 10× | 200 | 2.4 min |
-| Fast | uncapped; HUD shows achieved rate | as fast as the box allows |
+| Fast | uncapped; HUD shows achieved rate | as fast as the build server allows |
 
 The client interpolates entity positions between ticks so 1× looks smooth at 60 fps.
 
@@ -52,7 +52,7 @@ rain lays a wet-soil look over soil, clay and wet soil, and a hard frost freezes
 frozen soil (`cover::cover_at`, #289's overlay, DEC-8 items 2+3), but `step_cost` never reads
 the cover, so rain-wet ground is no slower to cross than dry. Real `Mud` above is the terrain
 material, found in the world, not the rain look. Whether rain or frost underfoot should slow a
-walker is a feel question left open for Dan (WP-05 5.5); D90 records the current call.
+walker is a feel question left open for the maintainer (WP-05 5.5); D90 records the current call.
 
 ## Needs and daily rhythm
 

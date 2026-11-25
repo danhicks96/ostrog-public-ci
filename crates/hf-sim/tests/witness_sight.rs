@@ -12,7 +12,7 @@ use hf_sim::world::{Material, Tile};
 use hf_sim::World;
 
 /// A flat meadow; the pair stands in a carved gallery at z=-2, carrier at (42, 30) and
-/// witness at (42, 34), the face one column over from the carrier. Everything in the box
+/// witness at (42, 34), the face one column over from the carrier. Everything in the volume
 /// x 38..=50, y 26..=38 at z=-2 is open air, so the ONLY thing that can block the witness's
 /// view is a wall the test itself builds. Returns (world, carrier, witness).
 fn gallery(seed: u64) -> (World, usize, usize) {

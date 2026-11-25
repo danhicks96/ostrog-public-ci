@@ -1,9 +1,3 @@
-<!--
-Release notes for 0.1.1 (build c252), the second friend release (WP-02). This text is the body of
-the private GitHub release c252 (tools/release/publish_windows.sh NOTES). Written by the local AI
-(Windows) from the c230..c252 changes and checked against the 2.9 runs on Windows (#794). Never
-write the private download prefix here.
--->
 # Ostrog 0.1.1 (build c252)
 
 Ostrog for Windows 64-bit: an autonomous colony simulation to leave running on a second monitor.

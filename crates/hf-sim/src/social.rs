@@ -168,7 +168,7 @@ fn tell_suspicion(w: &mut World, a: AgentId, b: AgentId) {
 }
 
 /// #286: `a` warns `b` of one look-alike plant `a` knows and `b` does not (herb lore, a
-/// sickness, seeing one, or being told). Knowledge goes person to person (Dan's rule 3), a
+/// sickness, seeing one, or being told). Knowledge goes person to person (design rule 3), a
 /// plant a talk. Since #487 it is offered only if `a` is willing and taken only if `b` believes
 /// them (mind/telling.rs), and the telling is kept with its teller either way.
 fn tell_look_alike(w: &mut World, a: AgentId, b: AgentId) {

@@ -5,7 +5,7 @@
 name: ci
 
 # Runs on pull requests and pushes to main/master. Check requirements are configured
-# separately by the repository owner; this template neither merges nor publishes.
+# separately by the repository owner (the `hygiene` check lives in hygiene.yml, which also runs on edits); this template neither merges nor publishes.
 # Safety: the trigger is `pull_request`, never `pull_request_target`; the token is read-only, and
 # public jobs receive no confidential identifier lists. Private artifact audits run separately.
 on:
@@ -54,35 +54,14 @@ jobs:
           if printf '%s\n' "$files" | grep -qvE '^(docs/.*\.md|[^/]+\.md)$'; then c=true; else c=false; fi
           echo "code=$c" >> "$GITHUB_OUTPUT"
 
-  hygiene:
-    # No identifying details in what a PR adds (tools/hygiene/scan_identifiers.py). Required check.
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Generic scanner boundary guard
-        run: python3 -I tools/tests/public_boundary_guard_test.py
-      - name: Added lines
-        if: github.event_name == 'pull_request'
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-          HEAD: ${{ github.event.pull_request.head.sha }}
-        run: python3 -I tools/hygiene/scan_identifiers.py --range "$BASE...$HEAD"
-      - name: PR title and description
-        if: github.event_name == 'pull_request'
-        env:
-          TITLE: ${{ github.event.pull_request.title }}
-          BODY: ${{ github.event.pull_request.body }}
-        run: printf '%s\n%s\n' "$TITLE" "$BODY" | python3 -I tools/hygiene/scan_identifiers.py --text -
-
   export-structure:
     # Structural absence check only; not privacy, rights, build or publication clearance.
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - run: python3 -I tools/check_export_structure.py
       - run: python3 -I tools/check_source_only.py
 
@@ -92,14 +71,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Free disk (the test binaries fill the default runner)
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
           df -h /
       - run: rustup show && rustup component add rustfmt clippy
-      - uses: Swatinem/rust-cache@v2
-      - uses: actions/setup-python@v5
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.11'
       - name: Install procedural test dependencies
@@ -132,9 +113,11 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - run: rustup show
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
       - run: cargo build --release -p hf-cli
       - name: Digest failure guard
         if: runner.os == 'Linux'
@@ -144,7 +127,7 @@ jobs:
           bin=target/release/ostrog
           [ -f "$bin.exe" ] && bin="$bin.exe"
           python3 -I tools/ci_digests.py "$bin" | tee digests-${{ matrix.os }}.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: digests-${{ matrix.os }}
           path: digests-${{ matrix.os }}.txt
@@ -154,7 +137,7 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           pattern: digests-*
           merge-multiple: true
