@@ -180,7 +180,7 @@ No activity represents a pastime. Append Leisure with its pastime, duration, com
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Secure people can only wander or rest. Add pastime candidates and a first Stroll using the prerequisite leisure definitions, dispositions, recreation need and known places. Keep every pastime under the existing security gate and use its reserved deterministic stream. Tracking issue: [#461](https://github.com/danhicks96/ostrog-public-ci/issues/461).
+Secure people can only wander or rest. Add pastime candidates and a first Stroll using the prerequisite leisure definitions, dispositions, recreation need and known places. Keep every pastime under the existing security gate and use its reserved deterministic stream. Tracking issue: [#461](https://github.com/danhicks96/ostrog-public-ci/issues/461). Intake review: The intake review authorizes bringing personal pastimes forward into this milestone, including their reserved purpose tag.
 
 **Acceptance:** `crates/hf-sim/tests/leisure.rs::a_secure_rested_person_takes_a_stroll`: a fed camp with a worn path at 10:00, recreation 0.2. Within 2 game-hours the person is in `Leisure { Stroll }`. `crates/hf-sim/tests/leisure.rs::nobody_strolls_hungry`: the same camp with hunger 0.3; no Stroll in 12 hours. Done when both pass.
 
@@ -212,7 +212,7 @@ Leisure gains and preferences need measurement. Tune only the named leisure defi
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Curious people wander at random without a discovery. Add a safe daytime Explore pastime near camp, choosing the edge of personal knowledge. Record an actual new observation and its place rather than inventing a discovery; preserve hunger searches and band travel. Tracking issue: [#468](https://github.com/danhicks96/ostrog-public-ci/issues/468).
+Curious people wander at random without a discovery. Add a safe daytime Explore pastime near camp, choosing the edge of personal knowledge. Record an actual new observation and its place rather than inventing a discovery; preserve hunger searches and band travel. Tracking issue: [#468](https://github.com/danhicks96/ostrog-public-ci/issues/468). Intake review: Store knowledge-at-start on the activity, preserving leisure.since as a timestamp. Explore competes with ordinary adult Wander; do not remove that goal in this slice.
 
 **Acceptance:** `crates/hf-sim/tests/leisure_solo.rs::the_curious_explore_and_find`: a secure camp with an unseen berry bush 18 tiles out. Within 3 days a curiosity-0.9 person knows it and holds a Discovery memory; a curiosity-0.1 person does not. Done when the test passes and `tests/normal_person.rs` still passes.
 
@@ -236,41 +236,41 @@ Nobody pauses to watch the sky. Add a short contemplative pastime on dry unroofe
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Company has no shared pastime. Add an invitation that checks the invitee's availability, wakefulness, community, security and opinion, plus a joint walk near camp. A refused invitation retains the proposed ordinary fallback. Tracking issue: [#473](https://github.com/danhicks96/ostrog-public-ci/issues/473).
+Company has no shared pastime. Add an invitation that checks the invitee's availability, wakefulness, community, security and opinion, plus a joint walk near camp. A refused invitation retains the proposed ordinary fallback. Tracking issue: [#473](https://github.com/danhicks96/ostrog-public-ci/issues/473). Intake review: Select a companion only from people the inviter can currently see, and refuse an invitation without current visibility.
 
-**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::a_friend_joins_a_walk_only_when_free_and_secured`. Two friends in a secure camp: the invitee joins, both `Leisure { WalkTogether, with: Some(other) }`. The same with the invitee at work, or hungry: no join. Done when the test passes.
+**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::a_friend_joins_a_walk_only_when_free_and_secured`. Two friends in a secure camp: the invitee joins, both `Leisure { WalkTogether, with: Some(other) }`. The same with the invitee at work, or hungry: no join. Done when the test passes. Intake-review acceptance: A free, secure friend behind a wall does not join; the inviter strolls alone.
 
 ### OST-298 · The one telling a tale at the hearth looks exactly like everyone listening
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-The hearth storyteller looks like a listener. Give the chosen teller an explicit TellTale pastime and listeners the corresponding social recreation, preserving the existing real tale and teller selection. Tracking issue: [#474](https://github.com/danhicks96/ostrog-public-ci/issues/474).
+The hearth storyteller looks like a listener. Give the chosen teller an explicit TellTale pastime and listeners the corresponding social recreation, preserving the existing real tale and teller selection. Tracking issue: [#474](https://github.com/danhicks96/ostrog-public-ci/issues/474). Intake review: Change activities and grant listener recreation only when they are free. A working teller still tells the tale without losing work, progress or reservations.
 
-**Acceptance:** `crates/hf-sim/tests/culture.rs::the_teller_is_seen_telling`: three people at a hearth at 19:30, one with a fresh tale. After the tick, the teller is `Leisure { TellTale }` and each listener's recreation rose. Done when the test passes and the existing culture tests are unchanged.
+**Acceptance:** `crates/hf-sim/tests/culture.rs::the_teller_is_seen_telling`: three people at a hearth at 19:30, one with a fresh tale. After the tick, the teller is `Leisure { TellTale }` and each listener's recreation rose. Done when the test passes and the existing culture tests are unchanged. Intake-review acceptance: A teller working a cooking order beside the hearth keeps the plan and reservation while the tale is told.
 
 ### OST-299 · A hearth evening with no new tale to tell is silent: nobody ever sings
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-A hearth with no fresh tale falls silent. Let the most cheerful secure sitter lead a short song when at least three gather, recording one bounded evening event and giving the participants social recreation and joy. Tracking issue: [#475](https://github.com/danhicks96/ostrog-public-ci/issues/475).
+Let the most cheerful secure sitter lead a short song once at least three secure sitters have all told today, recording one bounded evening event and giving the participants social recreation and joy. Tracking issue: [#475](https://github.com/danhicks96/ostrog-public-ci/issues/475). Intake review: Trigger the song only after every secure sitter is already in hearth_told for today, rather than waiting for an untold half-hour. Depend explicitly on OST-290 for Pastime events.
 
-**Acceptance:** `crates/hf-sim/tests/culture.rs::a_song_on_an_evening_with_no_new_tale`: three secure sitters with no fresh tales; one Song event and all three in `Leisure { Song }`. The same with one hungry sitter: no song. Done when the test passes.
+**Acceptance:** `crates/hf-sim/tests/culture.rs::a_song_on_an_evening_with_no_new_tale`: three secure sitters with no fresh tales; one Song event and all three in `Leisure { Song }`. The same with one hungry sitter: no song. Done when the test passes. Intake-review acceptance: Three secure sitters who have all told today produce one Song event and all sing; one hungry sitter prevents the song.
 
 ### OST-300 · Nobody ever plays a game, at a table or anywhere else
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Nobody plays games. Add a two-to-four-person game near a table or the hearth through the shared invitation rules, with bounded company gains, thoughts and the existing occasional quarrel path. Tracking issue: [#476](https://github.com/danhicks96/ostrog-public-ci/issues/476).
+Nobody plays games. Add a two-to-four-person game near a table or the hearth through the shared invitation rules, with bounded company gains, thoughts and the existing occasional quarrel path. Tracking issue: [#476](https://github.com/danhicks96/ostrog-public-ci/issues/476). Intake review: Use a shared talk/game quarrel_chance from both opinions and moods, capped at 0.8 on the AGENT_SOCIAL stream, instead of a flat outcome roll. Invitations retain the sight rule.
 
-**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::two_friends_play_a_game_at_the_table`: a secure house with a table and two friends at 15:00. Both end in `Leisure { Game }` within 3 game-hours, and their opinions rise. Done when the test passes.
+**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::two_friends_play_a_game_at_the_table`: a secure house with a table and two friends at 15:00. Both end in `Leisure { Game }` within 3 game-hours, and their opinions rise. Done when the test passes. Intake-review acceptance: Across the ten scenario seeds, hostile players quarrel in at least one and the specified friendly pair in none.
 
 ### OST-301 · Nobody ever goes to see a friend: company is six minutes with whoever is near
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Nobody visits a friend for company. Add a reachable daytime Visit to a liked free person, respecting feuds and invitations. Keep visits distinct from approaching someone to comfort, insult or give something. Tracking issue: [#477](https://github.com/danhicks96/ostrog-public-ci/issues/477).
+Nobody visits a friend for company. Add a reachable daytime Visit to a liked free person, respecting feuds and invitations. Keep visits distinct from approaching someone to comfort, insult or give something. Tracking issue: [#477](https://github.com/danhicks96/ostrog-public-ci/issues/477). Intake review: Choose from personally known agent positions seen within two hours and walk to the believed position. Check availability only in sight; fail as they left if the friend is absent on arrival.
 
-**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::a_sociable_person_visits_a_friend`: a sociable (0.9) person whose friend sits 20 tiles off goes to them, and both are in `Leisure { Visit }` for at least 1,200 ticks. A solitary (0.1) person in the same place does not. Done when the test passes.
+**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::a_sociable_person_visits_a_friend`: a sociable (0.9) person whose friend sits 20 tiles off goes to them, and both are in `Leisure { Visit }` for at least 1,200 ticks. A solitary (0.1) person in the same place does not. Done when the test passes. Intake-review acceptance: A friend seen twenty tiles away one hour ago is visited for at least 1,200 ticks; if they moved unseen, the visitor walks to the old position and never straight to the new one.
 
 ### OST-302 · Measure whether sociability now shows in how a day is spent
 
