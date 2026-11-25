@@ -163,21 +163,36 @@ fn no_illness_event_means_no_new_illness_lesson() {
 #[test]
 fn the_water_lesson_and_its_evidence_survive_a_save() {
     use hf_sim::save::{decode, encode, snapshot::Snapshot};
-    let (mut w, fouled) = fouled_pond(4543);
-    let i = drinker_beside(&mut w, fouled);
-    assert!(hf_sim::water::drink(&mut w, i));
-    let back = decode(&encode(&Snapshot::capture(&w)).unwrap())
-        .unwrap()
-        .restore();
-    assert_eq!(
-        w.agents[i].learning.lessons,
-        back.agents[i].learning.lessons
-    );
-    assert_eq!(
-        w.agents[i].learning.observations,
-        back.agents[i].learning.observations
-    );
-    assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let (mut w, fouled) = fouled_pond(4543);
+                let i = drinker_beside(&mut w, fouled);
+                assert!(hf_sim::water::drink(&mut w, i));
+                // Finish a normal tick before saving, including the real illness event.
+                w.step();
+                let mut back = decode(&encode(&Snapshot::capture(&w)).unwrap())
+                    .unwrap()
+                    .restore();
+                assert_eq!(
+                    w.agents[i].learning.lessons,
+                    back.agents[i].learning.lessons
+                );
+                assert_eq!(
+                    w.agents[i].learning.observations,
+                    back.agents[i].learning.observations
+                );
+                assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                w.run(TICKS_PER_HOUR);
+                back.run(TICKS_PER_HOUR);
+                assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                hf_sim::digest::digest(&w)
+            })
+    };
+    assert_eq!(run(1), run(4));
 }
 
 #[test]

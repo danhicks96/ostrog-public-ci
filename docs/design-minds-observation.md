@@ -47,7 +47,7 @@ nothing writes or constructs the kind yet; the variants keep their saved positio
 
 | Kind | Status |
 | --- | --- |
-| Observation cues WaterDepth, Flooding, Wetness, Saturation, StructuralWeakness, Soil, Tracks, Joint | written |
+| Observation cues WaterDepth, Flooding, Wetness, Saturation, StructuralWeakness, Soil, Tracks, Joint, FoulWater | written |
 | Observation cues Heat, Cold, Fire, Smoke, Spoilage, ResourceDepletion | not yet written; separate slices wire them |
 | Observation cues WaterCurrent, Pressure | reserved; wait for currents and pressure as simulation state (rule 10) |
 | Observation cues FoodExposure, Regrowth, Shelter, Other | reserved; wait for a mechanic that writes them |
