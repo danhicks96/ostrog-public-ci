@@ -16,6 +16,19 @@
 - Guards: `tests/generations.rs::births_census_counts_a_built_couple`, first-gate/absence
   coverage, and identical observed/unobserved worlds across a restored save.
 - Full seeds 1-8 by three-deity measurements are pending; no cause is claimed as found yet.
+## 2026-11-24: the soak can run the camera director (OST-868)
+
+- Symptom: only the game client ran the director, so no headless run could say where the camera
+  would look or print the alive report's keys.
+- Fix: `ostrog soak --alive` feeds the director the viewer's events, samples it every 600 ticks (a
+  fixed stride, no rng), takes the hourly mood sample, and prints the report as `ALIVE key value`
+  lines on stderr. It reads the world and changes nothing in it.
+- Guard: `tests/alive_soak_samples_the_camera_at_a_fixed_stride_and_leaves_the_world_alone` in
+  the CLI (parses the flag, six samples in 3,600 ticks, same digest with and without).
+- Scope change: the entry first named `glance_readable`, `glance_standing` and `glance_eventful`
+  keys and an alive probe example; none exist in this tree, so the entry now asks only for the
+  flag, the sampling and the existing keys.
+- Not covered: the per-person glance keys.
 
 ## 2026-11-24: release notes get a short, watcher-first format
 
