@@ -91,6 +91,11 @@ enum Cmd {
         /// Which Engine paces the soaked world: steady | relentless | whimsical.
         #[arg(long, default_value_t = hf_sim::engine::Engine::Steady)]
         engine: hf_sim::engine::Engine,
+        /// Also run the camera director as the game does, sample it every 600 ticks, and print
+        /// the alive report's keys as `ALIVE key value` lines at the end (OST-868). Reads the
+        /// world only: the simulation is the same with and without it.
+        #[arg(long)]
+        alive: bool,
     },
     /// Print the sky and season changes over N days for a seed (to find a rainy or snowy hour).
     Weather {
@@ -504,8 +509,9 @@ fn main() -> Result<()> {
             peoples,
             provision,
             engine,
+            alive,
         } => soak(
-            seed, days, agents, csv, ring, save_days, opening, peoples, provision, engine,
+            seed, days, agents, csv, ring, save_days, opening, peoples, provision, engine, alive,
         )?,
         Cmd::Weather { seed, days } => {
             let mut last = None;
@@ -1615,6 +1621,36 @@ fn soak_world(
     }
 }
 
+/// One tick of `soak --alive`: hand the viewer's events to the tally and the director, take the
+/// hourly mood sample, and at the camera stride ask the director where it would look and score
+/// that frame. Says whether this tick was a camera sample. Reads the world and changes nothing in it.
+fn alive_observe(
+    tally: &mut hf_sim::view::alive::AliveTally,
+    director: &mut hf_sim::view::director::Director,
+    w: &hf_sim::World,
+) -> bool {
+    use hf_sim::view::camera_miss::{shown_to_director, SAMPLE_STRIDE};
+    use hf_sim::view::director::{people, settlement_centre};
+    let tick = w.tick();
+    let events: Vec<_> = w
+        .last_events
+        .iter()
+        .filter(|e| shown_to_director(w, e))
+        .cloned()
+        .collect();
+    tally.observe_major_events(&events);
+    director.observe(tick, &events);
+    let sampled = tick.is_multiple_of(SAMPLE_STRIDE);
+    if sampled {
+        let s = director.suggest(tick, settlement_centre(w), &people(w));
+        tally.observe_glance(tick, s.at);
+    }
+    if tick.is_multiple_of(hf_sim::time::TICKS_PER_HOUR) {
+        tally.observe_hour(w);
+    }
+    sampled
+}
+
 #[allow(clippy::too_many_arguments)]
 fn soak(
     seed: u64,
@@ -1627,6 +1663,7 @@ fn soak(
     peoples: Option<u8>,
     provision: bool,
     engine: hf_sim::engine::Engine,
+    alive: bool,
 ) -> Result<()> {
     use hf_sim::time::TICKS_PER_DAY;
     let world = soak_world(seed, agents, opening, peoples, provision, engine);
@@ -1660,6 +1697,10 @@ fn soak(
     let mut save_ms_total = 0.0;
     let mut saves = 0u32;
     let mut tally: std::collections::BTreeMap<&'static str, u32> = Default::default();
+    // `--alive` (OST-868): the director the game client runs, read-only, sampled at a fixed
+    // stride (no rng), and the alive tally it feeds.
+    let mut alive_tally = hf_sim::view::alive::AliveTally::default();
+    let mut director = hf_sim::view::director::Director::default();
     for day in 1..=days {
         if provision {
             provide_meals(&mut s.world, &piles, agents);
@@ -1673,6 +1714,9 @@ fn soak(
                 let t0 = Instant::now();
                 s.step()?;
                 samples.push(t0.elapsed().as_secs_f64() * 1000.0);
+                if alive {
+                    let _ = alive_observe(&mut alive_tally, &mut director, &s.world);
+                }
                 for e in &s.world.last_events {
                     if TALLIED.contains(&e.kind_name()) {
                         *tally.entry(e.kind_name()).or_insert(0u32) += 1;
@@ -1865,6 +1909,13 @@ fn soak(
             .collect::<Vec<_>>()
             .join(", ")
     );
+    if alive {
+        // The camera was sampled every SAMPLE_STRIDE ticks; `glance_major_n` counts only the
+        // Major events that settled, not the samples.
+        for (key, value) in alive_tally.report().rows {
+            eprintln!("ALIVE {key} {value}");
+        }
+    }
     let ok = stall_pct_overall < 1.0
         && drift_days == 0
         && (!rss_measured || (rss_last / 1024) as f64 <= rss_budget_mb);
@@ -1916,6 +1967,39 @@ mod tests {
         assert_eq!(
             soak_world(6, 12, true, None, false, engine).meta.engine,
             Engine::Steady
+        );
+    }
+
+    /// OST-868: `soak --alive` parses, samples the camera at the fixed stride, and reads the world
+    /// only, so the digest is the same with and without it.
+    #[test]
+    fn alive_soak_samples_the_camera_at_a_fixed_stride_and_leaves_the_world_alone() {
+        let bare = Cli::try_parse_from(["ostrog", "soak"]).unwrap();
+        let Cmd::Soak { alive, .. } = bare.cmd else {
+            panic!("`soak` parses to Cmd::Soak");
+        };
+        assert!(!alive);
+        let with = Cli::try_parse_from(["ostrog", "soak", "--alive"]).unwrap();
+        let Cmd::Soak { alive, .. } = with.cmd else {
+            panic!("`soak --alive` parses to Cmd::Soak");
+        };
+        assert!(alive);
+
+        let ticks = 2 * 600 * 3;
+        let mut watched = soak_world(1, 6, false, None, false, Engine::Steady);
+        let mut plain = soak_world(1, 6, false, None, false, Engine::Steady);
+        let mut tally = hf_sim::view::alive::AliveTally::default();
+        let mut director = hf_sim::view::director::Director::default();
+        let mut samples = 0;
+        for _ in 0..ticks {
+            watched.step();
+            plain.step();
+            samples += u32::from(alive_observe(&mut tally, &mut director, &watched));
+        }
+        assert_eq!(samples, 6);
+        assert_eq!(
+            hf_sim::digest::digest(&watched),
+            hf_sim::digest::digest(&plain)
         );
     }
 }
