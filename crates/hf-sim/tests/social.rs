@@ -320,3 +320,164 @@ fn talk_stamps_met() {
         "b should have met a after a finished talk"
     );
 }
+
+fn distant_pair(opinion: f32) -> (World, Vec<usize>) {
+    let (mut w, p) = party(2);
+    let other = w.agents[p[1]].id;
+    let tick = w.meta.tick;
+    w.agents[p[0]].relationships.clear();
+    w.agents[p[0]].dispositions = Some(hf_sim::mind::Dispositions {
+        warmth: 0.5,
+        ..Default::default()
+    });
+    w.agents[p[0]].partner = None;
+    w.agents[p[0]].mother = None;
+    w.agents[p[0]].father = None;
+    w.agents[p[0]].children.clear();
+    w.agents[p[0]].relate(other, opinion, 0.5, tick);
+    w.agents[p[0]].met(other, tick);
+    (w, p)
+}
+
+fn distant_days(w: &mut World, first: u64, last: u64) {
+    for day in first..=last {
+        w.meta.tick = day * TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 41;
+        hf_sim::social::step(w);
+    }
+}
+
+#[test]
+fn ties_fade_without_meeting() {
+    let (mut w, p) = distant_pair(1.0);
+    let other = w.agents[p[1]].id;
+    let met = w.agents[p[0]].relationships[&other].met;
+    distant_days(&mut w, 1, 40);
+    let r = &w.agents[p[0]].relationships[&other];
+    assert!(r.opinion < 0.6 && r.opinion > 0.0, "{}", r.opinion);
+    assert_eq!(r.met, met);
+    assert_eq!(r.last_contact, met, "fading is not contact");
+    assert_eq!(r.familiarity, 0.5, "familiarity is a later slice");
+}
+
+#[test]
+fn kin_fade_to_a_floor_not_to_nothing() {
+    for kind in ["partner", "mother", "father", "child", "sibling"] {
+        let (mut w, p) = distant_pair(1.0);
+        let other = w.agents[p[1]].id;
+        match kind {
+            "partner" => w.agents[p[0]].partner = Some(other),
+            "mother" => w.agents[p[0]].mother = Some(other),
+            "father" => w.agents[p[0]].father = Some(other),
+            "child" => w.agents[p[0]].children.push(other),
+            "sibling" => {
+                let parent = AgentId(u32::MAX);
+                w.agents[p[0]].mother = Some(parent);
+                w.agents[p[1]].mother = Some(parent);
+            }
+            _ => unreachable!(),
+        }
+        distant_days(&mut w, 1, 200);
+        let opinion = w.agents[p[0]].opinion_of(other);
+        assert!((0.3..0.4).contains(&opinion), "{kind}: {opinion}");
+    }
+}
+
+#[test]
+fn a_grudge_cools_untended() {
+    let (mut w, p) = distant_pair(-0.8);
+    let other = w.agents[p[1]].id;
+    distant_days(&mut w, 1, 60);
+    let opinion = w.agents[p[0]].opinion_of(other);
+    assert!(opinion > -0.4 && opinion < 0.0, "{opinion}");
+}
+
+#[test]
+fn the_dead_are_not_faded() {
+    let (mut w, p) = distant_pair(1.0);
+    let other = w.agents[p[1]].id;
+    w.agents[p[1]].alive = false;
+    w.agents[p[1]].death = Some("old age".into());
+    distant_days(&mut w, 1, 200);
+    assert_eq!(w.agents[p[0]].opinion_of(other), 1.0);
+    // The dead person's own ties are not changed either.
+    let tick = w.meta.tick;
+    let living = w.agents[p[0]].id;
+    w.agents[p[1]].relate(living, -0.8, 0.5, tick);
+    distant_days(&mut w, 201, 260);
+    assert_eq!(w.agents[p[1]].opinion_of(living), -0.8);
+}
+
+#[test]
+fn hearsay_does_not_restart_the_fade_grace() {
+    let (mut w, p) = distant_pair(1.0);
+    let other = w.agents[p[1]].id;
+    let met = 12 * TICKS_PER_HOUR + 41;
+    w.agents[p[0]].met(other, met);
+    w.meta.tick = met + 3 * TICKS_PER_DAY;
+    hf_sim::social::step(&mut w);
+    assert_eq!(w.agents[p[0]].opinion_of(other), 1.0);
+    for day in 1..=40 {
+        let tick = day * TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 41;
+        w.agents[p[0]].relate(other, 0.0, 0.0, tick);
+        distant_days(&mut w, day, day);
+    }
+    assert!(w.agents[p[0]].opinion_of(other) < 0.6);
+    let tick = w.meta.tick;
+    w.agents[p[0]].met(other, tick);
+    let opinion = w.agents[p[0]].opinion_of(other);
+    distant_days(&mut w, 41, 42);
+    assert_eq!(w.agents[p[0]].opinion_of(other), opinion);
+}
+
+#[test]
+fn a_departed_living_person_is_not_treated_as_dead() {
+    let (mut w, p) = distant_pair(1.0);
+    let other = w.agents[p[1]].id;
+    // Leaving and exile keep the person here for history, with no death recorded.
+    w.agents[p[1]].alive = false;
+    assert!(w.agents[p[1]].death.is_none());
+    distant_days(&mut w, 1, 40);
+    assert!(w.agents[p[0]].opinion_of(other) < 0.6);
+}
+
+#[test]
+fn ties_to_travelling_kin_fade_as_living_ties() {
+    let (mut w, p) = distant_pair(1.0);
+    let other = w.agents[p[1]].id;
+    let parent = AgentId(u32::MAX);
+    w.agents[p[0]].father = Some(parent);
+    w.agents[p[1]].father = Some(parent);
+    let traveller = w.agents.remove(p[1]);
+    w.overworld.away.push(traveller);
+    distant_days(&mut w, 1, 200);
+    let opinion = w.agents[p[0]].opinion_of(other);
+    assert!((0.3..0.4).contains(&opinion), "{opinion}");
+}
+
+#[test]
+fn fading_ties_resume_and_match_on_one_and_four_threads() {
+    fn run(threads: usize, resume: bool) -> String {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let (mut w, p) = distant_pair(1.0);
+                let other = w.agents[p[1]].id;
+                distant_days(&mut w, 1, 20);
+                assert!(w.agents[p[0]].opinion_of(other) < 1.0);
+                if resume {
+                    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+                    w = decode(&encode(&Snapshot::capture(&w)).unwrap())
+                        .unwrap()
+                        .restore();
+                }
+                distant_days(&mut w, 21, 40);
+                hf_sim::digest::digest(&w)
+            })
+    }
+    let expected = run(1, false);
+    assert_eq!(expected, run(4, false));
+    assert_eq!(expected, run(1, true));
+    assert_eq!(expected, run(4, true));
+}

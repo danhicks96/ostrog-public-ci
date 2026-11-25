@@ -1,5 +1,24 @@
 # Fix log
 
+## 2026-11-25: ties drift toward a baseline without in-person contact (OST-388)
+
+- Symptom: someone not met for seasons, including an exile, kept the same opinion forever.
+- Cause: opinion only changed when a relationship was updated; no daily pass read the saved
+  in-person `met` stamp. Hearsay updates `last_contact` and is not a new meeting.
+- Fix: after three days (86,400 ticks) apart, retain 0.985 + 0.005 times the owner's warmth of
+  the difference from baseline each day. Partners, parents, children and siblings have a +0.3
+  baseline; other ties have zero. Visit valley and travelling people in stored order and ties
+  in identifier order, with no random draw. A recorded death freezes opinion; a departed
+  person's `alive=false` flag alone does not mean they died. Contact stamps and familiarity
+  stay unchanged. No saved field or enum position changes. Simulation digests change because
+  opinions influence social choices; final rates are measured separately in OST-390.
+- Guards: `tests/social.rs` covers cooling close ties and grudges, every immediate-kin link,
+  death, departure, travelling kin, contact grace versus hearsay, and save/resume at one and
+  four threads. Seven of these guards fail against the unchanged implementation.
+- Provisional: the proposed default-warmth rate retains about +0.620 after the 40-day
+  scenario, above its required +0.6 ceiling. Three numeric acceptance guards remain red
+  until the rate or scenario is resolved; this slice is not complete.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every

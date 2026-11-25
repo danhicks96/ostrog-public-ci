@@ -341,7 +341,49 @@ fn make_up(w: &mut World, a: AgentId, b: AgentId, warmth: f32) {
     );
 }
 
-/// Once a day: a good turn owed is repaid when the one owed goes hungry, with a real meal,
+/// Three game-days (86,400 ticks) without an in-person meeting before ties start fading.
+pub const FADE_GRACE: u64 = 3 * TICKS_PER_DAY;
+/// The daily retained share, plus 0.005 times the owner's warmth (about 46-70 days half-life).
+pub const FADE_PER_DAY: f32 = 0.985;
+/// The baseline for partners, parents, children and siblings.
+pub const KIN_BASE: f32 = 0.3;
+
+fn fade_ties(w: &mut World) {
+    // An exile or leaver is kept with alive=false but no death. They are still someone a
+    // person can drift apart from; only a recorded death freezes the tie.
+    let living: std::collections::BTreeMap<_, _> = w
+        .agents
+        .iter()
+        .chain(w.overworld.away.iter())
+        .filter(|a| a.death.is_none())
+        .map(|a| (a.id, (a.mother, a.father)))
+        .collect();
+    let tick = w.meta.tick;
+    for a in w.agents.iter_mut().chain(w.overworld.away.iter_mut()) {
+        if !a.alive {
+            continue;
+        }
+        let retained = FADE_PER_DAY + 0.005 * a.dispositions.map_or(0.5, |d| d.warmth);
+        for (other, r) in &mut a.relationships {
+            let Some(&(mother, father)) = living.get(other) else {
+                continue;
+            };
+            if tick.saturating_sub(r.met) <= FADE_GRACE {
+                continue;
+            }
+            let kin = a.partner == Some(*other)
+                || a.mother == Some(*other)
+                || a.father == Some(*other)
+                || a.children.contains(other)
+                || (mother.is_some() && mother == a.mother)
+                || (father.is_some() && father == a.father);
+            let base = if kin { KIN_BASE } else { 0.0 };
+            r.opinion = base + (r.opinion - base) * retained;
+        }
+    }
+}
+
+/// Once a day: ties fade and a good turn owed is repaid when the one owed goes hungry, with a real meal,
 /// not the two hunger numbers this used to move, and not across a feud or a camp (carrying it
 /// the rest of the way is a separate piece of work).
 pub fn step(w: &mut World) {
@@ -349,6 +391,7 @@ pub fn step(w: &mut World) {
     if tick % TICKS_PER_DAY != 12 * TICKS_PER_HOUR + 41 {
         return;
     }
+    fade_ties(w);
     for i in 0..w.agents.len() {
         if !w.agents[i].alive || w.agents[i].needs.hunger < 0.6 {
             continue;
