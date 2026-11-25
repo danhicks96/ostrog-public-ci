@@ -1,6 +1,6 @@
 # The renderer plan (#414 B2)
 
-Status: proposed (box-support the local AI, 2026-11-03). Decision row D74. Dan can overrule the
+Status: proposed (build-server support the local AI, 2026-11-03). Decision row D74. The maintainer can overrule the
 recommendation; the assumption it rests on is stated in section 3.
 
 This plan builds on #190 (closed into #414 on 2026-11-01) and on D53, which sets the frame-time
@@ -33,13 +33,13 @@ Everything below runs on Godot's main thread, in GDScript, on the Compatibility 
   draw themselves with immediate `draw_texture_rect` calls in GDScript when they change.
 - Then Godot draws: one canvas item per sprite, batched by texture.
 
-### Measured on the box
+### Measured on the build server
 
 `tools/perf/frame_prep.gd` (added with this plan) loads a save headless and, for 120 frames,
 steps the sim one tick, times each bridge read the view's refresh makes, and times the
 client's own preparation: `refresh`, the entity rebuild and `_process`. Headless means Godot's
 dummy renderer: nothing is drawn, so these numbers are the CPU work of preparing a frame,
-not the GPU's. Software-GL timings from the box's Xvfb display are not representative of a
+not the GPU's. Software-GL timings from the build server's Xvfb display are not representative of a
 real GPU and are not used. The draw itself is not measured here; it needs a real GPU
 (section 4).
 
@@ -164,9 +164,9 @@ RimWorld was already C#.
 
 Path 1: Godot with a Rust WorldRenderer.
 
-The assumption, which Dan can overrule: the measured cost is in GDScript preparation on the
+The assumption, which the maintainer can overrule: the measured cost is in GDScript preparation on the
 main thread, not in Godot's drawing, so moving that preparation into Rust on worker threads
-and the sim onto its own thread is enough to meet the gate on Dan's machine. If the harness
+and the sim onto its own thread is enough to meet the gate on the maintainer's machine. If the harness
 in section 4 shows the Godot draw itself over budget after stages 1 to 3, path 2 is the
 fallback, and the snapshot boundary built in stage 1 is exactly what a wgpu client would read,
 so none of the work is lost (as #190 argued).
@@ -178,7 +178,7 @@ Stages, each shippable, the old renderer kept until the new one passes the gate:
    bridge's read calls serve from the latest snapshot. GDScript is unchanged. Gate for the
    stage: no frame waits on a tick (the 15.9 ms tick spikes leave the main thread), digests
    identical to the single-thread run. This alone removes `sim.step` from the frame.
-2. **The harness on a real GPU** (section 4), run on Dan's Windows machine and the box, giving
+2. **The harness on a real GPU** (section 4), run on the Windows test machine and the build server, giving
    the baseline per thread with stage 1 in.
 3. **WorldRenderer for moving things.** Rust builds the people and animal sprite batches from
    the snapshot on the rayon pool and submits MultiMeshes; behind a setting, default off, the
@@ -206,7 +206,7 @@ Title: "A frame-time harness that replays a saved world and reports frame time p
   bridge, read once a frame through one call that returns them all).
 - Reports p50, p95, p99 and max per thread, the share of frames within 16.7 ms and the count
   over 33 ms, as a CSV and a one-line verdict against D53's gate.
-- Runs on Dan's Windows machine (the target) and on the box; the box's software GL figures are
+- Runs on the Windows test machine (the target) and on the build server; the build server's software GL figures are
   labelled as not representative of a GPU.
 - `tools/perf/frame_prep.gd` from this plan is its headless first half and stays as the
   CPU-only check that CI can run.

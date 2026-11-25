@@ -5,7 +5,7 @@
 name: ci
 
 # Runs on pull requests and pushes to main/master. Check requirements are configured
-# separately by the repository owner; this template neither merges nor publishes.
+# separately by the repository owner (the `hygiene` check lives in hygiene.yml, which also runs on edits); this template neither merges nor publishes.
 # Safety: the trigger is `pull_request`, never `pull_request_target`; the token is read-only, and
 # public jobs receive no confidential identifier lists. Private artifact audits run separately.
 on:
@@ -53,29 +53,6 @@ jobs:
           files=$(gh api --paginate "repos/${{ github.repository }}/pulls/$PR/files" --jq '.[].filename') || { echo code=true >> "$GITHUB_OUTPUT"; exit 0; }
           if printf '%s\n' "$files" | grep -qvE '^(docs/.*\.md|[^/]+\.md)$'; then c=true; else c=false; fi
           echo "code=$c" >> "$GITHUB_OUTPUT"
-
-  hygiene:
-    # No identifying details in what a PR adds (tools/hygiene/scan_identifiers.py). Required check.
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Generic scanner boundary guard
-        run: python3 -I tools/tests/public_boundary_guard_test.py
-      - name: Added lines
-        if: github.event_name == 'pull_request'
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-          HEAD: ${{ github.event.pull_request.head.sha }}
-        run: python3 -I tools/hygiene/scan_identifiers.py --range "$BASE...$HEAD"
-      - name: PR title and description
-        if: github.event_name == 'pull_request'
-        env:
-          TITLE: ${{ github.event.pull_request.title }}
-          BODY: ${{ github.event.pull_request.body }}
-        run: printf '%s\n%s\n' "$TITLE" "$BODY" | python3 -I tools/hygiene/scan_identifiers.py --text -
 
   export-structure:
     # Structural absence check only; not privacy, rights, build or publication clearance.

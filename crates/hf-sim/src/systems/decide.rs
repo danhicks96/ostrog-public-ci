@@ -2433,7 +2433,7 @@ fn choose(
             {
                 continue;
             }
-            // A bench's craft is worked by those who know it (C70, Dan's rule 3), or, when
+            // A bench's craft is worked by those who know it (C70, design rule 3), or, when
             // nobody of the community does, tried by its best hand.
             if let crate::work::DesignationKind::Craft(r) = d.kind {
                 if let Some(t) = crate::work::recipes::craft_of(r) {
