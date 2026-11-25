@@ -373,7 +373,7 @@ A week sleeping on the ground weighs the same as one night, because the thought 
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-The planner posts tables, stools and chests automatically. Instead leave furnishing suggestions that a person adopts for their disposition, a relevant want or a recent meal on the ground. Record a Furnish project with its adopter and retain the real production and placement chain. Tracking issue: [#130](https://github.com/danhicks96/ostrog-public-ci/issues/130).
+The planner posts tables, stools and chests automatically. Instead leave furnishing suggestions that a person with order at least 0.6 adopts. Record a Furnish project with its adopter and retain the real production and placement chain. Tracking issue: [#130](https://github.com/danhicks96/ostrog-public-ci/issues/130). Intake review: Initially adopt for order at least 0.6 alone. The MakeFine and AteWithoutTable alternatives are added only with their defining slices; household ownership retains the stated fallback.
 
 **Acceptance:** Test `crates/hf-sim/tests/suggestions.rs::a_table_is_built_only_when_someone_takes_it_up`. Test `suggestions.rs::an_orderly_householder_takes_up_the_table`. Done when: both pass, and `builders_census` shows furniture ≥ 90% decided by a person.
 
@@ -445,7 +445,7 @@ A fine house and bare ground feel alike. Refresh HomeProud for worth at least 0.
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-A familiar neighbor's better home never causes envy. Add bounded, saved envy toward at most two familiar people when the worth gap reaches 0.35, with disposition-weighted daily onset, a thought and at most -0.4 opinion souring. End it when the gap closes or other causes improve opinion enough. Tracking issue: [#223](https://github.com/danhicks96/ostrog-public-ci/issues/223).
+A familiar neighbor's better home never causes envy. Add bounded, saved envy toward at most two familiar people when the worth gap reaches 0.35, with disposition-weighted daily onset, a thought and at most -0.4 opinion souring. End it when the gap closes or other causes improve opinion enough. Tracking issue: [#223](https://github.com/danhicks96/ostrog-public-ci/issues/223). Intake review: Use the reserved AIMS purpose value 63, reusing it if already defined and appending exactly that value here otherwise.
 
 **Acceptance:** Test `crates/hf-sim/tests/home_worth.rs::a_poor_sleeper_beside_a_fine_house_comes_to_envy_its_owner`. Test `home_worth.rs::envy_stops_when_the_gap_closes_and_its_souring_is_bounded`. Done when: both pass, and envy affects 2-15% of adults on seeds 1-4 after day 100.
 
@@ -501,9 +501,9 @@ Nobody asks a friend for a spare bed. Enact AskToShare by walking to a host; on 
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
 
-Nobody takes another person's empty bed. Enact TakeBed while keeping ordinary ownership preferences elsewhere. When the owner finds out, record the grievance and hardship memory, and make an accusation when the owner's theft belief treats it as wrong. Record the taking event. Tracking issue: [#255](https://github.com/danhicks96/ostrog-public-ci/issues/255).
+Nobody takes another person's empty bed. Enact TakeBed while keeping ordinary ownership preferences elsewhere. When the owner finds out, record the grievance and hardship memory, and make an accusation when the owner's theft belief treats it as wrong. Record the taking event. Tracking issue: [#255](https://github.com/danhicks96/ostrog-public-ci/issues/255). Intake review: An owner reacts only after seeing the taker asleep in their bed while awake, on the same level, within eight tiles and in line of sight, or being told by a real witness at half strength. An empty bed on return supplies no identity or accusation.
 
-**Acceptance:** Test `crates/hf-sim/tests/rough.rs::a_cold_independent_one_sleeps_in_an_away_neighbours_bed_and_is_resented`. Test `rough.rs::an_owner_who_holds_taking_wrong_accuses`. Done when: both pass.
+**Acceptance:** Test `crates/hf-sim/tests/rough.rs::a_cold_independent_one_sleeps_in_an_away_neighbours_bed_and_is_resented`. Test `rough.rs::an_owner_who_holds_taking_wrong_accuses`. Done when: both pass. Intake-review acceptance: Also test `rough.rs::an_owner_who_never_sees_the_taker_holds_nothing`: a taker gone before the owner returns causes no opinion change or offence.
 
 ### OST-376 · However long the nights on the ground, no member ever walks out: allow leaving, with a reason
 
