@@ -262,10 +262,11 @@ mod tests {
 
     #[test]
     fn reserved_cues_are_listed() {
-        // Hand-kept: the kinds that perception or learning write today. Heat, Cold, Fire, Smoke,
+        // Hand-kept: the kinds that perception or learning write today. Heat, Cold, Smoke,
         // Spoilage and ResourceDepletion are not written yet and are wired by separate slices;
         // add each here when it is.
         let written = [
+            ObservationKind::Fire,
             ObservationKind::WaterDepth,
             ObservationKind::Flooding,
             ObservationKind::Wetness,

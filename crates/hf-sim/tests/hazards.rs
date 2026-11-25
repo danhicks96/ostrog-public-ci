@@ -102,6 +102,113 @@ fn flood_fills_basin() {
 }
 
 #[test]
+fn a_fire_nearby_is_a_personal_problem() {
+    use hf_sim::mind::{Evidence, ObservationKind, ProblemKind, ProblemStatus};
+    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let mut w = meadow(1731);
+                let ids = w.found_party(3);
+                let indices: Vec<_> = ids
+                    .iter()
+                    .map(|id| w.agents.iter().position(|a| a.id == *id).unwrap())
+                    .collect();
+                let [near, far, hidden] = [indices[0], indices[1], indices[2]];
+                let fire = TilePos::new(20, 20, 2);
+                for (i, pos) in [
+                    (near, fire.offset(4, 0, 0)),
+                    (far, fire.offset(10, 0, 0)),
+                    (hidden, fire.offset(-4, 0, 0)),
+                ] {
+                    w.agents[i].pos = pos;
+                    w.agents[i].from = pos;
+                    w.agents[i].activity = hf_sim::mind::Activity::Idle;
+                }
+                w.grid.set(
+                    fire.offset(-2, 0, 0),
+                    Tile {
+                        material: Material::LIMESTONE,
+                        shape: Shape::Wall,
+                        flags: TileFlags::NONE,
+                    },
+                );
+                w.grid.set(
+                    fire,
+                    Tile {
+                        material: Material::WOOD,
+                        shape: Shape::Floor,
+                        flags: TileFlags::NONE,
+                    },
+                );
+                w.rebuild_caches();
+                w.weather.sky = hf_sim::systems::weather::Sky::Clear;
+                w.weather.temperature_c = 20.0;
+                assert!(w.ignite(fire, "in a test"));
+                hf_sim::systems::hazards::step(&mut w);
+                let problem = w.agents[near]
+                    .problems
+                    .records
+                    .iter()
+                    .find(|p| p.kind == ProblemKind::Fire)
+                    .expect("the visible nearby fire is a personal problem");
+                assert_eq!(problem.status, ProblemStatus::Open);
+                assert_eq!(problem.evidence, Evidence::Direct);
+                assert_eq!(problem.pos, w.agents[near].pos);
+                assert!(problem.attempts.is_empty());
+                let id = problem.id;
+                assert!(w.agents[near].learning.observations.iter().any(|o| {
+                    o.kind == ObservationKind::Fire
+                        && o.evidence == Evidence::Direct
+                        && o.pos == w.agents[near].pos
+                }));
+                for i in [far, hidden] {
+                    assert!(!w.agents[i]
+                        .problems
+                        .records
+                        .iter()
+                        .any(|p| p.kind == ProblemKind::Fire));
+                    assert!(!w.agents[i]
+                        .learning
+                        .observations
+                        .iter()
+                        .any(|o| o.kind == ObservationKind::Fire));
+                }
+                w.meta.tick += hf_sim::systems::hazards::FIRE_STEP;
+                hf_sim::systems::hazards::step(&mut w);
+                let problems: Vec<_> = w.agents[near]
+                    .problems
+                    .records
+                    .iter()
+                    .filter(|p| p.kind == ProblemKind::Fire)
+                    .collect();
+                assert_eq!(problems.len(), 1);
+                assert_eq!(problems[0].id, id);
+                assert_eq!(problems[0].last_seen, w.meta.tick);
+                assert_eq!(
+                    w.agents[near]
+                        .learning
+                        .observations
+                        .iter()
+                        .filter(|o| o.kind == ObservationKind::Fire)
+                        .count(),
+                    1
+                );
+                let back = decode(&encode(&Snapshot::capture(&w)).unwrap())
+                    .unwrap()
+                    .restore();
+                assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                hf_sim::digest::digest(&w)
+            })
+    };
+    assert_eq!(run(1), run(4));
+}
+
+#[test]
 fn fire_spreads_and_is_put_out() {
     let mut w = meadow(1702);
     let ids = w.found_party(8);

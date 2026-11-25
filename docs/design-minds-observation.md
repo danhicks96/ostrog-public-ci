@@ -47,12 +47,11 @@ nothing writes or constructs the kind yet; the variants keep their saved positio
 
 | Kind | Status |
 | --- | --- |
-| Observation cues WaterDepth, Flooding, Wetness, Saturation, StructuralWeakness, Soil, Tracks, Joint | written |
-| Observation cues Heat, Cold, Fire, Smoke, Spoilage, ResourceDepletion | not yet written; separate slices wire them |
+| Observation cues Fire, WaterDepth, Flooding, Wetness, Saturation, StructuralWeakness, Soil, Tracks, Joint | written |
+| Observation cues Heat, Cold, Smoke, Spoilage, ResourceDepletion | not yet written; separate slices wire them |
 | Observation cues WaterCurrent, Pressure | reserved; wait for currents and pressure as simulation state (rule 10) |
 | Observation cues FoodExposure, Regrowth, Shelter, Other | reserved; wait for a mechanic that writes them |
-| Problems WaterHazard, Flooding | live |
-| Problem Fire | not yet constructed; a separate slice wires it |
+| Problems WaterHazard, Flooding, Fire | live |
 | Problems FoodSpoilage, FoodShortage, ResourceDepletion, HeatExposure, StructuralDanger, Other | reserved |
 
 ## 3. The problem-solving loop
