@@ -377,6 +377,14 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 
 **Acceptance:** An hour after a break the person is at least 0.15 lower in mood than the same person without it. A FIXLOG entry is added and any simulation digest change is explained in the PR.
 
+### OST-1500 · Record and query unattended simulation diagnostics
+
+**Priority:** High · **Milestone:** Verify long-running simulations · **State:** Claimed · **Developer:** Ostrog CI (OC) · **Public PR:** Pending
+
+Extend the opt-in decision logger with a Flight Recorder for machine soaks and desktop debugging. Survey provides world summaries and points to anomalies; focused Trace explains actual choices, attempts, failures and outcomes with stable tick and entity references; verified Replay is a follow-up that refuses to claim equivalence on divergence or missing inputs. Local read-only queries should recover useful evidence without opening the game or loading an entire recording. Keep diagnostics separate from narrative history, the Why lens, and the camera director. Any future in-game consumer reads simulation signals independently of the recorder.
+
+**First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
