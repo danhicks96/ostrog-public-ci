@@ -152,6 +152,158 @@ This is the reserved-marking slice of the tracking issue on unused problem and o
 
 **Acceptance:** A test fails if a kind listed as reserved is also written by perception or learning. Existing tests, the enum-order check and the generated reference check pass. Saved state is unchanged.
 
+### OST-284 · Twelve systems decide who is free with their own hand-written lists of activities
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Systems repeat different definitions of who is free. Add exhaustive activity helpers for being free, interruptible rest and walking away, then replace the corresponding lists without changing existing behavior. Classify each Staying reason explicitly when its prerequisite lands. Tracking issue: [#458](https://github.com/danhicks96/ostrog-public-ci/issues/458).
+
+**Acceptance:** `crates/hf-sim/tests/activity_reasons.rs::free_lists_match_the_old_hand_lists`: for every pre-existing variant, each helper gives what the replaced `matches!` gave. The world digest test is unchanged. Done when no hand-written "free" list of activities remains outside `mind/activity.rs`.
+
+### OST-285 · Sitting at the hearth, warming by a fire and looking for someone all read 'resting a moment'
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Eight distinct pauses all display as resting a moment. Give them the existing proposed Staying reasons for searching, looking, studying, hearth company, warming, sheltering, confrontation and parley. Keep durations and ordinary loitering unchanged. Tracking issue: [#459](https://github.com/danhicks96/ostrog-public-ci/issues/459).
+
+**Acceptance:** `crates/hf-sim/tests/activity_reasons.rs::goal_arrivals_name_their_reason`. It builds three cases: a hearth at 19:00 with two secure people, a cold night beside a lit hearth, and a fire to flee. After arrival each person is `Staying` with `AtHearth`, `Warming` and `Sheltering` respectively. Existing `tests/culture.rs` and `tests/normal_person.rs` pass. Done when no goal arrival in `decide.rs` produces `Loitering`.
+
+### OST-287 · There is no activity for doing something for its own sake
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+No activity represents a pastime. Append Leisure with its pastime, duration, companion and place; complete it through the normal activity path, restoring recreation and recording the pastime taken. Add no chooser yet. Tracking issue: [#460](https://github.com/danhicks96/ostrog-public-ci/issues/460).
+
+**Acceptance:** `crates/hf-sim/tests/leisure.rs::a_pastime_restores_recreation`: a person set to `Leisure { Stroll, ticks_left: 1200 }` with recreation 0.3 ends with recreation 0.3 + gain ±0.01, and tolerance for Outdoors rises by 0.15. Done when the test passes.
+
+### OST-288 · A secure, rested person with time on their hands can only wander or rest a moment
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Secure people can only wander or rest. Add pastime candidates and a first Stroll using the prerequisite leisure definitions, dispositions, recreation need and known places. Keep every pastime under the existing security gate and use its reserved deterministic stream. Tracking issue: [#461](https://github.com/danhicks96/ostrog-public-ci/issues/461).
+
+**Acceptance:** `crates/hf-sim/tests/leisure.rs::a_secure_rested_person_takes_a_stroll`: a fed camp with a worn path at 10:00, recreation 0.2. Within 2 game-hours the person is in `Leisure { Stroll }`. `crates/hf-sim/tests/leisure.rs::nobody_strolls_hungry`: the same camp with hunger 0.3; no Stroll in 12 hours. Done when both pass.
+
+### OST-289 · A life with no pastime for days does not weigh on anyone, and a varied one does not lift them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A lack of pastimes and a varied leisure life have no feeling. Add Restless and WellOccupied thoughts from low recreation or three kinds of pastime in five days, using the prerequisite recreation and leisure state. Tracking issue: [#462](https://github.com/danhicks96/ostrog-public-ci/issues/462).
+
+**Acceptance:** `crates/hf-sim/tests/leisure.rs::restless_after_a_day_without_pastime`: recreation 0.1 at dawn gives `Restless`; three kinds in five days give `WellOccupied`. Done when the test passes.
+
+### OST-290 · Pastimes would leave no trace in the record, or would flood it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Pastimes would be invisible in history or flood it. Record completed pastimes as trace events, promoting only the first of a kind in a season to a minor event with participant-backed narration. Tracking issue: [#464](https://github.com/danhicks96/ostrog-public-ci/issues/464).
+
+**Acceptance:** `crates/hf-sim/tests/leisure.rs::first_pastime_of_a_kind_is_told_once_a_season`: three strolls in two days give one Minor and three Trace events. Done when the test passes.
+
+### OST-291 · Tune leisure so a third of the day stops being standing still, on every seed and deity
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Leisure gains and preferences need measurement. Tune only the named leisure definitions and recreation/tolerance constants, recording each tried set and its census results against the issue targets. Tracking issue: [#467](https://github.com/danhicks96/ostrog-public-ci/issues/467).
+
+**Acceptance:** Measured with the day section of the alive report (a sibling item), seeds 1-8, all three deities, 600 days: Waking hours in plain `Loitering` + `Idle` under 20%. Fewer than 90 activity changes a day. At least 3 pastime kinds per adult per season. Quartile difference of at least 5 points for sociability (Social) and industry (Making). Deaths by thirst, hunger and cold not higher than before on any seed. Two end-to-end scenario tests that hold the tuning in place: `crates/hf-sim/tests/leisure.rs::tolerance_moves_people_between_kinds` (a person offered only a Solitary and a Social pastime does neither more than 70% of the time over 5 days) and `crates/hf-sim/tests/leisure.rs::two_people_same_place_different_days` (a curious and an industrious person, same village and needs, choose different kinds on at least 3 of 5 days). Done when the table is in the PR, both tests pass and the ITERATION_LOG entry is written.
+
+### OST-293 · The curious walk to random tiles and come back with nothing; nobody goes to see what is over the hill
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Curious people wander at random without a discovery. Add a safe daytime Explore pastime near camp, choosing the edge of personal knowledge. Record an actual new observation and its place rather than inventing a discovery; preserve hunger searches and band travel. Tracking issue: [#468](https://github.com/danhicks96/ostrog-public-ci/issues/468).
+
+**Acceptance:** `crates/hf-sim/tests/leisure_solo.rs::the_curious_explore_and_find`: a secure camp with an unseen berry bush 18 tiles out. Within 3 days a curiosity-0.9 person knows it and holds a Discovery memory; a curiosity-0.1 person does not. Done when the test passes and `tests/normal_person.rs` still passes.
+
+### OST-294 · Nobody sits at the water's edge with a line for the pleasure of it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nobody fishes for pleasure. Add a contemplative fishing pastime at a reachable productive bank during daylight, forbidding frozen or dangerous water. Use the ordinary catch and material ledger at the proposed reduced odds. Tracking issue: [#469](https://github.com/danhicks96/ostrog-public-ci/issues/469).
+
+**Acceptance:** `crates/hf-sim/tests/leisure_solo.rs::nobody_fishes_for_pleasure_on_ice`: a frozen lake at −8 °C beside a secure camp for 10 days gives zero `FishForPleasure`. `crates/hf-sim/tests/leisure_solo.rs::a_quiet_hour_at_the_bank`: the same lake at 12 °C gives at least one. Done when both pass.
+
+### OST-295 · Nobody ever stops to watch the sky, though the valley has a sky to watch
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nobody pauses to watch the sky. Add a short contemplative pastime on dry unroofed ground near camp in clear weather around dawn or evening, ending with a small awe response. Tracking issue: [#470](https://github.com/danhicks96/ostrog-public-ci/issues/470).
+
+**Acceptance:** `crates/hf-sim/tests/leisure_solo.rs::sky_watching_only_in_clear_dusk`: over 3 days with the sky forced Clear at 17:00, a curious secure person watches at least once; with the sky forced Overcast, never. Done when the test passes.
+
+### OST-297 · Nobody ever does anything together except talk for six minutes
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Company has no shared pastime. Add an invitation that checks the invitee's availability, wakefulness, community, security and opinion, plus a joint walk near camp. A refused invitation retains the proposed ordinary fallback. Tracking issue: [#473](https://github.com/danhicks96/ostrog-public-ci/issues/473).
+
+**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::a_friend_joins_a_walk_only_when_free_and_secured`. Two friends in a secure camp: the invitee joins, both `Leisure { WalkTogether, with: Some(other) }`. The same with the invitee at work, or hungry: no join. Done when the test passes.
+
+### OST-298 · The one telling a tale at the hearth looks exactly like everyone listening
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The hearth storyteller looks like a listener. Give the chosen teller an explicit TellTale pastime and listeners the corresponding social recreation, preserving the existing real tale and teller selection. Tracking issue: [#474](https://github.com/danhicks96/ostrog-public-ci/issues/474).
+
+**Acceptance:** `crates/hf-sim/tests/culture.rs::the_teller_is_seen_telling`: three people at a hearth at 19:30, one with a fresh tale. After the tick, the teller is `Leisure { TellTale }` and each listener's recreation rose. Done when the test passes and the existing culture tests are unchanged.
+
+### OST-299 · A hearth evening with no new tale to tell is silent: nobody ever sings
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A hearth with no fresh tale falls silent. Let the most cheerful secure sitter lead a short song when at least three gather, recording one bounded evening event and giving the participants social recreation and joy. Tracking issue: [#475](https://github.com/danhicks96/ostrog-public-ci/issues/475).
+
+**Acceptance:** `crates/hf-sim/tests/culture.rs::a_song_on_an_evening_with_no_new_tale`: three secure sitters with no fresh tales; one Song event and all three in `Leisure { Song }`. The same with one hungry sitter: no song. Done when the test passes.
+
+### OST-300 · Nobody ever plays a game, at a table or anywhere else
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nobody plays games. Add a two-to-four-person game near a table or the hearth through the shared invitation rules, with bounded company gains, thoughts and the existing occasional quarrel path. Tracking issue: [#476](https://github.com/danhicks96/ostrog-public-ci/issues/476).
+
+**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::two_friends_play_a_game_at_the_table`: a secure house with a table and two friends at 15:00. Both end in `Leisure { Game }` within 3 game-hours, and their opinions rise. Done when the test passes.
+
+### OST-301 · Nobody ever goes to see a friend: company is six minutes with whoever is near
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nobody visits a friend for company. Add a reachable daytime Visit to a liked free person, respecting feuds and invitations. Keep visits distinct from approaching someone to comfort, insult or give something. Tracking issue: [#477](https://github.com/danhicks96/ostrog-public-ci/issues/477).
+
+**Acceptance:** `crates/hf-sim/tests/leisure_social.rs::a_sociable_person_visits_a_friend`: a sociable (0.9) person whose friend sits 20 tiles off goes to them, and both are in `Leisure { Visit }` for at least 1,200 ticks. A solitary (0.1) person in the same place does not. Done when the test passes.
+
+### OST-302 · Measure whether sociability now shows in how a day is spent
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Sociable people's days need a before/after measure. Run the day census on seeds 1-8 under all three deities for 600 days around the new social pastimes, tuning only their four definition rows. Tracking issue: [#478](https://github.com/danhicks96/ostrog-public-ci/issues/478).
+
+**Acceptance:** Measured: Social pastimes at least 4% of waking hours. The sociability quartile gap at least 4 points. Hearth Pastime feed lines at most one per community per evening. No rise in rule-7 leisure-while-unsecured (OST-321). Done when the table is in the PR.
+
+### OST-304 · Children become friends by standing four tiles apart, whatever they are doing
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Children gain friendship from proximity alone. Require actual shared play, including the named companion or play place, before the existing childhood bonding gain; use the proposed gain to retain the intended scale. Tracking issue: [#480](https://github.com/danhicks96/ostrog-public-ci/issues/480).
+
+**Acceptance:** `crates/hf-sim/tests/childhood.rs::only_children_who_play_together_bond`: two awake children 3 tiles apart, both loitering: no gain. Both in `Play` together: +0.04 each. Done when the test passes.
+
+### OST-305 · Children watch the grown-ups work but never play at it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Children watch work but never play at it. Remember their recent observed work and offer a safe PlayAtWork pastime near camp, practising the relevant skill at the proposed reduced rate with an accurate description. Tracking issue: [#481](https://github.com/danhicks96/ostrog-public-ci/issues/481).
+
+**Acceptance:** `crates/hf-sim/tests/childhood.rs::a_child_plays_at_the_work_they_watched`: a child who watched a build for 2 hours later takes up `PlayAtWork`, `describe()` contains "building", and Construction rises. Done when the test passes.
+
+### OST-306 · Measure whether children's days now look like childhood
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Children's days need a distinct leisure measure. Run the children-only day census before and after the new play behaviors on seeds 1-8 under all three deities for 600 days; tune only the Play rows. Tracking issue: [#482](https://github.com/danhicks96/ostrog-public-ci/issues/482).
+
+**Acceptance:** Measured: Children's plain loiter + idle under 12% of waking hours. Play at least 15%. Zero samples of a playing child more than 10 tiles from camp or a parent. Child deaths by drowning, cold and beasts not higher than before. Done when the table is in the PR.
+
 ### OST-901 · Count births per community, not per valley
 
 **Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#634](https://github.com/danhicks96/ostrog-public-ci/pull/634)
