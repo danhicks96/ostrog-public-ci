@@ -1679,7 +1679,7 @@ fn apply_effect(
             // Inputs were consumed as they were delivered; make the output by the station.
             let rc = crate::work::recipes::recipe(r);
             let skill = w.agents[i].skills.level(Skill::Crafting);
-            // One who does not know the craft is trying it (C70, Dan's rule 3): the work
+            // One who does not know the craft is trying it (C70, design rule 3): the work
             // comes out only if the try works; else the materials are spoiled.
             let trying =
                 crate::work::recipes::craft_of(r).filter(|t| !w.agents[i].techniques.knows(*t));
@@ -1822,7 +1822,7 @@ fn apply_effect(
         }
         DesignationKind::Cook => {
             // One carried raw food → one meal (quality from skill), dropped by the hearth: a
-            // rabbit on a stick is a meal (FIXLOG 2026-10-20 #172, C62, Dan's call; it took
+            // rabbit on a stick is a meal (FIXLOG 2026-10-20 #172, C62, the maintainer's call; it took
             // "2", which was 1 when one was carried). The food is what the plan picked up, not
             // the first cookable thing in hand.
             let planned = match &w.agents[i].activity {

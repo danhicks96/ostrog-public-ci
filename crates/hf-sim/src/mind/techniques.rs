@@ -34,7 +34,7 @@ pub enum Technique {
     /// Appended (P11): lifting the Beast-hunger or the Thirst, a healers' tradition some
     /// peoples keep (conditions.rs).
     Unbinding,
-    /// The crafts of the benches (C70, Dan's rule 3): a person knows them or does not, and
+    /// The crafts of the benches (C70, design rule 3): a person knows them or does not, and
     /// only those who do work the bench. Appended.
     Carpentry,
     Masonry,
