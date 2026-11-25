@@ -152,6 +152,214 @@ This is the reserved-marking slice of the tracking issue on unused problem and o
 
 **Acceptance:** A test fails if a kind listed as reserved is also written by perception or learning. Existing tests, the enum-order check and the generated reference check pass. Saved state is unchanged.
 
+### OST-325 · mind/intentions.rs is 522 dead lines and an earlier item was closed on it: fold its useful parts into aims
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The unused intentions module duplicates part of the planned aims work. Move its bounded slip/reminder chances and tests unchanged into mind/aims, preserve the retired file under to_delete, and remove the active module declaration. Keep forgetting behavior for OST-343. Tracking issue: [#501](https://github.com/danhicks96/ostrog-public-ci/issues/501).
+
+**Acceptance:** Tests `mind::aims::tests::slip_chance_is_bounded` and `mind::aims::tests::remind_chance_is_bounded` (moved from `intentions.rs:453-480`). `cargo build` and `tools/ci.sh` are green, and digests are unchanged. Done when: no `intentions` module remains in `src/` and the two chance functions live in `aims.rs`.
+
+### OST-326 · There is no count of what people want: add an aims census before any want rule lands
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+There is no repeatable count of wants. Add a read-only opening census of adults with active wants, kinds, active duration, recorded causes and completed outcomes. Initially report zeros before generation rules land and test a planted want through its helper. Tracking issue: [#502](https://github.com/danhicks96/ostrog-public-ci/issues/502).
+
+**Acceptance:** The example builds in CI (`cargo build --examples`) and prints zeros on seed 1 for 20 days today. Test `crates/hf-sim/tests/aims.rs::aims_census_counts_a_planted_want`: it plants one aim and the census helper counts it. Done when: the census runs and its helper is tested.
+
+### OST-327 · Two nights on the ground and nobody wants a bed of their own: add the daily aims stage and first rule
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Repeated rough nights form no persistent want. Add the daily aims stage and deterministic OwnBed rule, using the existing rough-night counter, a bounded strength and deadline, and a recorded AimTaken cause. Run before personal projects are proposed. Tracking issue: [#503](https://github.com/danhicks96/ostrog-public-ci/issues/503).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims.rs::a_night_on_the_ground_twice_forms_a_want_for_a_bed`: a scenario with no beds, two nights, then `OwnBed` active with a cause event. Test `aims.rs::a_night_in_a_bed_does_not_form_the_want`. `aims_census` on seed 1, 60 days, shows OwnBed wants. Digest change logged in ITERATION_LOG. Done when: rough sleepers form the want and the feed says why.
+
+### OST-328 · Nobody sets their heart on someone or on getting even with them: add the Win and GetEven want rules
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Affection and remembered wrongs form no personal aims. Add Win and GetEven rules from eligible relationships, personal memories and dispositions, with the stated deadlines and reserved AIMS purpose value 63. Exclude a partner or child from revenge. Tracking issue: [#504](https://github.com/danhicks96/ostrog-public-ci/issues/504).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims.rs::a_wrong_remembered_forms_get_even_with_its_doer`. Test `aims.rs::a_warm_person_lets_a_wrong_go_more_often_than_a_cold_one`: over 100 seeded days, the GetEven count for warmth 0.9 is below the count for 0.1. Test `aims.rs::a_liked_unpaired_neighbour_forms_win`. Done when: both rules fire in the census on seeds 1-4 at 60 days.
+
+### OST-329 · Skilled makers never set out to make something fine outside a fey mood: add MakeFine and LearnCraft wants
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Skilled makers have no fine-work or learning wants. Add MakeFine from skill and industry or a recent masterwork. LearnCraft instead requires personal knowledge of a finished community station serving the craft, lack of the craft and curiosity at least 0.5; use the reviewed 0.05 daily chance and twenty-day deadline. Tracking issue: [#505](https://github.com/danhicks96/ostrog-public-ci/issues/505).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims.rs::a_skilled_industrious_carpenter_wants_to_make_something_fine`. Test `aims.rs::one_who_knows_the_bench_and_lacks_its_craft_wants_to_learn`. Done when: both rules fire in `aims_census` on seeds 1-4 at 120 days. A curious person who knows the finished bench and lacks its craft forms LearnCraft within forty seeded days; without that personal knowledge they never do.
+
+### OST-330 · Why someone sets out alone is a dice roll among four phrases: make a lone trip come from a want
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Lone trips have dice-picked reasons. Add SeePlace only from news this person actually heard: record the latest overworld site, hearing tick and teller for awake community people within eight tiles and line of sight of the returner. Travel to that personally heard-of site and name the teller in the cause; retain the existing departure safety guards. Tracking issue: [#506](https://github.com/danhicks96/ostrog-public-ci/issues/506).
+
+**Acceptance:** Test `crates/hf-sim/tests/journeys.rs::a_curious_one_with_a_tale_of_a_place_wants_to_see_it_and_goes_there`. Test `journeys.rs::a_lone_trip_names_the_news_behind_it`. Done when: in the seed 7 census, ≥ half of `went_away` follow a `SeePlace` want. The curious person three tiles from the returner hears the news, forms SeePlace and goes; one thirty tiles away does not. Use personal news rather than a deep-site tale in the curious-traveller case.
+
+### OST-331 · New parents never want a home of their own or to keep their child safe: add HomeForHousehold and KeepSafe
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Parents have no wants for a household home or a child's safety. Add HomeForHousehold for an un-housed family with a child, held by the elder partner, and one KeepSafe aim while the proposed child or injured-partner condition holds. Tracking issue: [#507](https://github.com/danhicks96/ostrog-public-ci/issues/507).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims.rs::a_new_parent_without_a_house_wants_one_for_the_household`. Test `aims.rs::a_warm_parent_keeps_a_small_child_safe_and_the_want_ends_when_they_grow`. Done when: both fire on seeds 1-4 by day 200 in the census.
+
+### OST-332 · Nobody has a lifetime aspiration: give each adult one, drawn from their past and temperament
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Adults have no enduring aspiration. Draw one once at arrival, joining or coming of age from dispositions and recorded past, using the six proposed aspiration families and a stable personal stream. Persist milestones without redrawing on reload. Tracking issue: [#508](https://github.com/danhicks96/ostrog-public-ci/issues/508).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims.rs::every_arriving_adult_has_an_aspiration_drawn_from_their_past`. Test `aims.rs::a_child_coming_of_age_draws_one`. Test `aims.rs::aspiration_draw_is_the_same_at_1_and_6_threads`. Done when: all adults on seeds 1-4 hold one, and no kind exceeds 35%.
+
+### OST-334 · Everyone's day looks the same and nothing measures it per person: add day-spread keys to the alive report
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Existing day-distance keys do not expose each activity's individual spread. Extend the shared alive report with mean, range and p90-p10 shares and aim-lifted hours. Pool seeds 5-8 and people sampled for at least one hundred game-days; use the reviewed pooled comparison rather than seed 5 alone. Tracking issue: [#510](https://github.com/danhicks96/ostrog-public-ci/issues/510).
+
+**Acceptance:** `aims_pursuit.rs::day_spread_counts_hours_by_activity` counts a scripted two-person day correctly. Run seeds 5-8 for 600 days, pool people sampled for at least 100 days, and compute the reported loitering p90-p10 spread. It is within two percentage points of the audit's pooled 6.7. If the source used a different spread, state that and recompute the comparable reference rather than comparing seed 5 alone.
+
+### OST-335 · How far along a want is cannot be read: add a pure progress function per want kind
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A want has no pure progress reading. Add bounded progress per kind from the holder's own state and known outcomes. Win reads their own familiarity divided by 0.8, or pairing, never the target's hidden opinion. GetEven and SeePlace return zero here and complete through recorded events in OST-342. Household progress depends on household ownership. Tracking issue: [#511](https://github.com/danhicks96/ostrog-public-ci/issues/511).
+
+**Acceptance:** Unit tests in `crates/hf-sim/src/aims.rs`: `progress_of_own_bed_is_one_when_owned`; `progress_of_make_fine_tracks_best_quality`; `progress_of_win_is_one_when_paired`; `progress_is_pure_and_does_not_touch_rng`. Add `progress_of_win_reads_only_the_holders_familiarity` and `progress_of_get_even_and_see_place_is_zero`. Done when these six named tests pass; event-only wants return zero and are completed by OST-342.
+
+### OST-336 · The choice has no slot for what a person wants: add a neutral aim factor to choose and the Why? lens
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Decision scores have no place for personal aims. Add a neutral aim factor, initially 1.0 everywhere, to the existing score and Why trace without changing choices or digests. Tracking issue: [#512](https://github.com/danhicks96/ostrog-public-ci/issues/512).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::aim_term_is_one_without_aims`. `crates/hf-sim/tests/why_lens.rs` shows an `aim` column. `tests/pipeline.rs` digests and `tests/threads.rs` are unchanged. Done when: the factor exists, shows in Why?, and nothing else changes.
+
+### OST-337 · Someone who wants a bed of their own spends their spare hours like everyone else: lift work on sleeping places
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Wanting a bed or household home does not lift its work. Weigh relevant construction, crafting and material hauling through the aim factor while preserving the security gate. Household work requires OST-331 and household ownership and must target the holder's own house. Tracking issue: [#513](https://github.com/danhicks96/ostrog-public-ci/issues/513).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::one_who_wants_a_bed_takes_the_bed_order_over_a_field_order`. Test `aims_pursuit.rs::a_hungry_bed_wanter_still_eats_first`. The alive report's day-spread keys (OST-334) show lifted-goal hours > 0. Done when: both tests pass and the digest change is logged. Depend on household ownership and OST-331. `aims_pursuit.rs::a_household_wanter_takes_their_own_houses_wall_order` chooses the holder's own household wall order over an equally distant other house.
+
+### OST-338 · Nobody seeks out the one they are sweet on: Win(x) lifts talk with x and the hearth when x is there
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Wanting someone does not lead to company with them. Lift talk and gathering with the desired person under the existing leisure gate and bound the combined courtship and aim effects. Tracking issue: [#514](https://github.com/danhicks96/ostrog-public-ci/issues/514).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::wanting_someone_seeks_their_company_but_not_while_hungry`. Test `aims_pursuit.rs::wanting_someone_sits_at_the_hearth_they_sit_at`. Done when: both pass, and `Talked` events between Win pairs rise ≥ 2× against matched non-Win pairs on seeds 1-4.
+
+### OST-340 · A want neither ends nor is ever told to have ended: close wants as met or given up, on record
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Wants never finish or give up. End a want as Met at full progress or GivenUp after the stated no-progress interval or deadline, move it to the bounded completed store and record its actual outcome. Tracking issue: [#516](https://github.com/danhicks96/ostrog-public-ci/issues/516).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_outcomes.rs::a_bed_of_ones_own_ends_the_want_as_met`. Test `aims_outcomes.rs::a_want_with_no_progress_for_five_days_is_given_up`. Done when: both pass, and `aims_census` reports outcomes.
+
+### OST-341 · Getting what you wanted, or losing it, is not felt: add thoughts for wants met, thwarted and given up
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A want's outcome has no feeling. Add strength-scaled thoughts for meeting, losing or giving up a want and for aspiration milestones, using the recorded completion path. Tracking issue: [#517](https://github.com/danhicks96/ostrog-public-ci/issues/517).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_outcomes.rs::a_met_want_leaves_a_glad_thought_scaled_by_strength`. Test `aims_outcomes.rs::a_given_up_want_leaves_a_small_sour_one`. Done when: both pass.
+
+### OST-342 · When what you wanted becomes impossible, nobody notices: thwart wants from recorded events
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Events do not close impossible or event-completed wants. Add an observation stage for thwarting through pairing, death, departure, house loss or a site ending. Also mark GetEven as Met after the holder's qualifying fight or accusation, and SeePlace on the holder's return, since pure progress cannot read those events. Tracking issue: [#518](https://github.com/danhicks96/ostrog-public-ci/issues/518).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_outcomes.rs::the_one_wanted_pairing_with_another_thwarts_win`. Test `aims_outcomes.rs::a_kept_child_dying_thwarts_keep_safe`. Done when: both pass. `aims_outcomes.rs::a_fight_won_meets_get_even` verifies a qualifying holder-initiated fight after the want began ends GetEven as Met with AimMet; a return completes SeePlace.
+
+### OST-343 · An earlier item was closed but nobody ever forgets anything they meant to do: let a tired, stressed mind forget a want
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A tired or stressed person never forgets a want. Use the preserved bounded slip chance in the daily aims stage with the reserved stream; a forgotten want ends quietly without a strong thought or event. Tracking issue: [#519](https://github.com/danhicks96/ostrog-public-ci/issues/519).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_outcomes.rs::a_tired_stressed_person_forgets_more_wants_than_a_rested_one`: two scenario people, 100 days, the tired one's forget count is greater. Done when: it passes, and the earlier item can be closed against this slice.
+
+### OST-344 · Two who make up still carry the grudge as a want: making up lets GetEven go
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Making up does not release an aim to get even. End the matching aims on MadeUp, register the small relief and record LetItGo, retaining the original reconciliation event. Tracking issue: [#520](https://github.com/danhicks96/ostrog-public-ci/issues/520).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_outcomes.rs::making_up_lets_getting_even_go`. Done when: it passes.
+
+### OST-345 · A family gets a house and only one of them is glad; a rival pairs off and nobody is jealous
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A want's outcome affects only its holder. Share household gladness, bound jealousy when the desired person pairs elsewhere, and let the target of revenge remember the harm. Reuse one appended Jealous thought across the related slices. Tracking issue: [#521](https://github.com/danhicks96/ostrog-public-ci/issues/521).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_outcomes.rs::the_one_wanted_pairing_with_another_breeds_jealousy_of_the_rival`. Test `aims_outcomes.rs::a_household_shares_the_gladness_of_a_house_built`. Test `aims_outcomes.rs::getting_even_leaves_the_other_a_grudge`. Done when: all three pass.
+
+### OST-346 · Wants that came true or were dashed leave no memory, so the next want ignores them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Met or thwarted wants leave no memory for later choices. Record the proposed personal work, company, hardship or discovery memories and let recent success or rejection adjust later aim generation. Tracking issue: [#522](https://github.com/danhicks96/ostrog-public-ci/issues/522).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_outcomes.rs::a_rebuffed_suitor_tries_the_same_person_less`. Done when: it passes.
+
+### OST-556 · A maker who wants to make something fine does not seek out their bench: MakeFine(c) lifts orders whose recipe is craft c
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Wanting fine work does not lead a maker to their craft. Lift matching recipe orders through MakeFine and cap its product with craft liking at 1.6; measure the holder's bench-work share before and after. Tracking issue: [#565](https://github.com/danhicks96/ostrog-public-ci/issues/565).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::a_maker_who_wants_fine_work_takes_their_crafts_order_first`. Two open orders at equal distance, a Craft of `c` and a field order. A holder of `MakeFine(c)` at strength 1.0 gets `lean` 1.5 for the craft order and 1.0 for the field order, and takes the craft order. Measured: share of a `MakeFine` holder's work hours at their craft's bench, seeds 1-4, 300 days, against the same people before the want. development-history entry.
+
+### OST-557 · A maker set on fine work takes the nearest planks, not the best: with MakeFine, a craft plan picks the highest-quality known stack
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A maker aiming at fine work still takes the nearest material. Add an ordering option to the existing known-item search so only a matching MakeFine craft plan prefers quality, then distance, without reserving anything or changing other searches. Tracking issue: [#566](https://github.com/danhicks96/ostrog-public-ci/issues/566).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::a_fine_work_want_picks_the_best_free_wood`. Two known, reachable plank stacks, quality 0.4 at 3 tiles and 0.9 at 10 tiles. The plan of a `MakeFine(Carpentry)` holder for a carpentry order takes the 0.9 stack; the same person without the want takes the 0.4 stack. Measured: mean quality of crafts made by `MakeFine` holders, seeds 1-4, 300 days, against their own crafts before the want. development-history entry.
+
+### OST-558 · A grudge holder tends and chats with the one they mean to get even with: GetEven(x) lowers Tend(x) and Talk(x) to 0.8
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A revenge aim does not affect helping or friendly talk. Apply the bounded 0.8 Tend and Talk factor toward its target while preserving care when no other healer can help. Tracking issue: [#567](https://github.com/danhicks96/ostrog-public-ci/issues/567).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::getting_even_never_tends_the_other_first_when_another_healer_is_free`. X hurt, two healers at equal distance, one holding `GetEven(X)`: the other healer tends X. With the holder as the only healer, X is still tended within the day. Measured: not a census key; the digest change is noted in the development history. development-history entry.
+
+### OST-559 · Two who bear a grudge talk as amiably as anyone: an active GetEven adds to the ill will that decides whether a talk sours into a quarrel
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A revenge aim leaves an ordinary talk equally amiable. Add the proposed strength-weighted ill will before the existing capped quarrel test, keeping its stream and measured comparison. Tracking issue: [#568](https://github.com/danhicks96/ostrog-public-ci/issues/568).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::getting_even_makes_a_quarrel_likelier_when_they_talk`. 200 seeded talks between the same pair at opinion 0 and mood 0: the `Quarrelled` count when one holds `GetEven` at strength 1.0 is at least twice the count without it. Measured: quarrel rate between GetEven pairs against all pairs, seeds 1-4, 300 days (a sibling item's 2× target). development-history entry.
+
+### OST-560 · Wanting to learn a craft changes nothing: LearnCraft(c) lifts study of things that teach c and a leisure walk to a known bench of c
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Wanting a craft changes neither study nor free time. Lift study of known teaching items and offer a secure leisure walk near a personally known station for that craft. Learning still uses the existing observation and teaching rules. Tracking issue: [#569](https://github.com/danhicks96/ostrog-public-ci/issues/569).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::wanting_a_craft_stands_by_its_bench_when_free`. A secure, rested person holding `LearnCraft(Carpentry)` who knows a carpentry bench 15 tiles away stands within 2 tiles of it at least once in 6 game-hours. With stores under two days, they never take that walk. Measured: hours LearnCraft holders spend within 2 tiles of their craft's bench, seeds 1-4, 300 days. development-history entry.
+
+### OST-561 · A parent who wants to keep a small child safe sleeps wherever is nearest: KeepSafe(x) lifts a bed near x's and a walk toward x
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A protective parent ignores the child's sleeping place. Lift a bed near the child's claim, or near the child when actually in sight, and a visible nearby seek target, preserving ordinary choice otherwise. Tracking issue: [#570](https://github.com/danhicks96/ostrog-public-ci/issues/570).
+
+**Acceptance:** Test `crates/hf-sim/tests/aims_pursuit.rs::a_parent_keeping_a_child_safe_sleeps_near_them`. At dusk, a child asleep in a bed, and two free beds equally far from the parent, one 3 tiles from the child and one 15. The parent holding `KeepSafe(child)` takes the near one; without the want, the choice follows the existing tie rule. Measured: not a census key; the digest change is noted in the development history. development-history entry.
+
 ### OST-901 · Count births per community, not per valley
 
 **Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#634](https://github.com/danhicks96/ostrog-public-ci/pull/634)
