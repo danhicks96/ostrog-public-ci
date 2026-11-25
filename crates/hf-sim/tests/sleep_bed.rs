@@ -13,6 +13,9 @@ use hf_sim::world::gen::GenParams;
 use hf_sim::world::Material;
 use hf_sim::World;
 
+#[path = "../examples/support/sleep_census.rs"]
+mod sleep_census;
+
 /// A wide flat meadow at night on day 1 (hour 23, spring).
 fn night_world(seed: u64) -> World {
     let mut p = GenParams::small();
@@ -282,4 +285,85 @@ fn a_stranger_does_not_know_a_village_bed_without_seeing_it() {
     let bed_at = bed(&mut w, 20, 20);
     let i = tired_person(&mut w, TilePos::new(50, 20, 2), &[]);
     assert!(!first_choice_is_bed(&mut w, i, bed_at));
+}
+#[test]
+fn sleep_census_counts_bed_changes() {
+    use hf_sim::ids::{AgentId, StructureId};
+    let mut census = sleep_census::SleepCensus::default();
+    let (a, b) = (AgentId(1), AgentId(2));
+    census.night(a, true, Some(StructureId(11)));
+    census.night(b, true, Some(StructureId(21)));
+    census.night(a, true, Some(StructureId(12)));
+    census.night(b, true, Some(StructureId(21)));
+    census.failure("the bed was taken");
+    census.failure("they left");
+    census.failure("the bed was taken");
+    let s = census.summary();
+    assert_eq!((s.most_used_nights, s.bed_nights), (3, 4));
+    assert_eq!(s.unknown_bed_nights, 0);
+    assert_eq!(s.taken, 2);
+    let windows: Vec<_> = s
+        .windows
+        .iter()
+        .map(|(id, w)| (*id, w.nights, w.beds.len()))
+        .collect();
+    assert_eq!(windows, vec![(a, 2, 2), (b, 2, 1)]);
+
+    // Ten-night blocks do not mix people or include more than ten nights.
+    for _ in 0..9 {
+        census.night(a, true, Some(StructureId(11)));
+    }
+    let s = census.summary();
+    let windows: Vec<_> = s
+        .windows
+        .iter()
+        .filter(|(id, _)| *id == a)
+        .map(|(_, w)| (w.nights, w.beds.len()))
+        .collect();
+    assert_eq!(windows, vec![(10, 2), (1, 1)]);
+}
+
+#[test]
+fn sleep_census_counts_rough_streaks() {
+    use hf_sim::ids::{AgentId, StructureId};
+    let mut census = sleep_census::SleepCensus::default();
+    let (a, b) = (AgentId(1), AgentId(2));
+    for _ in 0..2 {
+        census.night(a, false, None);
+    }
+    census.night(a, true, Some(StructureId(10)));
+    for _ in 0..8 {
+        census.night(a, false, None);
+    }
+    for _ in 0..3 {
+        census.night(b, false, None);
+    }
+    let s = census.summary();
+    assert_eq!(s.streaks, [0, 2, 0, 1]);
+    assert_eq!(s.longest, Some((a, 8)));
+    assert_eq!(census.summary().streaks, s.streaks, "reading is pure");
+    census.night(a, true, Some(StructureId(10)));
+    census.night(a, false, None);
+    assert_eq!(census.summary().streaks, [1, 2, 0, 1]);
+    assert_eq!(census.summary().longest, Some((a, 8)));
+}
+
+#[test]
+fn sleep_census_keeps_unknown_beds_in_the_denominator_and_changes_no_world() {
+    use hf_sim::ids::AgentId;
+    let mut w = night_world(15);
+    tired_villager(&mut w, TilePos::new(20, 20, 2), TilePos::new(20, 21, 2));
+    let digest = hf_sim::digest::digest(&w);
+    let mut census = sleep_census::SleepCensus::default();
+    assert_eq!(census.summary().bed_nights, 0);
+    assert_eq!(census.summary().longest, None);
+    census.night(AgentId(1), true, None);
+    let s = census.summary();
+    assert_eq!((s.most_used_nights, s.bed_nights), (0, 1));
+    assert_eq!(s.unknown_bed_nights, 1);
+    assert_eq!(
+        s.streaks, [0; 4],
+        "a missing id does not make a rough night"
+    );
+    assert_eq!(hf_sim::digest::digest(&w), digest);
 }

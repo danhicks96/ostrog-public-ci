@@ -21,6 +21,9 @@ use hf_sim::structures::StructureKind;
 use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::World;
 
+#[path = "support/sleep_census.rs"]
+mod sleep_census;
+
 fn claim(a: &Activity) -> Option<StructureId> {
     match a {
         Activity::Sleeping { bed: Some(id), .. } => Some(*id),
@@ -40,6 +43,8 @@ fn main() {
     let mut w = World::from_setup(&hf_sim::setup::WorldSetup::new(seed));
     let start = w.meta.tick;
     let mut lay: BTreeMap<AgentId, (String, i32)> = BTreeMap::new();
+    let mut census = sleep_census::SleepCensus::default();
+    let mut slept_in = BTreeMap::new();
     let mut was_ground: BTreeMap<AgentId, bool> = BTreeMap::new();
     // Every bed each person has ever had in knowledge (sampled hourly), to tell a bed
     // forgotten from one never learned.
@@ -72,6 +77,9 @@ fn main() {
         for (i, a) in w.agents.iter().enumerate() {
             if !a.alive || a.species != Species::Person || a.community.is_none() {
                 continue;
+            }
+            if let Activity::Sleeping { bed, .. } = a.activity {
+                slept_in.insert(a.id, bed);
             }
             let ground = matches!(a.activity, Activity::Sleeping { bed: None, .. });
             let before = was_ground.insert(a.id, ground).unwrap_or(false);
@@ -193,6 +201,9 @@ fn main() {
             samples += 1;
         }
         for e in &w.last_events {
+            if let E::PlanFailed { reason, .. } = &e.kind {
+                census.failure(reason);
+            }
             if let E::Slept {
                 agent,
                 hours,
@@ -208,6 +219,7 @@ fn main() {
                 if a.species != Species::Person || a.community.is_none() {
                     continue;
                 }
+                census.night(*agent, *b, slept_in.get(agent).copied().flatten());
                 if *b {
                     in_bed += 1;
                 } else {
@@ -229,6 +241,37 @@ fn main() {
         beds_sum as f32 / samples.max(1) as f32,
         ppl_sum as f32 / samples.max(1) as f32
     );
+    let sleep = census.summary();
+    println!(
+        "  most-used bed: {} of {} bed-nights ({:.2}%); unknown bed id {}; bed was taken {}",
+        sleep.most_used_nights,
+        sleep.bed_nights,
+        100.0 * sleep.most_used_nights as f64 / sleep.bed_nights.max(1) as f64,
+        sleep.unknown_bed_nights,
+        sleep.taken
+    );
+    println!(
+        "  rough episodes (including unfinished): 1 night {}, 2-3 {}, 4-7 {}, 8+ {}",
+        sleep.streaks[0], sleep.streaks[1], sleep.streaks[2], sleep.streaks[3]
+    );
+    if let Some((who, nights)) = sleep.longest {
+        let name = w
+            .agents
+            .iter()
+            .chain(w.overworld.away.iter())
+            .find(|a| a.id == who)
+            .map(|a| a.name.as_str())
+            .unwrap_or("unknown");
+        println!("  longest rough episode: {nights} nights, {name} ({who:?})");
+    } else {
+        println!("  longest rough episode: none");
+    }
+    for (who, window) in sleep.windows {
+        println!(
+            "  distinct beds {who:?}: {} over {} completed nights (ten-night blocks; last may be partial)",
+            window.beds.len(), window.nights
+        );
+    }
     let mut doing: Vec<_> = awake_doing.iter().collect();
     doing.sort_by_key(|(_, n)| std::cmp::Reverse(**n));
     for (k, n) in doing.iter().take(8) {

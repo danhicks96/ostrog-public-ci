@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-25: count habitual beds and rough-night episodes (OST-361, OST-371)
+
+- Symptom: the rough-sleep census counted bed and ground sleeps but could not measure bed
+  changes, contention or consecutive nights on the ground.
+- Cause: it kept aggregate sleep counts and discarded each sleeper's bed identity and history.
+- Fix: an example-only collector reads the existing six-hour-or-longer sleep events and their
+  last observed sleeping bed. It reports bed-nights in each person's most-used bed, distinct
+  beds in consecutive ten-night blocks (with partial blocks labelled), exact taken-bed failures,
+  rough-episode lengths including unfinished episodes, and the longest episode with its person.
+  Missing bed identifiers remain in the bed-night denominator and are reported separately.
+  No simulation or saved state is added; rough-answer counts await the logged chooser.
+- Guards: `tests/sleep_bed.rs::sleep_census_counts_bed_changes`,
+  `sleep_census_counts_rough_streaks`, and the unknown-bed/purity case.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every
