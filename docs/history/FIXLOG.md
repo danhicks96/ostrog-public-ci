@@ -1,5 +1,23 @@
 # Fix log
 
+## 2026-11-25: an illness lesson outlasts a forgotten water tag (OST-447)
+
+- Symptom: after forgetting a foul-water belief, someone could return to a pond that had
+  made them ill as readily as someone with no such experience.
+- Cause: water selection read short-lived water tags and ignored the person's illness lessons.
+- Fix: the strongest foul-water illness lesson for the source's surveyed body counts it
+  foul above confidence 0.2. Remembered illness raises that spot's desperation threshold
+  from 0.7 to 0.7 + 0.25 times confidence. Severe thirst can still overcome it. Wells and
+  melted water do not inherit a pond's lesson. Empty lesson lists avoid the body scan.
+  The existing caller interface and ordinary selection without a lesson are preserved.
+- Guard: `tests/foul_water.rs::a_lesson_outlasts_the_forgotten_tag` fails on the lesson-only
+  implementation. It checks the fresh pond twenty tiles farther away at thirst 0.55 and
+  0.8, severe thirst, a no-lesson control and the same body at a different shore.
+- `examples/foul_census.rs` counts actual foul-water illness events, first cases, repeats
+  and thirst deaths without changing the simulation. Paired seed 7 and 8 measurements
+  are required before this slice is complete.
+- Digests can change because personal illness lessons now alter later water choices.
+
 ## 2026-11-25: foul-water illness becomes the drinker's own lesson (OST-446)
 
 - Symptom: a person could take the flux from a fouled pond with no observation or lesson

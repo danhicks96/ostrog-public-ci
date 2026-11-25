@@ -46,6 +46,104 @@ fn body_at(w: &World, p: TilePos) -> &floods::Body {
 }
 
 #[test]
+fn a_lesson_outlasts_the_forgotten_tag() {
+    use hf_sim::mind::{Known, ObservationKind, OutcomeKind};
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let mut w = flat(4560);
+                for (x0, x1) in [(20, 24), (44, 48)] {
+                    for y in 20..=24 {
+                        for x in x0..=x1 {
+                            w.grid.set(TilePos::new(x, y, 2), water_tile());
+                        }
+                    }
+                }
+                w.rebuild_caches();
+                floods::survey(&mut w);
+                w.ensure_nav();
+                w.weather.temperature_c = 10.0;
+                let who = w.found_party(1)[0];
+                let i = w.agents.iter().position(|a| a.id == who).unwrap();
+                let from = TilePos::new(26, 22, 2);
+                w.agents[i].pos = from;
+                let a = TilePos::new(20, 20, 2);
+                let b = TilePos::new(44, 20, 2);
+                let choose = |w: &World, thirst: f32| {
+                    hf_sim::water::nearest_knowing(
+                        w,
+                        i,
+                        from,
+                        60,
+                        &w.agents[i].knowledge,
+                        thirst > 0.7,
+                    )
+                    .expect("a reachable pond")
+                    .source
+                };
+                w.agents[i].needs.thirst = 0.45;
+                let control = choose(&w, 0.55);
+                assert!(std::ptr::eq(body_at(&w, control), body_at(&w, a)));
+                let tick = w.meta.tick;
+                w.agents[i].learning.learn(
+                    ObservationKind::FoulWater,
+                    OutcomeKind::Illness,
+                    Some(a),
+                    true,
+                    tick,
+                    None,
+                );
+                w.agents[i].learning.lessons[0].confidence = 0.6;
+                w.agents[i]
+                    .knowledge
+                    .note(Known::Water(a), a, tick, floods::TAG_WATER_FOUL);
+                let water: Vec<_> = w.agents[i]
+                    .knowledge
+                    .map
+                    .keys()
+                    .copied()
+                    .filter(|k| matches!(k, Known::Water(_)))
+                    .collect();
+                for known in water {
+                    w.agents[i].knowledge.forget(known);
+                }
+                for thirst in [0.55, 0.8] {
+                    w.agents[i].needs.thirst = 1.0 - thirst;
+                    let before = hf_sim::digest::digest(&w);
+                    let chosen = choose(&w, thirst);
+                    assert_eq!(
+                        before,
+                        hf_sim::digest::digest(&w),
+                        "water selection is pure"
+                    );
+                    assert!(
+            std::ptr::eq(body_at(&w, chosen), body_at(&w, b)),
+            "the illness lesson outlasts the forgotten tag at thirst {thirst}: {chosen:?}"
+        );
+                }
+                w.agents[i].needs.thirst = 0.05;
+                let emergency = choose(&w, 0.95);
+                assert!(
+                    std::ptr::eq(body_at(&w, emergency), body_at(&w, a)),
+                    "severe thirst can still overcome the lesson"
+                );
+                w.agents[i].learning.lessons.clear();
+                w.agents[i].needs.thirst = 0.2;
+                let control = choose(&w, 0.8);
+                assert!(
+                    std::ptr::eq(body_at(&w, control), body_at(&w, a)),
+                    "one with no lesson still assumes the nearby water fresh"
+                );
+                hf_sim::digest::digest(&w)
+            })
+    };
+    assert_eq!(run(1), run(4));
+}
+
+#[test]
 fn rot_and_a_body_beside_water_foul_it_and_no_further() {
     let mut w = flat(4533);
     for y in 20..=24 {

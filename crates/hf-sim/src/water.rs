@@ -270,18 +270,72 @@ pub fn nearest_knowing(
     let nav = w.nav.as_ref()?;
     let now = w.meta.tick;
     let cooldowns = &w.agents[i].work_cooldowns;
-    let spots: Vec<Spot> = candidates(w, from, radius)
+    // The lesson survives an evicted water tag. Cache its body once, not for every shore.
+    let lessons: Vec<_> = w.agents[i]
+        .learning
+        .lessons
+        .iter()
+        .filter_map(|lesson| {
+            if lesson.cue != crate::mind::ObservationKind::FoulWater
+                || lesson.outcome != crate::mind::OutcomeKind::Illness
+            {
+                return None;
+            }
+            let pos = lesson.pos?;
+            Some((
+                pos,
+                crate::floods::body_at(w, pos),
+                lesson.confidence.clamp(0.0, 1.0),
+            ))
+        })
+        .collect();
+    let illness = |s: &Spot| {
+        if lessons.is_empty() || s.well || !w.grid.get(s.source).is_water() {
+            return 0.0;
+        }
+        let body = crate::floods::body_at(w, s.source);
+        lessons
+            .iter()
+            .filter(|(pos, learned_body, _)| {
+                *pos == s.source
+                    || body
+                        .zip(*learned_body)
+                        .is_some_and(|(a, b)| std::ptr::eq(a, b))
+            })
+            .map(|(_, _, confidence)| *confidence)
+            .fold(0.0f32, f32::max)
+    };
+    let spots: Vec<_> = candidates(w, from, radius)
         .into_iter()
         .filter(|s| cooldowns.get(&dry_key(s.stand)).is_none_or(|t| *t <= now))
+        .map(|s| {
+            let confidence = illness(&s);
+            (s, confidence)
+        })
         .collect();
     let tag = |s: &Spot| believed_tag(w, knowledge, s);
     let salt = |s: &Spot| tag(s) == Some(crate::floods::TAG_WATER_SALT);
-    let foul = |s: &Spot| tag(s) == Some(crate::floods::TAG_WATER_FOUL);
+    let foul = |s: &Spot, confidence: f32| {
+        tag(s) == Some(crate::floods::TAG_WATER_FOUL) || confidence > 0.2
+    };
     // Nothing they could believe fresh in reach is its own desperation: foul water or none.
-    let desperate = desperate || !spots.iter().any(|s| !salt(s) && !foul(s));
+    let desperate = desperate
+        || !spots
+            .iter()
+            .any(|(s, confidence)| !salt(s) && !foul(s, *confidence));
+    let thirst = (1.0 - w.agents[i].needs.thirst).clamp(0.0, 1.0);
     spots
         .into_iter()
-        .filter(|s| !salt(s) && (desperate || !foul(s)))
+        .filter(|(s, confidence)| {
+            !salt(s)
+                && (!foul(s, *confidence)
+                    || if *confidence > 0.0 {
+                        thirst > 0.7 + 0.25 * confidence
+                    } else {
+                        desperate
+                    })
+        })
+        .map(|(s, _)| s)
         .find(|s| s.stand == from || nav.reach(from, s.stand))
 }
 
