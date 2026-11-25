@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-25: hunger makes nearby cooking perceptible through a wall (OST-467)
+
+- Symptom: a hungry human could not know about a meal cooking three tiles away behind
+  a wall, because the normal human food-smell radius is zero.
+- Cause: ground items entered knowledge only through sight or the kind's usual nose reach.
+- Fix: the existing indexed perception pass also notes cooked meals within four tiles on
+  the same level for a hungry looker (hunger below 0.5), without requiring sight. Other food
+  retains its existing smell rule; sleepers still do not look. Knowledge remains personal.
+  The index includes this bounded reach and adds no world scan or extra sight traces.
+- Guard: `tests/senses.rs::a_hungry_person_smells_the_cooking` fails without the change;
+  it checks hunger, sleep, distance, food kind and level, saved knowledge and one/four-thread
+  agreement. The perception cost suite covers the shared index and sight-trace budget.
+- Digests can change when this new personal knowledge changes a later choice. No state
+  or saved enum is added.
+
 ## 2026-11-24: the soak can run the camera director (OST-868)
 
 - Symptom: only the game client ran the director, so no headless run could say where the camera

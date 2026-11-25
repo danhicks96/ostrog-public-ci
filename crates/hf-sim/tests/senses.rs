@@ -108,6 +108,89 @@ fn wall(w: &mut World, x: i32, y0: i32, y1: i32) {
 }
 
 #[test]
+fn a_hungry_person_smells_the_cooking() {
+    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let mut w = flat(4206);
+                wall(&mut w, 25, 20, 40);
+                let hungry = person(&mut w, SpeciesId::HUMAN, TilePos::new(23, 28, 2));
+                let fed = person(&mut w, SpeciesId::HUMAN, TilePos::new(23, 32, 2));
+                let sleeping = person(&mut w, SpeciesId::HUMAN, TilePos::new(23, 30, 2));
+                w.agents[hungry].needs.hunger = 0.3;
+                w.agents[fed].needs.hunger = 0.8;
+                w.agents[sleeping].needs.hunger = 0.3;
+                w.agents[sleeping].activity = hf_sim::mind::Activity::Sleeping {
+                    bed: None,
+                    until: 20 * TICKS_PER_DAY,
+                };
+                let meal = w.create_item(
+                    K::Meal,
+                    1,
+                    ItemPlace::Ground(TilePos::new(26, 28, 2)),
+                    0.5,
+                    "test",
+                );
+                let far = w.create_item(
+                    K::Meal,
+                    1,
+                    ItemPlace::Ground(TilePos::new(28, 28, 2)),
+                    0.5,
+                    "test",
+                );
+                let raw = w.create_item(
+                    K::RawMeat,
+                    1,
+                    ItemPlace::Ground(TilePos::new(26, 27, 2)),
+                    0.5,
+                    "test",
+                );
+                let below = w.create_item(
+                    K::Meal,
+                    1,
+                    ItemPlace::Ground(TilePos::new(26, 28, 1)),
+                    0.5,
+                    "test",
+                );
+                assert!(!hf_sim::mind::perception::line_of_sight(
+                    &w.grid,
+                    w.agents[hungry].pos,
+                    TilePos::new(26, 28, 2)
+                ));
+                look(&mut w, 10 * TICKS_PER_DAY + 12 * TICKS_PER_HOUR);
+                assert!(
+                    knows(&w, hungry, Known::Item(meal)),
+                    "a hungry person smells the meal through the wall"
+                );
+                assert!(
+                    !knows(&w, fed, Known::Item(meal)),
+                    "being fed adds no cooking scent reach"
+                );
+                assert!(
+                    !knows(&w, sleeping, Known::Item(meal)),
+                    "a sleeping person does not look"
+                );
+                for item in [far, raw, below] {
+                    assert!(
+                        !knows(&w, hungry, Known::Item(item)),
+                        "the cooking cue is bounded to nearby meals on this level"
+                    );
+                }
+                let back = decode(&encode(&Snapshot::capture(&w)).unwrap())
+                    .unwrap()
+                    .restore();
+                assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                hf_sim::digest::digest(&w)
+            })
+    };
+    assert_eq!(run(1), run(4));
+}
+
+#[test]
 fn hearing_and_smell_reach_through_walls() {
     let mut w = flat(4202);
     wall(&mut w, 25, 20, 40);

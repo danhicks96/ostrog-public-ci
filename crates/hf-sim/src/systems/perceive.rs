@@ -1,5 +1,5 @@
 //! Perception into knowledge. Striped so each agent looks around once a game-minute. Agents
-//! only ever learn what is within sight on their own level.
+//! learn what their own sight, hearing and smell reach on their level.
 
 use crate::ids::TilePos;
 use crate::items::ItemPlace;
@@ -11,6 +11,8 @@ use crate::world::TileFlags;
 use crate::world_state::World;
 
 pub const STRIPE: u32 = 20;
+/// A hungry person's nearby cooked meal cue; other food keeps the kind's normal nose reach.
+const COOKING_REACH: i32 = 4;
 
 thread_local! {
     static STORE_WALKS: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
@@ -455,7 +457,12 @@ pub fn step(w: &mut World) {
             let reach = sp
                 .sight_radius(1.0)
                 .max(sp.hearing_radius())
-                .max(sp.smell_radius());
+                .max(sp.smell_radius())
+                .max(if w.agents[i].needs.hunger < 0.5 {
+                    COOKING_REACH
+                } else {
+                    0
+                });
             Index::near(w.agents[i].pos, reach)
         })
         .collect();
@@ -510,7 +517,12 @@ fn look(
     let sight = sight_radius(w, &w.agents[i], tick);
     let hear = sp.hearing_radius();
     let smell = sp.smell_radius();
-    let reach = sight.max(hear).max(smell);
+    let cooking = if w.agents[i].needs.hunger < 0.5 {
+        COOKING_REACH
+    } else {
+        0
+    };
+    let reach = sight.max(hear).max(smell).max(cooking);
     let grid = &w.grid;
     let d = |p: TilePos| (p.x - me.x).abs().max((p.y - me.y).abs());
     // Line of sight is most of a look's cost, and many things share a tile (a stockpile's
@@ -533,7 +545,8 @@ fn look(
     for c in Index::near(me, reach) {
         for &(k, p, tag) in ix.items.get(&c).into_iter().flatten() {
             let food = matches!(k, Known::Item(id) if ix.food.contains(&id));
-            if (food && near(p, smell)) || sees(p) {
+            let supper = tag == crate::items::ItemKind::Meal as u16 && near(p, cooking);
+            if (food && near(p, smell)) || supper || sees(p) {
                 seen.push((k, p, tag));
             }
         }
