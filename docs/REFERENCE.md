@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3201 strings (click to open)</summary>
+<details><summary>3209 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3428,14 +3428,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/health.rs:712 | a wooden leg |
 | systems/health.rs:714 | a wooden hand |
 | systems/learn.rs:192 | from watching {dname} |
-| systems/life.rs:91 | worn out |
-| systems/life.rs:114 | worn |
-| systems/life.rs:162 | starvation |
-| systems/life.rs:220 | thirst |
-| systems/life.rs:351 | of unknown make |
-| systems/life.rs:359 | was given at a pairing |
-| systems/life.rs:489 | old age |
-| systems/life.rs:622 | none of their own people |
+| systems/life.rs:101 | worn out |
+| systems/life.rs:124 | worn |
+| systems/life.rs:172 | starvation |
+| systems/life.rs:230 | thirst |
+| systems/life.rs:361 | of unknown make |
+| systems/life.rs:369 | was given at a pairing |
+| systems/life.rs:434 | absent |
+| systems/life.rs:435 | age |
+| systems/life.rs:436 | kind |
+| systems/life.rs:437 | fed |
+| systems/life.rs:438 | cooldown |
+| systems/life.rs:439 | crowd |
+| systems/life.rs:440 | dice |
+| systems/life.rs:441 | ready |
+| systems/life.rs:543 | old age |
+| systems/life.rs:676 | none of their own people |
 | systems/moods.rs:50 | as {master}, {craft}, taught them |
 | systems/moods.rs:52 | smith |
 | systems/moods.rs:56 | remembering {child}, their child |

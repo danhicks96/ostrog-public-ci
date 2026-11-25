@@ -12,6 +12,16 @@ use crate::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use crate::world_state::World;
 
 pub fn step(w: &mut World) {
+    step_with_birth_observer(w, &mut |_, _, _| {});
+}
+
+/// The ordinary life step, with a read-only report for each paired couple's birth gate.
+/// Used by the birth census at this pipeline stage so pairing, prior births and the food
+/// reading are exactly the ones the simulation uses. The observer cannot borrow the world.
+pub fn step_with_birth_observer(
+    w: &mut World,
+    observer: &mut impl FnMut(AgentId, AgentId, BirthGate),
+) {
     let tick = w.meta.tick;
     starvation(w);
     thirst(w);
@@ -19,7 +29,7 @@ pub fn step(w: &mut World) {
         return;
     }
     pairing(w);
-    births(w);
+    births(w, observer);
     aging(w);
     clothes(w);
 }
@@ -394,67 +404,111 @@ pub fn fed_for_birth(w: &World, pa: &crate::agents::Agent, pb: &crate::agents::A
     pa.starving_ticks == 0 && pb.starving_ticks == 0 && days.is_none_or(|d| d >= 2.0)
 }
 
-fn births(w: &mut World) {
+/// The first gate stopping a couple on this day's existing birth roll. Not saved state.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum BirthGate {
+    Absent,
+    Age,
+    Kind,
+    Fed,
+    Cooldown,
+    Crowd,
+    Dice,
+    Ready,
+}
+
+impl BirthGate {
+    pub const ALL: [Self; 8] = [
+        Self::Absent,
+        Self::Age,
+        Self::Kind,
+        Self::Fed,
+        Self::Cooldown,
+        Self::Crowd,
+        Self::Dice,
+        Self::Ready,
+    ];
+
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Absent => "absent",
+            Self::Age => "age",
+            Self::Kind => "kind",
+            Self::Fed => "fed",
+            Self::Cooldown => "cooldown",
+            Self::Crowd => "crowd",
+            Self::Dice => "dice",
+            Self::Ready => "ready",
+        }
+    }
+}
+
+/// Classify an ordered partner pair without changing the world or any random stream.
+/// The local seeded roll is the same roll births uses, including the original crowd factor.
+pub fn birth_gate(w: &World, a: AgentId, b: AgentId) -> BirthGate {
     let tick = w.meta.tick;
-    let seed = w.meta.seed;
+    let Some(pa) = w.agents.iter().find(|x| x.id == a && x.alive) else {
+        return BirthGate::Absent;
+    };
+    let Some(pb) = w.agents.iter().find(|x| x.id == b && x.alive) else {
+        return BirthGate::Absent;
+    };
+    if pa.stage(tick) != LifeStage::Adult
+        || !pa.fertile_years().contains(&pa.age_years(tick))
+        || !pb.fertile_years().contains(&pb.age_years(tick))
+    {
+        return BirthGate::Age;
+    }
+    if !crate::species::fertile(pa.people, pb.people) {
+        return BirthGate::Kind;
+    }
+    if !fed_for_birth(w, pa, pb) {
+        return BirthGate::Fed;
+    }
+    let last = pa.last_birth.max(pb.last_birth);
+    let year = (crate::time::TICKS_PER_YEAR as f32 / w.meta.life_speed) as u64;
+    if last > 0 && tick - last < year {
+        return BirthGate::Cooldown;
+    }
+    let mut r = stream(
+        w.meta.seed,
+        &[
+            purpose::AGENT_BIRTH,
+            a.0 as u64,
+            b.0 as u64,
+            tick / TICKS_PER_DAY,
+        ],
+    );
+    let per_day = w.meta.life_speed / (3.0 * crate::time::DAYS_PER_YEAR as f32);
+    let community_people = w
+        .agents
+        .iter()
+        .filter(|x| x.alive && x.species == Species::Person && x.community == pa.community)
+        .count();
+    let crowd = if community_people >= 40 { 0.5 } else { 1.0 };
+    let roll = r.gen::<f32>();
+    if roll < per_day * crowd {
+        BirthGate::Ready
+    } else if roll < per_day {
+        BirthGate::Crowd
+    } else {
+        BirthGate::Dice
+    }
+}
+
+fn births(w: &mut World, observer: &mut impl FnMut(AgentId, AgentId, BirthGate)) {
     let couples: Vec<(AgentId, AgentId)> = w
         .agents
         .iter()
-        .filter(|a| a.alive && a.partner.is_some() && a.stage(tick) == LifeStage::Adult)
+        .chain(w.overworld.away.iter())
+        .filter(|a| a.alive && a.partner.is_some())
         .filter_map(|a| a.partner.map(|p| (a.id, p)))
         .filter(|(a, b)| a < b)
         .collect();
     for (a, b) in couples {
-        let (ok, fed, age_ok, last, community) = {
-            let pa = w.agents.iter().find(|x| x.id == a);
-            let pb = w.agents.iter().find(|x| x.id == b);
-            match (pa, pb) {
-                (Some(pa), Some(pb)) if pa.alive && pb.alive => {
-                    // Each within their own kind's years for children (P5).
-                    // ...and of kinds that have children together (P9).
-                    let fertile = pa.fertile_years().contains(&pa.age_years(tick))
-                        && pb.fertile_years().contains(&pb.age_years(tick))
-                        && crate::species::fertile(pa.people, pb.people);
-                    let fed = fed_for_birth(w, pa, pb);
-                    (
-                        true,
-                        fed,
-                        fertile,
-                        pa.last_birth.max(pb.last_birth),
-                        pa.community,
-                    )
-                }
-                _ => (false, false, false, 0, None),
-            }
-        };
-        if !ok || !fed || !age_ok {
-            continue;
-        }
-        // Pacing: at least a year since the last child; then about one child per three years.
-        let year = (crate::time::TICKS_PER_YEAR as f32 / w.meta.life_speed) as u64;
-        if last > 0 && tick - last < year {
-            continue;
-        }
-        let mut r = stream(
-            seed,
-            &[
-                purpose::AGENT_BIRTH,
-                a.0 as u64,
-                b.0 as u64,
-                tick / TICKS_PER_DAY,
-            ],
-        );
-        let per_day = w.meta.life_speed / (3.0 * crate::time::DAYS_PER_YEAR as f32);
-        // OST-901: crowding is a per-community effect, not a valley-wide census. A band of
-        // raiders camped at the edge (spawned as Species::Person with community == None,
-        // see threat.rs) must not halve the births of a community they are not part of.
-        let community_people = w
-            .agents
-            .iter()
-            .filter(|x| x.alive && x.species == Species::Person && x.community == community)
-            .count();
-        let crowd = if community_people >= 40 { 0.5 } else { 1.0 };
-        if r.gen::<f32>() < per_day * crowd {
+        let gate = birth_gate(w, a, b);
+        observer(a, b, gate);
+        if gate == BirthGate::Ready {
             let _ = w.give_birth(a, b);
         }
     }

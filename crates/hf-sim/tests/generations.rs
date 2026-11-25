@@ -11,6 +11,100 @@ use hf_sim::time::TICKS_PER_DAY;
 use hf_sim::world::gen::GenParams;
 use hf_sim::World;
 
+#[path = "../examples/support/birth_census.rs"]
+mod birth_census;
+
+fn census_couple() -> (World, hf_sim::ids::AgentId, hf_sim::ids::AgentId) {
+    let mut w = World::generate(82, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.meta.tick = TICKS_PER_DAY + 5 * hf_sim::time::TICKS_PER_HOUR;
+    w.meta.autoplan = false;
+    let ids = w.found_party(2);
+    w.drop_item(hf_sim::items::ItemKind::Meal, 100, w.meta.founding_site);
+    let tick = w.meta.tick;
+    for (id, partner) in [(ids[0], ids[1]), (ids[1], ids[0])] {
+        let a = w.agents.iter_mut().find(|a| a.id == id).unwrap();
+        a.age_scale = 1.0;
+        a.born = tick as i64 - (25 * hf_sim::time::TICKS_PER_YEAR) as i64;
+        a.partner = Some(partner);
+        a.starving_ticks = 0;
+        a.last_birth = 0;
+    }
+    w.rebuild_caches();
+    (w, ids[0], ids[1])
+}
+
+#[test]
+fn births_census_counts_a_built_couple() {
+    use hf_sim::systems::life::{birth_gate, BirthGate};
+    let (mut w, a, b) = census_couple();
+    let tick = w.meta.tick;
+    w.agents.iter_mut().find(|x| x.id == a).unwrap().born =
+        tick as i64 - (50 * hf_sim::time::TICKS_PER_YEAR) as i64;
+    for _ in 0..10 {
+        let before = hf_sim::digest::digest(&w);
+        assert_eq!(birth_gate(&w, a, b), BirthGate::Age);
+        assert_eq!(before, hf_sim::digest::digest(&w));
+        w.meta.tick += TICKS_PER_DAY;
+    }
+    // Older partners used to be excluded before a census could see the age rejection.
+    let mut seen = Vec::new();
+    hf_sim::systems::life::step_with_birth_observer(&mut w, &mut |x, y, gate| {
+        if (x, y) == (a, b) {
+            seen.push(gate);
+        }
+    });
+    assert_eq!(seen, vec![BirthGate::Age]);
+}
+
+#[test]
+fn births_census_reports_the_first_gate_and_absent_partners() {
+    use hf_sim::systems::life::{birth_gate, BirthGate};
+    let (mut w, a, b) = census_couple();
+    let i = w.agents.iter().position(|x| x.id == a).unwrap();
+    w.agents[i].starving_ticks = 1;
+    w.agents[i].last_birth = w.meta.tick - 1;
+    assert_eq!(birth_gate(&w, a, b), BirthGate::Fed);
+    w.agents[i].starving_ticks = 0;
+    assert_eq!(birth_gate(&w, a, b), BirthGate::Cooldown);
+    let i = w.agents.iter().position(|x| x.id == a).unwrap();
+    let traveller = w.agents.remove(i);
+    w.overworld.away.push(traveller);
+    assert_eq!(birth_gate(&w, a, b), BirthGate::Absent);
+    let mut seen = Vec::new();
+    hf_sim::systems::life::step_with_birth_observer(&mut w, &mut |x, y, gate| {
+        if (x, y) == (a, b) {
+            seen.push(gate);
+        }
+    });
+    assert_eq!(seen, vec![BirthGate::Absent]);
+}
+
+#[test]
+fn watching_birth_gates_keeps_the_world_and_save_resume_identical() {
+    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+    let (mut plain, _, _) = census_couple();
+    plain.meta.tick -= 1;
+    let mut watched = decode(&encode(&Snapshot::capture(&plain)).unwrap())
+        .unwrap()
+        .restore();
+    let mut counts = birth_census::BirthCounts::default();
+    for _ in 0..hf_sim::time::TICKS_PER_HOUR {
+        plain.step();
+        birth_census::observed_tick(&mut watched, &mut counts);
+    }
+    assert_eq!(
+        hf_sim::digest::digest(&plain),
+        hf_sim::digest::digest(&watched)
+    );
+    assert_eq!(counts.gates.values().sum::<u64>(), 1);
+    assert_eq!(
+        counts.births,
+        counts.gates.get("ready").copied().unwrap_or(0)
+    );
+}
+
 /// #1195: a couple merely peckish at 05:00, who ate the evening before and whose community
 /// holds days of food, must pass the fed gate for a child rather than be read as starving on
 /// an instant's reading of hunger.

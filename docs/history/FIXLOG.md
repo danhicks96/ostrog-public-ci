@@ -1,5 +1,22 @@
 # Fix log
 
+## 2026-11-25: count the actual gates before a child is born (OST-603)
+
+- Symptom: the nominal birth chance predicted more children than earlier runs recorded,
+  without a count of the couple-days rejected at each gate.
+- Cause: age, kind, food, cooldown, crowding and dice shared no observable classification;
+  an external copy could read them at a different point from the daily birth attempt.
+- Fix: a pure `life::birth_gate` reads the existing local seeded roll and gates. Births use
+  that result, with no extra random draw, changed probability or saved state. An optional
+  observer reports the actual result after pairing and after earlier births that morning.
+  Older and travelling couples are also counted as rejected without becoming eligible.
+  The `births_census` example walks the live pipeline and reports gate counts and actual
+  births for the requested seed, duration and deity. The fed and crowd rules already fixed
+  in the public tree are measured as they are, rather than the older audit's rules.
+- Guards: `tests/generations.rs::births_census_counts_a_built_couple`, first-gate/absence
+  coverage, and identical observed/unobserved worlds across a restored save.
+- Full seeds 1-8 by three-deity measurements are pending; no cause is claimed as found yet.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every
