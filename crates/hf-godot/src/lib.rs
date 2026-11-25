@@ -1119,6 +1119,18 @@ impl SimHost {
         );
     }
 
+    /// Opt in to a bounded local capture. An existing directory is never reused.
+    #[func]
+    fn flight_recorder_start(&mut self, path: GString) -> GString {
+        match hf_sim::debuglog::configure_recorder(
+            std::path::PathBuf::from(path.to_string()),
+            vec![("command".into(), "client".into())],
+        ) {
+            Ok(()) => GString::new(),
+            Err(err) => GString::from(err.to_string().as_str()),
+        }
+    }
+
     /// Turn the debug decision log off (the settings toggle).
     #[func]
     fn debug_log_stop(&mut self) {

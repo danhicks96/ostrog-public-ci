@@ -1,5 +1,14 @@
 # Fix log
 
+## 2026-11-25: retain unattended decision evidence (OST-1500)
+
+- Symptom: the live Why lens is transient; normal decision logging rotates day summaries
+  out with raw data and cannot report which periods are incomplete.
+- Fix: add an opt-in local recorder with separate bounded survey and trace files, actual route
+  attempt outcomes, explicit coverage notices, and a read-only query.
+- Guard: cover repeated rotation, injected flush failure, off/on digest and durable chronicle,
+  and an unattended choice-to-blocked-route-to-retry example.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every

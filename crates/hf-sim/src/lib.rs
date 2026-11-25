@@ -32,6 +32,7 @@ pub mod faith;
 pub mod fate;
 pub mod feuds;
 pub mod fish;
+mod flight_recorder;
 pub mod floods;
 pub mod fmath;
 pub mod fostering;
