@@ -152,6 +152,174 @@ This is the reserved-marking slice of the tracking issue on unused problem and o
 
 **Acceptance:** A test fails if a kind listed as reserved is also written by perception or learning. Existing tests, the enum-order check and the generated reference check pass. Saved state is unchanged.
 
+### OST-462 · A scream next door enters nobody's mind: there is no pass that hears sounds
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Sounds have no personal perception pass. Add hearing of recorded nearby sounds with the issue's range, obstruction and evidence rules, keeping it observer-specific and separate from visual knowledge. Tracking issue: [#178](https://github.com/danhicks96/ostrog-public-ci/issues/178).
+
+**Acceptance:** Test: `crates/hf-sim/tests/senses.rs::a_scream_is_heard_through_one_wall_not_three`. With a scream at T: a human 8 tiles away behind one wall holds a `Noise` observation; one behind three walls does not; a Murrow (hearing 3) behind three walls does. Test: `crates/hf-sim/tests/perceive_cost.rs::hearing_pass_is_bounded`. For 20 sounds and 500 people, at most 20 × 500 distance checks and only the in-range ones trace walls. Done when both pass and digests at 1 and 8 threads match.
+
+### OST-463 · A scream or a falling roof in the night wakes no one
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Dangerous sounds never wake sleepers. Let a sufficiently heard scream or collapse interrupt sleep through the hearing evidence, preserving quiet nights and recording the actual cause. Tracking issue: [#180](https://github.com/danhicks96/ostrog-public-ci/issues/180).
+
+**Acceptance:** Test: `crates/hf-sim/tests/night_sleep.rs::a_scream_wakes_the_light_sleeper_first`. With a scream 9 tiles away through one wall: a light sleeper wakes, a sound sleeper does not. At 4 tiles both wake. Done when the test passes and the seed 1-4 soak's rest-related breaks are within 10% of main.
+
+### OST-464 · A parent who hears their child cry out does not go to them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Hearing a child cry does not draw a parent. Use the parent's heard evidence to offer the proposed response toward the child, without granting their hidden position or knowledge of an unheard cry. Tracking issue: [#181](https://github.com/danhicks96/ostrog-public-ci/issues/181).
+
+**Acceptance:** Test: `crates/hf-sim/tests/senses.rs::a_parent_goes_toward_a_childs_cry`. A child is wounded behind a wall 9 tiles from an awake parent. Within 100 ticks the parent's activity is `Going` toward the child's tile. An unrelated, low-warmth adult at the same distance does not go. Done when the test passes.
+
+### OST-465 · A scream through the wall frightens nobody and singing at the hearth cheers nobody out of sight
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Heard screams and songs have no feeling. Form bounded personal fear or joy from the heard sound and its source, preserving obstruction, distance and personal evidence. Tracking issue: [#182](https://github.com/danhicks96/ostrog-public-ci/issues/182).
+
+**Acceptance:** Test: `crates/hf-sim/tests/feelings.rs::singing_heard_lifts_the_listener`. A listener behind a wall 6 tiles from a `HearthTale` gains Joy; one 15 tiles away does not. Done when the test passes.
+
+### OST-466 · A body left lying for a day sickens the people nearby, and none of them notices the smell
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The smell of the unburied dead brings nobody to them. Use the prerequisite carrion observation to add Stench and offer a personal visit toward the observed body, allowing the existing rites path to begin. Tracking issue: [#183](https://github.com/danhicks96/ostrog-public-ci/issues/183).
+
+**Acceptance:** Test: `crates/hf-sim/tests/senses.rs::the_unburied_dead_are_smelled_and_found`. A body lies 4 tiles from a closed house holding one adult. Within one game-day (28,800 ticks) the adult has the `Stench` thought and the body's rite has begun. Done when the test passes and `tools/enum_order.py` is green.
+
+### OST-467 · A hungry person beside a wall cannot smell the meal cooking on the other side
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Hungry humans cannot smell a nearby meal behind a wall. Note a same-level meal through the proposed four-tile cooking scent when hungry, using the ordinary personal knowledge list and leaving fed observers unchanged. Tracking issue: [#184](https://github.com/danhicks96/ostrog-public-ci/issues/184).
+
+**Acceptance:** Test: `crates/hf-sim/tests/senses.rs::a_hungry_person_smells_the_cooking`. A meal lies 3 tiles away behind a wall. A hungry human knows it after one look; a fed human does not. Done when the test passes and `tests/perceive_cost.rs` still passes.
+
+### OST-469 · People stand about in the rain until they are cold enough to need a fire
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Rain does not lead people to seek cover. Use the existing wetness and weather evidence to weigh suitable reachable shelter through the proposed choice path, without weakening survival priorities. Tracking issue: [#187](https://github.com/danhicks96/ostrog-public-ci/issues/187).
+
+**Acceptance:** Test: `crates/hf-sim/tests/weather_events.rs::those_who_mind_the_rain_go_under_a_roof`. With steady rain, a house 10 tiles off and two idle adults: the rain-minder's activity is `Going` to the house within 300 ticks; the rain-lover stays out. Done when the test passes and the seed 1-4 soak's "normal person" census (`examples/normal_person.rs`) is unchanged.
+
+### OST-472 · Being out in dangerous heat gives a "hot" thought but leaves no observation a lesson could grow from
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Dangerous heat produces discomfort but no learning evidence. In the existing outdoor awake heat branch, record a direct Heat observation at the person's tile, scaled by excess heat and refreshed through the existing unchanged-cue rule. Tracking issue: [#190](https://github.com/danhicks96/ostrog-public-ci/issues/190).
+
+**Acceptance:** Test: `crates/hf-sim/tests/hazards.rs::heat_is_noticed_as_heat`. A human outdoors at 38 °C holds a `Heat` observation after one game-hour. One indoors does not. Done when the test passes.
+
+### OST-473 · Seeing a fire nearby is only a passing "saw fire" thought, never a problem the person is dealing with
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A seen fire produces only a passing thought. Use the existing line-of-sight fire perception to open a personal Fire problem and observation, refreshing the same problem without adding a reaction in this slice. Tracking issue: [#191](https://github.com/danhicks96/ostrog-public-ci/issues/191).
+
+**Acceptance:** Test: `crates/hf-sim/tests/hazards.rs::a_fire_nearby_is_a_personal_problem`. A person 4 tiles from a lit fire holds an open `Fire` problem and a `Fire` observation. One 10 tiles away does not. Done when the test passes.
+
+### OST-474 · Escaping a fire or being burned by it teaches nothing, while escaping water does
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Fire responses never close into lessons. Record existing flee or fire-response attempts against the personal fire problem, resolve safety once clear of nearby fire and harm after a burn, and reuse the existing reaction-to-lesson path. Tracking issue: [#192](https://github.com/danhicks96/ostrog-public-ci/issues/192).
+
+**Acceptance:** Test: `crates/hf-sim/tests/hazards.rs::getting_clear_of_a_fire_teaches_safety`. A person who flees a fire 3 tiles off holds a `Fire`/`Safety` lesson once 4 tiles clear. A person burned while beating flames holds `Fire`/`Harm`. Done when the test passes (and `tools/enum_order.py` is green if a variant was appended).
+
+### OST-475 · A person who can barely walk still sets off on the long forage: let the lame choose work near home
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A person with poor mobility still chooses distant work. Apply the proposed mobility-sensitive distance preference to ordinary work while retaining necessary survival actions and explain the resulting choice. Tracking issue: [#195](https://github.com/danhicks96/ostrog-public-ci/issues/195).
+
+**Acceptance:** New test `crates/hf-sim/tests/bodies.rs::a_lame_forager_takes_bench_work_instead`: a scenario community with a bench order at home and a ripe bush 30 tiles off; a person with moving 0.5 and hunger 0.7 takes the bench order, a whole person with the same needs takes the bush. Control: at hunger 0.3 (unsecured) the lame person still goes for food. Done when the test passes.
+
+### OST-476 · A body covered in wounds is no more irritable than one with a single cut: read `pain()` in dispositions
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Dispositions read only the worst wound or illness. Thread the actual tick through the affected readers and use the existing body pain calculation with tending, so accumulated wounds, breaks and lasting harm can influence temperament. Tracking issue: [#196](https://github.com/danhicks96/ostrog-public-ci/issues/196).
+
+**Acceptance:** New test `crates/hf-sim/tests/dispositions.rs::many_small_wounds_irritate_like_one_big_one`: a person with four 0.2 muscle cuts and a person with one 0.6 bone break both surface "irritable" at rest 1.0 and stress 0; a person with one 0.2 skin cut does not. Done when the test passes.
+
+### OST-477 · A shattered leg and a 0.3 cut give the same half-day thought: make pain thoughts come in bands
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Very different injuries give the same pain thought. Replace the single severity threshold with the proposed bands from the shared body pain reading, preserving existing variants and appending any new ones. Tracking issue: [#197](https://github.com/danhicks96/ostrog-public-ci/issues/197).
+
+**Acceptance:** New test `crates/hf-sim/tests/strain.rs::agony_weighs_more_than_a_graze`: a scenario person with a 0.8 bone break carries `Agony` after one strain pass, one with a 0.3 muscle cut carries `Hurt`, one with a treated and tended 0.3 cut carries none; the agony thought's weight is below -0.7. Done when the test passes and `tools/enum_order.py` passes.
+
+### OST-478 · Someone lying hurt in the open is tended only if they "need care": send kin and healers to whoever is down
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Kin and healers overlook someone down outside the narrow needs-care gate. Offer tending for the proposed downed state using personal knowledge, proximity and care priorities, preserving the existing treatment process. Tracking issue: [#198](https://github.com/danhicks96/ostrog-public-ci/issues/198).
+
+**Acceptance:** New test `crates/hf-sim/tests/bodies.rs::kin_come_to_one_who_is_down`: a scenario person is `Down` 15 tiles from home; their partner, otherwise about to haul, chooses `Goal::Tend` for them within one decision; a stranger of another community does not. Done when the test passes.
+
+### OST-480 · Losing a leg weighs on nobody's mind: give the maimed a grief of their own
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Losing a limb has no personal grief. Add the proposed bounded reaction to the recorded loss, retaining real injury history and saved enum positions. Tracking issue: [#200](https://github.com/danhicks96/ostrog-public-ci/issues/200).
+
+**Acceptance:** New test `crates/hf-sim/tests/limbs.rs::a_lost_limb_is_mourned_and_a_made_one_is_welcome`: a scenario person whose rotten leg is taken carries `Maimed` for ten days and a Hardship memory naming the leg; when a carpenter makes them a leg they gain `Tended`. Done when the test passes and `tools/enum_order.py` passes.
+
+### OST-481 · An eye lost to a raider defending the stores counts for nothing: let harm taken for others earn standing
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Harm suffered defending others gives no standing. Read the recorded wound and its protective context to award the proposed social response, without inventing who was protected or why. Tracking issue: [#202](https://github.com/danhicks96/ostrog-public-ci/issues/202).
+
+**Acceptance:** New test `crates/hf-sim/tests/justice.rs::an_eye_lost_to_a_raider_earns_deference`: in a scenario, one person loses an eye to a stranger's blow seen by three neighbours, another loses one in a valley brawl; the first gains deference from the three, the second none. Done when the test passes.
+
+### OST-457 · The look sees where people are but never what they are doing
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The look records positions but no visible activity. Use the merged OST-1100 read-only act helper to record what this observer actually saw, with the issue's bounds and evidence. Implementation waits for PR #690. Tracking issue: [#173](https://github.com/danhicks96/ostrog-public-ci/issues/173).
+
+**Acceptance:** Test: `crates/hf-sim/tests/look.rs::a_look_notes_someone_sleeping_rough`. A sees B asleep on the ground in daylight in sight: A's ring holds `(B, SleepingRough)` once after two looks the same day. C behind a wall does not. Test: `crates/hf-sim/tests/perceive_cost.rs::seen_acts_add_no_sight_lines`. `perception::sight_lines()` for one look is the same with and without a sleeper in view. Done when both pass, and `ostrog profile --agents 500 --provision --days 20` shows perceive's mean within +5% of main.
+
+### OST-458 · Seeing a neighbour haul for the store all winter, or idle through a hunger, leaves opinion where it was
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Seen contribution or idleness does not affect opinion. Read personal recent activity observations and apply the proposed bounded contributions, preserving knowledge limits and stable ordering. Implementation waits for PR #690 and OST-457. Tracking issue: [#174](https://github.com/danhicks96/ostrog-public-ci/issues/174).
+
+**Acceptance:** Test: `crates/hf-sim/tests/relations.rs::the_industrious_think_less_of_someone_idle_through_a_hunger`. With the community unsecured, an industrious observer (0.9) who sees B idle loses more opinion of B than an easygoing one (0.1), who loses almost none. Seeing B haul for the store raises both. Done when the test passes.
+
+### OST-459 · Watching a friend sleep on the ground or weep beside them stirs nothing in the onlooker
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Seeing hardship in a friend creates no compassion. React only to the observer's actual sight of rough sleep or grief through the proposed personal thoughts and relationship effects. Implementation waits for PR #690 and OST-457. Tracking issue: [#175](https://github.com/danhicks96/ostrog-public-ci/issues/175).
+
+**Acceptance:** Test: `crates/hf-sim/tests/look.rs::seeing_a_friend_sleep_rough_weighs_on_them`. A friend (0.6) who sees B sleeping rough holds `SawFriendSuffer` about B. A stranger (0.0) does not. Done when the test passes and `tools/enum_order.py` is green.
+
+### OST-460 · The Why? lens cannot show what a person saw others doing
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The Why lens cannot explain observed conduct. Add the proposed read-only presentation of the person's recorded activity evidence and its choice effect. Implementation waits for PR #690 and OST-457. Tracking issue: [#176](https://github.com/danhicks96/ostrog-public-ci/issues/176).
+
+**Acceptance:** Test: `crates/hf-sim/tests/why_lens.rs::the_lens_shows_what_they_saw_others_do`. The traced A sees B sleep rough, and the lens holds a "people" percept naming B. Done when the test passes and digests are equal with tracing on and off (the a related item rule).
+
+### OST-461 · Measure what seen acts cost and how much they spread opinion, on eight seeds and all three deities
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+The cost and opinion effects of seeing others are unmeasured. Run the required eight-seed, three-deity comparison, measure observation cost and bounded opinion changes, and record the result. Implementation waits for PR #690 and the named behavior prerequisites. Tracking issue: [#177](https://github.com/danhicks96/ostrog-public-ci/issues/177).
+
+**Acceptance:** Mean perceive cost within +5%, and the worst tick under 16 ms. Reputation standard deviation at least 0.15 (record main's value first). Done when the tables and the decision log row are in the PR.
+
 ### OST-901 · Count births per community, not per valley
 
 **Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#634](https://github.com/danhicks96/ostrog-public-ci/pull/634)
