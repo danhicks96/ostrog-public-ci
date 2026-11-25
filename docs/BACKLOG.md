@@ -713,15 +713,15 @@ Read the client's pose and emote choice for people and list, per `Activity` name
 
 ### OST-868 · Run the camera director headlessly in the alive soak
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** [#691](https://github.com/danhicks96/ostrog-public-ci/pull/691)
 
-Under `soak --alive`, feed the director the same events and suggestions the bridge does, and sample the glance at a fixed stride of 600 ticks (no rng). Tracking issue: [#420](https://github.com/danhicks96/ostrog-public-ci/issues/420). Builds on the existing glance tally in OST-008; do not duplicate it.
+Add `soak --alive`: feed the director the same events and suggestions the bridge does, sample the glance at a fixed stride of 600 ticks (no rng), and print the alive report's keys as `ALIVE key value` lines. The per-person glance keys (`glance_readable`, `glance_standing`, `glance_eventful`) do not exist yet and are not part of this entry; they come later and read the table in OST-867. Tracking issue: [#420](https://github.com/danhicks96/ostrog-public-ci/issues/420). Builds on the existing glance tally in OST-008; do not duplicate it.
 
-**Acceptance:** A two-day opening soak prints the glance keys with 96 samples. A saved ring's digest is the same with and without `--alive`.
+**Acceptance:** A watched run samples the camera once per 600 ticks. A world stepped with the observation has the same digest as one without. `ostrog soak --alive` prints the existing alive keys, including the `glance_missed_major` ones.
 
 ### OST-864 · Count how many feed lines a day are the same news again
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
 
 Extend the alive report with, per game-day, the number of lines that reach the feed at notable or above, the number after folding, and the top fold keys. Tracking issue: [#408](https://github.com/danhicks96/ostrog-public-ci/issues/408). Uses the existing `view::known::told` and `view::fold::fold`.
 
