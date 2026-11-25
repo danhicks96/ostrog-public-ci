@@ -179,14 +179,13 @@ fn header(w: &World, s: &Sink) -> Value {
 }
 
 fn write_record(w: &World, s: &mut Sink, value: Value) {
-    if s.recorder.is_some() {
-        let start = if s.recorder_header {
-            None
-        } else {
-            Some(header(w, s))
-        };
+    let start = if !s.recorder_header && s.recorder.is_some() {
+        Some(header(w, s))
+    } else {
+        None
+    };
+    if let Some(r) = s.recorder.as_mut() {
         s.recorder_header = true;
-        let r = s.recorder.as_mut().expect("recorder is configured");
         if let Some(mut start) = start {
             start["capture"] = json!(["decision", "path", "plan_failure", "abandonment", "day"]);
             start["replay_verified"] = json!(false);
