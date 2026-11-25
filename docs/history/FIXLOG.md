@@ -1,5 +1,18 @@
 # Fix log
 
+## 2026-11-25: one need at zero no longer hides behind five full ones (OST-205)
+
+- Symptom: a person with hunger at zero and every other need full had a needs term of +0.4 and
+  could sit at mood +1; the term was the mean of the six needs centred on half-full.
+- Cause: a mean hides the one need that matters.
+- Fix: `mood_terms` now reads `0.8 * (mean - 0.75) - 0.6 * max(0, 0.3 - least) / 0.3`, centred
+  on "fine" with the neediest need biting on its own; the old 1.2 weight is folded in.
+- Guards: `tests/mood.rs::a_starving_person_is_not_content` (needs term at most -0.3 with hunger
+  at zero) and `a_comfortable_person_is_only_mildly_lifted_by_needs` (between 0 and 0.15 at 0.85
+  everywhere); both fail without the change.
+- Not covered: the census on seeds 1-4 and break rates were not re-measured, and simulation
+  digests change because mood feeds decisions.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every
