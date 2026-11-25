@@ -53,15 +53,41 @@ steps (Windows, cross-builds, packaging, client flags, keyboard and mouse) are i
 tools/ci.sh      # fmt, clippy, tests, asset provenance, docs checks
 ```
 
-## Layout
+## Architecture map
 
-| Path | What |
-|---|---|
-| `crates/` | Deterministic Rust simulation, CLI, Godot bridge, launcher |
-| `godot/` | The Godot 4 client (GDScript, scenes, generated assets) |
-| `tools/` | CI, packaging, and the scripts that generate art, audio and docs tables |
-| `data/` | Game data |
-| `docs/` | Vision, design, decisions, reference; see [docs/README.md](docs/README.md) |
+```text
+New world (seed + setup) or loaded save
+        │
+        ▼
+Rust session → fixed tick order → updated world → next tick
+        │     world → perceive → choose → act → consequences ↗
+        ├─ view snapshot + events → Godot map, panels, camera and audio
+        ├─ eligible events → SQLite chronicle → history and save
+        ├─ world snapshot + chronicle → autosave → next load
+        └─ opt-in diagnostics → decision log; not part of the save
+```
+
+| Start here | What it owns | Map |
+|---|---|---|
+| [Rust workspace](Cargo.toml) | Package and dependency boundaries | [Crates](crates/README.md) |
+| [Simulation entry](crates/hf-sim/src/lib.rs) | Session, world state and tick order | [Simulation](crates/hf-sim/README.md) |
+| [World setup](crates/hf-sim/src/setup.rs) | Terrain, local past and the wider realm | [World and ecology](crates/hf-sim/README.md#world-and-ecology) |
+| [Decision system](crates/hf-sim/src/systems/decide.rs) | People, perception, needs, choices and action | [People and decisions](crates/hf-sim/src/systems/README.md) |
+| [Body model](crates/hf-sim/src/body.rs) | Species, bodies, health, life and death | [Bodies and lives](crates/hf-sim/README.md#bodies-and-lives) |
+| [Work planner](crates/hf-sim/src/plan.rs) | Jobs, items, buildings, routes and trade | [Work and material](crates/hf-sim/README.md#work-and-material) |
+| [Community](crates/hf-sim/src/society.rs) | Groups, social ties, customs, faith and expeditions | [Societies and stories](crates/hf-sim/README.md#societies-and-stories) |
+| [Rust–Godot bridge](crates/hf-godot/src/lib.rs) | Worker handoff, view snapshots and render data | [Native bridge](crates/hf-godot/README.md) |
+| [Godot entry](godot/scripts/main.gd) | Screens, input, viewer controls and presentation | [Desktop client](godot/README.md) |
+| [Chronicle](crates/hf-sim/src/chronicle/mod.rs) | Recorded events, learned history and summaries | [History](crates/hf-sim/src/chronicle/README.md) |
+| [Save system](crates/hf-sim/src/save/mod.rs) | Versioned snapshots, migration and recovery | [Persistence](crates/hf-sim/src/save/README.md) |
+| [CLI](crates/hf-cli/src/main.rs) | Headless runs, probes, profiles and soaks | [Headless and diagnostics](crates/hf-cli/README.md) |
+| [Game data](data/) | Authored definitions; separate from generated assets | [Data](data/README.md) |
+| [Tools](tools/) | Checks, assets, performance probes and packaging | [Tools](tools/README.md) |
+| [Launcher](crates/hf-launcher/src/) | Release installation and update boundaries | [Build and release](tools/README.md#build-and-release) |
+| [Design library](docs/) | Intent, decision history, backlog and reference | [Documentation index](docs/README.md) |
+
+On a fresh source fork, start with the headless smoke in the [CLI guide](crates/hf-cli/README.md).
+See [Maintaining the maps](CONTRIBUTING.md#maintaining-the-maps) when changing a boundary.
 
 ## Documentation
 

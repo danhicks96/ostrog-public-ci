@@ -1,5 +1,13 @@
 # Fix log
 
+## 2026-11-25: put the architecture at the root (OST-1501)
+
+- Symptom: the layout listed directories but did not show where the simulation writes data,
+  where it gets saved, or how it reaches the screen.
+- Fix: add a root route map, owner-adjacent guides and fork verification instructions.
+- Guard: the generated save-format line fails its check on a source version change until
+  regenerated; unrelated source comments do not make it stale.
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every

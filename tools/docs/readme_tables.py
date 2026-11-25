@@ -2,7 +2,8 @@
 """Regenerate the tables in docs/REFERENCE.md that are read straight out of the code.
 
     python3 tools/docs/readme_tables.py           # rewrite the generated blocks in docs/REFERENCE.md
-    python3 tools/docs/readme_tables.py --check   # exit 1 if docs/REFERENCE.md is out of date
+    python3 tools/docs/readme_tables.py --check   # fail on stale reference or data map
+    python3 tools/docs/readme_tables.py --check-maps  # asset-independent data map check
 
 docs/REFERENCE.md has blocks fenced by `<!-- BEGIN GENERATED: name -->` and `<!-- END GENERATED: name -->`.
 Everything between a pair is replaced; everything outside is hand-written and left alone.
@@ -971,11 +972,44 @@ def replace_block(text, name, body):
     e = f'<!-- END GENERATED: {name} -->'
     i, j = text.find(b), text.find(e)
     if i < 0 or j < 0:
-        raise SystemExit(f'docs/REFERENCE.md has no {name} block markers')
+        raise SystemExit(f'missing generated block markers: {name}')
     return text[:i + len(b)] + '\n<!-- Written by tools/docs/readme_tables.py; edit the code, then rerun it. -->\n\n' + body + '\n\n' + text[j:]
 
 
+
+SAVE_MAP = os.path.join(SIM, 'save', 'README.md')
+
+
+def save_contract(source):
+    """Generate only the declared on-disk format identifier; no assets needed."""
+    matches = re.findall(r'^\s*pub const FORMAT_VERSION: u32 = ([0-9]+);', source, re.M)
+    if len(matches) != 1:
+        raise SystemExit('expected one FORMAT_VERSION declaration in save/mod.rs')
+    return f'Current writer format: **{matches[0]}** (see [FORMAT_VERSION](mod.rs)).'
+
+
+def update_save_map(check):
+    text = read(SAVE_MAP)
+    source = read(os.path.join(SIM, 'save', 'mod.rs'))
+    new = replace_block(text, 'save-contract', save_contract(source))
+    if new == text:
+        return True
+    if check:
+        print('save data map is out of date: run python3 tools/docs/readme_tables.py --maps', file=sys.stderr)
+        return False
+    with open(SAVE_MAP, 'w', encoding='utf-8') as out:
+        out.write(new)
+    print('save data map rewritten')
+    return True
+
+
 def main():
+    check = '--check' in sys.argv or '--check-maps' in sys.argv
+    ok = update_save_map(check)
+    if not ok:
+        sys.exit(1)
+    if '--maps' in sys.argv or '--check-maps' in sys.argv:
+        return
     text = read(README)
     new = text
     new = replace_block(new, 'strings-sim', strings_sim())
@@ -985,7 +1019,7 @@ def main():
     new = replace_block(new, 'pipeline', pipeline())
     for w in WARNINGS:
         print('WARNING:', w, file=sys.stderr)
-    if '--check' in sys.argv:
+    if check:
         if new != text or WARNINGS:
             print('docs/REFERENCE.md generated tables are out of date: run python3 tools/docs/readme_tables.py', file=sys.stderr)
             sys.exit(1)
