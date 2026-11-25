@@ -12,6 +12,7 @@
 - Guard: `tests/alive_report.rs::the_readable_table_names_every_activity_and_marks_plain_standing`
   (fails to compile without the table).
 - Not covered: the long-run glance share that will use the table (OST-868 and a later slice).
+
 ## 2026-11-24: release notes get a short, watcher-first format
 
 - Symptom: release notes ran to 96 lines, repeated install, update and uninstall text every
