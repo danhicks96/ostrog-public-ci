@@ -272,6 +272,9 @@ pub struct AliveTally {
     min_hours: u32,
     /// What the latest `observe_ties` saw (#1491); all zero until it is called.
     ties: TieCounts,
+    /// Latest hourly lineage snapshot, plus distinct recorded parent-to-child feud events.
+    lineage: crate::social::LineageStats,
+    lineage_feuds: BTreeSet<crate::ids::EventId>,
     /// (hostile, top-five) tie counts added up over the `observe_ties` calls, the one tie key
     /// that is a run's sum rather than the latest look (#1491: `ties_hostile`). It holds at most
     /// one look per tick: see `last_look`.
@@ -420,6 +423,8 @@ impl AliveTally {
             activity_hours: BTreeMap::new(),
             min_hours,
             ties: TieCounts::default(),
+            lineage: crate::social::LineageStats::default(),
+            lineage_feuds: BTreeSet::new(),
             hostile_pool: (0, 0),
             last_look: None,
             grief: Vec::new(),
@@ -439,11 +444,27 @@ impl AliveTally {
         }
     }
 
+    /// Feed actual inherited-feud records; both full event readers may see the same record.
+    fn observe_lineage_events(&mut self, w: &World, events: &[Event]) {
+        for e in events {
+            if let EventKind::FeudInherited { agent, from, .. } = e.kind {
+                if w.agents.iter().any(|a| {
+                    a.id == agent
+                        && a.species == Species::Person
+                        && (a.mother == Some(from) || a.father == Some(from))
+                }) {
+                    self.lineage_feuds.insert(e.id);
+                }
+            }
+        }
+    }
+
     /// Feed one tick's events to the day's feed count (OST-864): the rows that would reach the
     /// feed (Notable or above, told by `view::known::told`) are kept for their game-day; when
     /// the day changes it settles into one pair of counts, the lines as there are and the lines
     /// after `view::fold::fold`. The last, unfinished day is not counted. Reads only.
     pub fn observe_feed(&mut self, w: &World, events: &[Event]) {
+        self.observe_lineage_events(w, events);
         for e in events {
             let day = e.tick / TICKS_PER_DAY;
             if self.feed_day.is_some_and(|d| d != day) {
@@ -475,6 +496,7 @@ impl AliveTally {
     /// when five or more were sampled, the s.d. of those moods; and which activity each of them
     /// is in, kept per person (#1490).
     pub fn observe_hour(&mut self, w: &World) {
+        self.lineage = crate::social::lineage_stats(w);
         let people: Vec<_> = w
             .agents
             .iter()
@@ -593,6 +615,7 @@ impl AliveTally {
     /// anyone at all when the dead is an animal. The same death fed twice opens one bereavement
     /// per bereaved person; a person who lost two people has two.
     pub fn observe_events(&mut self, w: &World, events: &[Event]) {
+        self.observe_lineage_events(w, events);
         for e in events {
             let EventKind::Died { agent, cause } = &e.kind else {
                 continue;
@@ -851,6 +874,11 @@ impl AliveTally {
     /// - `standing_share`, `unreadable_share`, `work_share`, `talk_share`: the share of waking
     ///   hours in idle + loitering; idle + loitering + going; working; talking. 0.0 when nobody
     ///   was sampled awake.
+    /// - `lineage_living_grandparent`: living people with at least one living grandparent,
+    ///   from the latest hourly snapshot. `lineage_births_valley_parent` counts recorded
+    ///   children of a valley-born parent (third-or-later generation), including the dead.
+    ///   `lineage_feud_to_child` counts distinct observed feud inheritances from a parent.
+    ///   Inherited ties await their provenance mechanism; no count is invented for them.
     /// - `day_distance`: over people sampled at least `min_hours` hours, each person's share
     ///   vector is their hours in each of the ten activities (sleeping included) over their own
     ///   sampled hours; the colony's mean day is the mean of those vectors (each person counts
@@ -977,6 +1005,17 @@ impl AliveTally {
             ("feed_lines_day", self.feed_means().0),
             ("feed_folded_day", self.feed_means().1),
         ];
+        rows.extend([
+            (
+                "lineage_living_grandparent",
+                f64::from(self.lineage.living_with_living_grandparent),
+            ),
+            (
+                "lineage_births_valley_parent",
+                f64::from(self.lineage.births_to_valley_born_parent),
+            ),
+            ("lineage_feud_to_child", self.lineage_feuds.len() as f64),
+        ]);
         const GLANCE_KEYS: [&str; 7] = [
             "glance_missed_major_died",
             "glance_missed_major_captured",

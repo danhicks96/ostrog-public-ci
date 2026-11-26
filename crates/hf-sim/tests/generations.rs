@@ -340,3 +340,93 @@ fn strangers_do_not_crowd_the_nursery() {
         "a band of raiders at the edge of the valley halved the community's own birth chance"
     );
 }
+
+#[test]
+fn lineage_stats_count_a_built_family() {
+    let mut w = World::generate(605, GenParams::small());
+    let founders = w.found_party(4);
+    let mother = w.give_birth(founders[0], founders[1]).unwrap();
+    let father = w.give_birth(founders[2], founders[3]).unwrap();
+    let child = w.give_birth(mother, father).unwrap();
+    let before = hf_sim::digest::digest(&w);
+    let stats = hf_sim::social::lineage_stats(&w);
+    assert_eq!(
+        stats.living_with_living_grandparent, 1,
+        "four grandparents still describe one grandchild"
+    );
+    assert_eq!(
+        stats.births_to_valley_born_parent, 1,
+        "two valley-born parents still describe one birth"
+    );
+    assert_eq!(before, hf_sim::digest::digest(&w));
+    // A dead intermediate parent does not erase a child's living grandparent.
+    w.agents.iter_mut().find(|a| a.id == mother).unwrap().alive = false;
+    assert_eq!(
+        hf_sim::social::lineage_stats(&w).living_with_living_grandparent,
+        1
+    );
+    for a in &mut w.agents {
+        if founders.contains(&a.id) {
+            a.alive = false;
+        }
+    }
+    let stats = hf_sim::social::lineage_stats(&w);
+    assert_eq!(stats.living_with_living_grandparent, 0);
+    assert_eq!(
+        stats.births_to_valley_born_parent, 1,
+        "historical births survive ancestors' deaths"
+    );
+    w.agents.iter_mut().find(|a| a.id == child).unwrap().alive = false;
+    assert_eq!(
+        hf_sim::social::lineage_stats(&w).births_to_valley_born_parent,
+        1
+    );
+    w.agents.retain(|a| !founders.contains(&a.id));
+    assert_eq!(
+        hf_sim::social::lineage_stats(&w).living_with_living_grandparent,
+        0,
+        "missing grandparents are never treated as living"
+    );
+}
+
+#[test]
+fn lineage_keys_read_family_and_recorded_parent_feuds() {
+    use hf_sim::events::{Event, Severity};
+    use hf_sim::ids::EventId;
+    use hf_sim::view::alive::AliveTally;
+    let mut w = World::generate(605, GenParams::small());
+    let founders = w.found_party(4);
+    let mother = w.give_birth(founders[0], founders[1]).unwrap();
+    let child = w.give_birth(mother, founders[2]).unwrap();
+    let event = |id, from| Event {
+        id: EventId(id),
+        tick: w.tick(),
+        at: None,
+        severity: Severity::Minor,
+        kind: EventKind::FeudInherited {
+            agent: child,
+            from,
+            against: founders[3],
+        },
+    };
+    let events = [event(900, mother), event(901, founders[3])];
+    let before = hf_sim::digest::digest(&w);
+    let mut tally = AliveTally::default();
+    tally.observe_hour(&w);
+    tally.observe_feed(&w, &events);
+    let report = tally.report();
+    assert_eq!(
+        report.get("lineage_living_grandparent"),
+        Some(1.0),
+        "the report prints the built lineage"
+    );
+    assert_eq!(report.get("lineage_births_valley_parent"), Some(1.0));
+    assert_eq!(report.get("lineage_feud_to_child"), Some(1.0));
+    tally.observe_events(&w, &events);
+    assert_eq!(
+        report,
+        tally.report(),
+        "two readers cannot double-count an inheritance"
+    );
+    assert_eq!(before, hf_sim::digest::digest(&w));
+}

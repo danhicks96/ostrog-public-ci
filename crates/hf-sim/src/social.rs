@@ -17,6 +17,51 @@ fn idx(w: &World, id: AgentId) -> Option<usize> {
     w.agents.iter().position(|a| a.id == id && a.alive)
 }
 
+/// Recorded family links in this world (OST-605). A birth to a valley-born parent is a
+/// third-or-later-generation birth, including children and ancestors who subsequently died.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct LineageStats {
+    pub living_with_living_grandparent: u32,
+    pub births_to_valley_born_parent: u32,
+}
+
+/// Read the saved parent links without changing anyone. Only `give_birth` writes these links;
+/// founders and incoming strangers have none. Missing parents are unknown, not inferred from
+/// age, name, home or an opinion. Each grandchild counts once even with several grandparents.
+pub fn lineage_stats(w: &World) -> LineageStats {
+    let people: std::collections::BTreeMap<_, _> = w
+        .agents
+        .iter()
+        .filter(|a| a.species == crate::agents::Species::Person)
+        .map(|a| (a.id, a))
+        .collect();
+    let mut stats = LineageStats::default();
+    for person in people.values() {
+        let parents: Vec<_> = [person.mother, person.father]
+            .into_iter()
+            .flatten()
+            .filter_map(|id| people.get(&id).copied())
+            .collect();
+        if parents
+            .iter()
+            .any(|p| p.mother.is_some() || p.father.is_some())
+        {
+            stats.births_to_valley_born_parent += 1;
+        }
+        if person.alive
+            && parents.iter().any(|p| {
+                [p.mother, p.father]
+                    .into_iter()
+                    .flatten()
+                    .any(|id| people.get(&id).is_some_and(|g| g.alive))
+            })
+        {
+            stats.living_with_living_grandparent += 1;
+        }
+    }
+    stats
+}
+
 /// What a community thinks of `of`: the mean opinion of those who know them.
 pub fn reputation(w: &World, of: AgentId) -> f32 {
     let (mut sum, mut n) = (0.0, 0.0);

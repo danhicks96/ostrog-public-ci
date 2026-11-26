@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3260 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2408,9 +2408,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | siege.rs:347 | driven off |
 | siege.rs:348 | tired of waiting |
 | siege.rs:421 | a ransom |
-| social.rs:247 | {name}'s family is at feud with theirs |
-| social.rs:249 | they think ill of {name} |
-| social.rs:257 | kept {} to themselves |
+| social.rs:292 | {name}'s family is at feud with theirs |
+| social.rs:294 | they think ill of {name} |
+| social.rs:302 | kept {} to themselves |
 | society.rs:76 | a cramped site |
 | society.rs:77 | a grown household |
 | society.rs:78 | their cultural preference |
@@ -3752,47 +3752,50 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/alive.rs:248 | record |
 | view/alive.rs:256 | stoop |
 | view/alive.rs:256 | none |
-| view/alive.rs:936 | mood_median |
-| view/alive.rs:937 | mood_p10 |
-| view/alive.rs:938 | mood_hi |
-| view/alive.rs:939 | mood_lo |
-| view/alive.rs:940 | mood_clamped |
-| view/alive.rs:941 | mood_spread |
-| view/alive.rs:942 | mood_p25 |
-| view/alive.rs:943 | mood_p75 |
-| view/alive.rs:944 | mood_below_m03 |
-| view/alive.rs:945 | mood_term_needs |
-| view/alive.rs:946 | mood_term_recent |
-| view/alive.rs:947 | mood_term_long |
-| view/alive.rs:948 | mood_term_thoughts |
-| view/alive.rs:949 | standing_share |
-| view/alive.rs:950 | unreadable_share |
-| view/alive.rs:951 | work_share |
-| view/alive.rs:952 | talk_share |
-| view/alive.rs:953 | day_distance |
-| view/alive.rs:954 | act_entropy_sd |
-| view/alive.rs:956 | ties_saturated |
-| view/alive.rs:960 | ties_hostile |
-| view/alive.rs:963 | ties_frozen |
-| view/alive.rs:964 | ties_frozen_max_days |
-| view/alive.rs:966 | ties_to_dead_share |
-| view/alive.rs:969 | grief_drop_2d |
-| view/alive.rs:970 | grief_drop_10d |
-| view/alive.rs:971 | grief_days |
-| view/alive.rs:972 | grief_n |
-| view/alive.rs:973 | cause_repeat |
-| view/alive.rs:974 | lesson_ignored |
-| view/alive.rs:975 | glance_major_n |
-| view/alive.rs:976 | glance_missed_major |
-| view/alive.rs:977 | feed_lines_day |
-| view/alive.rs:978 | feed_folded_day |
-| view/alive.rs:981 | glance_missed_major_died |
-| view/alive.rs:982 | glance_missed_major_captured |
-| view/alive.rs:983 | glance_missed_major_broke |
-| view/alive.rs:984 | glance_missed_major_exiled |
-| view/alive.rs:985 | glance_missed_major_born |
-| view/alive.rs:986 | glance_missed_major_paired |
-| view/alive.rs:987 | glance_missed_major_returned |
+| view/alive.rs:964 | mood_median |
+| view/alive.rs:965 | mood_p10 |
+| view/alive.rs:966 | mood_hi |
+| view/alive.rs:967 | mood_lo |
+| view/alive.rs:968 | mood_clamped |
+| view/alive.rs:969 | mood_spread |
+| view/alive.rs:970 | mood_p25 |
+| view/alive.rs:971 | mood_p75 |
+| view/alive.rs:972 | mood_below_m03 |
+| view/alive.rs:973 | mood_term_needs |
+| view/alive.rs:974 | mood_term_recent |
+| view/alive.rs:975 | mood_term_long |
+| view/alive.rs:976 | mood_term_thoughts |
+| view/alive.rs:977 | standing_share |
+| view/alive.rs:978 | unreadable_share |
+| view/alive.rs:979 | work_share |
+| view/alive.rs:980 | talk_share |
+| view/alive.rs:981 | day_distance |
+| view/alive.rs:982 | act_entropy_sd |
+| view/alive.rs:984 | ties_saturated |
+| view/alive.rs:988 | ties_hostile |
+| view/alive.rs:991 | ties_frozen |
+| view/alive.rs:992 | ties_frozen_max_days |
+| view/alive.rs:994 | ties_to_dead_share |
+| view/alive.rs:997 | grief_drop_2d |
+| view/alive.rs:998 | grief_drop_10d |
+| view/alive.rs:999 | grief_days |
+| view/alive.rs:1000 | grief_n |
+| view/alive.rs:1001 | cause_repeat |
+| view/alive.rs:1002 | lesson_ignored |
+| view/alive.rs:1003 | glance_major_n |
+| view/alive.rs:1004 | glance_missed_major |
+| view/alive.rs:1005 | feed_lines_day |
+| view/alive.rs:1006 | feed_folded_day |
+| view/alive.rs:1010 | lineage_living_grandparent |
+| view/alive.rs:1014 | lineage_births_valley_parent |
+| view/alive.rs:1017 | lineage_feud_to_child |
+| view/alive.rs:1020 | glance_missed_major_died |
+| view/alive.rs:1021 | glance_missed_major_captured |
+| view/alive.rs:1022 | glance_missed_major_broke |
+| view/alive.rs:1023 | glance_missed_major_exiled |
+| view/alive.rs:1024 | glance_missed_major_born |
+| view/alive.rs:1025 | glance_missed_major_paired |
+| view/alive.rs:1026 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
