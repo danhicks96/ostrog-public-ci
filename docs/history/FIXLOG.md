@@ -9,6 +9,9 @@
   half a day. It is added each hour while an awake person's social need is below 0.2 and lapses
   once the need recovers. Sleepers never get it. Mood and strain for lonely people now read lower,
   so seeded digests move.
+- Seeded pacing tests moved with it: `hask_presses_plenty` now keeps the village socially content
+  (plenty is about food, not company), and `troubles_overlap_and_then_ease` uses seeds 3, 7, 11 and
+  29 (one turn each, four in all) because 13 and 17 no longer turn within the run.
 - Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
   sleeper does not; a content person does not).
 ## 2026-11-25: one need at zero no longer hides behind five full ones (OST-205)
