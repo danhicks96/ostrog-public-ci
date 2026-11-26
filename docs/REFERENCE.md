@@ -1455,9 +1455,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:511 | someone |
 | accounts.rs:521 | {} and {} more |
 | accounts.rs:525 |  Said: {words} ({by}). |
-| agents.rs:474 | fur |
-| agents.rs:475 | feathers |
-| agents.rs:476 | scales |
+| agents.rs:479 | fur |
+| agents.rs:480 | feathers |
+| agents.rs:481 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2124,24 +2124,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:576 | {name} is already back with the others |
-| opening.rs:577 | what became of {name} is already known |
-| opening.rs:589 | no sign of {who} here |
-| opening.rs:600 | {who} was alive, and is coming back |
-| opening.rs:607 | something |
-| opening.rs:611 | {who} had died there, of {cause} |
-| opening.rs:790 | coming through the portal |
-| opening.rs:942 | the herb-woman |
-| opening.rs:945 | apprenticed to {master} |
-| opening.rs:954 | the carpenter |
-| opening.rs:955 | apprenticed to {master} |
-| opening.rs:964 | the smith |
-| opening.rs:965 | apprenticed to {master} |
-| opening.rs:981 | the quarry |
-| opening.rs:982 | apprenticed to {master} |
-| opening.rs:986 | the baker |
-| opening.rs:987 | apprenticed to {master} |
-| opening.rs:1099 | brought through the portal |
+| opening.rs:577 | {name} is already back with the others |
+| opening.rs:578 | what became of {name} is already known |
+| opening.rs:590 | no sign of {who} here |
+| opening.rs:601 | {who} was alive, and is coming back |
+| opening.rs:608 | something |
+| opening.rs:612 | {who} had died there, of {cause} |
+| opening.rs:791 | coming through the portal |
+| opening.rs:943 | the herb-woman |
+| opening.rs:946 | apprenticed to {master} |
+| opening.rs:955 | the carpenter |
+| opening.rs:956 | apprenticed to {master} |
+| opening.rs:965 | the smith |
+| opening.rs:966 | apprenticed to {master} |
+| opening.rs:982 | the quarry |
+| opening.rs:983 | apprenticed to {master} |
+| opening.rs:987 | the baker |
+| opening.rs:988 | apprenticed to {master} |
+| opening.rs:1100 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
@@ -2361,14 +2361,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:444 | scenario |
-| scenario.rs:485 | brought by the founders |
-| scenario.rs:795 | scenario |
-| scenario.rs:802 | scenario |
-| scenario.rs:810 | scenario |
-| scenario.rs:829 | scenario |
-| scenario.rs:849 | scenario |
-| scenario.rs:1019 | scenario |
+| scenario.rs:446 | scenario |
+| scenario.rs:487 | brought by the founders |
+| scenario.rs:797 | scenario |
+| scenario.rs:804 | scenario |
+| scenario.rs:812 | scenario |
+| scenario.rs:831 | scenario |
+| scenario.rs:851 | scenario |
+| scenario.rs:1021 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |

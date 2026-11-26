@@ -2,6 +2,9 @@
 
 ## 2026-11-26: the live pairing baseline includes Trace arrivals (OST-420)
 
+- This fixed baseline predates the suspicion-memory change in #700. That change adds saved
+  state and changes repeated suspicion handling. Its world digests and behavior require a
+  new common-base comparison; the figures below describe the earlier baseline.
 - The live opening completed 600 days at one thread. Its final world digest and all 18
   non-performance daily CSV fields match the original four-thread opening through every
   day. The final digest is
@@ -65,6 +68,19 @@
   another built log checks quartiles and missing talks. The alive-report guard checks the
   streamed keys and an unchanged world digest.
 - The completed seed-5 census is recorded above. No simulation state, save schema or choices change.
+## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
+
+- Symptom: "has come to suspect" was written every few nights for the same two people, each time
+  with a new row and a cooler opinion, so the feed filled with one story.
+- Cause: `conditions::suspect` wrote a memory, an opinion change and an event on every call.
+- Fix: each agent keeps `suspicions` (of, evidence tag, tick), at most 16. The same evidence
+  against the same person within 20 days only deepens the long memory (+0.1, capped) with no
+  event and no opinion change; a new kind of evidence still counts as new.
+- Guard: `tests/true_dream.rs::a_suspicion_is_not_repeated_without_new_evidence` fails with the
+  window set to zero; `a_suspicion_returns_after_the_window_or_on_new_evidence` covers a
+  different kind of evidence and the window running out (it counts from the first time the
+  evidence was held). The new `Agent` field is serde-default, so old saves load; a world that
+  repeated suspicions now writes fewer rows, so its digest changes.
 ## 2026-11-26: a bounded long-memory term for mood, not yet used (OST-202)
 
 - Symptom: mood adds every long memory with no bound, no fading and no habituation, so a meal
