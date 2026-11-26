@@ -232,6 +232,14 @@ impl Memories {
 
 /// A bad memory loses half its grip over about this many ticks (ten days).
 pub const TRAUMA_HALF_LIFE: f64 = 288_000.0;
+/// OST-202: the most the long memories can add to or take from mood.
+pub const MOOD_LONG_SCALE: f32 = 0.35;
+/// Ticks for a routine memory (meals, rest, company) to count half as much in mood: 10 days.
+pub const ROUTINE_HALF_LIFE: f64 = 288_000.0;
+/// Ticks for a vivid memory (hardship, work, discovery) to count half as much: 30 days.
+pub const VIVID_HALF_LIFE: f64 = 864_000.0;
+/// A routine memory renewed this many times counts half as much as a fresh one (habituation).
+pub const HABIT_AFTER: f32 = 8.0;
 /// How far the shadow of a bad place reaches, in tiles.
 pub const AVERSION_RADIUS: i32 = 6;
 
@@ -272,6 +280,34 @@ impl Memories {
         // Fear is what the worst thing there can still do; good times since then answer it.
         let still = fear * if cautious { 1.25 } else { 1.0 } - calm * 0.8;
         still.clamp(0.0, 1.0)
+    }
+
+    /// What the long memories add to mood (OST-202): bounded by `MOOD_LONG_SCALE` whatever the
+    /// store size, each memory weighed by how recently it was renewed and, for routine kinds
+    /// (meals, rest, company), by how often, so a vivid loss shows among many meals and a meal
+    /// eaten daily for years does not. Not called by mood yet; `bias` and `aversion` read memory
+    /// differently and are untouched.
+    pub fn mood_term(&self, now: u64) -> f32 {
+        let mut sum = 0.0f64;
+        for m in &self.long {
+            let routine = matches!(m.kind, MemKind::Meal | MemKind::Rest | MemKind::Company);
+            let half = if routine {
+                ROUTINE_HALF_LIFE
+            } else {
+                VIVID_HALF_LIFE
+            };
+            let age = now.saturating_sub(m.last.max(m.formed)) as f64;
+            let recency = 0.5f64.d_powf(age / half);
+            let habit = if routine {
+                1.0 / (1.0 + m.reinforced as f64 / HABIT_AFTER as f64)
+            } else {
+                1.0
+            };
+            sum += m.valence as f64 * m.strength as f64 * recency * habit;
+        }
+        // tanh(x) = (e^2x - 1) / (e^2x + 1), from the deterministic exp.
+        let e = (2.0 * sum / 4.0).clamp(-20.0, 20.0).d_exp();
+        MOOD_LONG_SCALE * ((e - 1.0) / (e + 1.0)) as f32
     }
 
     /// Wariness of a person, 0..1: they have been hurt by this person and not since reconciled.
