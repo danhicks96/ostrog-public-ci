@@ -157,22 +157,14 @@ fn record_run(seed: u64) -> (usize, usize, usize) {
 
 #[test]
 fn they_study_it_and_the_wards_quiet_it() {
-    let mut w = World::opening_world(7);
-    // #486 changed the seed's trajectory and produced a curious chooser who left the stone
-    // open. Stage non-curious people so this guard always exercises its studying/warding case;
-    // every construction and quieting assertion below remains unchanged.
-    for a in &mut w.agents {
-        a.traits.list.retain(|t| *t != hf_sim::mind::Trait::Curious);
-    }
+    // Keep the warding scenario on its original marsh. The regional setup may legitimately
+    // choose another landform, where a different inhabitant can study first and leave it open.
+    let mut setup = hf_sim::setup::WorldSetup::new(7);
+    setup.landform = Some(hf_sim::world::gen::Landform::Marsh);
+    let mut w = World::from_setup(&setup);
     let mut log = Vec::new();
-    // Who goes to sit by the stone is the run's lottery: with nobody curious, only those it
-    // has shown an echo (thin.rs `seen`) or who have begun to learn its ways. Which of them
-    // learns enough first, and when, moved with every change to how the day is spent (#553,
-    // FIXLOG 2026-11-01: quieted on day 58, 64, 82, 89 or 95, or not by day 130, as each of
-    // #553's five fixes was turned off in turn, against 59 on master `89a85fef`). So one of the founders
-    // has been shown an echo at the arrival, and goes to sit there from when it wakes, as
-    // anyone shown one does. Everything after, the learning, the choice, the wards and the
-    // quiet, is the run's own.
+    // A founder has witnessed an echo. Sitting by the stone, learning, choosing what
+    // to do and constructing the wards all proceed through the ordinary simulation.
     let first = w
         .agents
         .iter()
@@ -181,29 +173,27 @@ fn they_study_it_and_the_wards_quiet_it() {
         .expect("a founder");
     let now = w.meta.tick;
     w.thin.seen.push((first, now));
-    // Until it is quieted, then fifteen days more to see that nothing comes through after.
-    // The cap is a ceiling, not a schedule: the run stops as soon as the stone is quiet.
-    // When it is quieted depends on when someone first goes and sits by the stone (a chosen
-    // errand, so it follows how people walk), then on the thin strength (which keeps growing
-    // meanwhile, up to 1.0) wearing down 0.05 a day once four wards stand. It was day 46 on
-    // this seed (2026-10-27); with #493's desire paths (FIXLOG 2026-11-01 #510 second entry)
-    // the same camp first studies about day 60, the wards stand that day, and the stone is
-    // quiet on day 81; #395's arrival affect then reshaped the opening again (day 87
-    // on the branch before this merge, 2026-11-01). Nothing about the mechanic changed (four wards within reach still
-    // quiet it), so the ceiling is 120 days, which costs nothing when it is quiet sooner.
+    // Allow up to 120 days for the inhabitants to quiet the stone.
     const CEILING: u64 = 120;
     let mut day = 0;
-    while day < CEILING && !w.thin.quieted {
+    while day < CEILING && !w.thin.quieted && !matches!(w.thin.chosen, Some((_, false))) {
         run_days(&mut w, 1, &mut log);
         day += 1;
     }
-    run_days(&mut w, 15.min(CEILING - day), &mut log);
+    let (who, ward) = w.thin.chosen.expect("someone chose");
+    assert!(ward, "{who:?} left the stone open on day {day}");
+    assert!(
+        w.thin.quieted,
+        "the stone should quiet within the 120-day ceiling"
+    );
+    run_days(&mut w, 15, &mut log);
+    assert!(log
+        .iter()
+        .any(|e| matches!(e.kind, EventKind::ThinStudied { learned: true, .. })));
     assert!(w
         .agents
         .iter()
         .any(|a| a.techniques.knows(Technique::ThinLore)));
-    let (who, ward) = w.thin.chosen.expect("someone chose");
-    assert!(ward);
     assert!(log.iter().any(|e| matches!(&e.kind,
         EventKind::Chose { agent, what, .. } if *agent == who && what.contains("warding"))));
     let wards = w
@@ -212,12 +202,12 @@ fn they_study_it_and_the_wards_quiet_it() {
         .filter(|s| s.kind == StructureKind::WardStone)
         .count();
     assert_eq!(wards, 4);
-    assert!(w.thin.quieted);
     let quiet = log
         .iter()
         .find(|e| matches!(e.kind, EventKind::ThinQuieted { .. }))
         .unwrap()
         .tick;
+    assert!(w.tick() >= quiet + 15 * TICKS_PER_DAY);
     assert!(
         !log.iter().any(|e| e.tick > quiet
             && matches!(
