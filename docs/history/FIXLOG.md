@@ -1,5 +1,29 @@
 # Fix log
 
+## 2026-11-26: the completed seed-5 pairing baseline (OST-420)
+
+- The original opening completed 600 days at four threads. Its complete chronicle was
+  replayed through the unchanged production `courtship_stats` counter. An independent
+  database join of each pairing to that pair's earlier conversations agrees with every
+  count and quantile; the chronicle is unchanged after inspection.
+
+| Reading | Seed 5, 600 days |
+|---|---:|
+| Recorded pairings | 45 |
+| Pairings with a recorded first conversation | 40 |
+| Pairings missing that conversation | 5 |
+| Pairings within either person's first ten days after recorded arrival | 13 |
+| Other pairings with an unknown arrival | 10 |
+| Days from first conversation, p25 / median / p75 | 5.326823 / 16.628090 / 122.787057 |
+| Recorded conversations, p25 / median / p75 | 3 / 5 / 21 |
+
+- The median is within the requested 16 +/- 1 days. Missing conversations are excluded
+  from the 40 timing samples rather than counted as zero. The early-pair count and the
+  unknown-arrival count retain their separate meanings.
+- This validates the counter on the full recorded baseline. The separate live CLI runs
+  for seeds 5-8 continue for the activity and lineage tables and a further pairing-key
+  cross-check. No simulation, save or digest changes.
+
 ## 2026-11-25: pairing delays are counted from recorded talks (OST-420)
 
 - Symptom: the in-tree report could not measure how long people talked before pairing.
@@ -16,6 +40,19 @@
   streamed keys and an unchanged world digest.
 - The seed-5 600-day census is pending. No simulation state, save schema or choices change.
 
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)
 
 - Symptom: the glance count could not say which activities the client draws as plain standing,
