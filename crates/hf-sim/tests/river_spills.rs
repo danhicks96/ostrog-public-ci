@@ -120,7 +120,7 @@ fn one_upper_bank_scout_can_watch_only_the_exposed_water_face() {
     assert!(!seen(&w));
     assert!(w.overworld.surveys[&foreign].sees_spill(edge, 3));
     w.join_community(person, c);
-    let previous = w.survivor_pool[0].state.clone();
+    let previous = w.survivor_pool[0].state;
     w.survivor_pool[0].state = hf_sim::opening::SurvivorState::Lost {
         agent: person,
         found: false,
