@@ -11,6 +11,21 @@
   so seeded digests move.
 - Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
   sleeper does not; a content person does not).
+## 2026-11-26: a thirsty band is sent to water whose surface sits above the bank (#725)
+
+- Symptom: in the east-edge threats test a band set down 47 tiles from a deep river read thirst 0 and
+  wandered without drinking, and died of thirst once a mood change shifted the random draws. On main
+  they drank only by wandering next to the bank by luck.
+- Cause: the river's surveyed tiles are the top of a two-deep column, one level above the standing
+  level of the bank. `water::spots` looked for a stand beside the surface tile only, found none (0
+  spots even at radius 150), so no Drink goal was ever chosen. `can_drink_at` already accepts the
+  water tile at the stander's level, which is why a band beside the bank could drink.
+- Fix: when the surface tile has no stand, `spots` tries the fresh water tile one level below it.
+  Shores a level under the grass are unchanged.
+- Guard: `tests/water_steep_bank.rs::a_steep_sided_river_is_a_place_to_drink` (a two-deep river 47
+  tiles from the walker gives a spot, with a stand that reaches its source); it failed with no spot
+  before the fix. The threats east-edge test passes on the mood branch with it.
+
 ## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
 
 - Symptom: "has come to suspect" was written every few nights for the same two people, each time
