@@ -309,6 +309,12 @@ pub struct AliveTally {
     /// Per kind in `GLANCE_MAJOR_KINDS`: (missed, all) of the watched events whose hour has run
     /// out. They are folded in here once settled, so a long run keeps no per-event record.
     major_counts: BTreeMap<&'static str, (u32, u32)>,
+    /// The feed's rows of the day being read (OST-864): events at Notable or above that the
+    /// viewer may be told of, with the day they belong to.
+    feed_day: Option<u64>,
+    feed_rows: Vec<(i64, u64, Event)>,
+    /// Per settled day: (lines before folding, lines after `view::fold::fold`).
+    feed_days: Vec<(u32, u32)>,
 }
 
 /// One Major event being watched for `glance_missed_major`.
@@ -427,7 +433,42 @@ impl AliveTally {
             terms_window: None,
             major_watch: Vec::new(),
             major_counts: BTreeMap::new(),
+            feed_day: None,
+            feed_rows: Vec::new(),
+            feed_days: Vec::new(),
         }
+    }
+
+    /// Feed one tick's events to the day's feed count (OST-864): the rows that would reach the
+    /// feed (Notable or above, told by `view::known::told`) are kept for their game-day; when
+    /// the day changes it settles into one pair of counts, the lines as there are and the lines
+    /// after `view::fold::fold`. The last, unfinished day is not counted. Reads only.
+    pub fn observe_feed(&mut self, w: &World, events: &[Event]) {
+        for e in events {
+            let day = e.tick / TICKS_PER_DAY;
+            if self.feed_day.is_some_and(|d| d != day) {
+                let lines = self.feed_rows.len() as u32;
+                let folded = crate::view::fold::fold(&self.feed_rows, w).len() as u32;
+                self.feed_days.push((lines, folded));
+                self.feed_rows.clear();
+            }
+            self.feed_day = Some(day);
+            if e.severity >= Severity::Notable && crate::view::known::told(w, e) {
+                let id = self.feed_rows.len() as i64;
+                self.feed_rows.push((id, e.tick, e.clone()));
+            }
+        }
+    }
+
+    /// The mean per settled day of (lines, folded lines); (0, 0) before a day has settled.
+    fn feed_means(&self) -> (f64, f64) {
+        if self.feed_days.is_empty() {
+            return (0.0, 0.0);
+        }
+        let n = self.feed_days.len() as f64;
+        let lines: u64 = self.feed_days.iter().map(|d| u64::from(d.0)).sum();
+        let folded: u64 = self.feed_days.iter().map(|d| u64::from(d.1)).sum();
+        (lines as f64 / n, folded as f64 / n)
     }
 
     /// Sample this hour: the mood of every living person who belongs to a community, and,
@@ -933,6 +974,8 @@ impl AliveTally {
             ("lesson_ignored", f64::from(self.lesson_ignored)),
             ("glance_major_n", glance_n),
             ("glance_missed_major", glance_missed),
+            ("feed_lines_day", self.feed_means().0),
+            ("feed_folded_day", self.feed_means().1),
         ];
         const GLANCE_KEYS: [&str; 7] = [
             "glance_missed_major_died",
