@@ -337,3 +337,63 @@ fn a_suspicion_returns_after_the_window_or_on_new_evidence() {
         "the cry is suspected again after the window"
     );
 }
+
+/// Three different neighbours who each come to suspect the same person make one whisper, on
+/// the night of the third, and a fourth adds none (OST-174).
+#[test]
+fn three_suspecters_make_one_whisper() {
+    let mut w = World::opening_world(61);
+    let cid = w.communities[0].id;
+    let who = w
+        .agents
+        .iter()
+        .find(|a| a.community == Some(cid))
+        .unwrap()
+        .id;
+    let i = hollow_sleeper(&mut w, who);
+    let here = w.agents[i].pos;
+    // Four neighbours of the same community, whoever the world gave it.
+    let mates: Vec<usize> = (0..w.agents.len()).filter(|&k| k != i).take(4).collect();
+    assert_eq!(mates.len(), 4, "a world of at least five");
+    for &k in &mates {
+        w.agents[k].community = Some(cid);
+        w.agents[k].alive = true;
+    }
+    let whispers = |w: &World| {
+        w.events
+            .pending
+            .iter()
+            .filter(|e| matches!(&e.kind, EventKind::WidelySuspected { of, .. } if *of == who))
+            .count()
+    };
+    w.events.pending.clear();
+    let ev = hf_sim::ids::EventId(1);
+    let because = "they cry out in their sleep of things no one told them";
+    let mut after = Vec::new();
+    for (n, &k) in mates.iter().enumerate() {
+        // Only this neighbour is the nearest to the sleeper on this night.
+        for &o in &mates {
+            w.agents[o].pos = here.offset(30, 0, 0);
+        }
+        w.agents[k].pos = here.offset(1, 0, 0);
+        w.meta.tick += TICKS_PER_DAY;
+        hf_sim::conditions::suspect(&mut w, i, ev, because);
+        after.push(whispers(&w));
+        assert_eq!(n + 1, after.len());
+    }
+    assert_eq!(
+        after,
+        vec![0, 0, 1, 1],
+        "one whisper, on the third suspecter"
+    );
+    let said = w
+        .events
+        .pending
+        .iter()
+        .find_map(|e| match &e.kind {
+            EventKind::WidelySuspected { count, .. } => Some(*count),
+            _ => None,
+        })
+        .unwrap();
+    assert_eq!(said, 3);
+}

@@ -1,5 +1,18 @@
 # Fix log
 
+## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
+
+- Symptom: a suspicion that spread through a camp read the same as one person's grudge, with
+  nothing telling the watcher that someone was now whispered about.
+- Fix: after a new suspicion row, `conditions::whisper` counts the community members holding a
+  fresh suspicion (the OST-173 record) of that person; at three it pushes an appended Notable
+  `WidelySuspected { of, because, count }`, narrated "X is whispered about: 3 now say ...". The
+  tick is kept on the person (`Agent.whispered`, serde-default), so it is said once per twenty
+  days, not for each further suspicion. This is per person and window, not per condition.
+- Guard: `tests/true_dream.rs::three_suspecters_make_one_whisper` fails with the threshold
+  raised; a fourth suspecter adds no second whisper. Old saves load; a world that reaches three
+  suspecters gains one row, so its digest changes.
+
 ## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
 
 - Symptom: "has come to suspect" was written every few nights for the same two people, each time
