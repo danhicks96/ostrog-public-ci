@@ -10,7 +10,6 @@ yanked = "deny"
 ignore = [
   { id = "RUSTSEC-2025-0141", reason = "bincode 1.3.3 is unmaintained but complete; saves depend on its format. Replacing it is a format migration." },
   { id = "RUSTSEC-2026-0459", reason = "bundled SQLite in libsqlite3-sys 0.28; fix needs the rusqlite 0.41 major bump. Only matters for database files an untrusted party wrote." },
-  { id = "RUSTSEC-2026-0592", reason = "url 2.5.8 via ureq; fixed by `cargo update -p url` (2.5.9). Remove this entry with that lockfile bump." },
 ]
 
 [licenses]
