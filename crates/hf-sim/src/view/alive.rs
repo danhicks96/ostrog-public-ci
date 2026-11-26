@@ -4,6 +4,10 @@
 //! turns what it has seen into named keys. Each later alive slice adds its own
 //! samples to the tally and its own keys to `report`; the keys are `(name, value)` rows so a
 //! caller prints or compares them without knowing which slice added them.
+//! Pair timing (OST-420) reads the first recorded talk to each `Paired`, with interpolated
+//! quartiles and talk counts. A missing first talk is excluded and reported. Early arrivals
+//! count a pairing less than ten days after either partner's recorded first `Arrived`;
+//! absent arrival records are reported separately rather than assigned a date.
 //!
 //! Read-only (D7): no rng, no wall clock, no map with an unstable order, and nothing here
 //! changes what anyone does, so no digest moves.
@@ -272,6 +276,8 @@ pub struct AliveTally {
     min_hours: u32,
     /// What the latest `observe_ties` saw (#1491); all zero until it is called.
     ties: TieCounts,
+    /// Talks and the pairings that follow them (OST-420).
+    courtship: crate::social::CourtshipTally,
     /// (hostile, top-five) tie counts added up over the `observe_ties` calls, the one tie key
     /// that is a run's sum rather than the latest look (#1491: `ties_hostile`). It holds at most
     /// one look per tick: see `last_look`.
@@ -420,6 +426,7 @@ impl AliveTally {
             activity_hours: BTreeMap::new(),
             min_hours,
             ties: TieCounts::default(),
+            courtship: crate::social::CourtshipTally::default(),
             hostile_pool: (0, 0),
             last_look: None,
             grief: Vec::new(),
@@ -444,6 +451,8 @@ impl AliveTally {
     /// the day changes it settles into one pair of counts, the lines as there are and the lines
     /// after `view::fold::fold`. The last, unfinished day is not counted. Reads only.
     pub fn observe_feed(&mut self, w: &World, events: &[Event]) {
+        // The soak supplies all events here, before the visible feed's severity filter.
+        self.courtship.observe(events);
         for e in events {
             let day = e.tick / TICKS_PER_DAY;
             if self.feed_day.is_some_and(|d| d != day) {
@@ -593,6 +602,7 @@ impl AliveTally {
     /// anyone at all when the dead is an animal. The same death fed twice opens one bereavement
     /// per bereaved person; a person who lost two people has two.
     pub fn observe_events(&mut self, w: &World, events: &[Event]) {
+        self.courtship.observe(events);
         for e in events {
             let EventKind::Died { agent, cause } = &e.kind else {
                 continue;
@@ -930,6 +940,7 @@ impl AliveTally {
         spread.sort_by(f32::total_cmp);
         let (standing, unreadable, work, talk) = self.waking_shares();
         let (day_distance, act_entropy_sd) = self.person_mix_keys();
+        let courtship = self.courtship.stats();
         let (grief_2d, grief_10d, grief_days, grief_n) = self.grief_keys();
         let (glance_missed, glance_n, glance_by_kind) = self.glance_keys();
         let mut rows = vec![
@@ -977,6 +988,19 @@ impl AliveTally {
             ("feed_lines_day", self.feed_means().0),
             ("feed_folded_day", self.feed_means().1),
         ];
+        rows.extend([
+            ("pair_count", f64::from(courtship.pairs)),
+            ("pair_timing_n", f64::from(courtship.timed_pairs)),
+            ("pair_missing_talk", f64::from(courtship.missing_talk)),
+            ("pair_first_10_days", f64::from(courtship.first_ten_days)),
+            ("pair_unknown_arrival", f64::from(courtship.unknown_arrival)),
+            ("pair_days_p25", courtship.days_p25),
+            ("pair_days_median", courtship.days_median),
+            ("pair_days_p75", courtship.days_p75),
+            ("pair_talks_p25", courtship.talks_p25),
+            ("pair_talks_median", courtship.talks_median),
+            ("pair_talks_p75", courtship.talks_p75),
+        ]);
         const GLANCE_KEYS: [&str; 7] = [
             "glance_missed_major_died",
             "glance_missed_major_captured",

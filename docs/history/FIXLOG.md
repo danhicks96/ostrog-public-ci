@@ -1,5 +1,21 @@
 # Fix log
 
+## 2026-11-25: pairing delays are counted from recorded talks (OST-420)
+
+- Symptom: the in-tree report could not measure how long people talked before pairing.
+- Cause: the ties census sampled opinions but kept no first-talk tick or talk count per pair.
+- Fix: add a pure `social::courtship_stats` and use its streaming counter in the alive tally.
+  Pair order is normalized. Report median and quartiles of days and talks, the timing sample
+  count, and missing first talks. Also count pairs less than ten days after either person's
+  recorded first arrival, reporting unknown arrival history separately. Quantiles interpolate
+  adjacent sorted values. Missing history is never a zero-day courtship.
+  Both complete event readers feed the counter; event IDs prevent double counting when a
+  caller uses both. The soak's feed reader supplies talks before its visibility filter.
+- Guards: `tests/social.rs::courtship_stats_from_a_built_log` counts four talks over nine days;
+  another built log checks quartiles and missing talks. The alive-report guard checks the
+  streamed keys and an unchanged world digest.
+- The seed-5 600-day census is pending. No simulation state, save schema or choices change.
+
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)
 
 - Symptom: the glance count could not say which activities the client draws as plain standing,

@@ -1,12 +1,110 @@
 //! #295: gossip carries what people think of someone; good turns are repaid; the estranged
 //! make it up.
 
-use hf_sim::events::{EventKind, Severity};
+use hf_sim::events::{Event, EventKind, Severity};
 use hf_sim::ids::{AgentId, TilePos};
 use hf_sim::items::{Item, ItemKind, ItemPlace};
 use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::world::gen::GenParams;
 use hf_sim::World;
+
+fn court_event(id: u32, tick: u64, kind: EventKind) -> Event {
+    Event {
+        id: hf_sim::ids::EventId(id),
+        tick,
+        at: None,
+        severity: Severity::Minor,
+        kind,
+    }
+}
+
+#[test]
+fn courtship_stats_from_a_built_log() {
+    let (a, b) = (AgentId(1), AgentId(2));
+    let mut events = vec![
+        court_event(
+            1,
+            0,
+            EventKind::Arrived {
+                agent: a,
+                community: None,
+            },
+        ),
+        court_event(
+            2,
+            0,
+            EventKind::Arrived {
+                agent: b,
+                community: None,
+            },
+        ),
+    ];
+    for (index, day) in [0, 1, 4, 8].into_iter().enumerate() {
+        let (a, b) = if index % 2 == 0 { (a, b) } else { (b, a) };
+        events.push(court_event(
+            index as u32 + 3,
+            day * TICKS_PER_DAY,
+            EventKind::Talked { a, b, warmth: 0.5 },
+        ));
+    }
+    events.push(court_event(
+        7,
+        9 * TICKS_PER_DAY,
+        EventKind::Paired { a, b },
+    ));
+    let stats = hf_sim::social::courtship_stats(&events);
+    assert_eq!(stats.pairs, 1);
+    assert_eq!(stats.timed_pairs, 1);
+    assert_eq!(stats.days_median, 9.0);
+    assert_eq!(stats.talks_median, 4.0);
+    assert_eq!(stats.first_ten_days, 1);
+    assert_eq!(stats.unknown_arrival, 0);
+}
+
+#[test]
+fn courtship_quartiles_exclude_pairings_with_no_recorded_talk() {
+    let mut events = Vec::new();
+    for pair in 0..4 {
+        events.push(court_event(
+            pair + 1,
+            0,
+            EventKind::Talked {
+                a: AgentId(2 * pair + 1),
+                b: AgentId(2 * pair + 2),
+                warmth: 0.5,
+            },
+        ));
+    }
+    for (pair, day) in [2, 4, 8, 10].into_iter().enumerate() {
+        events.push(court_event(
+            pair as u32 + 5,
+            day * TICKS_PER_DAY,
+            EventKind::Paired {
+                a: AgentId(2 * pair as u32 + 1),
+                b: AgentId(2 * pair as u32 + 2),
+            },
+        ));
+    }
+    events.push(court_event(
+        9,
+        20 * TICKS_PER_DAY,
+        EventKind::Paired {
+            a: AgentId(50),
+            b: AgentId(51),
+        },
+    ));
+    let stats = hf_sim::social::courtship_stats(&events);
+    assert_eq!(
+        (stats.pairs, stats.timed_pairs, stats.missing_talk),
+        (5, 4, 1)
+    );
+    assert_eq!(
+        (stats.days_p25, stats.days_median, stats.days_p75),
+        (3.5, 6.0, 8.5)
+    );
+    assert_eq!(stats.talks_median, 1.0);
+    assert_eq!(stats.unknown_arrival, 5);
+}
 
 /// A meal `who` carries, for the real-food-sharing tests.
 fn carry_meal(w: &mut World, who: AgentId) -> hf_sim::ids::ItemId {

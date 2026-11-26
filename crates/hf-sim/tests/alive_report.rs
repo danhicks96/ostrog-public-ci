@@ -32,6 +32,53 @@ fn party(n: usize) -> (World, Vec<usize>) {
 const OUTSIDER_MOOD: f32 = -1.0;
 
 #[test]
+fn pair_timing_keys_read_a_stream_without_changing_the_world() {
+    let (mut w, people) = party(2);
+    let (a, b) = (w.agents[people[0]].id, w.agents[people[1]].id);
+    let event = |id, tick, kind| Event {
+        id: hf_sim::ids::EventId(id),
+        tick,
+        at: None,
+        severity: Severity::Minor,
+        kind,
+    };
+    let events = [
+        event(1, 0, EventKind::Talked { a, b, warmth: 0.5 }),
+        event(
+            2,
+            TICKS_PER_DAY,
+            EventKind::Talked {
+                a: b,
+                b: a,
+                warmth: 0.5,
+            },
+        ),
+        event(3, 3 * TICKS_PER_DAY, EventKind::Paired { a, b }),
+    ];
+    w.meta.tick = 3 * TICKS_PER_DAY;
+    let before = hf_sim::digest::digest(&w);
+    let mut tally = AliveTally::default();
+    tally.observe_feed(&w, &events[..2]);
+    tally.observe_feed(&w, &events[2..]);
+    let report = tally.report();
+    assert_eq!(
+        report.get("pair_days_median"),
+        Some(3.0),
+        "the report includes the measured pairing delay"
+    );
+    assert_eq!(report.get("pair_talks_median"), Some(2.0));
+    assert_eq!(report.get("pair_timing_n"), Some(1.0));
+    assert_eq!(report.get("pair_unknown_arrival"), Some(1.0));
+    tally.observe_events(&w, &events);
+    assert_eq!(
+        report,
+        tally.report(),
+        "the second event reader must not count the same records twice"
+    );
+    assert_eq!(before, hf_sim::digest::digest(&w));
+}
+
+#[test]
 fn mood_keys_read_a_built_colony() {
     // Eight people: the six who count, one without a community and one who is dead; below, an
     // animal that does belong to the colony is added to them.

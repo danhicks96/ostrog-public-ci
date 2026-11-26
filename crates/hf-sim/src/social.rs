@@ -6,12 +6,131 @@
 //! has eaten, it is repaid with food. Two who think ill of each other, talking in good spirits,
 //! now and then make it up.
 
-use crate::events::{EventKind, Severity};
+use crate::events::{Event, EventKind, Severity};
 use crate::ids::AgentId;
 use crate::rng::{purpose, stream};
 use crate::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use crate::World;
 use rand::Rng;
+use std::collections::{BTreeMap, BTreeSet};
+
+/// Pairing delays read from recorded talks. Quantiles interpolate adjacent sorted samples.
+/// Empty samples read zero and have `timed_pairs == 0`; missing talks are counted separately.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct CourtshipStats {
+    pub pairs: u32,
+    pub timed_pairs: u32,
+    pub missing_talk: u32,
+    pub first_ten_days: u32,
+    pub unknown_arrival: u32,
+    pub days_p25: f64,
+    pub days_median: f64,
+    pub days_p75: f64,
+    pub talks_p25: f64,
+    pub talks_median: f64,
+    pub talks_p75: f64,
+}
+
+/// Observer state, outside the world and its saves; feed each new event batch once.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub(crate) struct CourtshipTally {
+    seen: BTreeSet<crate::ids::EventId>,
+    first_talk: BTreeMap<(AgentId, AgentId), (u64, u32)>,
+    arrivals: BTreeMap<AgentId, u64>,
+    days: Vec<f64>,
+    talks: Vec<f64>,
+    pairs: u32,
+    first_ten_days: u32,
+    unknown_arrival: u32,
+}
+
+impl CourtshipTally {
+    pub(crate) fn observe(&mut self, events: &[Event]) {
+        for event in events {
+            if !matches!(
+                &event.kind,
+                EventKind::Arrived { .. } | EventKind::Talked { .. } | EventKind::Paired { .. }
+            ) || !self.seen.insert(event.id)
+            {
+                continue;
+            }
+            match &event.kind {
+                EventKind::Arrived { agent, .. } => {
+                    self.arrivals.entry(*agent).or_insert(event.tick);
+                }
+                EventKind::Talked { a, b, .. } => {
+                    let pair = ((*a).min(*b), (*a).max(*b));
+                    let talk = self.first_talk.entry(pair).or_insert((event.tick, 0));
+                    talk.1 = talk.1.saturating_add(1);
+                }
+                EventKind::Paired { a, b } => {
+                    self.pairs = self.pairs.saturating_add(1);
+                    let pair = ((*a).min(*b), (*a).max(*b));
+                    if let Some(&(first, talks)) = self.first_talk.get(&pair) {
+                        if let Some(elapsed) = event.tick.checked_sub(first) {
+                            self.days.push(elapsed as f64 / TICKS_PER_DAY as f64);
+                            self.talks.push(f64::from(talks));
+                        }
+                    }
+                    // Either partner's recorded first arrival can make this an early pair.
+                    let early = [a, b].into_iter().any(|id| {
+                        self.arrivals.get(id).is_some_and(|at| {
+                            event
+                                .tick
+                                .checked_sub(*at)
+                                .is_some_and(|age| age < 10 * TICKS_PER_DAY)
+                        })
+                    });
+                    if early {
+                        self.first_ten_days = self.first_ten_days.saturating_add(1);
+                    } else if [a, b].into_iter().any(|id| !self.arrivals.contains_key(id)) {
+                        self.unknown_arrival = self.unknown_arrival.saturating_add(1);
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+
+    pub(crate) fn stats(&self) -> CourtshipStats {
+        let mut days = self.days.clone();
+        let mut talks = self.talks.clone();
+        days.sort_by(f64::total_cmp);
+        talks.sort_by(f64::total_cmp);
+        let timed_pairs = days.len() as u32;
+        CourtshipStats {
+            pairs: self.pairs,
+            timed_pairs,
+            missing_talk: self.pairs.saturating_sub(timed_pairs),
+            first_ten_days: self.first_ten_days,
+            unknown_arrival: self.unknown_arrival,
+            days_p25: sample_quantile(&days, 0.25),
+            days_median: sample_quantile(&days, 0.5),
+            days_p75: sample_quantile(&days, 0.75),
+            talks_p25: sample_quantile(&talks, 0.25),
+            talks_median: sample_quantile(&talks, 0.5),
+            talks_p75: sample_quantile(&talks, 0.75),
+        }
+    }
+}
+
+/// Read a log in recorded order without changing the world or any rng. A reversed talk
+/// still addresses the same pair. Days run from the first recorded talk to `Paired`.
+pub fn courtship_stats(events: &[Event]) -> CourtshipStats {
+    let mut tally = CourtshipTally::default();
+    tally.observe(events);
+    tally.stats()
+}
+
+fn sample_quantile(sorted: &[f64], fraction: f64) -> f64 {
+    if sorted.is_empty() {
+        return 0.0;
+    }
+    let position = fraction * (sorted.len() - 1) as f64;
+    let lower = position.floor() as usize;
+    let upper = position.ceil() as usize;
+    sorted[lower] + (sorted[upper] - sorted[lower]) * (position - lower as f64)
+}
 
 fn idx(w: &World, id: AgentId) -> Option<usize> {
     w.agents.iter().position(|a| a.id == id && a.alive)
