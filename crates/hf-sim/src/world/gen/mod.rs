@@ -1,5 +1,5 @@
-//! World generation pipeline: heightmap â†’ strata â†’ hydrology â†’ caves â†’ ores â†’ climate and
-//! biomes â†’ surface ground â†’ water depth â†’ ramps â†’ cave mouths â†’ flora.
+//! World generation pipeline: heightmap → strata → hydrology → caves → ores → climate and
+//! biomes → surface ground → water depth → ramps → cave mouths → flora.
 //! Every stage draws from its own purpose-tagged stream so stages can be tuned independently.
 
 pub mod biome;

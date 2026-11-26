@@ -4,27 +4,6 @@
 
 Dry steppe could gain shallow water on flat ground open to the map edge. Moisture selected pond sites without checking whether the ground could hold a full tile of water. New inland divides now keep pond columns below their lowest outlet. Marshes retain their regional water supply.
 
-## 2026-11-26 - Held loads and expressive inhabitants
-
-Orsin's hands showed a single log as he carried three to a carpenter's bench in Ashcross. Another inhabitant held a root in front of their face during a walking pose. The client now reads the stack count and anchors the load to the holding or walking arms. A hand stack of logs, planks or stone blocks shows up to three pieces, using the carried material's existing icon. The ground plank icon depicts two boards. A held plank uses one lighter board face so Toriwick's pair remains visible against the loom and clothing. One average adult human appearance uses higher-resolution face, hair and vest sheets within its usual footprint. Equipment and bandages stay independent.
-
-The optional batch renderer skipped the person sprites and assigned a generic body atlas to a batch without a mesh. It now draws people with the same layered sprites as the default renderer, keeping the other batches in place. Client guards check directional pose alignment, sprite reuse, carried quantity and one visible sprite per person.
-## 2026-11-26 · Worksite deliveries in the history
-
-A carpenter's bench received three logs while the history described the trip as a stockpile haul.
-Both drop actions used the same event without recording its load or purpose. The event now records
-the quantity accepted and the work order at delivery, including deliveries into a stockpile.
-Earlier records retain the carrier and omit the unknown load and purpose.
-
-## 2026-11-26: a clean pond beyond a closed wall cannot supply a drink
-
-- A non-parched person could lose their only reachable water when the clean shore they preferred was cut off. Water selection now keeps the nearest reachable foul source as a fallback while searching for a reachable better one. Known salt and recently dry stands still drop out.
-- Guard: `foul_water::an_isolated_clean_pond_does_not_rule_out_reachable_foul_water` opens and closes one gate around the same clean source, with both ponds still present and remembered.
-
-## 2026-11-26: a drinker can reconsider a fouled shore at the last sip
-
-- Recheck the water the person remembers before the final drinking action. A reachable known alternative lets them leave without consuming water or marking their stand dry. If the alternative is gone, unknown, or unreachable, or thirst has passed desperation, they can still drink. A nearby finished well can supply its own water.
-- Guard: `foul_water::committed_drinker_rechecks_a_foul_shore_before_the_last_sip` changes knowledge between the two final activity ticks and checks the resulting need, refusal and bank cooldown.
 ## 2026-11-26 - Water at the selected landing site
 
 Dry drainage divides inherited the seeded low-ground stream even when no water flowed in from another region. New regional landings now draw that stream only where the drainage map supplies inflow. Local lake basins still fill according to moisture. The landing wizard identifies rivers crossing the selected region and rivers or lakes in neighboring regions.
@@ -34,6 +13,7 @@ Dry drainage divides inherited the seeded low-ground stream even when no water f
 New landing sites on a mapped river inherit channel inlets, outlet and crossing levels from the regional drainage network. Neighbouring river regions share the position and width of a crossing. The river shapes the bed and banks before strata and plants form.
 
 The simulation records directed drops between channel surfaces at generation. A drop is active while both original surfaces are liquid and exposed. Drought, inundation and ice can interrupt it. Existing saves keep their original terrain and water.
+
 ## 2026-11-26 · Landings follow the terrain around their region
 
 Seed 7 produced a coast at inland taiga region 16423, 54 regional cells from the nearest ocean. Regional landings now use surrounding elevation, drainage and biome to choose their landform. At a coast, the ground slopes down and the water meets the ocean-facing edges or corners. Existing saves retain their generated grid. Newly generated regional worlds can have different terrain and simulation digests. The landform tests exercise the inland taiga and an east-facing ocean through the setup and preview paths.
