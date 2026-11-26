@@ -15,6 +15,19 @@
   tiles from the walker gives a spot, with a stand that reaches its source); it failed with no spot
   before the fix. The threats east-edge test passes on the mood branch with it.
 
+## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
+
+- Symptom: "has come to suspect" was written every few nights for the same two people, each time
+  with a new row and a cooler opinion, so the feed filled with one story.
+- Cause: `conditions::suspect` wrote a memory, an opinion change and an event on every call.
+- Fix: each agent keeps `suspicions` (of, evidence tag, tick), at most 16. The same evidence
+  against the same person within 20 days only deepens the long memory (+0.1, capped) with no
+  event and no opinion change; a new kind of evidence still counts as new.
+- Guard: `tests/true_dream.rs::a_suspicion_is_not_repeated_without_new_evidence` fails with the
+  window set to zero; `a_suspicion_returns_after_the_window_or_on_new_evidence` covers a
+  different kind of evidence and the window running out (it counts from the first time the
+  evidence was held). The new `Agent` field is serde-default, so old saves load; a world that
+  repeated suspicions now writes fewer rows, so its digest changes.
 ## 2026-11-26: a bounded long-memory term for mood, not yet used (OST-202)
 
 - Symptom: mood adds every long memory with no bound, no fading and no habituation, so a meal
