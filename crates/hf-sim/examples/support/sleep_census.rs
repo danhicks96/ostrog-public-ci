@@ -3,12 +3,14 @@
 use std::collections::BTreeMap;
 
 use hf_sim::ids::{AgentId, StructureId};
+use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 
 #[derive(Default)]
 struct Person {
     beds: BTreeMap<StructureId, u64>,
     windows: Vec<BedWindow>,
     rough: u64,
+    last_end: Option<u64>,
 }
 
 /// One person's consecutive blocks of ten completed nights; the last can be partial.
@@ -26,6 +28,7 @@ pub struct SleepCensus {
     taken: u64,
     finished_streaks: [u64; 4],
     longest: Option<(AgentId, u64)>,
+    unobserved_breaks: u64,
 }
 
 pub struct Summary<'a> {
@@ -36,6 +39,8 @@ pub struct Summary<'a> {
     /// Episodes, including a person's unfinished streak at the end of the run.
     pub streaks: [u64; 4],
     pub longest: Option<(AgentId, u64)>,
+    /// Rough runs split by a whole unobserved game-day between qualifying sleeps.
+    pub unobserved_breaks: u64,
     pub windows: Vec<(AgentId, &'a BedWindow)>,
 }
 
@@ -52,8 +57,26 @@ fn band(nights: u64) -> usize {
 impl SleepCensus {
     /// Called for the same six-hour-or-longer Slept events as the existing census.
     /// A bed-night with an unavailable structure id stays in the denominator.
-    pub fn night(&mut self, who: AgentId, in_bed: bool, bed: Option<StructureId>) {
+    pub fn night(
+        &mut self,
+        who: AgentId,
+        in_bed: bool,
+        bed: Option<StructureId>,
+        ended: u64,
+        hours: f32,
+    ) {
         let p = self.people.entry(who).or_default();
+        let duration = (f64::from(hours) * TICKS_PER_HOUR as f64).round() as u64;
+        let started = ended.saturating_sub(duration);
+        if p.rough > 0
+            && p.last_end
+                .is_some_and(|last| started.saturating_sub(last) >= TICKS_PER_DAY)
+        {
+            self.finished_streaks[band(p.rough)] += 1;
+            p.rough = 0;
+            self.unobserved_breaks += 1;
+        }
+        p.last_end = Some(ended);
         if p.windows.last().is_none_or(|window| window.nights == 10) {
             p.windows.push(BedWindow::default());
         }
@@ -101,6 +124,7 @@ impl SleepCensus {
             taken: self.taken,
             streaks,
             longest: self.longest,
+            unobserved_breaks: self.unobserved_breaks,
             windows: self
                 .people
                 .iter()

@@ -219,7 +219,13 @@ fn main() {
                 if a.species != Species::Person || a.community.is_none() {
                     continue;
                 }
-                census.night(*agent, *b, slept_in.get(agent).copied().flatten());
+                census.night(
+                    *agent,
+                    *b,
+                    slept_in.get(agent).copied().flatten(),
+                    e.tick,
+                    *hours,
+                );
                 if *b {
                     in_bed += 1;
                 } else {
@@ -253,6 +259,10 @@ fn main() {
     println!(
         "  rough episodes (including unfinished): 1 night {}, 2-3 {}, 4-7 {}, 8+ {}",
         sleep.streaks[0], sleep.streaks[1], sleep.streaks[2], sleep.streaks[3]
+    );
+    println!(
+        "  rough runs split by an unobserved game-day: {}",
+        sleep.unobserved_breaks
     );
     if let Some((who, nights)) = sleep.longest {
         let name = w

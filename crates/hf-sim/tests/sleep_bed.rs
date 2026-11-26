@@ -286,15 +286,31 @@ fn a_stranger_does_not_know_a_village_bed_without_seeing_it() {
     let i = tired_person(&mut w, TilePos::new(50, 20, 2), &[]);
     assert!(!first_choice_is_bed(&mut w, i, bed_at));
 }
+fn census_night(
+    census: &mut sleep_census::SleepCensus,
+    day: u64,
+    who: hf_sim::ids::AgentId,
+    in_bed: bool,
+    bed: Option<hf_sim::ids::StructureId>,
+) {
+    census.night(
+        who,
+        in_bed,
+        bed,
+        day * TICKS_PER_DAY + 6 * TICKS_PER_HOUR,
+        8.0,
+    );
+}
+
 #[test]
 fn sleep_census_counts_bed_changes() {
     use hf_sim::ids::{AgentId, StructureId};
     let mut census = sleep_census::SleepCensus::default();
     let (a, b) = (AgentId(1), AgentId(2));
-    census.night(a, true, Some(StructureId(11)));
-    census.night(b, true, Some(StructureId(21)));
-    census.night(a, true, Some(StructureId(12)));
-    census.night(b, true, Some(StructureId(21)));
+    census_night(&mut census, 1, a, true, Some(StructureId(11)));
+    census_night(&mut census, 1, b, true, Some(StructureId(21)));
+    census_night(&mut census, 2, a, true, Some(StructureId(12)));
+    census_night(&mut census, 2, b, true, Some(StructureId(21)));
     census.failure("the bed was taken");
     census.failure("they left");
     census.failure("the bed was taken");
@@ -310,8 +326,8 @@ fn sleep_census_counts_bed_changes() {
     assert_eq!(windows, vec![(a, 2, 2), (b, 2, 1)]);
 
     // Ten-night blocks do not mix people or include more than ten nights.
-    for _ in 0..9 {
-        census.night(a, true, Some(StructureId(11)));
+    for day in 3..12 {
+        census_night(&mut census, day, a, true, Some(StructureId(11)));
     }
     let s = census.summary();
     let windows: Vec<_> = s
@@ -328,22 +344,22 @@ fn sleep_census_counts_rough_streaks() {
     use hf_sim::ids::{AgentId, StructureId};
     let mut census = sleep_census::SleepCensus::default();
     let (a, b) = (AgentId(1), AgentId(2));
-    for _ in 0..2 {
-        census.night(a, false, None);
+    for day in 0..2 {
+        census_night(&mut census, day, a, false, None);
     }
-    census.night(a, true, Some(StructureId(10)));
-    for _ in 0..8 {
-        census.night(a, false, None);
+    census_night(&mut census, 2, a, true, Some(StructureId(10)));
+    for day in 3..11 {
+        census_night(&mut census, day, a, false, None);
     }
-    for _ in 0..3 {
-        census.night(b, false, None);
+    for day in 0..3 {
+        census_night(&mut census, day, b, false, None);
     }
     let s = census.summary();
     assert_eq!(s.streaks, [0, 2, 0, 1]);
     assert_eq!(s.longest, Some((a, 8)));
     assert_eq!(census.summary().streaks, s.streaks, "reading is pure");
-    census.night(a, true, Some(StructureId(10)));
-    census.night(a, false, None);
+    census_night(&mut census, 11, a, true, Some(StructureId(10)));
+    census_night(&mut census, 12, a, false, None);
     assert_eq!(census.summary().streaks, [1, 2, 0, 1]);
     assert_eq!(census.summary().longest, Some((a, 8)));
 }
@@ -357,7 +373,7 @@ fn sleep_census_keeps_unknown_beds_in_the_denominator_and_changes_no_world() {
     let mut census = sleep_census::SleepCensus::default();
     assert_eq!(census.summary().bed_nights, 0);
     assert_eq!(census.summary().longest, None);
-    census.night(AgentId(1), true, None);
+    census_night(&mut census, 1, AgentId(1), true, None);
     let s = census.summary();
     assert_eq!((s.most_used_nights, s.bed_nights), (0, 1));
     assert_eq!(s.unknown_bed_nights, 1);
@@ -366,4 +382,37 @@ fn sleep_census_keeps_unknown_beds_in_the_denominator_and_changes_no_world() {
         "a missing id does not make a rough night"
     );
     assert_eq!(hf_sim::digest::digest(&w), digest);
+}
+
+#[test]
+fn sleep_census_breaks_rough_runs_at_unobserved_nights() {
+    use hf_sim::ids::AgentId;
+    let mut census = sleep_census::SleepCensus::default();
+    let who = AgentId(7);
+    census_night(&mut census, 10, who, false, None);
+    census_night(&mut census, 14, who, false, None);
+    assert_eq!(
+        census.summary().streaks,
+        [2, 0, 0, 0],
+        "unobserved nights cannot join two rough sleeps into one streak"
+    );
+    assert_eq!(census.summary().longest, Some((who, 1)));
+    census_night(&mut census, 15, who, false, None);
+    assert_eq!(census.summary().streaks, [1, 1, 0, 0]);
+    assert_eq!(census.summary().longest, Some((who, 2)));
+    assert_eq!(census.summary().unobserved_breaks, 1);
+}
+
+#[test]
+fn sleep_census_uses_elapsed_gaps_rather_than_midnight_boundaries() {
+    use hf_sim::ids::AgentId;
+    let mut census = sleep_census::SleepCensus::default();
+    let who = AgentId(7);
+    // Twenty waking hours separate these two six-hour sleeps, despite their completion
+    // dates being two days apart. No whole day of sleep history is missing.
+    census.night(who, false, None, 23 * TICKS_PER_HOUR, 6.0);
+    census.night(who, false, None, 2 * TICKS_PER_DAY + TICKS_PER_HOUR, 6.0);
+    assert_eq!(census.summary().streaks, [0, 1, 0, 0]);
+    assert_eq!(census.summary().longest, Some((who, 2)));
+    assert_eq!(census.summary().unobserved_breaks, 0);
 }

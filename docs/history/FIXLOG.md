@@ -1,5 +1,22 @@
 # Fix log
 
+## 2026-11-25: an unobserved night splits a rough-sleeping run (OST-371)
+
+- Symptom: rough sleeps before and after a journey could be joined into one long episode,
+  even though no sleep was observed in between.
+- Cause: the collector discarded the recorded sleep tick and duration, counting every next
+  qualifying sleep as adjacent to the previous one.
+- Fix: retain each person's last sleep end and read the next sleep's actual interval. A whole
+  game-day unobserved between qualifying intervals closes the earlier rough run. Elapsed
+  intervals avoid false breaks when two adjacent sleeps finish on different midnight dates.
+  The report also prints how many rough runs were split at an unobserved day.
+- Guards: `sleep_census_breaks_rough_runs_at_unobserved_nights` genuinely fails the former
+  counting body; the adjacent-sleep control crosses two completion dates without a missing day.
+- The earlier 120-day bed-use table remains a count of the same completed sleep events.
+  Its event-only rough-run column and the first provisional 300-day streak results predate
+  this correction. Corrected seeds 1-8 at 300 days are pending; those earlier streak numbers
+  must not be used as the final OST-371 baseline. No simulation or save state changes.
+
 ## 2026-11-25: count habitual beds and rough-night episodes (OST-361, OST-371)
 
 - Symptom: the rough-sleep census counted bed and ground sleeps but could not measure bed
@@ -15,11 +32,12 @@
   `sleep_census_counts_rough_streaks`, and the unknown-bed/purity case.
 - Measured baseline: `sleep_rough` on seeds 1-4 for 120 days, with the unchanged simulation
   at `2b2e921` and the collector at `76adba9`. The share pools each person's nights in their
-  own most-used bed. Rough episodes include unfinished ones; the final column identifies
-  the person by AgentId within that seed. Every run reported zero unknown bed identifiers
+  own most-used bed. The final column records the prior event-only rough run and
+  identifies the person by AgentId within that seed; corrected continuity measurements are
+  described above. Every run reported zero unknown bed identifiers
   and zero exact "the bed was taken" failures.
 
-  | Seed | Bed-nights | Rough nights | Most-used bed share | Longest rough episode (nights, person) |
+  | Seed | Bed-nights | Rough nights | Most-used bed share | Prior event-only rough run (completed sleeps, person) |
   | --- | ---: | ---: | ---: | --- |
   | 1 | 2462 | 50 | 19.09% | 8, AgentId(0) |
   | 2 | 1219 | 1183 | 31.99% | 19, AgentId(6) |
