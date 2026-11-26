@@ -417,6 +417,14 @@ A suspicion held by three neighbours reads like one held by one. When three diff
 
 **Acceptance:** Three neighbours who suspect a marked sleeper on different nights give exactly one `WidelySuspected` with a count of three, on the night of the third, and none after a fourth. The enum-order check passes and a FIXLOG entry is added.
 
+### OST-507 · Tell a lived belief only to those who have not heard it from this teller this year
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+When no tale is fresh, the hearth teller tells "how they came to hold that ..." nightly to the same circle, and every retelling raises each listener's confidence in the belief. Record, per listener, which lived-belief telling they have heard from which teller and when; tell a lived belief (or the line about the other side of the portal) only when at least one other sitter has not heard it from this teller within a year, and pass the belief on only to those who had not.
+
+**Acceptance:** Four sitters at a hearth with one event-sourced belief and no realm stories or tales: over ten evenings there is one telling of it; a newcomer who sits down on the sixth evening hears it once more; after a year it can be told again. A FIXLOG entry is added.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
