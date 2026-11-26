@@ -45,6 +45,45 @@
   | 4 | 1200 | 972 | 34.33% | 15, AgentId(238) |
 
   The 300-day measurements required by OST-371 remain to be recorded.
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
+## 2026-11-24: a table of what the client draws for each activity (OST-867)
+
+- Symptom: the glance count could not say which activities the client draws as plain standing,
+  so a "working" person drawn standing still would have flattered it.
+- Cause: the pose choice lives in the client and the bridge, and nothing in the simulation recorded it.
+- Fix: `view::alive::READABLE` lists, per activity, the frame drawn still and moving and whether it
+  is plain standing; `work_drawn` gives the frame and emote for each work kind (exhaustive, so a
+  new kind needs an entry). Read from `entity_layer.gd` and `person_pose`. No simulation, save or
+  digest behaviour changed; nothing calls the table yet.
+- Guard: `tests/alive_report.rs::the_readable_table_names_every_activity_and_marks_plain_standing`
+  (fails to compile without the table).
+- Not covered: the long-run glance share that will use the table (OST-868 and a later slice).
+## 2026-11-25: the alive report counts the feed's repeats (OST-864)
+
+- Symptom: nothing measured how many of a day's feed lines are the same news again, so the folding
+  rule (`view::fold`) could not be judged by a number before and after.
+- Fix: `AliveTally::observe_feed` keeps each game-day's rows at Notable or above that the viewer may
+  be told of (`view::known::told`); when the day changes it settles the count of lines and the count
+  after `view::fold::fold`. The report gains `feed_lines_day` and `feed_folded_day` (means over
+  settled days; the unfinished last day is left out), and `soak --alive` feeds it. Reads only.
+- Guard: `tests/alive_report.rs::the_feed_repeat_keys_count_lines_before_and_after_folding` (five
+  suspicions of one person fold to one line, with a death and a Minor row left out: 6 lines, 2
+  folded), and the empty-tally shape test lists the new keys.
+- Not covered: the baseline over seeds 1-8, three deities and 300 days. It was not run here, so the
+  numbers the entry asks for are still to be recorded.
+
 ## 2026-11-24: the soak can run the camera director (OST-868)
 
 - Symptom: only the game client ran the director, so no headless run could say where the camera

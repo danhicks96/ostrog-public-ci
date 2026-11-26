@@ -163,6 +163,8 @@ fn an_empty_tally_gives_every_key_as_zero() {
             "lesson_ignored",
             "glance_major_n",
             "glance_missed_major",
+            "feed_lines_day",
+            "feed_folded_day",
             "glance_missed_major_died",
             "glance_missed_major_captured",
             "glance_missed_major_broke",
@@ -2219,4 +2221,111 @@ fn death_with_a_held_lesson_is_counted() {
     let r = tally.report();
     assert_eq!(key(&r, "cause_repeat"), 1.0);
     assert_eq!(key(&r, "lesson_ignored"), 1.0);
+}
+
+/// OST-867: the table of what the client draws names every activity, in the order of the
+/// counters, and marks the activities drawn as plain standing.
+#[test]
+fn the_readable_table_names_every_activity_and_marks_plain_standing() {
+    use hf_sim::view::alive::{drawn, work_drawn};
+    use hf_sim::work::DesignationKind;
+    let (w, idx) = party(1);
+    let _ = (&w, &idx);
+    let pos = TilePos::new(1, 1, 2);
+    let all = [
+        Activity::Idle,
+        Activity::Going {
+            to: pos,
+            then: Box::new(Activity::Idle),
+        },
+        Activity::Eating {
+            item: ItemId(1),
+            ticks_left: 1,
+        },
+        Activity::Foraging {
+            plant: pos,
+            ticks_left: 1,
+        },
+        Activity::Sleeping {
+            bed: None,
+            until: 1,
+        },
+        Activity::Talking {
+            with: AgentId(1),
+            ticks_left: 1,
+        },
+        Activity::Loitering { ticks_left: 1 },
+        Activity::Wandering { to: pos },
+        Activity::Drinking {
+            ticks_left: 1,
+            back: None,
+        },
+    ];
+    for a in &all {
+        assert_eq!(drawn(a).activity, a.name());
+    }
+    assert!(drawn(&Activity::Idle).plain_standing);
+    assert!(drawn(&Activity::Loitering { ticks_left: 1 }).plain_standing);
+    assert!(
+        !drawn(&Activity::Talking {
+            with: AgentId(1),
+            ticks_left: 1
+        })
+        .plain_standing
+    );
+    assert_eq!(work_drawn(&DesignationKind::Chop).0, "swing");
+    assert_eq!(work_drawn(&DesignationKind::Cook).0, "tap");
+}
+
+/// OST-864: the report counts, per settled game-day, the rows that would reach the feed (Notable
+/// or above) and the lines left after folding the same news.
+#[test]
+fn the_feed_repeat_keys_count_lines_before_and_after_folding() {
+    use hf_sim::ids::EventId;
+    let (w, _) = party(2);
+    let a = w.agents[0].id;
+    let b = w.agents[1].id;
+    let at = |tick: u64, severity: Severity, kind: EventKind| Event {
+        id: EventId(0),
+        tick,
+        at: None,
+        severity,
+        kind,
+    };
+    let suspect = |tick: u64| {
+        at(
+            tick,
+            Severity::Notable,
+            EventKind::Suspected {
+                by: a,
+                of: b,
+                because: "x".into(),
+            },
+        )
+    };
+    let day = TICKS_PER_DAY;
+    // Day 0: five suspicions of one person, one death, one Minor row (not in the feed).
+    let mut events: Vec<Event> = (1..=5).map(suspect).collect();
+    events.push(at(
+        6,
+        Severity::Major,
+        EventKind::Died {
+            agent: b,
+            cause: "fever".into(),
+        },
+    ));
+    events.push(at(
+        7,
+        Severity::Minor,
+        EventKind::Talked { a, b, warmth: 0.1 },
+    ));
+    let mut tally = AliveTally::default();
+    tally.observe_feed(&w, &events);
+    // Day 0 is unfinished: nothing is counted yet.
+    assert_eq!(tally.report().get("feed_lines_day"), Some(0.0));
+    // The first row of day 1 settles day 0: 6 lines, 2 after folding (one suspicion line, one death).
+    tally.observe_feed(&w, &[suspect(day + 1)]);
+    let r = tally.report();
+    assert_eq!(r.get("feed_lines_day"), Some(6.0));
+    assert_eq!(r.get("feed_folded_day"), Some(2.0));
 }
