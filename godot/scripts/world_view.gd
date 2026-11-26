@@ -248,7 +248,7 @@ func reset_world() -> void:
 		for n in chunk_nodes[k]:
 			n.queue_free()
 	chunk_nodes.clear()
-	floor_stamp = Vector2i(-1,-1)
+	floor_stamp = Vector2i(-2,0)
 	chunk_seen.clear()
 	_variety.clear()
 	_variety_key = ""
@@ -262,8 +262,10 @@ func reset_world() -> void:
 
 var observer := ColonyAtlas.new()
 var remembered := {}
+var visible_spills: Array[Vector3i] = [] # upper and lower endpoints, in pairs
+var spill_corners := {} # shared crest positions and downstream normals
 var surveyed_floor := false
-var floor_stamp := Vector2i(-1,-1)
+var floor_stamp := Vector2i(-2,0)
 
 func _read_observed_floor() -> void:
 	var tick: int = sim.tick()
@@ -277,6 +279,26 @@ func _read_observed_floor() -> void:
 	for i in range(2,cells.size(),6):
 		remembered[Vector2i(cells[i],cells[i+1])] = Vector4i(cells[i+2],cells[i+3],cells[i+4],cells[i+5])
 
+func _refresh_spills() -> void:
+	visible_spills.clear()
+	spill_corners.clear()
+	if not surveyed_floor:
+		return
+	var edges := observer.visible_spill_edges(sim, view_z)
+	for i in range(0, edges.size(), 6):
+		var upper := Vector3i(edges[i], edges[i + 1], edges[i + 2])
+		var lower := Vector3i(edges[i + 3], edges[i + 4], edges[i + 5])
+		visible_spills.append(upper)
+		visible_spills.append(lower)
+		var flow := Vector2(lower.x - upper.x, lower.y - upper.y)
+		var middle := Vector2(upper.x + 0.5, upper.y + 0.5) + flow * 0.5
+		for side in [-0.5, 0.5]:
+			var end := Vector2i((middle + flow.orthogonal() * float(side)).round())
+			var key := Vector4i(end.x, end.y, upper.z, lower.z)
+			var corner: Vector4 = spill_corners.get(key, Vector4.ZERO)
+			spill_corners[key] = corner + Vector4(middle.x - end.x, middle.y - end.y, flow.x, flow.y)
+
+
 func tile_in_sight(at: Vector2i) -> bool:
 	return not surveyed_floor or remembered.get(at, Vector4i.ZERO).x == 1
 
@@ -284,11 +306,13 @@ var known_only := false
 var sky := 0
 var season := 0
 var temperature := 10.0
+var water_freeze_level := 2147483647
 var occupied := {}
 var explored := {}
 
 func refresh() -> void:
 	_read_observed_floor()
+	_refresh_spills()
 	levels.clear()
 	explored.clear()
 	if known_only:
@@ -342,6 +366,7 @@ func refresh() -> void:
 	sky = sim.sky()
 	season = sim.season()
 	temperature = sim.temperature()
+	water_freeze_level = sim.water_freeze_level()
 	occupied.clear()
 	for i in range(0, agents.size(), AGENT_STRIDE):
 		occupied[Vector3i(agents[i + 1], agents[i + 2], agents[i + 3])] = true
@@ -666,11 +691,11 @@ func _draw_dynamic(ci: CanvasItem) -> void:
 			var y: int = d[1]
 			match d[2]:
 				"water":
-					draw_family(d[3], x, y, d[4], true)
+					draw_family(d[3], x, y, d[4], d[5] < water_freeze_level)
 					# Deep water shades in from the shallows: its outer ring takes the shallow
 					# water at half strength, so a lake centre darkens in two steps.
 					if d[3] == "deep_water" and _deep_rim(x, y, d[5]):
-						draw_family("water", x, y, d[4], true, 0.5)
+						draw_family("water", x, y, d[4], d[5] < water_freeze_level, 0.5)
 				"fire":
 					var fire := _tex("structures/fire.png")
 					var r := Rect2(x * TILE, y * TILE, TILE, TILE)
@@ -687,7 +712,50 @@ func _draw_dynamic(ci: CanvasItem) -> void:
 						_ci.draw_texture_rect(door, r2, false)
 					else:
 						_ci.draw_rect(r2.grow(-6), Color(0.45, 0.3, 0.15))
+	var bounds := cull_rect()
+	for i in range(0, visible_spills.size(), 2):
+		var upper := visible_spills[i]
+		if bounds.has_point(Vector2i(upper.x, upper.y)):
+			_draw_spill(ci, upper, visible_spills[i + 1])
 	_ci = self
+
+# A bright crest gives way to a shaded face and moving streaks at its foot.
+func _draw_spill(ci: CanvasItem, upper: Vector3i, lower: Vector3i) -> void:
+	var flow := Vector2(lower.x - upper.x, lower.y - upper.y)
+	var mid := Vector2(upper.x + 0.5, upper.y + 0.5) + flow * 0.5
+	var lip := PackedVector2Array()
+	var foot := PackedVector2Array()
+	var depth := minf(TILE * 0.68, 8.0 + 5.0 * (upper.z - lower.z))
+	for sign_value in [-0.5, 0.5]:
+		var end := Vector2i((mid + flow.orthogonal() * float(sign_value)).round())
+		var corner: Vector4 = spill_corners[Vector4i(end.x, end.y, upper.z, lower.z)]
+		var normal := Vector2(corner.z, corner.w)
+		var top := Vector2(end) * TILE
+		var offset := Vector2(corner.x, corner.y)
+		var local_depth := depth
+		if normal == Vector2.ZERO:
+			normal = flow
+		elif normal.length_squared() > 1.0 and offset != Vector2.ZERO:
+			# The foot must fit between consecutive inside bends in the crest.
+			top += offset * TILE * 0.42
+			local_depth = minf(depth, TILE * 0.28)
+		lip.append(top)
+		foot.append(top + normal.normalized() * local_depth)
+	var points := PackedVector2Array([lip[0], lip[1], foot[1], foot[0]])
+	var crest := Color("#a4d3cc")
+	var base := Color("#326878")
+	ci.draw_polygon(points, PackedColorArray([crest, crest, base, base]))
+	ci.draw_line(lip[0], lip[1], Color("#c0dedb"), 1.5, true)
+	for n in 5:
+		var lane := (n + 0.5) / 5.0
+		var head := lip[0].lerp(lip[1], lane)
+		var tail := foot[0].lerp(foot[1], lane)
+		var phase := fposmod(anim_t * 1.35 + n * 0.37 + upper.x * 0.13 + upper.y * 0.21, 1.0)
+		ci.draw_line(head.lerp(tail, phase), head.lerp(tail, minf(phase + 0.44, 1.0)), Color(0.83, 0.94, 0.93, 0.72), 1.5, true)
+		var froth := tail + (tail - head).normalized() * (1.0 + sin(phase * TAU))
+		var along := (foot[1] - foot[0]).normalized()
+		var spread := 1.3 + sin(phase * PI)
+		ci.draw_line(froth - along * spread, froth + along * spread, Color(0.78, 0.90, 0.89, 0.35 + 0.25 * sin(phase * PI)), 1.6, true)
 
 func _ground_family(x: int, y: int) -> Array:
 	# returns [family, dim, animated, level]; level is the height of the visible surface (a
@@ -842,7 +910,7 @@ func _draw_ground(x: int, y: int) -> void:
 	if g[2] and _chunk_mode:
 		_dyn_rec.append([x, y, "water", fam, g[1], g[3]])
 	else:
-		draw_family(fam, x, y, g[1], g[2])
+		draw_family(fam, x, y, g[1], g[2] and g[3] < water_freeze_level)
 		if sh < 5:
 			_draw_blend(x, y)
 		_draw_underground_details(fam, x, y, g[3])

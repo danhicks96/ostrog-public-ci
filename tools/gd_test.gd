@@ -2132,6 +2132,12 @@ func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
 	check(since.has("has_news"), "since-look says whether there is news")
 	sim.free()
 
+func test_empty_watcher_has_no_visible_river_drops() -> void:
+	var sim := SimHost.new()
+	var atlas := ColonyAtlas.new()
+	check(atlas.visible_spill_edges(sim, 3).is_empty() and atlas.visible_spill_edges(sim, 2).is_empty(), "absent survey cannot reveal a river on either floor")
+	sim.free()
+
 func test_colony_observation_respects_membership_and_fog() -> void:
 	var sim := SimHost.new()
 	check(sim.opening(5, [0, 1, 2], PackedInt64Array([]), "steady") == "", "founding colony")

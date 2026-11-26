@@ -5,6 +5,7 @@ use crate::{
     mind::Skill,
     time::Calendar,
     view::known,
+    world::gen::watershed::SpillEdge,
     World,
 };
 use serde::{Deserialize, Serialize};
@@ -18,9 +19,26 @@ pub struct Survey {
     pub tick: u64,
     #[serde(default)]
     pub valley: BTreeMap<(i32, i32, i32), ObservedTile>,
+    /// Water faces observed from above on this survey. No occupants or lower-floor
+    /// contents are exposed when a moving surface can be seen from the bank.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub bank_spills: BTreeSet<SpillEdge>,
     pub regions: BTreeMap<usize, RegionMemory>,
     pub trails: BTreeMap<(u32, i32, i32), (u64, i32)>,
 }
+impl Survey {
+    pub fn sees_spill(&self, edge: SpillEdge, view_z: i32) -> bool {
+        let current = |p: crate::ids::TilePos| {
+            self.valley
+                .get(&(p.x, p.y, p.z))
+                .is_some_and(|row| row.0 == self.tick)
+        };
+        (view_z == edge.upper.z || view_z == edge.lower.z)
+            && current(edge.upper)
+            && (current(edge.lower) || (view_z == edge.upper.z && self.bank_spills.contains(&edge)))
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RegionMemory {
     pub tick: u64,
@@ -70,6 +88,7 @@ pub fn observe(w: &mut World) {
             _ => None,
         })
         .collect();
+    let spills: Vec<_> = w.active_river_spills().collect();
     for colony in &w.communities {
         let cid = colony.id;
         let mut visible = BTreeSet::new();
@@ -99,6 +118,7 @@ pub fn observe(w: &mut World) {
             add(home, range);
         }
         let mut local = BTreeSet::new();
+        let mut bank_spills = BTreeSet::new();
         for a in w.agents.iter().filter(|a| {
             a.alive
                 && !a.activity.is_asleep()
@@ -107,6 +127,16 @@ pub fn observe(w: &mut World) {
                 && !known::is_unfound(w, a.id)
         }) {
             let radius = crate::systems::perceive::sight_radius(w, a, tick);
+            for &edge in &spills {
+                if a.pos.z == edge.upper.z
+                    && a.pos.dist(edge.lower) <= radius
+                    && a.pos.dist(edge.upper) <= radius
+                    && !bank_spills.contains(&edge)
+                    && crate::mind::perception::sees_spill_from_bank(w, a.pos, edge)
+                {
+                    bank_spills.insert(edge);
+                }
+            }
             for dy in -radius..=radius {
                 for dx in -radius..=radius {
                     let p = a.pos.offset(dx, dy, 0);
@@ -188,6 +218,7 @@ pub fn observe(w: &mut World) {
         }
         let survey = w.overworld.surveys.entry(cid).or_default();
         survey.tick = tick;
+        survey.bank_spills = bank_spills;
         for p in local {
             survey.valley.insert(
                 (p.x, p.y, p.z),

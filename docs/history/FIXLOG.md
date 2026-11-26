@@ -1,10 +1,15 @@
 # Fix log
 
+## 2026-11-26 - Watch a river drop from a clear bank
+
+A sworn observer on a clear outdoor bank can see the exposed face of a one-level drop from above. The pool floor stays hidden until someone surveys it. Walls, roofs and frozen water interrupt the sight of falling water. Surface ripples stop when the water freezes.
+
 ## 2026-11-26 - Follow the colony at home and on the road
 
 M opens the founding colony's chart and roster. The watcher can follow a sworn resident at home or watch the travelling party on its surveyed route. The same route terrain determines finite seasonal forage. The seven scattered survivors stay hidden until discovery.
 
 Local floors, route tiles and world hexes keep their last observation when the party loses sight. Unknown ground hides living occupants and block details. Local observation also works in worlds without a regional chart.
+
 ## 2026-11-26 - Landing-site rivers follow regional drainage
 
 New landing sites on a mapped river inherit channel inlets, outlet and crossing levels from the regional drainage network. Neighbouring river regions share the position and width of a crossing. The river shapes the bed and banks before strata and plants form.

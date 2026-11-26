@@ -195,6 +195,31 @@ impl ColonyAtlas {
         }
         PackedInt32Array::from(tiles.as_slice())
     }
+    /// Six integers per moving water face visible to the colony at this level.
+    #[func]
+    fn visible_spill_edges(&self, host: Gd<SimHost>, z: i32) -> PackedInt32Array {
+        let host = host.bind();
+        let Some(w) = host.world() else {
+            return Default::default();
+        };
+        let Some(memory) = w
+            .communities
+            .first()
+            .and_then(|c| w.overworld.surveys.get(&c.id))
+        else {
+            return Default::default();
+        };
+        let mut rows = PackedInt32Array::new();
+        for edge in w
+            .active_river_spills()
+            .filter(|&edge| memory.sees_spill(edge, z))
+        {
+            let (a, b) = (edge.upper, edge.lower);
+            rows.extend([a.x, a.y, a.z, b.x, b.y, b.z]);
+        }
+        rows
+    }
+
     #[func]
     fn remembered_floor(&self, host: Gd<SimHost>, z: i32) -> PackedInt32Array {
         let host = host.bind();
@@ -204,10 +229,11 @@ impl ColonyAtlas {
         let Some(colony) = w.communities.first() else {
             return Default::default();
         };
-        let Some(memory) = w.overworld.surveys.get(&colony.id) else {
-            return Default::default();
-        };
         let mut rows = vec![w.grid.width, w.grid.height];
+        let Some(memory) = w.overworld.surveys.get(&colony.id) else {
+            // A colony with no report knows no cells, even when another colony has a chart.
+            return PackedInt32Array::from(rows.as_slice());
+        };
         for (&(x, y, level), &(seen, tile, below, fitting)) in &memory.valley {
             if level == z {
                 rows.extend([

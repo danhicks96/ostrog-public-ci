@@ -5,7 +5,7 @@ use crate::realm::RealmMap;
 use crate::rng::{hash64, purpose};
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct SpillEdge {
     pub upper: TilePos,
     pub lower: TilePos,

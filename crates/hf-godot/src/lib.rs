@@ -3682,6 +3682,16 @@ impl SimHost {
             .unwrap_or(10.0)
     }
 
+    /// Lowest map level whose open water is frozen; higher levels are colder.
+    #[func]
+    fn water_freeze_level(&self) -> i32 {
+        self.world().map_or(i32::MAX, |w| {
+            (w.grid.z_min..=w.grid.z_max)
+                .find(|&z| hf_sim::water::frozen_at(w, hf_sim::ids::TilePos::new(0, 0, z)))
+                .unwrap_or(i32::MAX)
+        })
+    }
+
     #[func]
     fn hour(&self) -> f32 {
         self.world()

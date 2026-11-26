@@ -1803,7 +1803,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | expedition.rs:428 | gathered |
 | expedition.rs:429 | found the road again |
 | expedition.rs:430 | nothing more was heard |
-| expedition_survey.rs:216 | Ruins of {} |
+| expedition_survey.rs:247 | Ruins of {} |
 | faith.rs:117 | has seen our hard days and is easing them |
 | faith.rs:118 | thinks we have more than our share |
 | faith.rs:119 | has turned cold to us for the killing |
