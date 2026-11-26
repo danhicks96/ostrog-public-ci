@@ -20,6 +20,15 @@
   12 days both seeds pass, and the check that no roof falls still runs the whole time.
 - Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
   mood after a break, which can bring a second break sooner.
+## 2026-11-26: a guard for mood's needs term reading thirst and warmth (OST-551)
+
+- Symptom: the issue said the needs term ignored thirst and warmth. It no longer does: it
+  averages all six needs and takes the lowest (the #879 fix, tuned by OST-205). No behaviour
+  changes here.
+- Guard: `tests/thirst.rs::one_empty_thirst_or_warmth_is_miserable_on_the_needs_term` sets one
+  need empty with the rest full and requires the needs term at or below -0.3; it fails if the
+  term goes back to four needs.
+
 ## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
 
 - Symptom: a suspicion that spread through a camp read the same as one person's grudge, with
