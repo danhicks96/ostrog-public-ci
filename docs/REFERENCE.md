@@ -1092,6 +1092,7 @@ Thoughts feed mood and stress. The bridge sends the strongest six as `{label} {w
 | Missing | the missing | -0.2 | 4.0 |
 | Thirsty | parched | -0.3 | 0.5 |
 | Broke | broke down | -0.25 | 2.0 |
+| Lonely | lonely | -0.15 | 0.5 |
 
 #### Breaks (`systems/strain.rs`)
 
@@ -3609,18 +3610,18 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:344 | cold |
 | systems/strain.rs:345 | loneliness |
 | systems/strain.rs:346 | discomfort |
-| systems/strain.rs:538 | from {} |
-| systems/strain.rs:542 | because they were {} |
-| systems/strain.rs:546 | from {n} |
-| systems/strain.rs:602 | {}'s {} |
-| systems/strain.rs:635 | breaking the {label} |
-| systems/strain.rs:663 | eaten in a binge |
-| systems/strain.rs:697 | set by {name} in a rage |
-| systems/strain.rs:777 | wondered where {who} is |
-| systems/strain.rs:778 | the rest of the party is not here |
-| systems/strain.rs:801 | starting a fight |
-| systems/strain.rs:849 | in a fight |
-| systems/strain.rs:874 | in a fight |
+| systems/strain.rs:542 | from {} |
+| systems/strain.rs:546 | because they were {} |
+| systems/strain.rs:550 | from {n} |
+| systems/strain.rs:606 | {}'s {} |
+| systems/strain.rs:639 | breaking the {label} |
+| systems/strain.rs:667 | eaten in a binge |
+| systems/strain.rs:701 | set by {name} in a rage |
+| systems/strain.rs:781 | wondered where {who} is |
+| systems/strain.rs:782 | the rest of the party is not here |
+| systems/strain.rs:805 | starting a fight |
+| systems/strain.rs:853 | in a fight |
+| systems/strain.rs:878 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
