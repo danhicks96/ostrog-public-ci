@@ -609,7 +609,7 @@ Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on 
 
 ### OST-863 · Check that a biography fits on a page and keeps every life event
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
 
 Add `crates/hf-sim/examples/biography_census.rs`: for each colonist who lived at least 100 game-days, count `view::biography` lines and check that every child's birth, pairing, partner's death and their own death is present. Tracking issue: [#405](https://github.com/danhicks96/ostrog-public-ci/issues/405).
 
