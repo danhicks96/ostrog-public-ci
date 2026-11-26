@@ -13,6 +13,11 @@
   `tests/stress.rs::a_contented_person_with_one_trouble_does_not_break` guards it.
 - Guard: `tests/breaks.rs::the_cost_of_a_break_lasts_beyond_a_minute` (an hour after a break the
   person is at least 0.15 below the same person who did not break; fails without the thought).
+- Test follow-up: `tests/building.rs::roofs_are_laid_from_the_walls_and_do_not_fall_in_ordinary_building`
+  now runs 12 days, not 10. The break cost shifts who is calm enough to build; on seed 3 roofs come
+  in batches (0, 6, 10, 16, 16, 16, 22 over days 5-9 on main, a batch later here), so the same
+  build finished a day or two later and stood at 16 on day 10. The floor of 20 is unchanged; at
+  12 days both seeds pass, and the check that no roof falls still runs the whole time.
 - Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
   mood after a break, which can bring a second break sooner.
 ## 2026-11-25: one need at zero no longer hides behind five full ones (OST-205)
