@@ -61,7 +61,7 @@ fn day_spread_pools_people_and_excludes_short_lives() {
     let spread = day_spread(&hours, DAY_SPREAD_MIN_HOURS);
     assert_eq!(spread.people, 4);
     assert_eq!(spread.activities[6].mean, 43.75);
-    assert_eq!(spread.activities[6].p90_p10, 77.5);
+    assert!((spread.activities[6].p90_p10 - 77.5).abs() < 1e-9);
     assert_eq!(day_spread(&[], 0), Default::default());
     assert_eq!(day_spread(&[[0; 10]], 0), Default::default());
 }
