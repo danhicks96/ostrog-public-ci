@@ -35,6 +35,11 @@ class TextRules(unittest.TestCase):
         self.bad(f"{NAME}'s rule 3")
         self.bad(f"ask {NAME.lower()}")
 
+    def test_github_support_address_allowed(self):
+        # Dependabot commits end with this public GitHub address; it must not fail hygiene.
+        self.assertEqual(run(["--text", "-"], "Signed-off-by: dependabot[bot] <support@github.com>\n").returncode, 0)
+        self.bad("contact me at someone@github.com")
+
     def test_the_box(self):
         self.bad("run it on the box")
 
