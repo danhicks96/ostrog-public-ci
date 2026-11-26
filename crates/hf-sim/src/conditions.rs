@@ -730,10 +730,15 @@ fn bite(
     Some(ev)
 }
 
+/// How long the same evidence against the same person counts as already suspected: twenty days.
+const SUSPICION_FRESH: u64 = 20 * crate::time::TICKS_PER_DAY;
+/// Suspicions kept per person.
+pub const SUSPICIONS_KEPT: usize = 16;
+
 /// Those of the community who noticed come to suspect agent `i`: the one who saw or was hurt
 /// first, then whoever slept nearest. A suspicion is a memory of them with the row as its
 /// source, and a cooler opinion; it can be wrong.
-fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
+pub fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
     let tick = w.meta.tick;
     let (of, me, cid) = (w.agents[i].id, w.agents[i].pos, w.agents[i].community);
     let Some(cid) = cid else { return };
@@ -747,6 +752,30 @@ fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
         return;
     };
     let by = w.agents[j].id;
+    // The same kind of evidence against the same person, already held and still fresh, only
+    // deepens the suspicion: no new row, no cooler opinion (OST-173).
+    let tag = because
+        .bytes()
+        .fold(2166136261u32, |h, b| (h ^ b as u32).wrapping_mul(16777619));
+    let a = &mut w.agents[j];
+    if a.suspicions
+        .iter()
+        .any(|s| s.0 == of && s.1 == tag && tick.saturating_sub(s.2) < SUSPICION_FRESH)
+    {
+        if let Some(m) = a.memories.long.iter_mut().find(|m| {
+            m.kind == crate::mind::MemKind::Hardship
+                && m.subject == crate::mind::Subject::Person(of)
+        }) {
+            m.strength = (m.strength + 0.1).min(1.0);
+            m.last = tick;
+        }
+        return;
+    }
+    a.suspicions.retain(|s| !(s.0 == of && s.1 == tag));
+    a.suspicions.push((of, tag, tick));
+    if a.suspicions.len() > SUSPICIONS_KEPT {
+        a.suspicions.remove(0);
+    }
     w.agents[j].remember(
         tick,
         crate::mind::MemKind::Hardship,
