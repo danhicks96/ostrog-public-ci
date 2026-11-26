@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Identify caravans and their surveyed terrain on the colony map
+
+Fernbank's chart showed two patches of similar green and a gold dot for three travellers. M now labels each discovered caravan, showing its party size and its reported destination when outbound. The flag and caption both open the expedition. Surveyed biomes have distinct map symbols and a key, settlement marks use the recorded place name on inspection, and dim hexes retain their last observed details. Picking a corner across the boundary of an unknown hex keeps it unknown.
+
 ## 2026-11-26 - Follow the colony at home and on the road
 
 M opens the founding colony's chart and roster. The watcher can follow a sworn resident at home or watch the travelling party on its surveyed route. The same route terrain determines finite seasonal forage. The seven scattered survivors stay hidden until discovery.

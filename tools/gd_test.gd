@@ -2132,6 +2132,14 @@ func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
 	check(since.has("has_news"), "since-look says whether there is news")
 	sim.free()
 
+func test_surveyed_map_hex_excludes_unobserved_corners() -> void:
+	const AtlasMap := preload("res://scripts/colony_atlas.gd")
+	for radius in [3.0, 14.0, 32.0]:
+		check(AtlasMap.inside_hex(Vector2.ZERO, radius), "centre selects the surveyed hex")
+		check(AtlasMap.inside_hex(Vector2(0, 0.99) * radius, radius), "north and south tips are inside")
+		check(not AtlasMap.inside_hex(Vector2(0.7, 0.7) * radius, radius), "corner in the unknown neighbour stays unknown")
+		check(not AtlasMap.inside_hex(Vector2(-0.9, 0) * radius, radius), "west edge does not pick the east neighbour")
+
 func test_colony_observation_respects_membership_and_fog() -> void:
 	var sim := SimHost.new()
 	check(sim.opening(5, [0, 1, 2], PackedInt64Array([]), "steady") == "", "founding colony")

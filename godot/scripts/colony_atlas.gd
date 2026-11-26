@@ -31,7 +31,18 @@ var view_centre := Vector2.ZERO
 var hex_size := 14.0
 var home := -1
 
-var markers_shown := {}
+# Only the two facts about land recorded by the survey are charted: biome and settlement.
+const TERRAIN_COLOUR := {
+	"ocean": "#44708c", "lake": "#6396ac", "ice": "#c0d4dc", "tundra": "#a49d89",
+	"taiga": "#557b70", "temperate forest": "#698553", "grassland": "#a7ad74",
+	"steppe": "#ab9a6a", "desert": "#d4b984", "savanna": "#b9a661",
+	"rainforest": "#477562", "swamp": "#848967", "mountains": "#96969c"
+}
+const PARTY_INK := Color("#f4c879")
+const MAP_FIELD := Color("#162027")
+var parties := {}
+var away_members := {}
+var party_hits := {}
 
 func _install() -> void:
 	for source in [main.people_panel, main.legends_panel]:
@@ -88,6 +99,7 @@ func _install() -> void:
 	map.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	map.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	map.gui_input.connect(_map_click)
+	map.resized.connect(ink.queue_redraw)
 	map.add_child(ink)
 	ink.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	map.clip_contents = true
@@ -221,19 +233,29 @@ func _render() -> void:
 		detail.text = "%s  ·  %s, day %d  ·  %d rations\n%s" % [row.name,row.stage,row.day,row.rations,row.line]
 		detail.text += "   ·   Surface   ·   Cargo: " + str(row.get("cargo","") if row.get("cargo","") != "" else "empty")
 	else:
-		var markers := {}
+		parties.clear()
+		away_members.clear()
 		for member in rows.values():
-			var r := _region(member)
-			if r >= 0 and r < side * side:
-				markers[r] = Color.GOLD if r != home else Color.WHITE
-		markers_shown = markers
+			if not member.away:
+				continue
+			var region := _region(member)
+			if region < 0 or region >= side * side:
+				continue
+			if not member.has("caravan"):
+				away_members[member.id] = region
+				continue
+			if not parties.has(member.caravan):
+				parties[member.caravan] = {"region": region, "member": member.id, "count": 0}
+			var party: Dictionary = parties[member.caravan]
+			party.count += 1
+			party.member = mini(party.member, member.id)
 		ink.queue_redraw()
-		detail.text = region_note if region_note != "" else "Select a hex. Gold marks members away from home. Dim terrain shows the last observation."
+		detail.text = region_note if region_note != "" else "Select a caravan to watch it, or a surveyed hex to inspect it. Dim hexes show the last observation."
 		if not row.is_empty():
 			detail.text = "%s · %s" % [row.name, row.get("line","At home")]
 			action.text = "Watch caravan" if row.away else "Follow in %s" % main.sim.world_name()
-		elif roster.item_count == 0 and region_note == "":
-			detail.text = "No known members here."
+		elif roster.item_count == 0 and chart.has(region_filter):
+			detail.text += " · No known members here."
 
 func _focus() -> void:
 	var row: Dictionary = rows.get(selected,{})
@@ -259,30 +281,138 @@ func _map_point(region: int) -> Vector2:
 	return (map.size - Vector2(0,50)) * 0.5 + (_hex_xy(region) - view_centre) * hex_size
 
 func _draw_chart() -> void:
-	ink.draw_rect(Rect2(Vector2.ZERO,map.size),Color("#11171c"))
+	ink.draw_rect(Rect2(Vector2.ZERO,map.size), MAP_FIELD)
 	if chart.is_empty():
 		return
 	var bounds := Rect2(_hex_xy(chart.keys()[0]),Vector2.ZERO)
 	for region in chart:
 		bounds = bounds.expand(_hex_xy(region))
-	for region in markers_shown:
+	for party in parties.values():
+		bounds = bounds.expand(_hex_xy(party.region))
+	for region in away_members.values():
 		bounds = bounds.expand(_hex_xy(region))
 	var selected_member: Dictionary = rows.get(selected, {})
 	if selected_member.has("caravan") and selected_member.has("region"):
 		bounds = bounds.expand(_hex_xy(selected_member.region))
 	view_centre = bounds.get_center()
-	hex_size = minf(32,minf((map.size.x-48)/(bounds.size.x+3),(map.size.y-100)/(bounds.size.y+3)))
-	var palette := {"ocean":"345577","lake":"5489a4","ice":"c4d2d3","tundra":"999a88","taiga":"527161","temperate forest":"54794e","grassland":"9baa6a","steppe":"af9a64","desert":"d1b77f","savanna":"b3a765","rainforest":"36785e","swamp":"60735b","mountains":"8b8990"}
+	hex_size = minf(42,minf((map.size.x-48)/(bounds.size.x+3),(map.size.y-100)/(bounds.size.y+3)))
+	var biomes := {}
+	var has_memory := false
 	for region in chart:
 		var cell: Dictionary = chart[region]
-		var color := Color(str(palette.get(cell.terrain,"8b8990")))
+		var terrain: String = cell.terrain
+		biomes[terrain] = true
+		var tint := Color(str(TERRAIN_COLOUR.get(terrain, "#959394")))
 		var centre := _map_point(region)
-		var corners := PackedVector2Array()
-		for k in 6:
-			corners.append(centre + Vector2.from_angle((k+0.5)*TAU/6.0) * (hex_size - 0.5))
-		ink.draw_colored_polygon(corners,color if cell.live else color.darkened(0.56))
+		var corners := _hex_corners(centre, hex_size + 0.1)
+		if not cell.live:
+			has_memory = true
+			tint = tint.lerp(MAP_FIELD, 0.62)
+		ink.draw_colored_polygon(corners, tint)
+		if hex_size >= 9:
+			corners.append(corners[0])
+			ink.draw_polyline(corners, tint.darkened(0.12), 1.0, true)
+			_draw_terrain_marks(terrain, region, centre, tint)
 		if cell.settlement != "":
-			ink.draw_rect(Rect2(centre-Vector2.ONE*2,Vector2.ONE*4),Color.BISQUE if cell.live else Color.DIM_GRAY)
+			var size := clampf(hex_size * 0.24, 3, 8)
+			var beacon := Color("#f1e0be") if cell.live else Color("#89918c")
+			var town := centre + Vector2(-0.30, 0.23) * hex_size
+			ink.draw_rect(Rect2(town + Vector2(-0.62,-0.14) * size, Vector2(1.24,0.88) * size), beacon)
+			ink.draw_colored_polygon(PackedVector2Array([town + Vector2(-size, 0), town + Vector2(0, -size), town + Vector2(size, 0)]), beacon)
+			ink.draw_rect(Rect2(town + Vector2(-0.18,0.12) * size, Vector2(0.36,0.62) * size), MAP_FIELD)
+	if chart.has(region_filter):
+		var outline := _hex_corners(_map_point(region_filter), hex_size - 1)
+		outline.append(outline[0])
+		ink.draw_polyline(outline, Color("#f0e4c5"), 2.0, true)
+	_draw_terrain_key(biomes, has_memory)
+
+func _hex_corners(centre: Vector2, radius: float) -> PackedVector2Array:
+	var corners := PackedVector2Array()
+	for i in 6:
+		corners.append(centre + Vector2.from_angle((i + 0.5) * TAU / 6.0) * radius)
+	return corners
+
+# Biome symbols break up a broad patch of a single surveyed biome. Spacing is cartographic;
+# the report contains neither individual trees nor their density.
+func _draw_terrain_marks(terrain: String, region: int, centre: Vector2, tint: Color) -> void:
+	var pattern := posmod(hash(Vector2i(region % side, region / side)), 137)
+	if pattern % 5 == 0:
+		return
+	var shade := tint.lerp(MAP_FIELD, 0.52)
+	var count := 1 if hex_size < 18 else 1 + pattern % 3
+	for i in count:
+		var angle := float((pattern * 83 + i * 137) % 360) * PI / 180.0
+		var pos := centre + Vector2.from_angle(angle) * hex_size * (0.15 if count == 1 else 0.43)
+		var scale := hex_size * (0.19 + float((pattern + i) % 4) * 0.023)
+		_biome_symbol(terrain, pos, scale, shade)
+
+func _biome_symbol(biome: String, at: Vector2, s: float, tint: Color) -> void:
+	var width := clampf(s * 0.18, 1.0, 2.0)
+	match biome:
+		"taiga":
+			_pine(at, s, tint)
+		"temperate forest", "rainforest", "savanna":
+			ink.draw_line(at, at + Vector2.DOWN * s, tint, width)
+			var canopy := PackedVector2Array()
+			for i in 10:
+				var radius := Vector2(1.0, 0.42) if biome == "savanna" else Vector2(0.79, 0.68)
+				canopy.append(at + (Vector2.from_angle(i * TAU / 10) * radius + Vector2(0,-0.14)) * s)
+			ink.draw_colored_polygon(canopy, tint)
+		"swamp", "grassland", "steppe", "tundra":
+			var base := at + Vector2.DOWN * s * 0.5
+			for blade in [-1, 0, 1]:
+				var reach := Vector2(blade * 0.73, -1.26 if blade == 0 else -0.78)
+				var stem: Vector2 = base + Vector2.RIGHT * blade * s * 0.17
+				ink.draw_polyline(PackedVector2Array([stem, stem + Vector2(reach.x * 0.38, reach.y * 0.72) * s, stem + reach * s]), tint, width, true)
+			if biome == "swamp":
+				ink.draw_line(at + Vector2(-1.08,0.69) * s, at + Vector2(-0.22,0.69) * s, tint, width, true)
+				ink.draw_line(at + Vector2(0.1,0.91) * s, at + Vector2(1.0,0.91) * s, tint, width, true)
+		"ocean", "lake", "desert":
+			for row in (1 if biome == "desert" else 2):
+				var line := PackedVector2Array()
+				for i in 9:
+					line.append(at + Vector2((i - 4) * 0.26, row * 0.58 - cos(i * PI / 4) * 0.23) * s)
+				ink.draw_polyline(line, tint, width, true)
+		"mountains", "ice":
+			ink.draw_polyline(PackedVector2Array([at + Vector2(-1, 0.5) * s, at + Vector2(-0.3, -0.7) * s, at + Vector2(0.25, 0.05) * s, at + Vector2(0.55,-0.4) * s, at + Vector2(1,0.5) * s]), tint, width, true)
+
+func _pine(at: Vector2, scale: float, tint: Color) -> void:
+	var tree := PackedVector2Array()
+	for vertex in [
+		Vector2(0,-1.2), Vector2(0.55,-0.32), Vector2(0.28,-0.35), Vector2(0.86,0.53),
+		Vector2(0.12,0.47), Vector2(0.12,0.88), Vector2(-0.12,0.88), Vector2(-0.12,0.47),
+		Vector2(-0.86,0.53), Vector2(-0.28,-0.35), Vector2(-0.55,-0.32)
+	]:
+		tree.append(at + vertex * scale)
+	ink.draw_colored_polygon(tree, tint)
+	ink.draw_colored_polygon(PackedVector2Array([
+		at + Vector2(0,-1.1) * scale, at + Vector2(-0.78,0.49) * scale, at + Vector2(0,0.19) * scale
+	]), tint.lightened(0.12))
+
+func _draw_terrain_key(biomes: Dictionary, has_memory: bool) -> void:
+	var font := ink.get_theme_default_font()
+	var pos := Vector2(12, 12)
+	var names := biomes.keys()
+	names.sort()
+	for name in names:
+		var caption := str(name).capitalize()
+		var width := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 43
+		if pos.x + width > map.size.x - 10 and pos.x > 12:
+			pos = Vector2(12, pos.y + 27)
+		ink.draw_rect(Rect2(pos, Vector2(width - 5, 25)), Color("#23313a"))
+		var tint := Color(str(TERRAIN_COLOUR.get(name, "#959394")))
+		_biome_symbol(name, pos + Vector2(13, 12), 7, tint.lightened(0.34))
+		ink.draw_string(font, pos + Vector2(26, 17), caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("#dce3de"))
+		pos.x += width
+	if has_memory:
+		var note := "Dim · last seen"
+		var width := font.get_string_size(note, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 30
+		if pos.x + width > map.size.x - 10:
+			pos = Vector2(12, pos.y + 27)
+		ink.draw_rect(Rect2(pos, Vector2(width, 25)), Color("#23313a"))
+		ink.draw_circle(pos + Vector2(12, 12), 5, Color("#526164"))
+		ink.draw_string(font, pos + Vector2(23,17), note, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("#c1ccca"))
+
 func _route_label(caption: String, color: Color, at: Vector2, member: int) -> void:
 	var font := ink.get_theme_default_font()
 	var width := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x
@@ -292,18 +422,75 @@ func _route_label(caption: String, color: Color, at: Vector2, member: int) -> vo
 
 func _draw_route() -> void:
 	callouts.clear()
+	party_hits.clear()
 	_draw_chart()
 	if chart.is_empty() or home < 0 or home >= side * side:
 		return
 	var start := _map_point(home)
 	var crew: Dictionary = rows.get(selected,{})
-	for region in markers_shown:
-		if region != home:
-			ink.draw_circle(_map_point(region), 5, markers_shown[region])
-	ink.draw_arc(start,6,0,TAU,24,Color.WHITE,2,true)
-	_route_label("Home",Color.WHITE,start+Vector2(8,3),-1)
-	if not crew.has("caravan") or not crew.has("region"):
-		return
+	if crew.has("caravan") and crew.has("region"):
+		_draw_selected_route(crew, start)
+	if chart.has(home):
+		var home_live: bool = chart[home].live
+		var home_ink := Color("#e8eee8") if home_live else Color("#9baba9")
+		ink.draw_circle(start, 9, MAP_FIELD)
+		ink.draw_arc(start, 7, 0, TAU, 24, home_ink, 2.0, true)
+		_map_badge("Home" if home_live else "Home · last seen", start, home_ink, -1)
+	for member_id in away_members:
+		var point := _map_point(away_members[member_id])
+		var accent := Color("#babde4")
+		ink.draw_circle(point, 6, accent)
+		callouts[Rect2(point - Vector2.ONE * 8, Vector2.ONE * 16)] = member_id
+		_map_badge(rows[member_id].name, point, accent, member_id)
+	var ids := parties.keys()
+	ids.sort()
+	for id in ids:
+		var party: Dictionary = parties[id]
+		var point := _map_point(party.region)
+		ink.draw_circle(point, 12, MAP_FIELD)
+		ink.draw_arc(point, 10, 0, TAU, 28, PARTY_INK, 2, true)
+		ink.draw_line(point + Vector2(-2, 5), point + Vector2(-2, -5), PARTY_INK, 2, true)
+		ink.draw_colored_polygon(PackedVector2Array([point + Vector2(-2,-6), point + Vector2(6,-3), point + Vector2(-2,0)]), PARTY_INK)
+		var hit := Rect2(point - Vector2.ONE * 12, Vector2.ONE * 24)
+		if not party_hits.has(hit):
+			party_hits[hit] = party.member
+		var member: Dictionary = rows[party.member]
+		var title := "Caravan"
+		if member.get("stage", "") == "Outbound" and member.get("place", "") != "":
+			title = "Caravan to %s" % member.place
+		elif member.get("stage", "") == "Returning":
+			title = "Returning caravan"
+		var label := "%s · %d %s" % [title, party.count, "traveller" if party.count == 1 else "travellers"]
+		_map_badge(label, point, PARTY_INK, party.member)
+
+# A pin and its caption are both targets. Put coincident parties on separate lines.
+func _map_badge(caption: String, point: Vector2, colour: Color, member: int) -> void:
+	var font := ink.get_theme_default_font()
+	var width := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x + 20
+	var x := point.x + 16 if point.x + 16 + width <= map.size.x - 4 else point.x - width - 16
+	var box := Rect2(Vector2(clampf(x, 4, maxf(4, map.size.x - width - 4)), clampf(point.y - 14, 4, maxf(4, map.size.y - 32))), Vector2(width, 28))
+	for attempt in callouts.size() + party_hits.size() + 1:
+		var overlaps := false
+		for used in callouts.keys() + party_hits.keys():
+			if box.intersects(used):
+				overlaps = true
+				break
+		if not overlaps:
+			break
+		box.position.y += 30
+		if box.end.y > map.size.y - 4:
+			box.position.y = 4
+	var edge := Vector2(clampf(point.x, box.position.x, box.end.x), clampf(point.y, box.position.y, box.end.y))
+	ink.draw_line(point + point.direction_to(edge) * 10, edge, colour, 1.0, true)
+	ink.draw_rect(box, Color("#1d282d"))
+	ink.draw_rect(box, colour.darkened(0.30), false, 1.0)
+	ink.draw_string(font, box.position + Vector2(10, 20), caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, colour)
+	if member >= 0 and rows[member].has("caravan"):
+		party_hits[box] = member
+	else:
+		callouts[box] = member
+
+func _draw_selected_route(crew: Dictionary, start: Vector2) -> void:
 	var destination := int(crew.region)
 	if destination < 0 or destination >= side * side:
 		return
@@ -339,20 +526,24 @@ func _draw_route() -> void:
 func _map_click(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or chart.is_empty():
 		return
+	for box in party_hits:
+		if box.has_point(event.position):
+			selected = party_hits[box]
+			region_filter = -1
+			signature.clear()
+			watching = true
+			region_note = ""
+			_refresh()
+			return
 	for box in callouts:
 		if box.has_point(event.position):
 			selected = callouts[box]
+			region_note = ""
 			region_filter = home if selected < 0 else -1
 			signature.clear()
 			_refresh()
 			return
-	var hit := -1
-	var nearest := hex_size * hex_size
-	for region in chart:
-		var distance := _map_point(region).distance_squared_to(event.position)
-		if distance <= nearest:
-			nearest = distance
-			hit = region
+	var hit := _region_at(event.position)
 	selected = -1
 	roster.deselect_all()
 	region_filter = hit if hit >= 0 else -2
@@ -361,13 +552,30 @@ func _map_click(event: InputEvent) -> void:
 	else:
 		var cell: Dictionary = chart[hit]
 		var age: int = maxi(0,main.sim.tick()-int(cell.seen))
-		region_note = "%s · %s" % [cell.terrain.capitalize(),"In sight" if cell.live else "Last seen %d hours ago" % (age / 1200)]
+		var observation := "In sight"
+		if not cell.live:
+			var hours := age / 1200
+			observation = "Last seen less than an hour ago" if hours == 0 else "Last seen %d %s ago" % [hours, "hour" if hours == 1 else "hours"]
+		region_note = "%s · %s" % [cell.terrain.capitalize(), observation]
 		if cell.settlement != "":
 			region_note += " · " + str(cell.settlement)
-		for member in rows.values():
-			if member.has("caravan") and _region(member) == hit:
-				selected = member.id
-				watching = true
-				break
 	signature.clear()
 	_refresh()
+
+## The corners outside a pointy hex belong to the neighbouring cell, which may be unknown.
+func _region_at(point: Vector2) -> int:
+	var hit := -1
+	var nearest := hex_size * hex_size
+	for region in chart:
+		var delta := _map_point(region) - point
+		if not inside_hex(delta, hex_size):
+			continue
+		var distance := delta.length_squared()
+		if distance <= nearest:
+			nearest = distance
+			hit = region
+	return hit
+
+static func inside_hex(offset: Vector2, radius: float) -> bool:
+	var d := offset.abs()
+	return d.x <= sqrt(3.0) * radius / 2 and d.x + sqrt(3.0) * d.y <= sqrt(3.0) * radius
