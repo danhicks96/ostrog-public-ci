@@ -14,6 +14,18 @@
 - Note: the issue asked that a loss show as at least 0.05 among many meals; with its own constants
   the most one such loss can move the term is about 0.039, so the guard asks for 0.03. OST-207
   tunes the constants.
+## 2026-11-26: a census of whether the catch-up names every life event (OST-862)
+
+- Symptom: nothing checked that a returning viewer is told, by name, every death, birth, pairing,
+  arrival and departure, or that no one kind crowds the folded lines.
+- Fix: `examples/catch_up_census.rs` walks opening worlds in 8-game-hour windows from the start of
+  play. For each window it reads the told rows of those kinds from the chronicle and checks each
+  has a line in `summary::changes` that names its person, then counts the folded
+  `summary::catch_up_details` lines per kind. Reads only; exits non-zero on a missing or unnamed row.
+- Result (seeds 1 to 4, 30 days, 360 windows, 91 rows): 0 missing, 0 unnamed. 29 windows had a kind
+  over 3 folded lines (chose, parched, hunted, exhausted, starving, high_water, ruin_wondered,
+  studied, wounded), so the 3-line cap is not met by the folded details; a follow-up is needed.
+- Guard: the example is the check; it fails on any row without a named line.
 
 ## 2026-11-24: nothing named what one person could see another doing (OST-1100)
 
