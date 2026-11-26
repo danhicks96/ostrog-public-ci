@@ -89,7 +89,7 @@ fn band_name(w: &World, band: u32) -> String {
         .iter()
         .find(|b| b.id == band)
         .map(|b| b.site_name.clone())
-        .unwrap_or_else(|| "beyond the valley".into())
+        .unwrap_or_else(|| "beyond the colony".into())
 }
 
 fn nearest_community(w: &World, p: TilePos, radius: i32) -> Option<CommunityId> {
@@ -282,9 +282,9 @@ pub fn consider(w: &mut World, cid: CommunityId) {
         EventKind::Proposed {
             agent: lead_id,
             what: if to.is_some() {
-                "to move camp to a better place in the valley".into()
+                "to move camp to a better place in the colony".into()
             } else {
-                "to leave the valley".into()
+                "to leave the area".into()
             },
             because: because.clone(),
         },
@@ -581,7 +581,7 @@ pub fn endings(w: &mut World) {
             .find(|c| c.id == cid)
             .and_then(|c| c.left_for.clone())
         {
-            Some(to) => format!("left the valley for {to}"),
+            Some(to) => format!("left the area for {to}"),
             // #353: and what killed them.
             None => {
                 let d = w

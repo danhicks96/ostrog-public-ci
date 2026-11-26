@@ -557,7 +557,7 @@ fn study(w: &mut World, i: usize, item: crate::ids::ItemId) {
         .iter()
         .find(|x| s.origin.contains(&x.name))
         .map(|x| x.name.clone())
-        .unwrap_or_else(|| "the old valley".to_string());
+        .unwrap_or_else(|| "the old settlements".to_string());
     let what = crate::legend::noun(it.kind, it.material);
     if w.agents[i].techniques.knows(t) {
         return;

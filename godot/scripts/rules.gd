@@ -77,7 +77,7 @@ static func setting_text(key: String, v: float) -> String:
 ## Loading the manual save (D94, FIXLOG 2026-11-14). With nothing saved the note says so in a
 ## player's words ("load failed: manifest missing" before); the bar's Load asks first, saying what
 ## would be lost. F9 stays an instant quick-load.
-const LOAD_NOTHING_SAVED := "nothing saved yet: Save (F5) keeps the valley to come back to"
+const LOAD_NOTHING_SAVED := "nothing saved yet: Save (F5) keeps your world to come back to"
 
 ## The game tick a save's manifest.json records, or -1.
 static func saved_tick(manifest_text: String) -> int:
@@ -88,7 +88,7 @@ static func saved_tick(manifest_text: String) -> int:
 
 ## The bar's Load question, with how much play would be lost (a game day is 28 800 ticks).
 static func load_question(saved: int, now: int) -> String:
-	var q := "Load the valley as you saved it?"
+	var q := "Load the world as you saved it?"
 	if saved < 0 or now <= saved:
 		return q
 	var days := int(float(now - saved) / 28800.0)
@@ -442,8 +442,8 @@ const BAR_ITEMS := [
 	{"id": "home", "group": "camera", "label": "Home", "key": "Home", "tip": "Centre camera on the settlement [Home]"},
 	{"id": "director", "group": "camera", "label": "Director", "key": "C", "tip": "Camera director: follows notable events automatically [C]"},
 	{"id": "favs", "group": "views", "label": "★ Favs", "key": "J", "tip": "Favourites: people you have marked to watch and follow [J]"},
-	{"id": "people", "group": "views", "label": "People", "key": "P", "tip": "People: everyone of the valley, here or away, what they are doing and why [P]"},
-	{"id": "history", "group": "views", "label": "History", "key": "H", "tip": "Open the valley and colony history [H]"},
+	{"id": "people", "group": "views", "label": "People", "key": "P", "tip": "People: everyone sworn to the colony, here or away, what they are doing and why [P]"},
+	{"id": "history", "group": "views", "label": "History", "key": "H", "tip": "Open local and colony history [H]"},
 	{"id": "timelapse", "group": "views", "label": "Timelapse", "key": "T", "tip": "Record and review bounded daily snapshots of a watched view [T]"},
 	{"id": "legends", "group": "views", "label": "Legends", "key": "L", "tip": "Open the Legends browser and world map [L]"},
 	{"id": "known", "group": "views", "label": "Known", "key": "V", "tip": "Toggle between what the community has seen and everything [V]"},
@@ -453,7 +453,7 @@ const BAR_ITEMS := [
 	{"id": "catchup", "group": "views", "label": "Catch Up", "key": "U", "tip": "What happened while you were away; pick a span [U]"},
 	{"id": "waiting", "group": "views", "label": "Waiting", "key": "K", "tip": "Work nobody has taken, and why [K]"},
 	{"id": "bookmarks", "group": "views", "label": "Marks", "key": "F1–F8", "tip": "Camera bookmarks: jump to F1–F8 or save with Ctrl+F1–F8 [F1–F8]"},
-	{"id": "save", "group": "system", "label": "Save", "key": "F5", "tip": "Save the valley to the manual slot [F5]"},
+	{"id": "save", "group": "system", "label": "Save", "key": "F5", "tip": "Save the world to the manual slot [F5]"},
 	{"id": "load", "group": "system", "label": "Load", "key": "F9", "tip": "Load the manual save slot [F9]"},
 	{"id": "settings", "group": "system", "label": "Settings", "key": "O", "tip": "Open audio, autosave, and camera settings [O]"},
 	{"id": "help", "group": "system", "label": "?", "key": "?", "tip": "Show mouse and keyboard controls [? or /]"},
@@ -570,7 +570,7 @@ static func format_body_summary(body: String) -> String:
 ## Format the block inspection dictionary from `SimHost.inspect_block(x, y, z)` as BBCode (#413).
 static func format_block(d: Dictionary) -> String:
 	if d.is_empty():
-		return "[b]Outside the valley[/b]"
+		return "[b]Outside the local map[/b]"
 	var s := "[b]%s[/b]\n" % d.get("title", "Block")
 	var biome: String = d.get("biome", "")
 	var surf: int = int(d.get("surface_z", 0))
@@ -855,7 +855,7 @@ static func first_run_hint(inspected_person: bool, inspected_block: bool, used_b
 	if not inspected_block:
 		return "Hint: click any ground, water, or rock tile to inspect its material, water depth, minerals, and history."
 	if not used_bar:
-		return "Hint: use the bottom bar (or Space / 1–3 / G / H / L) to pace the valley, tune the feed rate [G], or browse History [H]."
+		return "Hint: use the bottom bar (or Space / 1–3 / G / H / L) to change simulation speed, tune the feed rate [G], or browse History [H]."
 	return ""
 
 ## The People panel's title (#351): how many are here and how many away.
@@ -867,7 +867,7 @@ static func people_title(list: Array) -> String:
 			away += 1
 		else:
 			here += 1
-	var t := "People: %d in the valley" % here
+	var t := "People: %d at home" % here
 	if away > 0:
 		t += ", %d away" % away
 	return t + "   (Inspect to look, Follow to keep them in view)"

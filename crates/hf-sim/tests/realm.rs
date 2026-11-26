@@ -344,14 +344,22 @@ fn unchosen_params(seed: u64, p: &hf_sim::setup::Preview) -> hf_sim::world::gen:
 fn the_wizard_shows_the_ground_the_world_will_have() {
     // #560: the preview of a chosen region is the ground the world is made on.
     let seed = 3;
-    let (_, _, picks) = other_regions(seed, 1);
-    let p = hf_sim::setup::preview(seed, None, Some(picks[0]));
+    let (_, _, picks) = other_regions(seed, 12);
+    let region = picks
+        .into_iter()
+        .find(|&r| {
+            use hf_sim::world::gen::{ground_seed, Landform};
+            Landform::of_seed(ground_seed(seed, r as u64 + 1)) != Landform::of_seed(seed)
+        })
+        .expect("choose a landing site whose landform differs from the default");
+    let p = hf_sim::setup::preview(seed, None, Some(region));
     let mut s = hf_sim::setup::WorldSetup::new(seed);
-    s.region = Some(picks[0]);
+    s.region = Some(region);
     s.history_years = 0;
     s.realm_years = 200;
     let w = hf_sim::World::from_setup(&s);
-    assert_eq!(w.meta.params.place, picks[0] as u64 + 1);
+    assert_eq!(w.meta.params.place, region as u64 + 1);
+    assert_ne!(w.meta.params.landform, s.landform());
     let mut same = 0;
     for y in 0..w.grid.height {
         for x in 0..w.grid.width {
@@ -364,4 +372,14 @@ fn the_wizard_shows_the_ground_the_world_will_have() {
     // The arrival places a stone and little else: the ground is the previewed ground.
     assert!(same * 100 >= n * 99, "{same} of {n} columns as previewed");
     assert_eq!(w.meta.founding_site, p.founding);
+    let landing = w.events.pending.iter().find_map(|event| match &event.kind {
+        hf_sim::events::EventKind::SetupChosen { valley, .. } => Some(valley),
+        _ => None,
+    });
+    let expected = format!(
+        "{} ({})",
+        p.character.label(),
+        w.meta.params.landform.name()
+    );
+    assert_eq!(landing, Some(&expected));
 }

@@ -1,5 +1,7 @@
 # Ostrog — Vision
 
+The **landing site** is the local area chosen on the world map. The **egress point** is the tile where the founders emerge from the portal. After arrival, use the place name in maps and history (for example, *Follow in Ashcross*). A **valley** is one possible landform alongside a ridge, plateau, plain, coast or marsh.
+
 Ostrog is an autonomous colony-world simulation built to run on a second monitor. The
 viewer is a witness and optional caretaker. The inhabitants, creatures, communities and
 expeditions create the activity through their own needs, skills, knowledge and relationships.

@@ -22,7 +22,7 @@ would break the simulation, and the one slice built on branch `feat-308-slice`. 
 - Spells (`spells.rs`) and the underworld's stone (`underground.rs` breaches) are further
   supernatural pressures, each tied to a place and a row.
 - Tech: nothing beyond the material chain (design rule 2). Things from home that come through
-  the stone are the only objects not made in the valley.
+  the stone are the only objects not made in the colony.
 
 ## What fits
 
@@ -79,7 +79,7 @@ Built in `crates/hf-sim/src/resonance.rs`; epic #508 steps 1 to 4 for one potent
 ## Assumptions (the maintainer can overrule)
 
 - The rate is the epic's: two in ten of the arrivals, drawn per person (so a party may have
-  none or several). Newcomers and those born in the valley carry nothing in this slice.
+  none or several). Newcomers and those born in the colony carry nothing in this slice.
 - Four hours at the stone, in all, wakes it; the stone must be woken and not yet warded.
 - Half rest is where it fails (7.4): a working person is between about 0.3 (when they turn in)
   and 1, so an afternoon's work or two firings take a carrier below it.

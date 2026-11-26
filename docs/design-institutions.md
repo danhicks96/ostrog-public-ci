@@ -25,7 +25,7 @@ slice built on branch `feat-454-institutions`, and what would break the rules.
 - Customs (`systems/culture.rs`): a rest day for someone who died, food taboos, storing food
   after a famine, the welcome norm, hearth evenings, the way of building. Each comes from an
   event and lapses when it is not kept.
-- Visitors with reasons. Newcomers arrive from real places beyond the valley carrying their
+- Visitors with reasons. Newcomers arrive from real places beyond the colony carrying their
   families' tales (`realm/live.rs`, `lore.rs`); raiders come for food they have seen or a
   renowned thing whose fame reached them (D34); caravans trade from real stores (`trade.rs`).
 

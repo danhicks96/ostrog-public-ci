@@ -123,7 +123,7 @@ pub fn list(w: &World) -> Vec<Away> {
             .strongest()
             .is_some_and(|f| f.kind == FeelingKind::Grief && f.strength >= 0.2);
         let there = if place.is_empty() {
-            "a place the valley does not know".to_string()
+            "a place the colony does not know".to_string()
         } else {
             place.clone()
         };
@@ -177,13 +177,13 @@ pub fn list(w: &World) -> Vec<Away> {
             let back = until.saturating_sub(tick).div_ceil(TICKS_PER_DAY);
             let mut l = format!("at {} {why}", s.name);
             let r = if s.grudge > 0 {
-                l += "; they hold a grudge against the valley";
+                l += "; they hold a grudge against the colony";
                 Reaction::Threatened
             } else if s.people == 0 {
                 l += "; nobody lives there now";
                 Reaction::Among
             } else if !s.trades.is_empty() {
-                l += "; they trade with the valley";
+                l += "; they trade with the colony";
                 Reaction::Welcomed
             } else if why.contains("trade") {
                 Reaction::Working

@@ -168,14 +168,9 @@ impl WorldSetup {
             Some((last, [])) => last.clone(),
             Some((last, rest)) => format!("{} and that {last}", rest.join(", that ")),
         };
-        let _ = w;
-        // The lie of the land, when it is not a valley (#352).
-        let lf = self.landform();
-        let ch = if lf == crate::world::gen::Landform::Valley {
-            ch
-        } else {
-            format!("{ch}, on {}", lf.name())
-        };
+        // Record the landform separately from the landing site climate.
+        let lf = w.meta.params.landform;
+        let ch = format!("{ch} ({})", lf.name());
         (ch, held)
     }
 }

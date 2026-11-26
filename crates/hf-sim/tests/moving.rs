@@ -213,7 +213,7 @@ fn a_community_that_leaves_the_valley_becomes_a_settlement_of_the_world() {
     w.meta.tick += 2 * TICKS_PER_DAY;
     hf_sim::systems::moving::endings(&mut w);
     let end = hf_sim::systems::moving::ending(&w);
-    assert!(end.contains("left the valley for"), "{end}");
+    assert!(end.contains("left the area for"), "{end}");
 }
 
 #[test]
@@ -686,7 +686,7 @@ fn proposal(d: &mut Decline) -> String {
             ),
             (
                 on_day(5, 8 * TICKS_PER_HOUR),
-                "strangers from beyond the valley took from the store".to_string(),
+                "strangers from beyond the colony took from the store".to_string(),
                 d.rows[2]
             ),
             (
@@ -732,7 +732,7 @@ fn proposal(d: &mut Decline) -> String {
     // Four hard things, the three latest named, the earliest (the first death) left out of the
     // sentence: `moving::consider` names at most three, newest first.
     let because = format!(
-        "the rock came down; strangers from beyond the valley took from the store; \
+        "the rock came down; strangers from beyond the colony took from the store; \
          {n2} was bled out: four hard things in two seasons"
     );
     let p_name = name(w, d.p);
@@ -742,7 +742,7 @@ fn proposal(d: &mut Decline) -> String {
             agent,
             what,
             because,
-        } if what.starts_with("to move camp") || what.starts_with("to leave the valley") => {
+        } if what.starts_with("to move camp") || what.starts_with("to leave the area") => {
             Some((*agent, what.clone(), because.clone()))
         }
         _ => None,
@@ -751,7 +751,7 @@ fn proposal(d: &mut Decline) -> String {
         proposed,
         vec![(
             d.p,
-            "to move camp to a better place in the valley".to_string(),
+            "to move camp to a better place in the colony".to_string(),
             because.clone()
         )],
         "{p_name} proposes it"

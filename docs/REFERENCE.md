@@ -6,7 +6,7 @@ each checkpoint's review and the reason for every fix are kept.
 [Optional image omitted from this source snapshot.]
 
 Ostrog is an autonomous colony simulation meant to run on a second monitor. Ten people
-come through a portal into a valley; three of them land together and the other seven are
+come through a portal at the chosen landing site; three emerge together at the egress point and the other seven are
 scattered, alive or dead, and nobody knows which. Each of them arrives with a life already
 lived (parents, losses, a trade, things they came to believe), and from there they forage,
 build, farm, mine, hunt, cook, quarrel, pair, raise children, form customs and send parties
@@ -56,21 +56,20 @@ and the roadmap. The long tables are generated from the code (see
 [Optional image omitted from this source snapshot.]
 
 Seed 1, `--opening=steady --ticks=2400 --inspect=1`, two game-hours after the arrival. Top
-left is the HUD (valley name, calendar, view level, population, community, speed, director,
+left is the HUD (landing site name, calendar, view level, population, community, speed, director,
 the deity who watches). Bottom left is the feed. On the right is the inspect panel for Aelsin: activity,
 community and role, needs, traits, skills, mood, people, beliefs with their sources, and the
 life before the portal.
 
 A fresh hands-on launch opens on the new-game wizard, six pages: who watches (the deity, Aun,
-Hask or Mirre, who paces the world), the valley (a seed, three character sliders or "Shape the
-valley myself", how deep the valley's past runs, how long the world has stood, and where on
-the world map the valley lies, with a picture of the valley that place makes, drawn in the
+Hask or Mirre, who paces the world), the landing site (a seed, three character sliders or "Shape the landing site myself", how deep the landing site's past runs, how long the world has stood, and where on
+the world map the landing site lies, with a picture of the landing site that place makes, drawn in the
 game's own ground colours), the peoples (how many, which kinds and how rare, and what this
 seed would draw), who came through (ten cards, each with a name, age, traits, three best skills
 and three lines of the life they lived; choose three), what they hold (the beliefs they share),
 and Begin. The three step through at 07:00 on day 1 of spring,
 Year 1. The first day is foraging and the first walls; over a few game-days a house with beds,
-a hearth, a field, a stockpile and a quarry shaft appear. Strangers turn up at the valley edge
+a hearth, a field, a stockpile and a quarry shaft appear. Strangers turn up at the landing site edge
 and are taken in or turned away; some bring word of the missing, and someone may set out to
 look. Fires, floods, cold, wounds, fever, quarrels and breakdowns happen and are met by
 whoever is there, with whatever they know. Births take years. Customs grow from things that
@@ -250,7 +249,7 @@ Integration tests live in `crates/hf-sim/tests/`, one file per area:
 ### The ostrog CLI
 
 `cargo run --release -p hf-cli -- <command>` or `target/release/ostrog <command>`.
-Every command takes `--help`. Without `--opening`, `run` and `soak` build the old test valley
+Every command takes `--help`. Without `--opening`, `run` and `soak` build the old test landing site
 with `World::generate` (and, with `--agents N`, a founding party of N): no portal, no past and
 no neighbours. With `--opening` they run the game as it is played, from the arrival. `legends`,
 `realm` and `past` make the wider world.
@@ -273,7 +272,7 @@ no neighbours. With `--opening` they run the game as it is played, from the arri
 | `describe` | `--seed 1`, `--small`, `--wetness W`, `--warmth W`, `--stoniness S` (each -1 to 1) | summarise a generated world: character, biome mix, ground and plant families with why each is there or not, terrain, water, founding site |
 | `legends` | `--seed 1`, `--page world:0` | print a page of the Legends browser for a new opening world: `world:0`, `people:N`, `site:N`, `figure:N` or `polity:N` |
 | `realm` | `--seed 1`, `--size 192`, `--ppm PATH`, `--years 0` | the world's region map: biome mix, rivers, lakes; `--years` runs the peoples and their settlements that long; `--ppm` writes the map as a picture |
-| `past` | `--seed 1`, `--engine steady\|relentless\|whimsical`, `--years 150` | make an opening world from new-game choices and print its past: the old hamlets, each time the deity leaned on one, the patterns the valley's people noticed |
+| `past` | `--seed 1`, `--engine steady\|relentless\|whimsical`, `--years 150` | make an opening world from new-game choices and print its past: the old hamlets, each time the deity leaned on one, the patterns the colony's people noticed |
 
 Determinism check: `ostrog run --seed 7 --ticks 200000 --agents 12` twice; the last line,
 `digest <hex>`, must match. Without `--agents` the world has no people, so the digest only
@@ -287,8 +286,8 @@ line (`tools/godot --path godot -- --seed=7`). Anything not in this table prints
 
 | Flag | Effect |
 |---|---|
-| `--seed=N` | world seed (default 1). Any `--seed` skips the autosaves and starts a new valley: on a hands-on launch the arrival screen, on a fresh random valley unless `--fixed-seed` is given too (#559); in a shot, footage, `--headless`, `--save-at-end` or `--wizard-shot` run, a valley for that seed. |
-| `--fixed-seed` | the arrival screen opens on `--seed` (default 1) instead of a fresh random valley |
+| `--seed=N` | world seed (default 1). Any `--seed` skips the autosaves and starts a new landing site: on a hands-on launch the arrival screen, on a fresh random landing site unless `--fixed-seed` is given too (#559); in a shot, footage, `--headless`, `--save-at-end` or `--wizard-shot` run, a landing site for that seed. |
+| `--fixed-seed` | the arrival screen opens on `--seed` (default 1) instead of a fresh random landing site |
 | `--fresh` | ignore the autosaves and start the arrival without the wizard, paced steadily (seed 1 unless `--seed`) |
 | `--sim-inline` | step the sim on the main thread as before #603, not on its own thread (for debugging; `HF_SIM_THREAD=0` does the same) |
 | `--opening=DEITY` | start from the arrival without the wizard: the first three of the ten cards, paced by `steady`, `relentless` or `whimsical` (Aun, Hask, Mirre). Starts fresh; combine with `--seed=N`. |
@@ -301,7 +300,7 @@ line (`tools/godot --path godot -- --seed=7`). Anything not in this table prints
 | `--zoom=F` | camera zoom (default 1.0; the wheel steps through 0.5, 1, 2, 3, 4) |
 | `--at=X,Y` | centre the camera on tile X,Y |
 | `--at=band` | centre the camera on the first band of strangers' camp, on its level (prints `BANDS [...]`) |
-| `--hungry-neighbour` | before the run, empty the stores of one place beyond the valley (prints `HUNGRY ...`); whether and when its people come is still the simulation's |
+| `--hungry-neighbour` | before the run, empty the stores of one place beyond the landing site (prints `HUNGRY ...`); whether and when its people come is still the simulation's |
 | `--legends=PAGE` | open the Legends browser at PAGE (`world:0`, `people:N`, `site:N`, `figure:N`, `polity:N`) |
 | `--music-fast` | music director: change pieces quickly (for checking music transitions) |
 | `--verbose-audio` | print the music director's lines (cues, phrases) to the console and godot.log; they are off by default because they were most of godot.log (#565) |
@@ -312,7 +311,7 @@ line (`tools/godot --path godot -- --seed=7`). Anything not in this table prints
 | `--inspect-block=X,Y[,Z]` | open block inspection at the given tile; omit Z to inspect the surface |
 | `--favourite=ID[,ID...]` | mark the listed people as favourites before the run |
 | `--favourites` | open the favourites panel at start |
-| `--people` | open the People panel at start (everyone of the valley, here or away) |
+| `--people` | open the People panel at start (everyone sworn to the colony, here or away) |
 | `--waiting` | open the Waiting work panel at start (work nobody has taken, and why) |
 | `--hide-bar` | start with the mouse command bar hidden |
 | `--feed-rate=MODE` | start with the feed rate set to `calm` (`0`), `normal` (`1`), or `full` (`2`) (#413) |
@@ -351,9 +350,9 @@ Linux use `tools/shots/shot.sh`, which draws on Xvfb). Runs that only save are f
 4. The newest valid autosave, unless any of `--fresh`, `--seed`, `--wizard-shot`, `--opening`
    is given or this is a shot or footage run without `--ring`.
 5. Otherwise, on a hands-on launch (a window, and no shot, footage, `--save-at-end`, fresh,
-   stage or load): the wizard, on a fresh random valley each New game, or on `--seed=N`
+   stage or load): the wizard, on a fresh random landing site each New game, or on `--seed=N`
    (default 1) with `--fixed-seed` or `--wizard-shot` (#559). Going back through its pages
-   keeps the valley and the place chosen on the world map. Otherwise the arrival, paced
+   keeps the landing site and the place chosen on the world map. Otherwise the arrival, paced
    steadily, with no wizard (#104).
 
 So `tools/godot --path godot -- --seed=N --fixed-seed` opens the wizard for seed N, and `--fresh` or
@@ -423,7 +422,7 @@ itself once, on the first hands-on launch).
 | H | History panel; H again closes it (also closes the away summary) |
 | L | Legends browser (the wider world); Backspace goes back a page, L or Esc closes it |
 | V | toggle "what the community has seen" / "everything" |
-| P | People panel: everyone of the valley, here or away, what they are doing and why; Inspect or Follow from the list; P or Esc closes it |
+| P | People panel: everyone sworn to the colony, here or away, what they are doing and why; Inspect or Follow from the list; P or Esc closes it |
 | K | Waiting work: every order nobody has taken for an hour or more, and why; Go to looks there; K or Esc closes it |
 | F5 | manual save to `saves/manual.hfsave` |
 | F9 | load the manual save |
@@ -440,7 +439,7 @@ Known control quirks on master, worth knowing before filing:
 
 ### The screen
 
-HUD (`_update_hud`): `{valley}   Year {Y} {Season} day {D}  {HH:MM}   z {level}   pop
+HUD (`_update_hud`): `{place name}   Year {Y} {Season} day {D}  {HH:MM}   z {level}   pop
 {humans}   {Community} {N} ({n} on a journey)   {speed}   director: on, watching {what} | off
 {deity} watches  strain {S}%   step {ms} ms   [?] keys   {note}`, where `{what}` is what the
 camera went to look at in plain words ("the community", "a fire", "people at work"). Lines
@@ -503,8 +502,9 @@ as they are.
 | the Engine | the pacing model chosen at the arrival: Steady, Relentless or Whimsical. It changes how often strangers come and how choosy the welcome is; it fires no events. Never named in the world's voice. | `engine.rs` |
 | strain | the Engine's reading of how hard things are, 0 to 100% (needs unmet, work backlog) | `engine::tension` |
 | community | a named group with a home, members, roles and a welcome norm. Names are generated per seed from two syllable lists (seed 1's first community is Oakfolk), not fixed. | `society.rs`, `names::community_name` |
-| valley, world name | the map's generated name (seed 1: Ashcross) | `names::world_name` |
-| newcomer, stranger | someone who turns up at the valley edge and is taken in or turned away by the welcome norm | `systems/society.rs` |
+| egress point | the portal tile where the founders emerge | founding site coordinates |
+| landing site, world name | the map's generated name (seed 1: Ashcross) | `names::world_name` |
+| newcomer, stranger | someone who turns up at the landing site edge and is taken in or turned away by the welcome norm | `systems/society.rs` |
 | welcome norm | WhenFed (default: while there is a day of food per head), Open, Closed | `WelcomeNorm` |
 | role | daily work by skill: forager, builder, farmer, cook, miner, hauler, healer | `Role` |
 | traits | ten temperaments: Industrious, Easygoing, Sociable, Solitary, Curious, Cautious, Hearty, Gourmet, LightSleeper, Tidy | `mind/traits.rs` |
@@ -551,7 +551,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | BeatOut | beat_out | (computed at the push site) | {agent} beat out the flames. |
 | SiteHungry | site_hungry | Trace | The stores ran out at {site}. |
 | BandSetOut | band_set_out | Trace | {size} hungry people set out from {site}. |
-| StrangersSighted | strangers_sighted | Major | {agent} saw {kind} camped at the edge of the valley, {size} of them. / strangers |
+| StrangersSighted | strangers_sighted | Major | {agent} saw {kind} camped at the edge of the colony, {size} of them. / strangers |
 | Raided | raided | Major | Strangers took {count} {what} from the stores in the night. |
 | Raided | raided | Major | The strangers took {count} {what} from the stores, as they had been told they could. |
 | Welcomed | welcomed | Major | {agent} went out to the strangers and told them they could eat. |
@@ -573,7 +573,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | BearWoke | bear_woke | Notable | {bear} has come out of its den. |
 | DucksLeft | ducks_left | Notable | The ducks flew south. |
 | DucksReturned | ducks_returned | Notable | The ducks came back to the water. |
-| CameOver | came_over | Trace | {agent} came over the hills into the valley, where there was food for it again. |
+| CameOver | came_over | Trace | {agent} came over the hills into the area, where there was food for it again. |
 | BeastSlain | beast_slain | Major | {agent} brought down {b}. / {agent} brought down {b}, who had hurt someone. / {agent} brought down {b} at last; it had hurt {n} people. |
 | TaleBrought | tale_brought | Notable | {agent} came from {from}, where their family remembers that {version}. / {agent} came from {from} with a tale: {version}. |
 | TaleTold | tale_told | (computed at the push site) | In {teller}'s telling to {listener}, {version}. / {teller} told {listener} that {version}. |
@@ -583,7 +583,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | OldFounded | old_founded | Notable | {by}, of the {people}, founded {site}. |
 | OldTrouble | old_trouble | Notable | what.clone() |
 | OldAnswered | old_answered | Trace | {deity} answered {trigger} at {site} by leaning on {lever}. |
-| SetupChosen | setup_chosen | Notable | in common that {held} / {n} years of the valley's past behind it /  In this world: {peoples}. / The portal opened on {valley}, watched by {deity}, with {past}. The three held {held}.{world} / nothing in common beyond what each had lived / no past to find |
+| SetupChosen | setup_chosen | Notable | in common that {held} / {n} years of local history behind it /  In this world: {peoples}. / The portal opened on {valley}, watched by {deity}, with {past}. The three held {held}.{world} / nothing in common beyond what each had lived / no past to find |
 | OldDied | old_died | Notable | {who} of {site} died old. / {who} of {site} was killed in the raid. / {who} of {site} died in the fire. / {who} of {site} died of {c}. / old age / the raid / the fire |
 | OldEnded | old_ended | Notable | {site} stood empty: {why}. |
 | RoofFell | roof_fell | Major | {what} came down {because}. /  It caught {names}. / The roof / Part of a roof /  Nobody was under it. |
@@ -631,12 +631,12 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Answered | answered | Notable | : {join("; ")} / Nobody went with {who}; {stayed} stayed{tail}. / {went} went with {who}, {stayed} stayed{tail}. |
 | Split | split | Major | {leader} led {members} people away from {from} to found {to}: {cause}. |
 | MovedCamp | moved_camp | Major | {community} moved camp, led by {leader}: {cause}. |
-| LeftTheValley | left_the_valley | Major | {community} left the valley, {people} of them led by {leader}, to settle at {to}: {cause}. |
-| CommunityEnded | community_ended | Major | {n} is no more in the valley: they {how}. |
+| LeftTheValley | left_the_valley | Major | {community} left the area, {people} of them led by {leader}, to settle at {to}: {cause}. |
+| CommunityEnded | community_ended | Major | {n} is no more in the colony: they {how}. |
 | Traded | traded | Major | {carrier} brought {gave} from {from} to {to}. / {carrier} carried {gave} from {from} to {to} and came back with {received}. / nothing |
 | Chose | chose | Minor, Notable, Major | {agent} {what}, {because}. |
 | RoleTaken | role | (computed at the push site) | {agent} took up {role} work. |
-| Left | left | Notable | {agent} left the valley. |
+| Left | left | Notable | {agent} left the area. |
 | Paired | paired | Major | {a} and {b} became partners. |
 | CustomFormed | custom_formed | Major | {community} now hold that we {label}: "{narrative}" |
 | CustomAdopted | custom_adopted | Trace | {agent} learned the way of {community}: "{narrative}" |
@@ -677,7 +677,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Propped | propped | Minor | {agent} stopped cutting to prop the roof first. |
 | CaveIn | cave_in | (computed at the push site) | The rock came down on {agent}; they are hurt. / The rock came down near {agent}; they got clear. |
 | CaravanFormed | caravan_formed | Major | {leader} gathers {members} of {community} {purpose}. |
-| CaravanLeft | caravan_left | Major | {leader}'s party of {members} walks out past the edge of the valley. |
+| CaravanLeft | caravan_left | Major | {leader}'s party of {members} walks out past the edge of the landing site. |
 | CaravanReturned | caravan_returned | Major | bringing {received} / {leader}'s party of {members} is back from {site} after {days} days, {goods}. / nothing to show for it |
 | Crafted | crafted | Minor | {agent} made {tier} {kind}. |
 | ToolBroke | tool_broke | Minor | {agent}'s {tier} tool broke. / {agent}'s {what} broke{history}. |
@@ -711,9 +711,9 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Routed | routed | Major | The strangers from {site} lost their nerve after {lost} of them were hurt, and ran for home. |
 | Shifted | shifted | Major | Under the full moon {agent} went out in a beast's shape. |
 | SpellBegan | spell_began | Major | how.clone() |
-| SpellLifted | spell_lifted | Notable | After {days} days, {what} lifted from the valley. |
+| SpellLifted | spell_lifted | Notable | After {days} days, {what} lifted from the area. |
 | Faring | faring | (computed at the push site) | {community} is {now}: {why}. |
-| LastOne | last_one | Major | {agent} is the last of {community} left in the valley. |
+| LastOne | last_one | Major | {agent} is the last of {community} left in the colony. |
 | WentAway | went_away | Notable | {agent} set out alone for {to}, {why}. |
 | CameBack | came_back | Notable | {agent} came back from {from}. |
 | RiteOutcome | rite_outcome | Notable | The rite {by} gave {agent} was marred: {how}. They do not rest. / {agent} was laid to rest as they should be: {how}. / marred |
@@ -733,7 +733,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | StoresRaided | stores_raided | Major | {animal} got into the stores and ate {took} / , and broke the {broke} / . |
 | CameOfAge | came_of_age | Notable | {agent} came of age, best at {best}. |
 | MineSunk | mine_sunk | Notable | {community} set about sinking their shaft deeper, for {why}. |
-| ReachedDeep | reached_deep | Notable | {community}'s shaft came down into the {rock}, the deep under the valley. |
+| ReachedDeep | reached_deep | Notable | {community}'s shaft came down into the {rock}, the deep beneath the landing site. |
 | LeftUnrested | left_unrested | Notable | {agent} was given no rite: {why}. |
 | DeepChosen | deep_chosen | Notable | {community} would go no further into {cavern}, and set about walling the way. / {community} left the way into {cavern} open and dug on, for what the deep holds. |
 | AccountTold | account_told | (computed at the push site) | In {teller}'s telling to {listener}, {version}. / {teller} told {listener} that {version}. |
@@ -747,11 +747,11 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | WouldNotCut | would_not_cut | (computed at the push site) | {agent} stopped at the face and would not cut it, and could not say why. |
 | Frosted | frosted | Notable | A killing frost took {plants} of {community}'s growing crop. |
 | Fostered | fostered | Notable | {by} took in {child}, whose parents are gone{match kin {                 1 => ", their grandparent",                 2 => ", their aunt or uncle",                 3 => ", their sibling",                 _ => "",             }}. |
-| NewStone | new_stone | Notable | {agent} cut {stone}, harder than any stone the valley has worked. |
+| NewStone | new_stone | Notable | {agent} cut {stone}, harder than any stone the colony has worked. |
 | SocietyFormed | society_formed | Notable | {members} who have no love for {against} have begun to meet by night, apart. |
 | Betrayed | betrayed | Major | {by} told {to} of the {members} who meet against them by night. |
 | StruckWater | struck_water | Major | {agent} cut into wet rock and the water came in, {tiles} tiles of the workings under it. |
-| FirstWord | first_word | Notable | {community} know now that there are people of {people} beyond the valley; where they live, nobody knows. |
+| FirstWord | first_word | Notable | {community} know now that there are people of {people} beyond the colony; where they live, nobody knows. |
 | Torn | torn | Notable | {agent} went with {with}, but their kin stayed with {and}. |
 | Omen | omen | Notable | {reader} read {of} as {reading}. / a blessing / a warning |
 | CarriedOff | carried_off | Notable | The flood carried off what lay in its way, {things} things of it. |
@@ -768,18 +768,18 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Observance | observance | Notable | {community} kept the {season} observance at the shrine, led by {by}, {came} with them. / {community} kept the {season} observance, led by {by}, {came} with them. |
 | ObservanceLapsed | observance_lapsed | Notable | {community} let the {season} observance lapse: {why}. |
 | Rose | rose | Major | {b} came up out of the deep through {cavern}. |
-| Besieged | besieged | Major | {size} from {site}, come over a grudge, camped and laid siege to the valley. |
-| SiegeLifted | siege_lifted | Major | with {t} portions of food / with {c} of the valley's people / with {t} portions of food and {c} of the valley's people / , {w} / After {days} days the siege from {site} was lifted{why}; they went home {took}. / with nothing /  |
-| HostSated | host_sated | Major | with {t} portions of food / with {c} of the valley's people / with {t} portions of food and {c} of the valley's people / After {days} days the host from {site} had what it came for and went home {took}. / with nothing |
+| Besieged | besieged | Major | {size} from {site}, come over a grudge, camped and laid siege to the colony. |
+| SiegeLifted | siege_lifted | Major | with {t} portions of food / with {c} of the colony's people / with {t} portions of food and {c} of the colony's people / , {w} / After {days} days the siege from {site} was lifted{why}; they went home {took}. / with nothing /  |
+| HostSated | host_sated | Major | with {t} portions of food / with {c} of the colony's people / with {t} portions of food and {c} of the colony's people / After {days} days the host from {site} had what it came for and went home {took}. / with nothing |
 | Captured | captured | Major | {agent} was brought down and carried off to {site}. |
 | Held | held | Major | {agent}, hurt in the fight, was taken and kept at the houses. |
 | Ransomed | ransomed | Major | {site} paid {food} meals for {agent}, who went home to them. |
-| TookIn | took_in | Major | Nobody came for {agent}, and the valley took them in as one of its own. |
+| TookIn | took_in | Major | Nobody came for {agent}, and the colony took them in as one of its own. |
 | Returned | returned | Major | {agent} came home, let go by {site}. |
-| Followed | followed | Notable | The valley looked to {agent} {domain}. |
+| Followed | followed | Notable | The colony looked to {agent} {domain}. |
 | Accused | accused | Notable | {by} accused {of} of {what}. |
 | Judged | judged | Notable | {judge} wrongly judged {of} for {what}: {verdict}. / {judge} judged {of} for {what}: {verdict}. |
-| Exiled | exiled | Major | {agent} was sent out of the valley, and went to {to}. |
+| Exiled | exiled | Major | {agent} was sent out of the colony, and went to {to}. |
 | Feud | feud | Notable | The families of {a} and {b} are in a feud now. |
 | FeudInherited | feud_inherited | Notable | {agent} has taken up {from}'s feud with the family of {against}. |
 | FeudEnded | feud_ended | Notable |  {j} / The feud between the families of {a} and {b} is over: {how}{by}. |
@@ -789,7 +789,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Sealed | sealed | Notable | The way into {cavern} was walled up. |
 | GateOpened | gate_opened | Major | {agent} cut out the wall over the way down to {cavern}, and the deep was open again. |
 | DeepPact | deep_pact | Notable | The {members} who meet against {against} by night have had word with the people of {site}, below. |
-| SocietyExposed | society_exposed | Major | It came out that {members} had met by night against {against} and bargained with {from}; the valley turned from them. |
+| SocietyExposed | society_exposed | Major | It came out that {members} had met by night against {against} and bargained with {from}; the colony turned from them. |
 | LetIn | let_in | Major | {by} let the people of {from} up out of the deep, for the grudge held against {against}. |
 | TakenBelow | taken_below | Major | {agent} was taken in the night and carried down into the deep, to {from}. |
 | GateFoundOpen | gate_found_open | Major | In the morning the way down to {cavern} stood open, and {c} was gone. / In the morning the way down to {cavern} stood open. |
@@ -981,7 +981,7 @@ Shown as the activity of someone working. `{label}` is the designation label (ne
 | Chop | felling a tree |
 | ClearRoof | clearing snow off the roof |
 | Uproot | pulling a weed |
-| Study | studying something from the old valley |
+| Study | studying something from the old settlements |
 | Mine | quarrying stone |
 | DigStairs | digging the shaft |
 | Hunt | hunting |
@@ -1436,7 +1436,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:129 | someone killed {who} |
 | accounts.rs:130 | something took {who} |
 | accounts.rs:131 | {who} was put in the ground here, nobody can say how |
-| accounts.rs:193 | who gathered the valley's food |
+| accounts.rs:193 | who gathered the colony's food |
 | accounts.rs:194 | who tended the fields |
 | accounts.rs:195 | who fed the table |
 | accounts.rs:196 | who raised the walls |
@@ -1750,7 +1750,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | deity.rs:197 | killed |
 | deity.rs:197 | stranger |
 | deity.rs:360 | for the killing of {dead}, by {}'s will |
-| deity.rs:397 | the valley |
+| deity.rs:397 | the colony |
 | deity.rs:404 | a far place |
 | delving.rs:67 | iron and copper for the smelter |
 | delving.rs:68 | tin to make bronze |
@@ -1834,7 +1834,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | feuds.rs:197 | a reckoning: each side has made amends to the other |
 | feuds.rs:219 | settled by the judgement of |
 | feuds.rs:270 | a marriage between the two families |
-| feuds.rs:326 | nobody of one side is left in the valley |
+| feuds.rs:326 | nobody of one side is left in the colony |
 | feuds.rs:330 | five years without a new grievance, and let go |
 | fish.rs:130 | drowned through the ice |
 | fish.rs:139 | fish |
@@ -2008,10 +2008,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | legend.rs:258 | of unknown make |
 | legend.rs:325 | raised the walls of a house |
 | legend.rs:326 | raised the walls of three houses |
-| legend.rs:327 | raised half the walls in the valley |
+| legend.rs:327 | raised half the walls in the colony |
 | legend.rs:337 | roofed a house |
 | legend.rs:338 | roofed three houses |
-| legend.rs:339 | roofed most of the valley |
+| legend.rs:339 | roofed most of the colony |
 | legend.rs:349 | felled the timber for a house |
 | legend.rs:350 | felled a stand of trees |
 | legend.rs:351 | felled a forest's worth |
@@ -2021,7 +2021,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | legend.rs:366 | cut halls in the rock |
 | legend.rs:367 | cut deep into the hill |
 | legend.rs:378 | made a store of goods |
-| legend.rs:379 | made the valley's tools |
+| legend.rs:379 | made the colony's tools |
 | legend.rs:380 | made more than anyone remembers |
 | legend.rs:411 | has done much |
 | legend.rs:451 | of unknown make |
@@ -2067,7 +2067,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | lore.rs:85 | {site} was quiet too long, and then dry storms came |
 | lore.rs:88 | {site} was quiet too long, and then fever came |
 | lore.rs:90 | something kept leaning on {site} |
-| lore.rs:93 | something that watches the valley took notice of {site} |
+| lore.rs:93 | something that watches the colony took notice of {site} |
 | lore.rs:94 | {site}'s people left; nobody can say where |
 | lore.rs:121 | the last of them went to  |
 | lore.rs:124 | famine |
@@ -2097,7 +2097,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | observances.rs:32 | winter |
 | observances.rs:230 | nobody led it |
 | observances.rs:232 | nobody came |
-| omens.rs:74 | crows coming in over the valley's rim |
+| omens.rs:74 | crows coming in over the horizon |
 | omens.rs:91 | a kind season |
 | omens.rs:92 | the host from {site} |
 | omens.rs:93 | the beast come up from the deep |
@@ -2361,7 +2361,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:99 | whose death bore out a warning |
 | relics.rs:114 | keeper of the observances |
 | relics.rs:117 | whose readings were borne out |
-| relics.rs:211 | it was carried out of the valley |
+| relics.rs:211 | it was carried out of the colony |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
 | scenario.rs:450 | scenario |
@@ -2377,25 +2377,25 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | setup.rs:84 | Nobody could live here. |
 | setup.rs:169 | {} and that {last} |
 | setup.rs:169 | , that  |
-| setup.rs:177 | {ch}, on {} |
-| setup.rs:189 | drink ruins people |
-| setup.rs:190 | a drink eases a hard life |
-| setup.rs:191 | no hand is raised in anger |
-| setup.rs:192 | force answers force |
-| setup.rs:193 | a fire is fought |
-| setup.rs:194 | you run from a fire |
-| setup.rs:195 | in hunger, food is shared |
-| setup.rs:196 | in hunger, each keeps their own |
-| setup.rs:197 | strangers are welcome |
-| setup.rs:198 | strangers are a danger |
-| setup.rs:199 | the dead are let go |
-| setup.rs:200 | the living are held close |
-| setup.rs:201 | wrongs are forgiven |
-| setup.rs:202 | trust is earned slowly |
-| setup.rs:346 | character |
-| setup.rs:347 | biome mix |
-| setup.rs:348 | flora draw: |
-| setup.rs:349 | flora not drawn: |
+| setup.rs:173 | {ch} ({}) |
+| setup.rs:184 | drink ruins people |
+| setup.rs:185 | a drink eases a hard life |
+| setup.rs:186 | no hand is raised in anger |
+| setup.rs:187 | force answers force |
+| setup.rs:188 | a fire is fought |
+| setup.rs:189 | you run from a fire |
+| setup.rs:190 | in hunger, food is shared |
+| setup.rs:191 | in hunger, each keeps their own |
+| setup.rs:192 | strangers are welcome |
+| setup.rs:193 | strangers are a danger |
+| setup.rs:194 | the dead are let go |
+| setup.rs:195 | the living are held close |
+| setup.rs:196 | wrongs are forgiven |
+| setup.rs:197 | trust is earned slowly |
+| setup.rs:341 | character |
+| setup.rs:342 | biome mix |
+| setup.rs:343 | flora draw: |
+| setup.rs:344 | flora not drawn: |
 | shrines.rs:106 | gave up on the shrine |
 | shrines.rs:107 | found no place for it on their own ground |
 | shrines.rs:186 | it burned |
@@ -2628,10 +2628,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | spells.rs:30 | an ill wind |
 | spells.rs:31 | a kind season |
 | spells.rs:36 | The air turned hot and stayed so: a heat wave. |
-| spells.rs:37 | A hard cold came down over the valley. |
+| spells.rs:37 | A hard cold came down over the colony. |
 | spells.rs:38 | The rain stopped coming; the ground began to crack. |
 | spells.rs:39 | A haze closed over the sun and the days went dim. |
-| spells.rs:40 | A sour wind came down the valley, and people began to cough. |
+| spells.rs:40 | A sour wind came down the colony, and people began to cough. |
 | spells.rs:41 | Everything that grew seemed to grow faster. |
 | structures.rs:156 | A {words} of {} |
 | taken.rs:87 | brought back |
@@ -3241,7 +3241,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/crafts.rs:162 | will not work beside {teacher_name} all day |
 | systems/crafts.rs:232 | dead |
 | systems/crafts.rs:237 | gone to {} |
-| systems/crafts.rs:239 | gone from the valley |
+| systems/crafts.rs:239 | gone from the area |
 | systems/crafts.rs:242 | gone |
 | systems/crafts.rs:337 | refused to learn {} from {} |
 | systems/crafts.rs:345 | taught by {} |
@@ -3457,13 +3457,13 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moving.rs:80 | of  |
 | systems/moving.rs:81 | {name} died {how} |
 | systems/moving.rs:83 | {name} was {how} |
-| systems/moving.rs:92 | beyond the valley |
+| systems/moving.rs:92 | beyond the colony |
 | systems/moving.rs:160 |  died  |
 | systems/moving.rs:160 |  was  |
 | systems/moving.rs:200 | no water within a long walk of home, and the well they dug found none |
 | systems/moving.rs:203 | {}: {} hard things in two seasons |
-| systems/moving.rs:285 | to move camp to a better place in the valley |
-| systems/moving.rs:287 | to leave the valley |
+| systems/moving.rs:285 | to move camp to a better place in the colony |
+| systems/moving.rs:287 | to leave the area |
 | systems/moving.rs:326 | went with {leader_name} |
 | systems/moving.rs:328 | thinks well of {leader_name} |
 | systems/moving.rs:330 | has had enough of this place |
@@ -3480,7 +3480,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moving.rs:552 | eight |
 | systems/moving.rs:553 | nine |
 | systems/moving.rs:554 | ten |
-| systems/moving.rs:584 | left the valley for {to} |
+| systems/moving.rs:584 | left the area for {to} |
 | systems/moving.rs:595 | #last |
 | systems/moving.rs:602 | died out |
 | systems/moving.rs:604 | died out ({d}) |
@@ -3525,7 +3525,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/projects.rs:707 | to fetch {} from {name} |
 | systems/projects.rs:725 | thinks {name} will pay for their {} |
 | systems/projects.rs:744 | wants to see what lies at {name} |
-| systems/projects.rs:773 | to lead a party out of the valley |
+| systems/projects.rs:773 | to lead a party out of the colony |
 | systems/projects.rs:851 | slept on the ground, {everyone} of them and {places} places to sleep |
 | systems/projects.rs:857 | to build {} |
 | systems/projects.rs:891 | took from the store |
@@ -3538,7 +3538,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/projects.rs:993 | strangers from  |
 | systems/projects.rs:994 |  took from the store |
 | systems/projects.rs:1002 | strangers are a danger |
-| systems/projects.rs:1003 | beyond the valley |
+| systems/projects.rs:1003 | beyond the colony |
 | systems/projects.rs:1038 | holds that {}{}, with strangers from {band} taking from the store |
 | systems/projects.rs:1046 | is a careful one, with strangers from {band} taking from the store |
 | systems/projects.rs:1055 | to raise a wall round the houses |
@@ -3653,7 +3653,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:428 | at the building site |
 | systems/work.rs:484 | building |
 | systems/work.rs:484 | digging |
-| systems/work.rs:560 | the old valley |
+| systems/work.rs:560 | the old settlements |
 | systems/work.rs:586 | studying the {what} left at {site} |
 | systems/work.rs:1085 | chop |
 | systems/work.rs:1167 | mine |
@@ -3806,7 +3806,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/away.rs:115 | angry with {n} |
 | view/away.rs:116 | afraid of {n} |
 | view/away.rs:117 | glad of {n} |
-| view/away.rs:126 | a place the valley does not know |
+| view/away.rs:126 | a place the colony does not know |
 | view/away.rs:134 | held captive at {there}, carried off {days} days ago |
 | view/away.rs:137 | the road |
 | view/away.rs:145 | at  |
@@ -3821,15 +3821,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/away.rs:172 | stranded on the road to {s_name} |
 | view/away.rs:174 | with a caravan to {s_name} |
 | view/away.rs:178 | at {} {why} |
-| view/away.rs:180 | ; they hold a grudge against the valley |
+| view/away.rs:180 | ; they hold a grudge against the colony |
 | view/away.rs:183 | ; nobody lives there now |
-| view/away.rs:186 | ; they trade with the valley |
+| view/away.rs:186 | ; they trade with the colony |
 | view/away.rs:188 | trade |
 | view/away.rs:194 | ; the place is going hungry |
 | view/away.rs:196 | ; back in {back} days |
 | view/away.rs:199 | away at {there} |
 | view/away.rs:205 | , {f} |
-| view/block.rs:45 | Outside the valley ({}, {}, z{}) |
+| view/block.rs:45 | Outside the local map ({}, {}, z{}) |
 | view/block.rs:99 | surface |
 | view/block.rs:101 | {} above ground |
 | view/block.rs:104 | depth {d} below ground |
@@ -3965,7 +3965,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/causes.rs:111 | The record names no cause for it. /  |
 | view/causes.rs:113 |   and it goes back further than this page follows. /  |
 | view/causes.rs:114 |   and the record of what caused that is missing. /  |
-| view/causes.rs:115 |   and before that, nothing the valley knows. /  |
+| view/causes.rs:115 |   and before that, nothing the colony knows. /  |
 | view/day_shape.rs:61 | unknown |
 | view/day_shape.rs:62 | {name}:{goal} |
 | view/director.rs:84 | settlement |
@@ -4273,27 +4273,27 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/known_world.rs:33 | a few |
 | view/known_world.rs:34 | a dozen or so |
 | view/known_world.rs:35 | many |
-| view/known_world.rs:43 | [b]What the valley knows[/b] / Not the world as it is: what the people of the valley have seen, heard and been told. /  / [b]Places beyond the valley[/b] /  |
-| view/known_world.rs:48 | None. Nobody here has been past the valley's edge or met anyone who has. /  |
-| view/known_world.rs:58 | {}, {}, {} days out to the {}; known in {} /  |
-| view/known_world.rs:63 |  and  |
-| view/known_world.rs:66 | Of anywhere else, nothing is known. /  / [b]Strangers[/b] /  |
-| view/known_world.rs:69 | No strangers are about that anyone has seen. /  |
-| view/known_world.rs:73 | coming |
-| view/known_world.rs:74 | camped near |
-| view/known_world.rs:75 | leaving |
-| view/known_world.rs:83 | A band from {} |
-| view/known_world.rs:85 | A band of strangers |
-| view/known_world.rs:87 | {who}, {}, {state} /  |
-| view/known_world.rs:89 |  / [b]On the road[/b] /  |
-| view/known_world.rs:107 | somewhere not named |
-| view/known_world.rs:109 | to trade |
-| view/known_world.rs:110 | to look |
-| view/known_world.rs:111 | to fetch what is wanted |
-| view/known_world.rs:113 | A caravan of {} gone to {to} {what} /  |
-| view/known_world.rs:119 | {} gone to {to}, {why} /  |
-| view/known_world.rs:124 | Nobody is away. /  |
-| view/known_world.rs:129 |  / [b]The lost[/b] / {lost} of those who came through have not been found. Whether they live, nobody here knows. /  |
+| view/known_world.rs:43 | [b]What the colony knows[/b] / Not the world as it is: what the people here have seen, heard and been told. /  / [b]Places beyond the colony[/b] /  |
+| view/known_world.rs:49 | None. Nobody here has been past the edge of the landing site or met anyone who has. /  |
+| view/known_world.rs:59 | {}, {}, {} days out to the {}; known in {} /  |
+| view/known_world.rs:64 |  and  |
+| view/known_world.rs:67 | Of anywhere else, nothing is known. /  / [b]Strangers[/b] /  |
+| view/known_world.rs:70 | No strangers are about that anyone has seen. /  |
+| view/known_world.rs:74 | coming |
+| view/known_world.rs:75 | camped near |
+| view/known_world.rs:76 | leaving |
+| view/known_world.rs:84 | A band from {} |
+| view/known_world.rs:86 | A band of strangers |
+| view/known_world.rs:88 | {who}, {}, {state} /  |
+| view/known_world.rs:90 |  / [b]On the road[/b] /  |
+| view/known_world.rs:108 | somewhere not named |
+| view/known_world.rs:110 | to trade |
+| view/known_world.rs:111 | to look |
+| view/known_world.rs:112 | to fetch what is wanted |
+| view/known_world.rs:114 | A caravan of {} gone to {to} {what} /  |
+| view/known_world.rs:120 | {} gone to {to}, {why} /  |
+| view/known_world.rs:125 | Nobody is away. /  |
+| view/known_world.rs:130 |  / [b]The lost[/b] / {lost} of those who came through have not been found. Whether they live, nobody here knows. /  |
 | view/legends.rs:15 | the year before the portal |
 | view/legends.rs:16 | after the portal |
 | view/legends.rs:17 | {n} years before the portal |
@@ -4309,7 +4309,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/legends.rs:55 | a realm |
 | view/legends.rs:86 | [color=#9a9a9a]{}[/color]  {} |
 | view/legends.rs:97 | why: |
-| view/legends.rs:102 | [b]Legends[/b] /  / This valley's world has no recorded history beyond it. |
+| view/legends.rs:102 | [b]Legends[/b] /  / This world has no recorded history beyond it. |
 | view/legends.rs:107 | people |
 | view/legends.rs:108 | site |
 | view/legends.rs:109 | figure |
@@ -4364,7 +4364,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/legends.rs:314 |  /  |
 | view/legends.rs:323 | {} /  / [b]The world[/b] / {} years remembered before the portal. {} peoples, {} settlements ({} still lived in), {} named figures, {} realms. /  / [b]Peoples[/b] /  |
 | view/legends.rs:325 | known |
-| view/legends.rs:325 | What the valley knows (not the world as it is) |
+| view/legends.rs:325 | What the colony knows (not the world as it is) |
 | view/legends.rs:340 | {}, {} {}: {n} settlements /  |
 | view/legends.rs:346 |  / [b]Realms[/b] /  |
 | view/legends.rs:349 | ended {} ({cause}) |
@@ -4379,81 +4379,81 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/legends.rs:380 |  / [b]Beasts of the deep[/b] /  |
 | view/legends.rs:383 | {}, woke {} /  |
 | view/legends.rs:384 | beast |
-| view/legends.rs:391 |  / The valley lies among the {}. /  |
-| view/legends.rs:408 | They live in the caverns under the land. Their first home was {}. |
-| view/legends.rs:411 | Their first home was {}. |
-| view/legends.rs:422 | They have no land of their own. |
-| view/legends.rs:425 | They have no land of their own; households of them live in {}. |
-| view/legends.rs:432 | [b]The {}[/b], {} {}. {home} /  / [b]What they hold[/b] /  |
-| view/legends.rs:444 | That {}. /  |
-| view/legends.rs:451 | culture |
-| view/legends.rs:454 |  / [b]Cultures[/b] {} /  |
-| view/legends.rs:457 |  / [b]Settlements[/b] {} founded, {alive} still lived in. The largest: /  |
-| view/legends.rs:468 | {}, a {} of {:.0} /  |
-| view/legends.rs:476 |  / [b]Their realms[/b] /  |
-| view/legends.rs:478 | {} /  |
-| view/legends.rs:481 |  / [b]Remembered among them[/b] /  |
-| view/legends.rs:495 | {}, {} /  |
-| view/legends.rs:497 |  / [url=world:0]The world[/url] |
-| view/legends.rs:507 | [b]{}[/b], a {} of the {}. / Founded {} |
-| view/legends.rs:510 | mine |
-| view/legends.rs:514 | ruin |
-| view/legends.rs:520 |  by settlers from {} |
-| view/legends.rs:522 | . /  |
-| view/legends.rs:526 | Left empty {}: {cause}. At its height {:.0} lived there. /  |
-| view/legends.rs:531 | {:.0} live there (at most {:.0}). /  |
-| view/legends.rs:548 | They hold for trade: {}. /  |
-| view/legends.rs:553 | {n} {} |
-| view/legends.rs:558 | A caravan from the valley traded {} for {} ({}). /  |
-| view/legends.rs:561 | nothing |
-| view/legends.rs:576 | a neighbour |
-| view/legends.rs:578 | Traded {} {} to {with} for {} {} ({}). /  |
-| view/legends.rs:593 | the seat of |
-| view/legends.rs:595 | part of |
-| view/legends.rs:597 | It is {role} the realm of {}. /  |
-| view/legends.rs:602 |  / [b]What is told of it[/b] /  |
-| view/legends.rs:612 | culture |
-| view/legends.rs:615 |  (a later telling) |
-| view/legends.rs:620 | {who} say: {}{later}, {}. /  |
-| view/legends.rs:634 |  / [b]Born here[/b] ({}) /  |
-| view/legends.rs:636 | {}, {} /  |
-| view/legends.rs:639 | site |
-| view/legends.rs:641 |  / [b]The record[/b] /  |
-| view/legends.rs:642 |  /  |
-| view/legends.rs:643 |  /  |
-| view/legends.rs:646 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:658 | [b]{}[/b], {} of the {}. / Born {} at {} |
-| view/legends.rs:666 | , child of {} |
-| view/legends.rs:668 | . /  |
-| view/legends.rs:670 | Died {} ({cause}), aged {}. /  |
-| view/legends.rs:673 | Lives at {}, aged {}. /  |
-| view/legends.rs:681 |  / [b]Children[/b] /  |
-| view/legends.rs:683 | {} /  |
-| view/legends.rs:686 | figure |
-| view/legends.rs:688 |  / [b]The record[/b] /  |
-| view/legends.rs:689 |  /  |
-| view/legends.rs:690 |  /  |
-| view/legends.rs:693 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:705 | [b]The realm of {}[/b], of the {}. / Its seat is {}, since {}. /  |
-| view/legends.rs:712 | It came to an end {}: {cause}. /  |
-| view/legends.rs:713 | Ruled now by {}. /  |
-| view/legends.rs:714 | Nobody rules it now. /  |
-| view/legends.rs:716 | {} settlements belong to it. /  |
-| view/legends.rs:721 | , until {} ({why}) |
-| view/legends.rs:725 | Allied with {} against {}, {}{ended}. /  |
-| view/legends.rs:731 | polity |
-| view/legends.rs:733 |  / [b]The record[/b] /  |
-| view/legends.rs:734 |  /  |
-| view/legends.rs:735 |  /  |
-| view/legends.rs:738 |  / {}  [url=world:0]The world[/url] |
-| view/legends.rs:818 | [b]The war between {} and {}[/b] / Begun {}: {}. /  |
-| view/legends.rs:827 | Ended {}: {cause}. {} battles were fought. /  |
-| view/legends.rs:832 | Still fought; {} battles so far. /  |
-| view/legends.rs:834 | war |
-| view/legends.rs:836 |  / [b]The record[/b] /  |
-| view/legends.rs:837 |  /  |
-| view/legends.rs:838 |  /  |
-| view/legends.rs:840 |  / [url=world:0]The world[/url] |
+| view/legends.rs:392 |  / The landing site lies among the {}. /  |
+| view/legends.rs:411 | They live in the caverns under the land. Their first home was {}. |
+| view/legends.rs:414 | Their first home was {}. |
+| view/legends.rs:425 | They have no land of their own. |
+| view/legends.rs:428 | They have no land of their own; households of them live in {}. |
+| view/legends.rs:435 | [b]The {}[/b], {} {}. {home} /  / [b]What they hold[/b] /  |
+| view/legends.rs:447 | That {}. /  |
+| view/legends.rs:454 | culture |
+| view/legends.rs:457 |  / [b]Cultures[/b] {} /  |
+| view/legends.rs:460 |  / [b]Settlements[/b] {} founded, {alive} still lived in. The largest: /  |
+| view/legends.rs:471 | {}, a {} of {:.0} /  |
+| view/legends.rs:479 |  / [b]Their realms[/b] /  |
+| view/legends.rs:481 | {} /  |
+| view/legends.rs:484 |  / [b]Remembered among them[/b] /  |
+| view/legends.rs:498 | {}, {} /  |
+| view/legends.rs:500 |  / [url=world:0]The world[/url] |
+| view/legends.rs:510 | [b]{}[/b], a {} of the {}. / Founded {} |
+| view/legends.rs:513 | mine |
+| view/legends.rs:517 | ruin |
+| view/legends.rs:523 |  by settlers from {} |
+| view/legends.rs:525 | . /  |
+| view/legends.rs:529 | Left empty {}: {cause}. At its height {:.0} lived there. /  |
+| view/legends.rs:534 | {:.0} live there (at most {:.0}). /  |
+| view/legends.rs:551 | They hold for trade: {}. /  |
+| view/legends.rs:556 | {n} {} |
+| view/legends.rs:561 | A caravan from the colony traded {} for {} ({}). /  |
+| view/legends.rs:564 | nothing |
+| view/legends.rs:579 | a neighbour |
+| view/legends.rs:581 | Traded {} {} to {with} for {} {} ({}). /  |
+| view/legends.rs:596 | the seat of |
+| view/legends.rs:598 | part of |
+| view/legends.rs:600 | It is {role} the realm of {}. /  |
+| view/legends.rs:605 |  / [b]What is told of it[/b] /  |
+| view/legends.rs:615 | culture |
+| view/legends.rs:618 |  (a later telling) |
+| view/legends.rs:623 | {who} say: {}{later}, {}. /  |
+| view/legends.rs:637 |  / [b]Born here[/b] ({}) /  |
+| view/legends.rs:639 | {}, {} /  |
+| view/legends.rs:642 | site |
+| view/legends.rs:644 |  / [b]The record[/b] /  |
+| view/legends.rs:645 |  /  |
+| view/legends.rs:646 |  /  |
+| view/legends.rs:649 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:661 | [b]{}[/b], {} of the {}. / Born {} at {} |
+| view/legends.rs:669 | , child of {} |
+| view/legends.rs:671 | . /  |
+| view/legends.rs:673 | Died {} ({cause}), aged {}. /  |
+| view/legends.rs:676 | Lives at {}, aged {}. /  |
+| view/legends.rs:684 |  / [b]Children[/b] /  |
+| view/legends.rs:686 | {} /  |
+| view/legends.rs:689 | figure |
+| view/legends.rs:691 |  / [b]The record[/b] /  |
+| view/legends.rs:692 |  /  |
+| view/legends.rs:693 |  /  |
+| view/legends.rs:696 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:708 | [b]The realm of {}[/b], of the {}. / Its seat is {}, since {}. /  |
+| view/legends.rs:715 | It came to an end {}: {cause}. /  |
+| view/legends.rs:716 | Ruled now by {}. /  |
+| view/legends.rs:717 | Nobody rules it now. /  |
+| view/legends.rs:719 | {} settlements belong to it. /  |
+| view/legends.rs:724 | , until {} ({why}) |
+| view/legends.rs:728 | Allied with {} against {}, {}{ended}. /  |
+| view/legends.rs:734 | polity |
+| view/legends.rs:736 |  / [b]The record[/b] /  |
+| view/legends.rs:737 |  /  |
+| view/legends.rs:738 |  /  |
+| view/legends.rs:741 |  / {}  [url=world:0]The world[/url] |
+| view/legends.rs:821 | [b]The war between {} and {}[/b] / Begun {}: {}. /  |
+| view/legends.rs:830 | Ended {}: {cause}. {} battles were fought. /  |
+| view/legends.rs:835 | Still fought; {} battles so far. /  |
+| view/legends.rs:837 | war |
+| view/legends.rs:839 |  / [b]The record[/b] /  |
+| view/legends.rs:840 |  /  |
+| view/legends.rs:841 |  /  |
+| view/legends.rs:843 |  / [url=world:0]The world[/url] |
 | view/look.rs:12 | tunic |
 | view/look.rs:13 | dress |
 | view/look.rs:14 | apron |
@@ -4542,7 +4542,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/waiting.rs:91 | it waits for morning |
 | view/waiting.rs:94 | 1 could take it; other work weighs more for now |
 | view/waiting.rs:96 | {able} could take it; other work weighs more for now |
-| view/waiting.rs:151 | waiting for {need} {what}; none lies anywhere in the valley |
+| view/waiting.rs:151 | waiting for {need} {what}; none lies anywhere in the area |
 | view/waiting.rs:165 | are children |
 | view/waiting.rs:165 | is a child |
 | view/waiting.rs:166 | do not know the craft |
@@ -4563,8 +4563,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | world/gen/biome.rs:69 | cold |
 | world/gen/biome.rs:72 | stony |
 | world/gen/biome.rs:74 | soft-soiled |
-| world/gen/biome.rs:77 | a temperate valley |
-| world/gen/biome.rs:79 | a {} valley |
+| world/gen/biome.rs:77 | a temperate landing site |
+| world/gen/biome.rs:79 | a {} landing site |
 | world/gen/biome.rs:114 | grassland |
 | world/gen/biome.rs:115 | meadow |
 | world/gen/biome.rs:116 | woodland |
@@ -4613,7 +4613,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | world/gen/biome.rs:850 |   {:<13}     0  absent: {}, and there are none |
 | world/gen/biome.rs:855 |   {:<13}     0  absent: none of {} in this seed |
 | world/gen/biome.rs:859 | grassland |
-| world/gen/biome.rs:861 |   {:<13}     0  absent: none of {} here, and grassland takes it only when the valley leans most to {}; this is {} |
+| world/gen/biome.rs:861 |   {:<13}     0  absent: none of {} here, and grassland takes it only when the site leans most to {}; this is {} |
 | world/gen/biome.rs:865 | grassland |
 | world/gen/biome.rs:874 |   {:<13}     0  absent: {} are here but the patch noise never picked it |
 | world/gen/biome.rs:892 | flora draw: {} of {} wild kinds: {} |
@@ -4682,9 +4682,9 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:293 | _start_debug_log | OSTROG_DEBUG_LOG |
 | godot/scripts/main.gd:304 | _debug_log_on | command=client seed=%d ticks=%d stage=%s opening=%s load=%s |
 | godot/scripts/main.gd:319 | _on_debug_log_toggled | Decision log:  |
-| godot/scripts/main.gd:369 | _ready | autosave could not be read (%s); started a fresh valley |
-| godot/scripts/main.gd:390 | _ready | No autosave could be read; started a new valley. The old files are still in the saves folder. |
-| godot/scripts/main.gd:393 | _ready | A new valley. Watch, or press H for history and O for settings. |
+| godot/scripts/main.gd:369 | _ready | autosave could not be read (%s); started a fresh landing site |
+| godot/scripts/main.gd:390 | _ready | No autosave could be read; started a new landing site. The old files are still in the saves folder. |
+| godot/scripts/main.gd:393 | _ready | A new landing site. Watch, or press H for history and O for settings. |
 | godot/scripts/main.gd:762 | _build_ui | Follow [F] |
 | godot/scripts/main.gd:762 | _build_ui | Keep the camera on this person [F] |
 | godot/scripts/main.gd:769 | _build_ui | ☆ Favourite |
@@ -4703,11 +4703,11 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:869 | _build_ui | ★ Favourites   (click a person to inspect & star them) |
 | godot/scripts/main.gd:873 | _build_ui | Close [Esc] |
 | godot/scripts/main.gd:873 | _build_ui | Close favourites [J or Esc] |
-| godot/scripts/main.gd:885 | _build_ui | No favourites yet. Click anyone in the valley and press '☆ Favourite' on their panel to keep track of them here. |
+| godot/scripts/main.gd:885 | _build_ui | No favourites yet. Click anyone at home and press '☆ Favourite' on their panel to keep track of them here. |
 | godot/scripts/main.gd:904 | _build_ui | People |
 | godot/scripts/main.gd:908 | _build_ui | Close [Esc] |
 | godot/scripts/main.gd:908 | _build_ui | Close people [P or Esc] |
-| godot/scripts/main.gd:920 | _build_ui | Nobody lives in the valley. |
+| godot/scripts/main.gd:920 | _build_ui | Nobody lives here. |
 | godot/scripts/main.gd:937 | _build_ui | Waiting work: what nobody has taken, and why |
 | godot/scripts/main.gd:941 | _build_ui | Close [Esc] |
 | godot/scripts/main.gd:941 | _build_ui | Close waiting work [K or Esc] |
@@ -4734,9 +4734,9 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:1192 | _build_bottom_bar | ▼ Bar |
 | godot/scripts/main.gd:1192 | _build_bottom_bar | Hide or show the bottom button bar [B] |
 | godot/scripts/main.gd:1225 | _build_bottom_bar | Keep playing [Esc] |
-| godot/scripts/main.gd:1225 | _build_bottom_bar | Keep the valley as it is |
+| godot/scripts/main.gd:1225 | _build_bottom_bar | Keep the world as it is |
 | godot/scripts/main.gd:1229 | _build_bottom_bar | Load |
-| godot/scripts/main.gd:1229 | _build_bottom_bar | Load the saved valley |
+| godot/scripts/main.gd:1229 | _build_bottom_bar | Load the saved world |
 | godot/scripts/main.gd:1246 | _build_bottom_bar | Camera bookmarks (F1–F8) |
 | godot/scripts/main.gd:1250 | _build_bottom_bar | Close |
 | godot/scripts/main.gd:1250 | _build_bottom_bar | Close bookmarks |
@@ -4822,15 +4822,15 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:1898 | _show_legends | world:0 |
 | godot/scripts/main.gd:1902 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
 | godot/scripts/main.gd:1920 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1929 | _on_legends_year | This world has no map beyond the valley. |
+| godot/scripts/main.gd:1929 | _on_legends_year | This world has no map beyond the landing site. |
 | godot/scripts/main.gd:1939 | _on_legends_year | the year before the portal |
 | godot/scripts/main.gd:1939 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1942 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
+| godot/scripts/main.gd:1942 | _on_legends_year | The world %s (the landing site in white, ruins dark%s) |
 | godot/scripts/main.gd:1942 | _on_legends_year | , ringed: where those away are |
 | godot/scripts/main.gd:1960 | _show_history | [b]History[/b] /  /  |
 | godot/scripts/main.gd:1963 | _show_history |  / [b]The record[/b] /  |
 | godot/scripts/main.gd:1967 | _show_history |  / [b]Why they do what they do[/b] /  |
-| godot/scripts/main.gd:1971 | _show_history |  / [b]The valley before the portal[/b] /  |
+| godot/scripts/main.gd:1971 | _show_history |  / [b]%s before the portal[/b] /  |
 | godot/scripts/main.gd:1975 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
 | godot/scripts/main.gd:1980 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color] |
 | godot/scripts/main.gd:2010 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
@@ -4839,7 +4839,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:2191 | _capture_timelapse | timelapse snapshot failed (error %d) |
 | godot/scripts/main.gd:2192 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
 | godot/scripts/main.gd:2235 | _process | saved (%.0f ms capture) |
-| godot/scripts/main.gd:2253 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
+| godot/scripts/main.gd:2253 | _process | [b]The colony's story has ended.[/b] /  / %s /  / Life goes on without them. [Esc] to close. |
 | godot/scripts/main.gd:2357 | _do_load_manual | loaded manual save |
 | godot/scripts/main.gd:2358 | _do_load_manual | load failed:  |
 | godot/scripts/main.gd:2398 | _unhandled_input | pause on major events:  |
@@ -4871,7 +4871,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:2721 | _build_settings | Saves:  |
 | godot/scripts/main.gd:2724 | _build_settings | Your files and data |
 | godot/scripts/main.gd:2724 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
-| godot/scripts/setup.gd:16 |  | The valley |
+| godot/scripts/setup.gd:16 |  | Landing site |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
 | godot/scripts/setup.gd:16 |  | What they hold |
@@ -4884,20 +4884,20 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:174 | goto | Next |
 | godot/scripts/setup.gd:197 | _validate | %d chosen; three came through here. |
 | godot/scripts/setup.gd:201 | _validate | Nobody could live in that world: go back to the peoples and leave in a kind that lives above ground. |
-| godot/scripts/setup.gd:228 | _deity_page | Ten came through the portal into a valley that was lived in long before  |
+| godot/scripts/setup.gd:228 | _deity_page | Ten came through the portal onto land that was lived on long before  |
 | godot/scripts/setup.gd:229 | _deity_page | them. Something watches it, and has watched it all along. It sends nothing; it leans  |
 | godot/scripts/setup.gd:230 | _deity_page | on what the world already does. Choose who. |
 | godot/scripts/setup.gd:249 | _deity_page | Watching |
 | godot/scripts/setup.gd:249 | _deity_page | Choose |
-| godot/scripts/setup.gd:254 | _deity_page | The one you choose also watched the valley's past, so the people who  |
+| godot/scripts/setup.gd:254 | _deity_page | The one you choose also watched the history of this place, so the people who  |
 | godot/scripts/setup.gd:255 | _deity_page | live beyond it may already have noticed what it does. |
-| godot/scripts/setup.gd:270 | _valley_page | Valley |
-| godot/scripts/setup.gd:279 | _valley_page | Another valley |
-| godot/scripts/setup.gd:284 | _valley_page | Shape the valley myself |
+| godot/scripts/setup.gd:270 | _valley_page | World seed |
+| godot/scripts/setup.gd:279 | _valley_page | Generate another world |
+| godot/scripts/setup.gd:284 | _valley_page | Shape the landing site myself |
 | godot/scripts/setup.gd:288 | _valley_page | Wet |
 | godot/scripts/setup.gd:288 | _valley_page | Mild |
 | godot/scripts/setup.gd:288 | _valley_page | Stony |
-| godot/scripts/setup.gd:318 | _valley_page | How deep the valley's past runs |
+| godot/scripts/setup.gd:318 | _valley_page | Years of local history |
 | godot/scripts/setup.gd:324 | _valley_page | %d years |
 | godot/scripts/setup.gd:331 | _valley_page | No one lived here before. No ruins, no graves, no tales. |
 | godot/scripts/setup.gd:332 | _valley_page | A generation or two of hamlets; their ruins are still standing. |
@@ -4905,10 +4905,10 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:334 | _valley_page | Centuries: old foundations under newer ones, stone ruins, long-dead names. |
 | godot/scripts/setup.gd:338 | _valley_page | How long the world has stood |
 | godot/scripts/setup.gd:344 | _valley_page | %d years |
-| godot/scripts/setup.gd:350 | _valley_page | The world: click where the valley lies (the ringed mark). |
+| godot/scripts/setup.gd:350 | _valley_page | Choose a landing site on the world map. The ring marks your selection. |
 | godot/scripts/setup.gd:437 | choose_region |  / Choose somewhere people could live. |
-| godot/scripts/setup.gd:492 | _refresh_preview | Drawing the valley... |
-| godot/scripts/setup.gd:512 | _collect_preview |  / The red mark is where the portal opens. |
+| godot/scripts/setup.gd:492 | _refresh_preview | Drawing the landing site... |
+| godot/scripts/setup.gd:512 | _collect_preview |  / The red marker shows the egress point where the founders emerge. |
 | godot/scripts/setup.gd:528 | _party_page | Ten came through. Only three of you are here together; the rest were  |
 | godot/scripts/setup.gd:529 | _party_page | thrown elsewhere, alive or dead, nobody here knows which. Choose the three who begin. |
 | godot/scripts/setup.gd:531 | _party_page | Reroll all ten |
@@ -4922,7 +4922,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:608 | _held_page | replace it, and hard experience can still turn them. Leave a row at "each their own"  |
 | godot/scripts/setup.gd:609 | _held_page | to let their lives decide. |
 | godot/scripts/setup.gd:622 | _held_page | each their own |
-| godot/scripts/setup.gd:635 | _peoples_page | The world beyond the valley is lived in by peoples of several kinds.  |
+| godot/scripts/setup.gd:635 | _peoples_page | The world beyond the landing site is lived in by peoples of several kinds.  |
 | godot/scripts/setup.gd:636 | _peoples_page | Choose which kinds there can be and how rare each is. Rarity sets how a kind starts, not  |
 | godot/scripts/setup.gd:637 | _peoples_page | how it ends: a rare people has no land of its own and lives as households among others;  |
 | godot/scripts/setup.gd:638 | _peoples_page | a legendary one's land fails it over the centuries. The world's history decides the rest. |
@@ -4935,13 +4935,13 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:713 | _peoples_changed |  (its land failing) |
 | godot/scripts/setup.gd:714 | _peoples_changed | The %s, %s %s%s |
 | godot/scripts/setup.gd:734 | _summary_page | Watched by %s. |
-| godot/scripts/setup.gd:735 | _summary_page | Valley %d, %s. |
-| godot/scripts/setup.gd:736 | _summary_page | %s of the valley's past, in a world that has stood %d years. |
+| godot/scripts/setup.gd:735 | _summary_page | World seed %d. The founders arrive at %s. |
+| godot/scripts/setup.gd:736 | _summary_page | %s of local history, in a world that has stood %d years. |
 | godot/scripts/setup.gd:736 | _summary_page | %d years |
 | godot/scripts/setup.gd:737 | _summary_page | %s come through together. |
 | godot/scripts/setup.gd:738 | _summary_page | They hold in common: %s. |
 | godot/scripts/setup.gd:738 | _summary_page | nothing beyond what each has lived |
-| godot/scripts/setup.gd:739 | _summary_page | Making the world runs the valley's past first; it takes a moment. |
+| godot/scripts/setup.gd:739 | _summary_page | Generating local history takes a moment. |
 | godot/scripts/setup.gd:770 | refused | Could not begin: %s. |
 | godot/scripts/world_view.gd:186 | setup | ostrog/render/world_renderer |
 | godot/scripts/audio/sound.gd:96 | _buses | Master |
@@ -8166,7 +8166,7 @@ three step out at 07:00 on day 1 of spring.
 
 ### Map and tiles
 
-The default valley is 128 x 128 tiles with levels z = -16 to 8 (`GenParams::default`);
+The default landing site is 128 x 128 tiles with levels z = -16 to 8 (`GenParams::default`);
 `--small` is 64 x 64, z = -8 to 6. A tile packs into 32 bits as `material | shape << 16 |
 flags << 24` (`SimHost.level_tiles(z)`).
 
@@ -8255,7 +8255,7 @@ Where the client keeps them (Godot's user folder for the project "Ostrog"):
 
 Autosave runs every N game-days (settings, default 1) into the next ring slot. At start the
 newest valid slot is loaded. If it then fails to load, the HUD says "autosave could not be read
-(...); started a fresh valley"; the old files stay in the folder. With no valid slot a hands-on
+(...); started a fresh landing site"; the old files stay in the folder. With no valid slot a hands-on
 launch opens the arrival screen. Check a save with `ostrog verify PATH`.
 
 ### The tick pipeline

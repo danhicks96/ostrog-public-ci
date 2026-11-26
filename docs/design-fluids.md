@@ -20,7 +20,7 @@ Water already moves more than #323's October text says. What is in the code now:
   rivers, lakes and ponds, each with the ground whose rain runs into it. Every hour a body rises by
   what its catchment gathers, drains back a share at a time, goes over its banks onto open ground
   lowest first, and draws back as it falls. Snow melt feeds spring floods.
-- **One valley-wide ceiling:** `MAX_FLOOD = 600` tiles under flood water at once. The flooded set is
+- **One map-wide ceiling:** `MAX_FLOOD = 600` tiles under flood water at once. The flooded set is
   saved. #323 records the flood event firing 41 times in a 600-day soak.
 - **Water under the ground** (`aquifer.rs`, #272, #267): wet rock holds water; a cut into it lets
   water in; standing water beside or over a cut pours down the shaft and the workings joined to
@@ -55,7 +55,7 @@ bounded, like `MAX_FLOOD`. Delivers containment ("a wall holds the water, a mist
 stores") and caves that fill from the bottom. Cost: new state to save, new per-tick work while
 awake, and a design for the cap and for what happens at the cap.
 
-**W2. A full-valley fluid grid.** Rejected: a fluid tick over a 3D valley grid is what breaks the
+**W2. A full-map fluid grid.** Rejected: a fluid tick over a 3D local grid is what breaks the
 frame budget, and the worst-tick gate is not met today.
 
 ## Options for lava

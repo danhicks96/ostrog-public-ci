@@ -37,7 +37,7 @@ static func draw(img: Image, rows: Array) -> void:
 static func lines(rows: Array) -> String:
 	if rows.is_empty():
 		return ""
-	var s := "[b]Away from the valley[/b]\n"
+	var s := "[b]Away from home[/b]\n"
 	for r in rows:
 		var c: Color = colour_of(String(r.get("reaction", "")))
 		s += "[color=#%s]%s[/color] (%s): %s\n" % [c.to_html(false), r.get("name", "?"), r.get("reaction", ""), r.get("line", "")]

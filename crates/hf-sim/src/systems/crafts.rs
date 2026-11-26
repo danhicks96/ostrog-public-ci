@@ -236,7 +236,7 @@ pub fn step(w: &mut World) {
                     {
                         format!("gone to {}", other.name)
                     } else {
-                        "gone from the valley".to_string()
+                        "gone from the area".to_string()
                     }
                 })
                 .unwrap_or_else(|| "gone".to_string());

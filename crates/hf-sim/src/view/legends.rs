@@ -99,7 +99,7 @@ pub fn page(w: &World, c: &Chronicle, target: &str) -> String {
     }
     let r = &w.realm;
     if r.peoples.is_empty() {
-        return "[b]Legends[/b]\n\nThis valley's world has no recorded history beyond it.".into();
+        return "[b]Legends[/b]\n\nThis world has no recorded history beyond it.".into();
     }
     let (kind, id) = target.split_once(':').unwrap_or((target, "0"));
     let id: u32 = id.parse().unwrap_or(0);
@@ -322,7 +322,7 @@ fn world_page(w: &World) -> String {
     let mut s = format!(
         "{}\n\n[b]The world[/b]\n{} years remembered before the portal. {} peoples, {} settlements \
          ({} still lived in), {} named figures, {} realms.\n\n[b]Peoples[/b]\n",
-        link("known", 0, "What the valley knows (not the world as it is)"),
+        link("known", 0, "What the colony knows (not the world as it is)"),
         r.year + 1,
         r.peoples.len(),
         r.sites.len(),
@@ -388,7 +388,10 @@ fn world_page(w: &World) -> String {
     }
     if let Some(region) = w.meta.setup.as_ref().and_then(|x| x.region) {
         if let Some(p) = r.nearest_people(region) {
-            s += &format!("\nThe valley lies among the {}.\n", people_link(r, p.id));
+            s += &format!(
+                "\nThe landing site lies among the {}.\n",
+                people_link(r, p.id)
+            );
         }
     }
     s
@@ -555,7 +558,7 @@ fn site_page(w: &World, c: &Chronicle, id: u32) -> String {
                     .join(", ")
             };
             s += &format!(
-                "A caravan from the valley traded {} for {} ({}).\n",
+                "A caravan from the colony traded {} for {} ({}).\n",
                 side(&t.gave),
                 if t.got.is_empty() {
                     "nothing".to_string()

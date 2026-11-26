@@ -13,7 +13,7 @@ signal confirmed(setup: Dictionary)
 
 const COUNT := 10
 const STARTING := 3
-const PAGES := ["Who watches", "The valley", "The peoples", "Who came through", "What they hold", "Begin"]
+const PAGES := ["Who watches", "Landing site", "The peoples", "Who came through", "What they hold", "Begin"]
 const RARITIES := ["common", "uncommon", "rare", "legendary"]
 const ValleyPreview := preload("res://scripts/valley_preview.gd")
 const Rules := preload("res://scripts/rules.gd")
@@ -225,7 +225,7 @@ func _panel(selected: bool) -> PanelContainer:
 # --- Who watches ------------------------------------------------------------------------------
 
 func _deity_page() -> void:
-	body.add_child(_para("Ten came through the portal into a valley that was lived in long before " \
+	body.add_child(_para("Ten came through the portal onto land that was lived on long before " \
 		+ "them. Something watches it, and has watched it all along. It sends nothing; it leans " \
 		+ "on what the world already does. Choose who."))
 	var row := HFlowContainer.new()
@@ -251,7 +251,7 @@ func _deity_page() -> void:
 		pick.pressed.connect(func(): deity = key; goto(0))
 		col.add_child(pick)
 		row.add_child(card)
-	body.add_child(_para("The one you choose also watched the valley's past, so the people who " \
+	body.add_child(_para("The one you choose also watched the history of this place, so the people who " \
 		+ "live beyond it may already have noticed what it does.", Color(0.6, 0.65, 0.72), 12))
 
 # --- The valley -------------------------------------------------------------------------------
@@ -267,7 +267,7 @@ func _valley_page() -> void:
 	var seed_row := HBoxContainer.new()
 	left.add_child(seed_row)
 	var sl := Label.new()
-	sl.text = "Valley"
+	sl.text = "World seed"
 	seed_row.add_child(sl)
 	var spin := SpinBox.new()
 	spin.min_value = 0
@@ -276,12 +276,12 @@ func _valley_page() -> void:
 	spin.value_changed.connect(func(v): _set_seed(int(v)))
 	seed_row.add_child(spin)
 	var another := Button.new()
-	another.text = "Another valley"
+	another.text = "Generate another world"
 	another.pressed.connect(func(): _set_seed((seed_v * 7919 + 104729) % 1000000); goto(1))
 	seed_row.add_child(another)
 
 	var own := CheckBox.new()
-	own.text = "Shape the valley myself"
+	own.text = "Shape the landing site myself"
 	own.button_pressed = use_character
 	own.toggled.connect(func(on): _shape_myself(on))
 	left.add_child(own)
@@ -315,7 +315,7 @@ func _valley_page() -> void:
 		hi.text = axes[k][1]
 		r.add_child(hi)
 
-	left.add_child(_para("How deep the valley's past runs", Color(0.9, 0.9, 0.92), 14))
+	left.add_child(_para("Years of local history", Color(0.9, 0.9, 0.92), 14))
 	var depth_row := HBoxContainer.new()
 	left.add_child(depth_row)
 	var group := ButtonGroup.new()
@@ -347,7 +347,7 @@ func _valley_page() -> void:
 		b.button_pressed = int(y) == realm_years
 		b.pressed.connect(func(): realm_years = int(y); goto(1))
 		age_row.add_child(b)
-	left.add_child(_para("The world: click where the valley lies (the ringed mark).", Color(0.9, 0.9, 0.92), 14))
+	left.add_child(_para("Choose a landing site on the world map. The ring marks your selection.", Color(0.9, 0.9, 0.92), 14))
 	world_rect = TextureRect.new()
 	world_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	world_rect.stretch_mode = TextureRect.STRETCH_SCALE
@@ -489,7 +489,7 @@ func _refresh_preview() -> void:
 	if sim.valley_preview_begin(seed_v, _chosen_character(), region_v):
 		_collect_preview()
 		return
-	preview_lines.text = "Drawing the valley..."
+	preview_lines.text = "Drawing the landing site..."
 	set_process(true)
 
 func _process(_d: float) -> void:
@@ -509,7 +509,7 @@ func _collect_preview() -> void:
 	var entry := {
 		"texture": ImageTexture.create_from_image(preview_art.image(p)),
 		# In a player's words, not the describe command's (Rules.valley_note, FIXLOG 2026-11-14).
-		"lines": Rules.valley_note(Array(p["lines"]), str(p.get("label", ""))) + "\nThe red mark is where the portal opens.",
+		"lines": Rules.valley_note(Array(p["lines"]), str(p.get("label", ""))) + "\nThe red marker shows the egress point where the founders emerge.",
 	}
 	preview_cache[preview_waiting] = entry
 	preview_waiting = ""
@@ -632,7 +632,7 @@ func _held_page() -> void:
 # --- The peoples ------------------------------------------------------------------------------
 
 func _peoples_page() -> void:
-	body.add_child(_para("The world beyond the valley is lived in by peoples of several kinds. " \
+	body.add_child(_para("The world beyond the landing site is lived in by peoples of several kinds. " \
 		+ "Choose which kinds there can be and how rare each is. Rarity sets how a kind starts, not " \
 		+ "how it ends: a rare people has no land of its own and lives as households among others; " \
 		+ "a legendary one's land fails it over the centuries. The world's history decides the rest."))
@@ -732,11 +732,11 @@ func _summary_page() -> void:
 			common.append(String(t["for"] if v > 0 else t["against"]))
 	var p: Dictionary = sim.valley_character(seed_v, _chosen_character(), region_v)
 	body.add_child(_para("Watched by %s." % d_name, Color(0.9, 0.9, 0.92), 16))
-	body.add_child(_para("Valley %d, %s." % [seed_v, p["label"]]))
-	body.add_child(_para("%s of the valley's past, in a world that has stood %d years." % ["No years" if history_years == 0 else "%d years" % history_years, realm_years]))
+	body.add_child(_para("World seed %d. The founders arrive at %s." % [seed_v, p["label"]]))
+	body.add_child(_para("%s of local history, in a world that has stood %d years." % ["No years" if history_years == 0 else "%d years" % history_years, realm_years]))
 	body.add_child(_para("%s come through together." % ", ".join(names)))
 	body.add_child(_para("They hold in common: %s." % ("nothing beyond what each has lived" if common.is_empty() else "; ".join(common))))
-	body.add_child(_para("Making the world runs the valley's past first; it takes a moment.", Color(0.6, 0.65, 0.72), 12))
+	body.add_child(_para("Generating local history takes a moment.", Color(0.6, 0.65, 0.72), 12))
 
 func setup() -> Dictionary:
 	var ordered := chosen.duplicate()

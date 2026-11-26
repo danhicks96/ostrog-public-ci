@@ -112,7 +112,7 @@ pub fn page(w: &World, c: &Chronicle, history_id: i64) -> String {
         (End::Root, false) => "",
         (End::Limit, _) => "  and it goes back further than this page follows.\n",
         (End::Missing, _) => "  and the record of what caused that is missing.\n",
-        (End::Untold, _) => "  and before that, nothing the valley knows.\n",
+        (End::Untold, _) => "  and before that, nothing the colony knows.\n",
     };
     s
 }

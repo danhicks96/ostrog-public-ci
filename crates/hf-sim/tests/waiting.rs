@@ -62,7 +62,7 @@ fn a_wall_with_no_stone_anywhere_says_so() {
         }],
     );
     let r = reason(&w, ix);
-    assert_eq!(r, "waiting for 3 stone; none lies anywhere in the valley");
+    assert_eq!(r, "waiting for 3 stone; none lies anywhere in the area");
     // The block panel line carries it, not the debug name of the kind.
     let line = hf_sim::view::waiting::line(&w, &w.designations[ix]);
     assert_eq!(line, format!("Planned: wall ({r})"));
@@ -86,10 +86,7 @@ fn a_single_missing_bed_frame_is_singular() {
         }],
     );
     let r = reason(&w, ix);
-    assert_eq!(
-        r,
-        "waiting for 1 bed frame; none lies anywhere in the valley"
-    );
+    assert_eq!(r, "waiting for 1 bed frame; none lies anywhere in the area");
 }
 
 #[test]

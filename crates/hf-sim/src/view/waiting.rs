@@ -148,7 +148,7 @@ fn materials_nowhere(w: &World, d: &Designation) -> Option<String> {
         None => label.to_string(),
     };
     Some(format!(
-        "waiting for {need} {what}; none lies anywhere in the valley"
+        "waiting for {need} {what}; none lies anywhere in the area"
     ))
 }
 

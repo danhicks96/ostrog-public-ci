@@ -21,7 +21,7 @@ item's creation and use, and caravans to the world's real settlements (C27).
 
 1. Materials (`materials.rs`). A material table with density, hardness, melting point, value
    and a palette ramp (palette v2 has gold and copper; gems have their own): stones from the
-   valley's strata (granite, basalt, limestone, sandstone, slate, marble ...), ores and metals
+   site's strata (granite, basalt, limestone, sandstone, slate, marble ...), ores and metals
    (iron, copper, tin, silver, gold; bronze as an alloy), woods by tree species, fibres and
    hides by source. Items gain `material: Option<MaterialId>` (serde default): the old kinds
    keep working; new generic kinds (Bar, Block, Weapon, Armour, Furniture items, Vessel) take
@@ -58,7 +58,7 @@ item's creation and use, and caravans to the world's real settlements (C27).
 - `prices_follow_scarcity` (a settlement short of grain pays more for it; a glut pays less).
 - `ledger_holds_through_trade_and_rot` (zero drift with spoilage and trade). Built in C36 as
   `barter_moves_goods_and_makes_none` and `stores_are_made_and_rot` (tests/trade.rs), with the
-  soak's ledger-drift check on the valley side.
+  soak's ledger-drift check on the colony side.
 - `sowing_follows_the_store` (fields shrink when the store is full, grow when it runs low).
 - `an_engraving_shows_a_real_row` (its history id narrates back to a real event).
 - `a_mood_has_a_cause` (every possessed artisan has a formative event behind it).

@@ -142,7 +142,7 @@ fn a_captive_where_the_valley_has_never_been_has_no_place_on_the_map() {
     assert_eq!(r.region, None, "not on the map");
     assert!(
         r.line.starts_with(
-            "held captive at a place the valley does not know, carried off 3 days ago"
+            "held captive at a place the colony does not know, carried off 3 days ago"
         ),
         "{}",
         r.line

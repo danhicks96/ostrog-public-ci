@@ -770,7 +770,7 @@ fn journey(w: &mut World, cid: CommunityId) {
         i,
         cid,
         ProjectKind::Journey(purpose),
-        "to lead a party out of the valley".into(),
+        "to lead a party out of the colony".into(),
         because,
         source,
     );
@@ -1000,7 +1000,7 @@ fn wall(w: &mut World, cid: CommunityId) {
             c.identity
                 .iter()
                 .any(|l| l.contains("strangers are a danger"))
-                .then(|| "beyond the valley".to_string())
+                .then(|| "beyond the colony".to_string())
         })
     else {
         return;

@@ -90,7 +90,7 @@ impl Claim {
                     _ => format!("something kept leaning on {site}"),
                 }
             }
-            Claim::Watched => format!("something that watches the valley took notice of {site}"),
+            Claim::Watched => format!("something that watches the colony took notice of {site}"),
             Claim::Unknown => format!("{site}'s people left; nobody can say where"),
         }
     }

@@ -150,6 +150,6 @@ fn a_cause_about_an_unfound_person_ends_the_chain_without_naming_them() {
     assert_eq!((links.len(), end), (1, causes::End::Untold), "{links:?}");
     let lost_name = &w.agents.iter().find(|a| a.id == lost).unwrap().name;
     let page = legends::page(&w, &c, &format!("why:{row}"));
-    assert!(page.contains("nothing the valley knows"), "{page}");
+    assert!(page.contains("nothing the colony knows"), "{page}");
     assert!(!page.contains(lost_name.as_str()), "{page}");
 }

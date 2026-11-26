@@ -387,7 +387,7 @@ fn a_craft_lost_and_known_again_is_said() {
 
 #[test]
 fn a_craft_gone_with_a_split_is_said_once_and_rightly() {
-    // C72 soak: "gone from the valley" of people who had split off to the valley's second
+    // C72 soak: "gone from the area" of people who had split off to the valley's second
     // community, said four times for one person.
     let (mut w, cid) = meadow(7006, 5);
     let m = members(&w, cid);

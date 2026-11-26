@@ -161,14 +161,16 @@ func wizard_seed_is_random_per_new_game_and_kept_across_pages() -> void:
 	check(picks.size() == 1, "the world has another habitable place")
 	check(wz.choose_region(picks[0]), "the place is chosen")
 	await _wait_preview(wz)
+	check(wz.PAGES[1] == "Landing site", "the region picker names the local area")
+	check(wz.preview_lines.text.contains("egress point"), "the local preview identifies the founders’ portal marker")
 	var note: String = wz.world_note.text
 	wz.goto(0)
 	await process_frame
 	wz.goto(1)
 	await process_frame
-	check(wz.seed_v == seed, "back to the valley page: the same seed")
-	check(wz.region_v == picks[0], "back to the valley page: the same place")
-	check(wz.world_note.text == note, "back to the valley page: the same place's description")
+	check(wz.seed_v == seed, "back to the landing site page: the same seed")
+	check(wz.region_v == picks[0], "back to the landing site page: the same place")
+	check(wz.world_note.text == note, "back to the landing site page: the same place's description")
 	var spin: SpinBox = null
 	for c in wz.body.get_child(0).get_child(0).get_child(0).get_children():
 		if c is SpinBox:
@@ -563,8 +565,8 @@ func test_away_marks_and_lines_on_the_world_map() -> void:
 	var before := img.duplicate()
 	var rows := [
 		{"name": "Ada", "place": "Ivouth", "region": 20 * 64 + 10, "reaction": "welcomed", "line": "at Ivouth to see it for themselves"},
-		{"name": "Bram", "place": "Ivouth", "region": 20 * 64 + 10, "reaction": "threatened", "line": "at Ivouth; they hold a grudge against the valley"},
-		{"name": "Cel", "place": "", "region": -1, "reaction": "threatened", "line": "held captive at a place the valley does not know"},
+		{"name": "Bram", "place": "Ivouth", "region": 20 * 64 + 10, "reaction": "threatened", "line": "at Ivouth; they hold a grudge against the colony"},
+		{"name": "Cel", "place": "", "region": -1, "reaction": "threatened", "line": "held captive at a place the colony does not know"},
 	]
 	AwayMap.draw(img, rows)
 	var got := img.get_pixel(10, 20)
@@ -1228,7 +1230,7 @@ func test_timelapse_byte_bound_order_and_replay() -> void:
 	var small := Image.create(640, 360, false, Image.FORMAT_RGBA8)
 	check(Timelapse.fit_capture(small).get_width() == 640, "a small capture is never scaled up")
 	check(Timelapse.fit_capture(shot).get_data() == fitted.get_data(), "the same viewport pixels always store the same image")
-	check(is_equal_approx(Timelapse.valley_zoom(Vector2(1280, 720), Vector2(8192, 8192)), 720.0 / 8192.0), "the valley zoom fits the whole map into the window")
+	check(is_equal_approx(Timelapse.valley_zoom(Vector2(1280, 720), Vector2(8192, 8192)), 720.0 / 8192.0), "the colony zoom fits the whole map into the window")
 
 # #484 finish: a series is read back from its own files (a resumed world goes on with it), and
 # the number of worlds keeping a series is bounded.
@@ -1602,9 +1604,9 @@ func test_marker_rules() -> void:
 	check(long.ends_with("…") and long.length() <= 33 and not long.contains("  "), "a long line is cut at a word: %s" % long)
 
 func test_people_panel_title_counts_here_and_away() -> void:
-	check(Rules.people_title([]).begins_with("People: 0 in the valley"), "empty valley")
+	check(Rules.people_title([]).begins_with("People: 0 at home"), "empty valley")
 	var t := Rules.people_title([{"away": false}, {"away": false}, {"away": true}])
-	check(t.begins_with("People: 2 in the valley, 1 away"), "two here, one away: %s" % t)
+	check(t.begins_with("People: 2 at home, 1 away"), "two here, one away: %s" % t)
 	check(not Rules.people_title([{"away": false}]).contains("away"), "nobody away: no away count")
 	var with_p := 0
 	for b in Rules.BAR_ITEMS:
@@ -1766,7 +1768,7 @@ func test_the_wizard_says_the_valley_in_a_players_words() -> void:
 	for dev in ["character:", "wetness", "set by parameter", "biome mix", "flora", "not drawn", " of 22", "%"]:
 		check(not note.contains(dev), "no '%s' on the page: %s" % [dev, note])
 	check(note.begins_with("A ") and not note.begins_with("A a ") and not note.begins_with("A an "), "one article: %s" % note)
-	check(note.to_lower().begins_with(str(p["label"]).to_lower()) or note.to_lower().begins_with("a " + str(p["label"]).to_lower()), "it opens with the valley's kind: %s" % note)
+	check(note.to_lower().begins_with(str(p["label"]).to_lower()) or note.to_lower().begins_with("a " + str(p["label"]).to_lower()), "it opens with the landing site's description: %s" % note)
 	check(note.contains("Mostly ") and note.contains("Wild plants here: "), "the ground and the plants: %s" % note)
 	var made := Rules.valley_note(["biome mix: grassland 31%, fen 23%, heath 4%, fell <1%", "flora draw: 2 of 22 wild kinds: yews, hazels", "flora not drawn: alders"], "a mild valley")
 	check(made == "A mild valley.\nMostly grassland and fen.\nWild plants here: yews, hazels.", "the wording: %s" % made)
@@ -1791,7 +1793,7 @@ func test_load_says_what_is_lost_and_when_nothing_is_saved() -> void:
 	check(Rules.load_question(base, base + 100).ends_with("(less than a day) is lost."), "less than a day")
 	check(Rules.load_question(base, base + 28800 + 5).ends_with("The day since then is lost."), "one day")
 	check(Rules.load_question(base, base + 3 * 28800).ends_with("The 3 days since then are lost."), "three days")
-	check(Rules.load_question(-1, base) == "Load the valley as you saved it?", "an unknown save time: just the question")
+	check(Rules.load_question(-1, base) == "Load the world as you saved it?", "an unknown save time: just the question")
 
 # #1485, FIXLOG 2026-11-14: a feed line stays for game time by severity, clamped to 30-180 real
 # seconds, instead of a fixed 45 s.

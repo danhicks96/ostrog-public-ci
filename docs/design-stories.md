@@ -11,7 +11,7 @@ slice built on branch `feat-452-stories`, and what would break the rules.
   with its tick, place, participants and cause. Nothing rewrites a row. The old valley's
   history before the arrival (`deep.rs`: sites, figures, graves, how each hamlet ended) is the
   same kind of record, written before the epoch.
-- Accounts, for the old valley only. `lore.rs` keeps tales: one version of how an old hamlet
+- Accounts, for the pre-arrival settlements only. `lore.rs` keeps tales: one version of how an old hamlet
   ended, held by a person, with who told it (`teller`) and how they came by it (`how`:
   "their family's memory in Mirewell", "told by Kella", "their own guess"). Tales pass in talk
   (`lore::on_talk`, called from `systems/act.rs`) and drift for a reason: a teller who holds
@@ -36,7 +36,7 @@ slice built on branch `feat-452-stories`, and what would break the rules.
 - The colony's own dead leave no trace. A body is drawn for a few hours (`view/bodies.rs`,
   view only) and then nothing marks where someone was put in the ground, so there is nothing
   for a later person to find and read.
-- Inspect shows tales of the old valley but nothing a person believes about their own time,
+- Inspect shows tales of the pre-arrival settlements but nothing a person believes about their own time,
   and nothing on a tile says "this is what happened here; this is what is said of it".
 
 ## The first slice: a death becomes told accounts and leaves a grave
@@ -51,7 +51,7 @@ of persistent trace (a grave).
    when it happens hold an account "saw it" with the true cause. Nobody else does.
 3. Telling. When two people talk, one may tell the other an account of a death the other has
    no account of. The listener keeps it "told by <teller>". It can drift, by the same rule as
-   the old valley's tales: a teller who holds strangers bring harm, or is cautious, drifts it
+   the pre-arrival settlements' tales: a teller who holds strangers bring harm, or is cautious, drifts it
    more often. A sickness or a famine death becomes a curse, a fall or a fight becomes a
    killing, a beast, the water or the deep becomes "taken". Each account keeps its teller, so
    the chain back to a witness can be followed.
@@ -75,7 +75,7 @@ of persistent trace (a grave).
 
 - Only burial leaves a grave. Burning, laying out under the sky and the hall of the dead leave
   no marker in this slice.
-- Drift uses the old valley's tale rule (teller's fear of strangers or caution), not a new
+- Drift uses the pre-arrival settlements' tale rule (teller's fear of strangers or caution), not a new
   model of motive. Framing for advantage (blaming a rival) is later work.
 - Accounts are capped at 24 a person; the oldest told ones go first, so what someone saw lasts
   longest.

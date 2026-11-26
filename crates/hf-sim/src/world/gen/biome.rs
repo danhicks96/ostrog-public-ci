@@ -55,7 +55,7 @@ impl Character {
         p.character.unwrap_or_else(|| Character::of_seed(seed))
     }
 
-    /// A few plain words: "a wet, cold, stony valley".
+    /// A few plain words: "a wet, cold, stony landing site".
     pub fn label(&self) -> String {
         let mut words = Vec::new();
         if self.wetness > 0.4 {
@@ -74,9 +74,9 @@ impl Character {
             words.push("soft-soiled");
         }
         if words.is_empty() {
-            "a temperate valley".to_string()
+            "a temperate landing site".to_string()
         } else {
-            format!("a {} valley", words.join(", "))
+            format!("a {} landing site", words.join(", "))
         }
     }
 }
@@ -858,7 +858,7 @@ pub fn describe(
             ));
         } else if present == ["grassland"] && patch.is_some() {
             out.push(format!(
-                "  {:<13}     0  absent: none of {} here, and grassland takes it only when the valley leans most to {}; this is {}",
+                "  {:<13}     0  absent: none of {} here, and grassland takes it only when the site leans most to {}; this is {}",
                 fam,
                 names
                     .iter()

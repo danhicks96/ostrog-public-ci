@@ -91,7 +91,7 @@ pub fn line(w: &World, e: &Event) -> String {
                 .map(|p| w.kind(p).plural.clone())
                 .unwrap_or_else(|| "strangers".into());
             format!(
-                "{} saw {kind} camped at the edge of the valley, {size} of them.",
+                "{} saw {kind} camped at the edge of the colony, {size} of them.",
                 named_as(w, e.tick, *agent)
             )
         }
@@ -260,7 +260,7 @@ pub fn line(w: &World, e: &Event) -> String {
         DucksLeft { .. } => "The ducks flew south.".to_string(),
         DucksReturned { .. } => "The ducks came back to the water.".to_string(),
         CameOver { agent } => format!(
-            "{} came over the hills into the valley, where there was food for it again.",
+            "{} came over the hills into the area, where there was food for it again.",
             beast(w, e.tick, *agent)
         ),
         BeastSlain { agent, beast: b, hurt } => match hurt {
@@ -332,7 +332,7 @@ pub fn line(w: &World, e: &Event) -> String {
             };
             let past = match history_years {
                 0 => "no past to find".to_string(),
-                n => format!("{n} years of the valley's past behind it"),
+                n => format!("{n} years of local history behind it"),
             };
             let world = if peoples.is_empty() {
                 String::new()
@@ -614,14 +614,14 @@ pub fn line(w: &World, e: &Event) -> String {
             to,
             cause,
         } => format!(
-            "{} left the valley, {} of them led by {}, to settle at {}: {}.",
+            "{} left the area, {} of them led by {}, to settle at {}: {}.",
             cname(w, *community),
             people,
             named_as(w, e.tick, *leader),
             to,
             cause
         ),
-        CommunityEnded { name: n, how, .. } => format!("{n} is no more in the valley: they {how}."),
+        CommunityEnded { name: n, how, .. } => format!("{n} is no more in the colony: they {how}."),
         Traded {
             from,
             to,
@@ -655,7 +655,7 @@ pub fn line(w: &World, e: &Event) -> String {
             because,
         } => format!("{} {}, {}.", named_as(w, e.tick, *agent), what, because),
         RoleTaken { agent, role } => format!("{} took up {} work.", named_as(w, e.tick, *agent), role),
-        Left { agent } => format!("{} left the valley.", named_as(w, e.tick, *agent)),
+        Left { agent } => format!("{} left the area.", named_as(w, e.tick, *agent)),
         Paired { a, b } => format!("{} and {} became partners.", named_as(w, e.tick, *a), named_as(w, e.tick, *b)),
         CustomFormed {
             community,
@@ -913,7 +913,7 @@ pub fn line(w: &World, e: &Event) -> String {
         CaravanLeft {
             leader, members, ..
         } => format!(
-            "{}'s party of {} walks out past the edge of the valley.",
+            "{}'s party of {} walks out past the edge of the landing site.",
             named_as(w, e.tick, *leader),
             members
         ),
@@ -1112,14 +1112,14 @@ pub fn line(w: &World, e: &Event) -> String {
             named_as(w, e.tick, *agent)
         ),
         SpellBegan { how, .. } => how.clone(),
-        SpellLifted { what, days } => format!("After {days} days, {what} lifted from the valley."),
+        SpellLifted { what, days } => format!("After {days} days, {what} lifted from the area."),
         Faring {
             community,
             now,
             why,
         } => format!("{community} is {now}: {why}."),
         LastOne { agent, community } => format!(
-            "{} is the last of {community} left in the valley.",
+            "{} is the last of {community} left in the colony.",
             named_as(w, e.tick, *agent)
         ),
         WentAway { agent, to, why } => {
@@ -1234,7 +1234,7 @@ pub fn line(w: &World, e: &Event) -> String {
             cname(w, *community)
         ),
         ReachedDeep { community, rock } => format!(
-            "{}'s shaft came down into the {rock}, the deep under the valley.",
+            "{}'s shaft came down into the {rock}, the deep beneath the landing site.",
             cname(w, *community)
         ),
         LeftUnrested { agent, why } => {
@@ -1340,7 +1340,7 @@ pub fn line(w: &World, e: &Event) -> String {
             }
         ),
         NewStone { agent, stone } => format!(
-            "{} cut {stone}, harder than any stone the valley has worked.",
+            "{} cut {stone}, harder than any stone the colony has worked.",
             named_as(w, e.tick, *agent)
         ),
         SocietyFormed { against, members } => format!(
@@ -1357,7 +1357,7 @@ pub fn line(w: &World, e: &Event) -> String {
             named_as(w, e.tick, *agent)
         ),
         FirstWord { community, people } => format!(
-            "{} know now that there are people of {people} beyond the valley; where they live, nobody knows.",
+            "{} know now that there are people of {people} beyond the colony; where they live, nobody knows.",
             cname(w, *community)
         ),
         Torn { agent, with, and } => format!(
@@ -1453,7 +1453,7 @@ pub fn line(w: &World, e: &Event) -> String {
             format!("{} came up out of the deep through {cavern}.", beast(w, e.tick, *b))
         }
         Besieged { site, size } => format!(
-            "{size} from {site}, come over a grudge, camped and laid siege to the valley."
+            "{size} from {site}, come over a grudge, camped and laid siege to the colony."
         ),
         SiegeLifted {
             site,
@@ -1465,8 +1465,8 @@ pub fn line(w: &World, e: &Event) -> String {
             let took = match (taken, captives) {
                 (0, 0) => "with nothing".to_string(),
                 (t, 0) => format!("with {t} portions of food"),
-                (0, c) => format!("with {c} of the valley's people"),
-                (t, c) => format!("with {t} portions of food and {c} of the valley's people"),
+                (0, c) => format!("with {c} of the colony's people"),
+                (t, c) => format!("with {t} portions of food and {c} of the colony's people"),
             };
             // Why it was lifted (#402); older records have none.
             let why = match why.as_str() {
@@ -1486,8 +1486,8 @@ pub fn line(w: &World, e: &Event) -> String {
             let took = match (taken, captives) {
                 (0, 0) => "with nothing".to_string(),
                 (t, 0) => format!("with {t} portions of food"),
-                (0, c) => format!("with {c} of the valley's people"),
-                (t, c) => format!("with {t} portions of food and {c} of the valley's people"),
+                (0, c) => format!("with {c} of the colony's people"),
+                (t, c) => format!("with {t} portions of food and {c} of the colony's people"),
             };
             format!(
                 "After {days} days the host from {site} had what it came for and went home {took}."
@@ -1505,13 +1505,13 @@ pub fn line(w: &World, e: &Event) -> String {
             named_as(w, e.tick, *agent)
         ),
         TookIn { agent } => format!(
-            "Nobody came for {}, and the valley took them in as one of its own.",
+            "Nobody came for {}, and the colony took them in as one of its own.",
             named_as(w, e.tick, *agent)
         ),
         Returned { agent, site } => {
             format!("{} came home, let go by {site}.", named_as(w, e.tick, *agent))
         }
-        Followed { agent, domain } => format!("The valley looked to {} {domain}.", named_as(w, e.tick, *agent)),
+        Followed { agent, domain } => format!("The colony looked to {} {domain}.", named_as(w, e.tick, *agent)),
         Accused { by, of, what } => {
             format!("{} accused {} of {what}.", named_as(w, e.tick, *by), named_as(w, e.tick, *of))
         }
@@ -1538,7 +1538,7 @@ pub fn line(w: &World, e: &Event) -> String {
             }
         }
         Exiled { agent, to } => format!(
-            "{} was sent out of the valley, and went to {to}.",
+            "{} was sent out of the colony, and went to {to}.",
             named_as(w, e.tick, *agent)
         ),
         Feud { a, b } => format!(
@@ -1608,7 +1608,7 @@ pub fn line(w: &World, e: &Event) -> String {
             members,
             from,
         } => format!(
-            "It came out that {members} had met by night against {} and bargained with {from}; the valley turned from them.",
+            "It came out that {members} had met by night against {} and bargained with {from}; the colony turned from them.",
             named_as(w, e.tick, *against)
         ),
         LetIn {

@@ -208,7 +208,7 @@ fn watch(w: &mut World, tick: u64) {
         };
         let (why, by) = match place {
             None => match r.held_by {
-                Some(by) => ("it was carried out of the valley", Some(by)),
+                Some(by) => ("it was carried out of the colony", Some(by)),
                 None => ("it is gone", None),
             },
             Some(ItemPlace::Ground(p)) => {

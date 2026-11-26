@@ -23,11 +23,11 @@ commit named above; I did not run anything new.
 - **Ground families exist and blend**: `every_surface_family_blends` and
   `ground_families_follow_biome` (tests/biomes.rs) pin the family layer; families render as
   terrain sheets in the client.
-- **Weather is already simulated at valley scale**: `systems/weather.rs` steps a weather state
+- **Weather is already simulated at local-map scale**: `systems/weather.rs` steps a weather state
   (`growth_factor` and the rain that drives "drenched" and "rain_spoiled" events) once per
   tick. Snow exists on roofs (`r.snow`, cleared by the ClearRoof designation) and as a ground
   material, but it does not lie on open ground.
-- **Movement is dense**: hundreds of people and animals path across the valley every tick.
+- **Movement is dense**: hundreds of people and animals path across the local map every tick.
   Any per-tile counter they all touch is a hot path; anything derived from movement must be
   computed from already-recorded data, not gathered fresh each tick.
 - **Constraints**: determinism (ordered containers, `rng::stream` only); saves that load
@@ -42,7 +42,7 @@ commit named above; I did not run anything new.
    and mark the busiest tiles worn, with wear only ever deepening on family tiles — no
    per-tick cost, deterministic, but a path is a lagging record, not a live reaction; (c)
    worldgen-only: pre-worn routes from the founding site to water and woodland. Recommend
-   **(b) with (c) at generation**, and only for the valley's few most-used corridors: a worn
+   **(b) with (c) at generation**, and only for the colony's few most-used corridors: a worn
    path should be a readable landmark, not noise. #84 stays open until it ships.
 2. **Wetness and mud after rain.** Options: (a) a saved per-tile wetness value — most
    flexible, most expensive; (b) a weather-driven material swap: while the weather is rain

@@ -366,7 +366,7 @@ func _ready() -> void:
 		else:
 			print("load failed (%s), starting fresh" % err)
 			_fresh_world(seed_v)
-			_note("autosave could not be read (%s); started a fresh valley" % err)
+			_note("autosave could not be read (%s); started a fresh landing site" % err)
 	else:
 		# A fresh, hands-on start asks first: who begins, and who paces them, for whatever seed
 		# was asked for (issue 36: any --seed used to skip the screen, so only seed 1 had one).
@@ -387,10 +387,10 @@ func _ready() -> void:
 			if FileAccess.file_exists(persist.ring_base() + ".%d.hfsave/manifest.json" % i):
 				had_saves = true
 		if had_saves and not fresh_arg and not explicit_seed and stage == "":
-			_note("No autosave could be read; started a new valley. The old files are still in the saves folder.", 20.0)
+			_note("No autosave could be read; started a new landing site. The old files are still in the saves folder.", 20.0)
 			print("autosaves present but none valid; started fresh")
 		elif not headless and stage == "":
-			_note("A new valley. Watch, or press H for history and O for settings.", 20.0)
+			_note("A new landing site. Watch, or press H for history and O for settings.", 20.0)
 	if hungry_arg:
 		print("HUNGRY %s" % sim.starve_neighbour())
 	# A shot of someone inspected traces them from the start, so the Why? lens has cycles (#567).
@@ -882,7 +882,7 @@ func _build_ui() -> void:
 	fav_list_box.add_theme_constant_override("separation", 6)
 	fav_scroll.add_child(fav_list_box)
 	fav_empty_label = Label.new()
-	fav_empty_label.text = "No favourites yet. Click anyone in the valley and press '☆ Favourite' on their panel to keep track of them here."
+	fav_empty_label.text = "No favourites yet. Click anyone at home and press '☆ Favourite' on their panel to keep track of them here."
 	fav_empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_style_text(fav_empty_label, 13)
 	fav_list_box.add_child(fav_empty_label)
@@ -917,7 +917,7 @@ func _build_ui() -> void:
 	people_list_box.add_theme_constant_override("separation", 6)
 	ppl_scroll.add_child(people_list_box)
 	people_empty_label = Label.new()
-	people_empty_label.text = "Nobody lives in the valley."
+	people_empty_label.text = "Nobody lives here."
 	_style_text(people_empty_label, 13)
 	people_list_box.add_child(people_empty_label)
 	layer.add_child(people_panel)
@@ -1222,11 +1222,11 @@ func _build_bottom_bar(layer: CanvasLayer) -> void:
 	lp_btns.alignment = BoxContainer.ALIGNMENT_END
 	lp_btns.add_theme_constant_override("separation", 10)
 	lp_vbox.add_child(lp_btns)
-	lp_btns.add_child(_make_btn("Keep playing [Esc]", "Keep the valley as it is", func():
+	lp_btns.add_child(_make_btn("Keep playing [Esc]", "Keep the world as it is", func():
 		load_popup.visible = false
 		_fx("ui_click")
 	))
-	lp_btns.add_child(_make_btn("Load", "Load the saved valley", _do_load_manual))
+	lp_btns.add_child(_make_btn("Load", "Load the saved world", _do_load_manual))
 	layer.add_child(load_popup)
 
 	# Bookmarks popup for F1–F8 jump & set with the mouse (#413 A1).
@@ -1926,7 +1926,7 @@ func _on_legends_year(v: float) -> void:
 	var size: int = sim.legends_map_size()
 	if size <= 0:
 		legends_map.texture = null
-		legends_year_label.text = "This world has no map beyond the valley."
+		legends_year_label.text = "This world has no map beyond the landing site."
 		return
 	var bytes: PackedByteArray = sim.legends_map(int(v))
 	var img := Image.create_from_data(size, size, false, Image.FORMAT_RGB8, bytes)
@@ -1939,7 +1939,7 @@ func _on_legends_year(v: float) -> void:
 	var when := "the year before the portal" if back == 1 else "%d years before the portal" % back
 	if back <= 1 and sim.realm_year() > 0:
 		when = "now"
-	legends_year_label.text = "The world %s (the valley in white, ruins dark%s)" % [when, ", ringed: where those away are" if away.size() > 0 else ""]
+	legends_year_label.text = "The world %s (the landing site in white, ruins dark%s)" % [when, ", ringed: where those away are" if away.size() > 0 else ""]
 
 ## A link in the History text: "why:ID" opens that event's chain of causes.
 func _on_history_link(meta) -> void:
@@ -1968,7 +1968,7 @@ func _show_history() -> void:
 		for c in d["customs"]:
 			s += c + "\n"
 	if d["valley"].size() > 0:
-		s += "\n[b]The valley before the portal[/b]\n"
+		s += "\n[b]%s before the portal[/b]\n" % sim.world_name()
 		for e in d["valley"]:
 			s += "[b]%s[/b]  %s\n" % [e[0], e[1]]
 	if d["world"].size() > 0:
@@ -2250,7 +2250,7 @@ func _process(d: float) -> void:
 		var end: String = sim.ending()
 		if end != "":
 			ending_shown = true
-			summary_box.text = "[b]The valley's story has ended.[/b]\n\n%s\n\nThe valley goes on without them. [Esc] to close." % end
+			summary_box.text = "[b]The colony's story has ended.[/b]\n\n%s\n\nLife goes on without them. [Esc] to close." % end
 			panels.open(&"summary")
 	refresh_accum += d
 	if refresh_accum > 0.05:

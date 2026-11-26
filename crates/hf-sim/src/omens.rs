@@ -71,7 +71,7 @@ fn foretell(w: &mut World) -> Vec<Sign> {
             w.faith.foretold.remove(0);
         }
         out.push((
-            "crows coming in over the valley's rim".to_string(),
+            "crows coming in over the horizon".to_string(),
             false,
             None,
             Some(seer),

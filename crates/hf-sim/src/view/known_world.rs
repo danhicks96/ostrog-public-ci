@@ -40,12 +40,13 @@ fn how_many(n: u32) -> &'static str {
 pub fn page(w: &World) -> String {
     let ow = &w.overworld;
     let mut s = String::from(
-        "[b]What the valley knows[/b]\nNot the world as it is: what the people of the valley \
-         have seen, heard and been told.\n\n[b]Places beyond the valley[/b]\n",
+        "[b]What the colony knows[/b]\nNot the world as it is: what the people here \
+         have seen, heard and been told.\n\n[b]Places beyond the colony[/b]\n",
     );
     let known: Vec<_> = ow.sites.iter().filter(|x| !x.known_by.is_empty()).collect();
     if known.is_empty() {
-        s += "None. Nobody here has been past the valley's edge or met anyone who has.\n";
+        s +=
+            "None. Nobody here has been past the edge of the landing site or met anyone who has.\n";
     }
     for site in &known {
         let who: Vec<String> = site

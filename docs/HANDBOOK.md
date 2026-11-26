@@ -45,12 +45,12 @@ words of VISION.md: "The viewer is a witness and optional caretaker. The inhabit
 communities and expeditions create the activity through their own needs, skills, knowledge and
 relationships."
 
-Ten people come through a portal into a valley they have never seen. Three arrive together; the
-other seven are scattered somewhere in the valley, alive or dead, until someone goes and looks.
+Ten people come through a portal into unfamiliar country. Three arrive together at the egress point; the
+other seven are scattered somewhere in the landing site, alive or dead, until someone goes and looks.
 From then on nobody gives them orders. They eat what they know of, build what they need, learn by
 watching each other, fall out, pair, have children, grow old and die. Strangers come from the
-hungry places beyond the valley. A deity, chosen at the start, leans on chance. The world beyond
-the valley has centuries of its own recorded history and goes on after they arrive.
+hungry places beyond the landing site. A deity, chosen at the start, leans on chance. The world beyond
+the landing site has centuries of its own recorded history and goes on after they arrive.
 
 The player watches. The tools for watching are the camera (which a "director" can steer to where
 something is happening), the event feed, the inspect panel for any person, the History panel, the
@@ -72,13 +72,13 @@ there should be at least one story worth telling, without forcing it.
 This is the kind of chain the simulation is built to produce, each step from systems that exist on
 master today:
 
-1. A hungry village beyond the valley (a real settlement of the world's history, with a people,
-   a language and stores) runs short of food. It sends a band of real people towards the valley.
-2. One of the valley's people sees them near home. The feed says strangers were sighted. The
+1. A hungry village beyond the landing site (a real settlement of the world's history, with a people,
+   a language and stores) runs short of food. It sends a band of real people towards the landing site.
+2. One of the colony's people sees them near home. The feed says strangers were sighted. The
    community now counts as threatened.
 3. The settlement planner, which handles logistics only, asks the smith for spears because a threat
    is recent and there are iron bars and planks.
-4. That night two strangers raid the store. Three of the valley's people hold, from their own pasts,
+4. That night two strangers raid the store. Three of the colony's people hold, from their own pasts,
    that force answers force. They take up the spears themselves; nobody hands them out. The feed
    says "Nalthi took up the iron spear against the strangers."
 5. Nalthi goes after a raider and they fight. The spear makes her blows land more often and cut
@@ -88,7 +88,7 @@ master today:
 7. Every step is a row in the chronicle. The History panel can show it, and hovering the spear tells
    who made it, who carried it and what it did.
 
-None of those steps is scripted. If the valley's people had held against violence, the same band
+None of those steps is scripted. If the colony's people had held against violence, the same band
 would have been met with an envoy or welcomed, and the store would have been shared or raided.
 
 ### Where it comes from
@@ -233,13 +233,13 @@ Sections 5 and 12 go through each in detail.
 | Peoples and cultures | civilisations with ethics, values, languages | factions with ideologies (Ideology DLC) | peoples with languages and convictions (the same model individuals hold); fewer kinds of value than DF; no religions per people yet (M5) |
 | History depth | thousands of figures, deeds, artifacts, wars, sieges, written works | almost none | tens of thousands of figures, realms, successions, wars, takings; no artifacts, no deeds beyond leading and dying in battle, no written works |
 | Legends browsing | Legends mode, exported XML, third-party viewers | none | in-game browser with linked pages and a map through time; no search, no family trees drawn, map not clickable |
-| The world after embark | sites change, armies march, caravans, migrants, sieges | raids, quests, caravans | world steps yearly, neighbours follow, news by caravan; no armies or migrants from the world's wars reach the valley yet (M5) |
-| Valley detail | z-levels, fluids, materials, industry | single map, rich colonist life | z-levels, caverns, organic lives, beliefs, construction; industry being built (M4), fluids simple (M6) |
+| The world after embark | sites change, armies march, caravans, migrants, sieges | raids, quests, caravans | world steps yearly, neighbours follow, news by caravan; no armies or migrants from the world's wars reach the landing site yet (M5) |
+| Landing site detail | z-levels, fluids, materials, industry | single map, rich colonist life | z-levels, caverns, organic lives, beliefs, construction; industry being built (M4), fluids simple (M6) |
 | Art | ASCII or tilesets | clear, readable top-down sprites | consistent pixel art, 48 px people with faces, 32 px derived items; below RimWorld in breadth |
 | Observation | fortress run by orders | colony run by orders | pure observation by design; the director, Legends and History are the player's tools |
 
 Ostrog already leads both games on one thing: every visible thing traces to a recorded cause,
-people have lived pasts and beliefs with sources, and the valley inherits its world's history. It
+people have lived pasts and beliefs with sources, and the landing site inherits its world's history. It
 trails most in industry and materials (M4, being closed now), bodies and war on the ground (M5),
 and breadth of art and content (M2, continuing).
 
@@ -273,7 +273,7 @@ not yet mention the M3 and M4 work.
 From DEFINITION_OF_DONE.md and docs/TIME.md. They are revised only in writing in STATUS.md with the
 measurement that justifies the change.
 
-- Map: local 256x256 with 24 z-levels; overworld 64x64 sites. (The valley is 128x128 today.)
+- Map: local 256x256 with 24 z-levels; overworld 64x64 sites. (The landing site is 128x128 today.)
 - Population: 300 active people and 100 animals.
 - Tick at 300 people: mean at most 2 ms and p99 at most 10 ms at 10x; at most 16 ms at 3x; at most
   50 ms at 1x.
@@ -299,8 +299,8 @@ A hands-on start with no saves opens the new-game wizard (`godot/scripts/setup.g
 
 1. Who watches. Choose the deity: Aun (keeps balance), Hask (tests the strong) or Mirre (is
    amused). Internally these are the old Engine modes Steady, Relentless and Whimsical.
-2. The valley. A live map of the world (192x192 regions) and of the valley the chosen region makes,
-   the depth of the valley's own past (0, 50, 150 or 300 years; default 150) and the age of the
+2. Landing site. A live map of the world (192x192 regions) and of the landing site the chosen region makes,
+   the depth of the landing site's own past (0, 50, 150 or 300 years; default 150) and the age of the
    wider world (200, 500 or 1,000 years; default 500).
 3. Who came through. Ten survivor cards, each with a lived past; reroll any one card; choose three
    to begin together.
@@ -312,12 +312,12 @@ A hands-on start with no saves opens the new-game wizard (`godot/scripts/setup.g
 
 What happens on Begin is `World::from_setup` (`crates/hf-sim/src/setup.rs`):
 1. Generate the world's region map from the seed.
-2. Resolve the chosen region and derive the valley's character from it (wetness from rain, warmth
+2. Resolve the chosen region and derive the landing site's character from it (wetness from rain, warmth
    from temperature, stoniness from height and rock).
 3. Set the arrival epoch far enough after tick 0 to hold both histories.
 4. Run the wider world's history (peoples, settlements, figures, realms, wars) and record it.
 5. Build the overworld neighbours from the nearest real settlements.
-6. Run the valley's own past (old hamlets, ruins, graves, roads, old tools).
+6. Run the landing site's own past (old hamlets, ruins, graves, roads, old tools).
 7. Set the clock to the epoch plus seven hours, a spring morning.
 8. Record the setup as an event, begin the arrival, place the White Hart and the portal stone, seed
    the chosen convictions, and compute the people's identity.
@@ -327,7 +327,7 @@ An opening world with 500 years of history builds in about 250 ms.
 ### The arrival
 
 Ten survivors came through. Three begin at the landing site; the other seven are real people placed
-somewhere in the valley, foraging and sheltering against real weather (`opening.rs`, D15). A rumour
+somewhere in the landing site, foraging and sheltering against real weather (`opening.rs`, D15). A rumour
 of one of them can reach the community (in someone's head, with a teller), and someone may go and
 search: they find a person, a grave, or an empty camp with signs. All seven are currently found
 within 15 to 24 days on the tested seeds, which the M3 review flags as too quick (an M6 question).
@@ -384,9 +384,9 @@ Section 5 explains each.
 
 ### Trouble from outside
 
-Hungry places beyond the valley send bands of real people (`threat.rs`, C8). A band approaches,
+Hungry places beyond the landing site send bands of real people (`threat.rs`, C8). A band approaches,
 camps, raids the store at night, and leaves for a reason the feed can name: it has enough, it has
-lost too many, or it waited too long. The valley's people respond by what they believe: confront,
+lost too many, or it waited too long. The landing site's people respond by what they believe: confront,
 send an envoy, or welcome. Wolves go for someone alone in a hungry winter; a surprised bear attacks;
 a beast that hurts someone gets a name, and people may go after it.
 
@@ -395,7 +395,7 @@ a beast that hurts someone gets a name, and people may go after it.
 The chosen deity (`deity.rs`, C9) never fires an event. It notices things in the real world state
 (plenty, hardship, a killing, a long quiet, a hungry or a fat neighbouring settlement) and answers
 by leaning the world's own mechanisms for a while (harvest, cold, dry storms, sickness, herds,
-wolf hunger), in the valley or at one site. "A raid still comes from people who are hungry; the
+wolf hunger), in the landing site or at one site. "A raid still comes from people who are hungry; the
 deity only made them hungry." Every answer is recorded as a trace with its trigger, hidden from the
 player's view, so the History can explain it. `arcs.rs` tells overlapping troubles as one story.
 
@@ -418,7 +418,7 @@ hunts together, the White Hart (one in most valleys), and feuds against beasts t
 The world is a 192x192 region map with rivers, lakes, rain shadows and 13 biomes, 4 to 7 peoples
 with their own languages and convictions, hundreds of settlements, tens of thousands of named
 figures, realms with rulers and successions, and wars with battles and takings (C24 to C29). After
-the arrival it goes on: once a game year the realm steps forward, and the valley hears of it only
+the arrival it goes on: once a game year the realm steps forward, and the colony hears of it only
 when a caravan comes back with news.
 
 Press L for the Legends browser: linked pages for the world, each people, settlement, figure, realm
@@ -507,7 +507,7 @@ The C-series checkpoints (from PLAN-SHIP.md, then PLAN-FINISH.md):
 | C9 | pacing: deities and arcs |
 | C10 | construction as a visible process |
 | C11 | item legends: tools with makers, wear, deeds, names, heirlooms |
-| C12 | the valley's past (150 years of hamlets before the portal) |
+| C12 | the landing site's past (150 years of hamlets before the portal) |
 | C13 | study: old records teach crafts |
 | C14 | lore: tales that drift as they pass |
 | C15 | creatures |
@@ -521,7 +521,7 @@ The C-series checkpoints (from PLAN-SHIP.md, then PLAN-FINISH.md):
 | C24 | the world's region map (PR #113) |
 | C25 | peoples, languages, settlements (PR #114) |
 | C26 | figures, realms and chronicle references (PR #115) |
-| C27 | the valley inside its world (PR #116) |
+| C27 | the landing site inside its world (PR #116) |
 | C28 | the Legends browser (PR #117) |
 | C29 | wars and the world after the arrival (PR #118) |
 | C30 | M3 review: opening soaks, wizard world map and age, gap table (PR #119) |
@@ -600,10 +600,10 @@ materials never merge.
 
 Geology: under limestone the middle stratum is marble in patches (its own noise). Tin veins lie in
 the granite where the copper is, silver in the slate, and at most one short gold vein in the deep
-basalt, each from a random stream of its own so every existing valley keeps the rest of its rock. A
+basalt, each from a random stream of its own so every existing landing site keeps the rest of its rock. A
 new `ItemKind::Ore` carries tin, silver and gold ore.
 
-Tiles per valley at the default size, seeds 1 to 6:
+Tiles per landing site at the default size, seeds 1 to 6:
 
 | Seed | Marble | Tin | Silver | Gold | Iron | Copper |
 |---|---|---|---|---|---|---|
@@ -653,7 +653,7 @@ on hover ("A carpenter bench of oak"). Tests: `tests/arms.rs` (8), including the
 end-to-end test that spears are taken up and used in real raids on seeds 3, 7 and 11.
 
 Measured: in 300 days arms are rare. Two of four valleys forged spears (3 and 1), the spears were
-put away before the next raid, and none struck a blow in those runs. No valley reached tin, silver
+put away before the next raid, and none struck a blow in those runs. No landing site reached tin, silver
 or gold, because nobody went looking for those veins. Both gaps go to the M4 review; C34 closes the
 prospecting one.
 
@@ -726,7 +726,7 @@ Final soaks (300 days, opening, seeds 1 to 4): all pass.
 | 4 | 70 | 82 | yes | 24 | 0 | -0.02 |
 
 With the store measured honestly, drink is rare. Seed 2 starves in every build (8 here, 10 in the
-M3 review), so that is the valley, not a regression.
+M3 review), so that is the landing site, not a regression.
 Tests: `tests/crafts.rs` (10).
 
 #### C35: masterworks (branch `c35-masterworks`)
@@ -753,7 +753,7 @@ Tests: `tests/crafts.rs` (10).
     - the craft a master taught them before the portal;
     - a child, sibling or parent lost before it (read from their past through
       `opening::formatives`);
-    - kin who died in the valley in the last two years (from `culture_log`).
+    - kin who died in the landing site in the last two years (from `culture_log`).
   - The work: they claim a bench and the finest material in the store that they know of (marble before granite and
     the other stones, then oak, birch, pine and fungus wood; for a smith, gold, silver or bronze
     bars, then iron).
@@ -779,7 +779,7 @@ Tests: `tests/crafts.rs` (10).
 
 - `crates/hf-sim/src/trade.rs`. Each overworld site (`expedition::Site`) now keeps `stores`
   (kind to amount), the material each is held in (`store_material`) and its last twelve
-  `trades` with the valley. All three are saved (`serde(default)`).
+  `trades` with the colony. All three are saved (`serde(default)`).
 - `produces`: what a site makes per person a day, by its people's way of living
   (`realm::peoples::Living`) and its kind:
   - farmers: grain, berries, cloth, ale;
@@ -795,19 +795,19 @@ Tests: `tests/crafts.rs` (10).
   otherwise by kind (a log 1, cloth 2, a spear 18). `need(site, kind)` is what a site wants
   to hold: people times a per-household amount, halved for what it makes, doubled for a mine's
   food. Scarcity is `(need + 1) / (stock + 1)`, clamped to 0.3 to 3. `price_at` is worth times
-  scarcity at the site. `price_home` is the same for the valley, from what lies within 45 tiles
+  scarcity at the site. `price_home` is the same for the landing site, from what lies within 45 tiles
   of home.
 - `quote` and `barter`:
   - A site takes a kind only up to half again its need.
   - It takes only as many as it can pay for from its surplus (what it holds beyond half its
     need).
-  - It pays first in the goods with the best ratio of the valley's price to its own cost, up to
+  - It pays first in the goods with the best ratio of the colony's price to its own cost, up to
     ten per member of the party.
   - `barter` applies the quote to the site's stores and records the trade. Every unit that
     leaves one ledger enters the other.
-- `best_errand`: the valley carries its surplus (anything above `16 + 2 x people` within 18
+- `best_errand`: the colony carries its surplus (anything above `16 + 2 x people` within 18
   tiles of home, at most 12) only to a peopled site a party of theirs has visited. The choice
-  is the quote with the largest gain to the valley (what comes back, at the valley's prices,
+  is the quote with the largest gain to the landing site (what comes back, at the colony's prices,
   less what goes out), discounted by the length of the road, less 20 for each of the
   community's people that road took in the last 120 days (named lost in a caravan's log, or a
   whole caravan never heard from). With no gain, nobody goes, and the community may send scouts
@@ -818,18 +818,18 @@ Tests: `tests/crafts.rs` (10).
   - a party with nothing to carry does not form;
   - a party that arrives with nothing (robbed, or eaten on the road) says so;
   - on short rations a party eats its meals before its goods.
-- Legends: the world map of the present year draws a pale gold line from the valley to every
+- Legends: the world map of the present year draws a pale gold line from the landing site to every
   site it has traded with. A known site's page lists "They hold for trade: ..." and the last three trades with
   their dates.
 - Tests: `tests/trade.rs` (7), including `prices_follow_scarcity` and
   `barter_moves_goods_and_makes_none` (the ledger gate: stores before plus goods taken, less
-  goods paid, equals stores after; the soak's ledger-drift check covers the valley side).
+  goods paid, equals stores after; the soak's ledger-drift check covers the landing site side).
 - Faults the soaks found, fixed on the branch (review `docs/reviews/trade-2026-10-18`):
-  - a farming village bought the valley's grain every week (sites now buy only what they lack);
+  - a farming village bought the landing site's grain every week (sites now buy only what they lack);
   - a third of trading parties walked out with nothing, because the errand counted grain 40
     tiles out and parties load from 18;
   - parties ate the grain they were carrying before their rations;
-  - one valley lost eight people on the road to a mine and kept trading there.
+  - one colony lost eight people on the road to a mine and kept trading there.
 
 ### 5.3b Milestone MP on stacked branches: C39 to C44
 
@@ -879,7 +879,7 @@ design is `docs/design-peoples.md`.
   layers). No pixel test holds the biped's old columns.
 - Soaks (build 11ed957): all pass; people and chronicle rows identical to C39 on every seed.
 
-#### C41: species in the valley (P3, branch `c41-species`)
+#### C41: species in the landing site (P3, branch `c41-species`)
 
 - `crates/hf-sim/src/species.rs`: six species files in `data/peoples/species` (human, hollin,
   grisk, screeling, skarri, tharn), compiled in, append-only; the index is `SpeciesId` (0 human).
@@ -1054,7 +1054,7 @@ Top level of `crates/hf-sim/src`:
 | `opening.rs` | the arrival, the survivor pool, rumours, searches, reunions |
 | `setup.rs` | `WorldSetup` and `World::from_setup` |
 | `past.rs` | lived pasts and the belief topics |
-| `deep.rs`, `lore.rs` | the valley's own past and the tales told of it |
+| `deep.rs`, `lore.rs` | the landing site's own past and the tales told of it |
 | `legend.rs` | things with a life: makers, owners, wear, deeds, names, heirlooms |
 | `culture.rs` | customs (data) |
 | `expedition.rs` | the overworld, sites and caravans |
@@ -1136,7 +1136,7 @@ Adding a system means adding one line here, in the position the design calls for
 - Terrain state: `dug`, `fires`, `flooded`, `scorched`, `roofs`, rain and dry hours, and on the C35
   branch `engravings`.
 - The wider world: `overworld`, `realm`, `realm_map` (never saved; regenerated from the seed),
-  `history` (the valley's past), `creatures`, `thin`, `arc`, deity answers and watch.
+  `history` (the landing site's past), `creatures`, `thin`, `arc`, deity answers and watch.
 - Bookkeeping: `decide_cursor`, `culture_log` (last 200 major events), `ledger`, `rotted_today`,
   `events`.
 - Not saved, rebuilt: `last_events`, `weather`, `nav`, `astar`, `lights`.
@@ -1176,7 +1176,7 @@ Tiles: `Tile { material, shape, flags }`, packed in 32 bits as material | shape 
 - Shapes: open, floor, wall, ramp up, ramp top, stairs up, down and both, ladder.
 - Flags: water, deep, sky, door, designated, snow, fire.
 - Chunks are 32x32 and carry a version for redraws.
-- The default valley is 128x128 with z from -16 to 8; tests use 64x64 with z from -8 to 6.
+- The default landing site is 128x128 with z from -16 to 8; tests use 64x64 with z from -8 to 6.
 
 ### 6.5 Determinism
 
@@ -1555,8 +1555,8 @@ run once, or the GDScript check fails with "Could not find type SimHost".
 | `profile --seed N --days D --agents A [--spike-ms 5] [--provision]` | per-system tick timings |
 | `realm --seed N [--years Y] [--ppm file]` | the world map and its history |
 | `legends --seed N --page site:3` | a Legends page as text |
-| `describe --seed N [--wetness --warmth --stoniness]` | what a valley is like |
-| `past --seed N --years Y` | the valley's past |
+| `describe --seed N [--wetness --warmth --stoniness]` | what a landing site is like |
+| `past --seed N --years Y` | the landing site's past |
 | `resume PATH --ticks T`, `verify PATH`, `fixture PATH` | saves |
 | `digest`, `stage`, `bench-save`, `weather`, `director`, `debug-plan`, `tile X Y` | diagnostics |
 
@@ -1569,7 +1569,7 @@ These are passed after `--`, for example `tools/godot --path godot -- --seed=3 -
 - `--shot=OUT.png`, `--footage=DIR --every=N --frames=N`, `--wizard-shot=OUT`,
   `--wizard-choices=...`: comma-separated `key=value` pairs the wizard is set to before each of
   its pages is shot and Begin pressed: `deity=<Aun|Hask|Mirre>` (or the pacing names steady,
-  relentless, whimsical), `years=<N>` (the valley's past), `held=<topic>:<-1|0|1>`,
+  relentless, whimsical), `years=<N>` (the landing site's past), `held=<topic>:<-1|0|1>`,
   `exclude=<kind>` (one pair per kind: `exclude=tharn,exclude=skarri`) and
   `rarity=<kind>:<common|uncommon|rare|legendary>`, kinds by id or name in any case (`tharn`,
   `Tharn`). If the world cannot be made as chosen, Begin is refused: the
@@ -1667,7 +1667,7 @@ File these:
 ostrog soak --opening --seed N --days 600 --csv out.csv --ring DIR/sN --save-days 5
 ```
 
-This runs the real game (the arrival into a valley of its world) for 600 game days, about 30 to 120
+This runs the real game (the arrival into a landing site of its world) for 600 game days, about 30 to 120
 real minutes. Each day writes a CSV row: tick times, humans, animals, stalled people, plan failures,
 leases expired, ledger drift, memories, chronicle rows, items, structures, caravans, births, deaths,
 RSS and save time.
@@ -1701,7 +1701,7 @@ The sets are in `docs/history/TEST-SETS.md`:
 | H | pacing and hard times |
 | I | building |
 | J | tools with a life |
-| K | the valley's past |
+| K | the landing site's past |
 | L | study and old crafts |
 | M | tales |
 | N | creatures |
@@ -1798,7 +1798,7 @@ to be merged in order. In order:
   in review;
 - P1 body plans (one part list for art and wounds; size effects): C39, built;
 - P2 the art rig (fight frames, the digitigrade plan): C40, built;
-- P3 species in the valley (library, `SpeciesId`, `Species::Person`, six surface anchors): C41,
+- P3 species in the landing site (library, `SpeciesId`, `Species::Person`, six surface anchors): C41,
   built;
 - P4 senses and cycles (darkness, dark sight, hearing, smell, nocturnal, heat, diets): C42, built;
 - P5 the world draw and the wizard's peoples page: C43, built;
@@ -1837,8 +1837,8 @@ to be merged in order. In order:
   causes.
 - Desire paths (#84), visible wear, settling the caverns.
 - Making the missing seven harder to find.
-- Promoting world figures into the valley when they arrive (D10, keeping identity), and migrants
-  and armies from the world's wars reaching the valley.
+- Promoting world figures into the landing site when they arrive (D10, keeping identity), and migrants
+  and armies from the world's wars reaching the landing site.
 
 ### 12.4 M7: presentation and audio (about four checkpoints plus continuous art)
 
@@ -1890,13 +1890,13 @@ the viewer.
 Behaviour:
 - In 300-day runs arms are rare and put away before the next raid (C33).
 - Nobody reached tin, silver or gold before C34's prospecting.
-- Seed 2 is a hungry valley in every build (8 to 10 starvation deaths in 300 to 600 days).
+- Seed 2 is a hungry landing site in every build (8 to 10 starvation deaths in 300 to 600 days).
 - Drink is rare now that brewing waits for ten days' eating; whether that bar is right is for the
   M4 review.
 - The missing seven are found too quickly (15 to 24 days).
 - About 400 wars in 1,000 years on seed 1, so peace rarely lasts.
 - Settlement populations in the wider world are aggregates, and figures are not yet promoted into
-  the valley.
+  the landing site.
 - People not drawn with armour; raiders unarmed.
 
 Environment:
@@ -1972,7 +1972,7 @@ Records that are stale:
 | told | what the player may know (`view/known.rs`) |
 | culture log | the last 200 major events kept in the world (used by customs, carvings, moods) |
 | realm | the wider world: peoples, settlements, figures, polities, wars |
-| overworld | the valley's neighbours and sites, reached by caravans |
+| overworld | the landing site's neighbours and sites, reached by caravans |
 | band | real people sent by a hungry place; they camp, raid and leave |
 | the thin place | the portal stone wearing thin after the arrival |
 | fey mood | an artisan taken by a work for a recorded cause (C35) |

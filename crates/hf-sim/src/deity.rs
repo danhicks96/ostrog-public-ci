@@ -394,7 +394,7 @@ fn answer(
     let tick = w.meta.tick;
     for (lever, scope, strength, days) in acts {
         let place = match scope {
-            Scope::Valley => "the valley".to_string(),
+            Scope::Valley => "the colony".to_string(),
             Scope::Site(id) => w
                 .overworld
                 .sites

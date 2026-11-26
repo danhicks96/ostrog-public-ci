@@ -90,7 +90,7 @@ as DF does with world history and embark and RimWorld does with scenario, landin
 
 How long the old world is simulated before the portal opens sets how much history the pasts in
 section 1 are drawn from: a decade gives one village and a few hard winters, centuries give
-feuds, migrations and family lines the survivors know of. A second depth simulates the valley
+feuds, migrations and family lines the survivors know of. A second depth simulates the colony
 beyond the portal before arrival, which is what later leaves ruins and neighbours to find.
 
 Ideology is not a rule set. Each shared belief the player picks is seeded into every survivor as
@@ -118,7 +118,7 @@ Word of them comes from locals who met them.
 ## 8. The wizard and the deity
 
 The player tunes the starting point, never the outcome. The wizard sets how long the world is
-simulated before arrival, the valley, the landing spot, who comes through, what they carry, and
+simulated before arrival, the landing site, who comes through, what they carry, and
 the beliefs they share. Shared beliefs are seeded as section 2 beliefs with their source in the
 old village, so they weight choices and can strengthen, split or die out; a group sure that drink
 is ruin can still produce a drinker.

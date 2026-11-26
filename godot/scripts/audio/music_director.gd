@@ -15,7 +15,7 @@ extends Node
 ## stem for MOURN seconds, drone and pad carrying on; a birth, a band welcomed or a caravan
 ## home ends a rest within WELCOME_WAIT seconds, so the score comes back for it. It also hears
 ## what the people are doing (#290 item 3, Rules.music_activity): a fight lifts the tension
-## layer to at least FIGHT_FLOOR (a fire in view to at least FIRE_FLOOR, the valley at work
+## layer to at least FIGHT_FLOOR (a fire in view to at least FIRE_FLOOR, the colony at work
 ## to at least WORK_FLOOR), three or more
 ## gathered talking or eating end a rest as a
 ## welcome does, and while every person sleeps no new phrase begins (the valley is quiet).
@@ -270,7 +270,7 @@ func _activity() -> void:
 	burning = fire
 	var bustle: bool = doing.get("bustle", false)
 	if bustle and not bustling:
-		_log("music: the valley at work, tension at least %.2f" % WORK_FLOOR)
+		_log("music: the colony at work, tension at least %.2f" % WORK_FLOOR)
 	bustling = bustle
 
 func _tension() -> void:

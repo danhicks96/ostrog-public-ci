@@ -1,8 +1,8 @@
 # The deep as a living threat and a resource (#455)
 
-Design note for issue #455: dangerous places joined to the valley by a way through, with their
+Design note for issue #455: dangerous places joined to the colony by a way through, with their
 own people, creatures and riches, which the colony can go into, profit from and pay for. In
-Ostrog the deep caverns under the valley already are such a place, and the breach a
+Ostrog the deep caverns under the landing site already are such a place, and the breach a
 community digs into one is its portal. This note says what the code already does, what is
 missing, the first slice built on branch `feat-455-portal-economy`, and what would break the
 rules.
@@ -22,7 +22,7 @@ rules.
 - Crossing both ways. At a breach, two of the deep's nearest people come up and walk to the
   community as strangers do (`FromBelow`); a beast of the deep that lairs near is stirred
   (`BeastStirred`) and later comes up as a crawler that hunts by night (`Rose`) unless the
-  way is walled first (`Barred`). The valley posts a wall at the breach. A society can bargain
+  way is walled first (`Barred`). The colony posts a wall at the breach. A society can bargain
   with the deep's people to take a hated person's child (`societies.rs`); a search party goes
   below after it, off the map like a caravan (`taken.rs`), and a child grown below may come up
   again.
@@ -36,7 +36,7 @@ rules.
 ## What is missing
 
 - The threat runs on a clock, not a cause. A stirred beast comes up exactly two days after the
-  breach unless the wall stands by then (`creatures.rising`, due tick). Nothing the valley does
+  breach unless the wall stands by then (`creatures.rising`, due tick). Nothing the colony does
   in those two days changes it, and once barred or risen nothing more comes. The issue asks
   for escalation that follows world state, with local warning signs.
 - No ongoing relationship with the deep's people after the first two come up.
@@ -44,13 +44,13 @@ rules.
   luxury.
 - No expedition into the cavern itself (the search party is the only going below).
 
-## The first slice: what stirs below comes up because of what the valley does near it
+## The first slice: what stirs below comes up because of what the colony does near it
 
 Built in `crates/hf-sim/src/stirring.rs`; replaces the two-day clock for new breaches.
 
 1. A breach that wakes a beast of the deep gives that cavern a stir, a count kept with the
    cavern's index and the beast's name.
-2. Each hour, the stir rises with the noise the valley makes there: each person of the valley
+2. Each hour, the stir rises with the noise the colony makes there: each person of the colony
    in the cavern or within six tiles of the breach on its level adds one, and each of them at
    work (mining, digging, building) adds two more. An hour with nobody there takes one off.
 3. When the stir first reaches a warning level, those within earshot hear it: "Something moves
@@ -59,7 +59,7 @@ Built in `crates/hf-sim/src/stirring.rs`; replaces the two-day clock for new bre
 4. When it reaches the rising level, the beast comes up through the way if the way is open,
    and finds it barred if walled, and goes back down, as a barred beast did before. Either is on
    record, after the warning that says where the noise was.
-5. The wall the valley posts at the breach is itself noisy work: a slow wall can bring up what
+5. The wall the colony posts at the breach is itself noisy work: a slow wall can bring up what
    it was meant to keep down, and the warning comes first.
 
 A save from before this slice keeps its old due-tick entries and they come up as they would
@@ -77,8 +77,8 @@ have.
 ## Later slices
 
 - The deep's people come and go through an open way by their own needs, as hungry places beyond
-  the valley send bands (`threat.rs`), with trade or raids following what they want and what
-  the valley has.
+  the colony send bands (`threat.rs`), with trade or raids following what they want and what
+  the colony has.
 - An expedition into the cavern: a party of real people with lamps, food and tools, out of sight
   below, coming back with gems, mushrooms or nothing, hurt or lost (the caravan model).
 - A heart and its crystals: a deep cavern whose wall-crystals grow back from a heart while the
@@ -89,7 +89,7 @@ have.
 
 ## What would break the rules
 
-- A timer, or a wave that comes whatever the valley does. The stir has only the valley's own
+- A timer, or a wave that comes whatever the colony does. The stir has only the colony's own
   presence and work as causes.
 - Global knowledge. Only those within earshot hear the warning; others know only if told.
 - Free riches. Anything taken from the deep is mined, carried and paid for in risk (this slice

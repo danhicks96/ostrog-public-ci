@@ -28,7 +28,7 @@ each later section can say exactly what changes.
 4. World selection and the wizard's peoples page
 5. Cultures with their own stories
 6. Reactions that differ by culture
-7. Relations between peoples, and other races in the valley
+7. Relations between peoples, and other races in the colony
 8. Conditions with recorded causes: curses and ghosts
 9. The depths
 10. Organic, not planner-driven
@@ -251,7 +251,7 @@ analogues of the elf, goblin and kobold roles, not copies.
 The Seamfolk tie the epic to the game's premise. They are the only people born of the thin
 place's influence:
 - A Seamfolk settlement's founding row names the thin place that drew it.
-- Seamfolk who come to the valley feel its portal stone wake. Each phenomenon gives them a
+- Seamfolk who come to the colony feel its portal stone wake. Each phenomenon gives them a
   thought with that phenomenon's event as its cause.
 - They are the only people whose stories of the portal are first-hand rather than drifted.
 
@@ -465,7 +465,7 @@ mirrors it above the comfort maximum: thirst runs faster, work slows, heat strok
   the human rate, and begins losing it at a temperature where humans are comfortable. Screelings
   settle in warm caves and huddle; the soak checks they do.
 
-Worked example, one individual. Ysse, a Murrow girl born in the valley's community:
+Worked example, one individual. Ysse, a Murrow girl born in the colony's community:
 - Mother: SIZE 40, HEAD 1. Father: SIZE 200, HEAD 0.
 - Ysse takes SIZE from her father (200), drifted to 208: height = 120 + (145 - 120) × 208/255 =
   140 cm, mass 52 kg.
@@ -560,7 +560,7 @@ Presence (in or out) decides whether the species exists in this world's history 
 
 Rarity, if present, decides how it enters:
 
-| Rarity | In the world's history | What the valley might see |
+| Rarity | In the world's history | What the colony might see |
 |---|---|---|
 | common | one or more homelands; founds and spreads | neighbours, trade partners, wars |
 | uncommon | one homeland, small capacity | occasional caravans and wanderers |
@@ -611,7 +611,7 @@ changes one rarity and expects a different world.
 
 ### 4.4 The wizard page
 
-A new page, "The peoples of the world", sits between "The valley" and "Who came through".
+A new page, "The peoples of the world", sits between "Landing site" and "Who came through".
 - Left: the library as a list of cards. Each card shows:
   - the species' silhouette at 2x;
   - its name and plan;
@@ -677,7 +677,7 @@ pub struct Story {
     pub foe: Option<Foe>,                // a people, polity, figure or "the cold"
     pub claim: Claim,                    // what it says happened; may have drifted
     pub version: u16,                    // how many retellings changed it
-    pub tellers: Vec<Teller>,            // figures (world) or agents (valley), last 6
+    pub tellers: Vec<Teller>,            // figures (world) or agents (local), last 6
 }
 ```
 
@@ -724,7 +724,7 @@ The Grisk of Karsk (Violence +0.4, Strangers +0.6) lost. They get a Defeat, foe 
 - The Grisk now hold a Grudge against the Hollin with source event the battle, and a personal
   grudge against Vrikka's line with source this story's version 2.
 
-If a Grisk wanderer reaches the valley in game year 3 and tells this at a hearth, the HearthTale
+If a Grisk wanderer reaches the colony in game year 3 and tells this at a hearth, the HearthTale
 row names the story, its version and its teller. The Legends page of Tessen Ford then shows:
 - "The Hollin say: Aelith fell so the Ashwood could keep its trees."
 - "The Grisk say: the ford was sold by Vrikka (a later telling; the record shows Vrikka fought
@@ -884,7 +884,7 @@ its culture's stories, including the Tessen Ford Betrayal (section 5.3).
 #### 6.4.3 A fey mood
 
 Rows: `Possessed{agent: 140 "Saelis", because: "remembering Aelith", cause: 702}`. Saelis is a
-Hollin in the valley. Event 702 is a `Lived` row of her past: she is of Aelith's line, recorded
+Hollin in the colony. Event 702 is a `Lived` row of her past: she is of Aelith's line, recorded
 in her past (`opening::formatives` gains `HeroAncestor{figure}`).
 - Her culture's art form is carving in living wood, and CutLivingTree is abhorrent to her. The
   material search (`moods::materials`) therefore excludes logs. She takes a standing tree in reach
@@ -901,7 +901,7 @@ in her past (`opening::formatives` gains `HeroAncestor{figure}`).
 Rows: an `Engrave` designation is finished by Kerrow (Grisk, culture Violence +0.4, art form:
 victories).
 - The chooser (`engrave::choose`) weighs events as now, then ×1.5 for kinds matching the culture's
-  art form. Kerrow carves `Fought{a: 33, b: 61}` (the valley's last fight) over an older birth.
+  art form. Kerrow carves `Fought{a: 33, b: 61}` (the colony's last fight) over an older birth.
 - Hover: "Carved by Kerrow in autumn of year 5: Tamsin fought Orl by the well."
 - A human carver in the same house would have carved the birth. Both events are rows, and the
   choice is explained on the carving's hover ("a Grisk carves fights").
@@ -940,7 +940,7 @@ caravan member and stayed; the path is described in section 7.
 
 ---
 
-## 7. Relations between peoples, and other races in the valley
+## 7. Relations between peoples, and other races in the colony
 
 ### 7.1 In the world layer
 
@@ -959,10 +959,10 @@ pub struct Relation {
 What makes each change:
 
 Trade between world settlements:
-- C36's barter (`trade.rs`) runs between sites as well as with the valley.
+- C36's barter (`trade.rs`) runs between sites as well as with the colony.
 - Each year every site with a surplus sends one caravan to the best partner within 12 regions
   whose culture's stance toward its people is not hostile, by the same quote logic.
-- This also closes C36's gap that the world's prices move only by the valley.
+- This also closes C36's gap that the world's prices move only by the colony.
 - Rows: `RealmTrade{from, to, goods}`, aggregated per pair per decade so the chronicle does not
   fill (section 13).
 
@@ -983,16 +983,16 @@ Wars:
 - A war's cause text stops being one of three fixed strings. It names the grudge's story or the
   contested region.
 
-### 7.2 Another race in the valley
+### 7.2 Another race in the colony
 
-Other species reach the valley by paths that already exist:
-- Caravans to and from the valley: C36's trade partners. A caravan from a Murrow site brings
+Other species reach the colony by paths that already exist:
+- Caravans to and from the colony: C36's trade partners. A caravan from a Murrow site brings
   Murrow.
 - Wandering bands (`StrangersSighted`): bands are drawn from the realm's nearby sites, so they
   carry that site's species and culture.
 - Refugees after a famine, a plague or a site taken in war: a band of that site's people (new
   `Fled` rows; the realm already records the cause).
-- Promoted figures (D10, planned in M6): a world figure who walks into the valley keeps their
+- Promoted figures (D10, planned in M6): a world figure who walks into the colony keeps their
   identity and becomes an agent of their species.
 
 Joining a community follows the existing Welcome path (welcome norms, cohesion). Two additions:
@@ -1163,11 +1163,11 @@ Generated deep beasts (Dwarf Fortress's forgotten beasts, recorded):
 - It is born in the history pass with a `BeastWoke{beast, layer, region}` row in some century.
   From then on its attacks on deep sites are rows (`BeastAttacked{beast, site, dead}`), so its
   legend is its record.
-- It reaches the valley only if the valley's delving opens into its layer. The breach is a row,
+- It reaches the colony only if the colony's delving opens into its layer. The breach is a row,
   and the beast comes up by the opened path.
 - Its Legends page lists every site it has ruined.
 
-What the valley sees:
+What the colony sees:
 - Digging deeper meets each layer's life and peoples. The first contact with a cave people is a
   `StrangersSighted` underground: a Murrow party at the edge of the dig, with their own culture's
   stance toward surface people.
@@ -1242,14 +1242,14 @@ what a person does, not only how they look:
 | lifespan | 50-70 | generations per century; how much history one life holds; elders | yes (genome) |
 | size | 150-190 cm, 65 kg | food, carrying, doors, beds, reach, warmth (2.4) | no |
 | social structure | household, pair | who lives with whom, who raises children, group size | household and pair only |
-| way of living | farming and others | world-layer production and trade; valley work preferences | world layer only |
+| way of living | farming and others | world-layer production and trade; local work preferences | world layer only |
 | cycle | diurnal | when they work and sleep | no |
 
 Generation guarantees four by redrawing. The test `generated_species_differ_four_ways` checks
 every generated species in 100 seeds.
 
 The soak proves it. For each anchor, and for 3 generated species per checked seed, a species soak
-(`ostrog soak --opening --species ID`) settles a community of that species in a valley
+(`ostrog soak --opening --species ID`) settles a community of that species at a landing site
 suited to its habitat. It reports:
 - where they live (share of sleep hours on the surface, upper caves, caverns);
 - what they eat (by food kind);
@@ -1408,21 +1408,21 @@ wounds, prosthetics and fighting are built on P1's part list from day one, not r
 (decision 5).
 
 The order of work: the four planner quotas first (they are needed to make cultures differ), then
-bodies, then species in the valley, then the world draw, then stories, then the deep.
+bodies, then species in the colony, then the world draw, then stories, then the deep.
 
 | # | Checkpoint | Builds | Gates (tests) | Art | Soak | Tester set |
 |---|---|---|---|---|---|---|
 | P0 | Personal projects | `Project`; carving, brewing, workshops and caravans proposed by persons | `no_carver_no_carving`, `teetotal_never_brew`, `a_journey_has_a_proposer` | none | 4 × 300 days; carvings, ale, caravans per seed against C36 | AB: who proposed each carving and caravan |
 | P1 | Body plans | plan files, `PartId`, `Body` part states, every wound caller asks the plan; genome body block; size effects (food, carry, warmth) for humans unchanged | `human_plan_matches_old_parts`, `wounds_land_on_plan_parts`, `size_scales_hunger`, `same_genome_same_body` | none (data) | 4 × 300; nothing should change for humans: digests compared per system | none |
 | P2 | The rig | `rig.py`, biped keyframes; today's sheets reproduced; fight frames; second plan (digitigrade tail) | `rig_reproduces_people_sheets` (pixel diff), palette and provenance | biped port, fight set, digitigrade plan | none | AC: fight frames, tail plan line-up |
-| P3 | Species in the valley | library loader and format; `SpeciesId`; `is_person()` for the 73 gates; save migration; six surface anchors (human, Hollin, Grisk, Screelings, Skarri, Tharn) as joiners and bands; inspect and feed lines; Legends species page | `library_loads_quickly`, `library_rejects_bad_files`, `old_saves_keep_their_creatures`, `a_grisk_band_is_grisk`, `species_named_in_inspect` | heads, ramps, wings, four arms | species soaks for each anchor | AD: line-up at 1x; name each species |
+| P3 | Species in the colony | library loader and format; `SpeciesId`; `is_person()` for the 73 gates; save migration; six surface anchors (human, Hollin, Grisk, Screelings, Skarri, Tharn) as joiners and bands; inspect and feed lines; Legends species page | `library_loads_quickly`, `library_rejects_bad_files`, `old_saves_keep_their_creatures`, `a_grisk_band_is_grisk`, `species_named_in_inspect` | heads, ramps, wings, four arms | species soaks for each anchor | AD: line-up at 1x; name each species |
 | P4 | Senses and cycles | darkness in sight; dark sight; hearing; smell; cycles; heat stress; diets | `dark_sight_sees_in_the_dark`, `blind_hear_through_rock`, `nocturnal_sleep_by_day`, `fungivores_eat_fungus`, profile gate | none | species soaks with the axis expectations | AE: night and cave scenes |
 | P5 | The world draw | presence and rarity, the draw, homelands by habitat, minorities, setup record, wizard page with preview | `same_peoples_same_world`, `rarity_changes_the_world`, `legendary_leaves_ruins`, history budget gates | species cards (silhouettes from sheets) | 4 × 300 openings with mixed worlds | AF: the wizard page, preview, re-roll |
 | P6 | Generated species | generator, four-axes rule, silhouette check, language names, saved in the world; library 42 | `generated_species_differ_four_ways`, `generated_silhouettes_differ`, `generated_species_survive_a_save` | rig options complete for every plan (taur, huge, amphibious, serpentine) | species soaks: 3 generated per seed | AG: line-up of a generated world |
 | P7 | Cultures and ethics | cultures and splits; acts and values as topics; sources from species and culture; reactions and thoughts with causes; rites at death | `stance_traces_to_a_source`, `two_rites_two_thoughts`, `taboo_broken_is_a_row`, the six examples of 6.4 as scenario tests | clothing per culture | 4 × 600 days | AH: read the reasons in inspect |
 | P8 | Stories | stories from rows, two sides, drift, heroes, grudges, art forms in carving, religion if decided | `every_story_has_rows`, `two_sides_of_one_battle`, `drift_is_on_the_map`, `story_true_to_record` | none | history passes over 4 seeds, counts and samples in the review | AI: Legends battle pages |
 | P9 | Relations | inter-site trade, intermarriage, alliances, grudges in war, refugees, joining across species, hybrids by decision | `trade_between_sites_balances`, `allies_join_battles`, `refugees_carry_their_site`, `hybrid_takes_one_plan` | none | 4 × 600 | AJ: a mixed community |
-| P10 | The deep | deep map and cave homelands (needs M6's layers), Murrow, Holm, the Below, generated deep beasts with records | `cave_peoples_live_below`, `a_beast_is_its_record`, `the_breach_is_a_row` | Murrow, Holm, serpentine, beasts | species soaks below; a delving valley | AK: first contact underground |
+| P10 | The deep | deep map and cave homelands (needs M6's layers), Murrow, Holm, the Below, generated deep beasts with records | `cave_peoples_live_below`, `a_beast_is_its_record`, `the_breach_is_a_row` | Murrow, Holm, serpentine, beasts | species soaks below; a mining colony | AK: first contact underground |
 | P11 | Conditions | moon; ghosts and laying to rest; the Beast-hunger; the Thirst; the Stone-sleep | `ghosts_only_of_the_unremembered`, `laid_to_rest_by_rite`, `curse_spreads_only_by_contact`, `suspicion_has_sources` | beast forms per plan, ghost tint | 4 × 600 with curses on | AL: a haunting and its end |
 | P12 | MP review | four 600-day soaks with 16-people worlds, profile with mixed species, readability rubric, gap table against DF and RimWorld races | all gates green | contact sheets | 4 × 600 | the whole round |
 
@@ -1447,7 +1447,7 @@ the backlog, because he wants them later (docs/BACKLOG.md, E14).
 | 6 | Curses | the Beast-hunger, the Thirst and the Stone-sleep, with a moon; cures as a healing technique a culture can hold, learned from a recorded source | none |
 | 7 | The portal party | humans always come through | a non-human party in the wizard |
 | 8 | Handless peoples | excluded | sentient handless peoples |
-| 9 | Huge peoples | in the valley, with 2 x 2 sprites and 2-tile doors | none |
+| 9 | Huge peoples | in the colony, with 2 x 2 sprites and 2-tile doors | none |
 | 10 | Acts | all twelve, as in 6.1 | none |
 | 11 | Pantheon | folded into P8: gods from what struck a culture; the chosen deity is the only one that acts | E13 stays, for a storyteller of several deities |
 | 12 | Names | anchors keep fixed names; generated species take language words | language names for every species in every world |

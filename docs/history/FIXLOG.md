@@ -1,6 +1,11 @@
 # Fix log
 
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
+## 2026-11-26 - Landing site and egress point
+
+Setup names the selected local area the landing site and identifies the founding portal tile as the egress point. History and the home follow action use the generated place name. Terrain descriptions reserve valley for the landform. Arrival history now reads the landform used for the selected region instead of drawing it again from the world seed.
+
+## 2026-11-26 · Remembered places in the colony map
 
 - Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;
   only the need bar moved the mood.

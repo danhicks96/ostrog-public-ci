@@ -65,8 +65,8 @@ func _ready() -> void:
 	watch_button = _button("Use current view", func(): use_current_requested.emit())
 	watch_button.tooltip_text = "Move the watched region to the current camera, level, zoom and knowledge filter"
 	header.add_child(watch_button)
-	valley_button = _button("Whole valley", func(): valley_requested.emit())
-	valley_button.tooltip_text = "Watch the whole valley at the settlement's level instead of one view"
+	valley_button = _button("Whole local map", func(): valley_requested.emit())
+	valley_button.tooltip_text = "Watch the whole local map at the settlement's level instead of one view"
 	header.add_child(valley_button)
 	header.add_child(_button("Close [T]", func(): close_requested.emit()))
 	status_label = Label.new()
@@ -189,7 +189,7 @@ func sync(new_frames: Array, is_recording: bool, total_bytes: int) -> void:
 			reference_tick = int(frames[0]["tick"])
 	status_label.text = "%d / %d samples · %.1f of %d MiB kept · recording %s · watching %s\nReview is image-only: pause, scrub and compare without changing or pausing the source world." % [
 		frames.size(), Timelapse.MAX_FRAMES, total_bytes / 1048576.0, Timelapse.MAX_SERIES_BYTES / 1048576,
-		"on" if recording else "off", "the whole valley" if watch_mode == "valley" else "one view",
+		"on" if recording else "off", "the whole local map" if watch_mode == "valley" else "one view",
 	]
 	_sync_controls()
 	_show_images()
@@ -299,7 +299,7 @@ func _show_frame(target: TextureRect, label: Label, index: int, prefix: String) 
 	target.texture = ImageTexture.create_from_image(image)
 	var filter := "community-known" if bool(frame.get("known_only", false)) else "all visible"
 	var camera: Dictionary = frame.get("camera", {})
-	var where := "whole valley" if str(camera.get("mode", "view")) == "valley" else "view"
+	var where := "whole local map" if str(camera.get("mode", "view")) == "valley" else "view"
 	var replay := ""
 	match str(frame.get("replay", "")):
 		"confirmed":

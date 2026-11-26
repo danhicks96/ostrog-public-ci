@@ -3937,12 +3937,12 @@ fn person_row(w: &World, aid: hf_sim::ids::AgentId) -> Option<VarDictionary> {
             .unwrap_or_else(|| "wanderer".into());
         row.set("community", &GString::from(comm.as_str()));
         let where_str = if let Some((_, where_to, _)) = &a.journey {
-            format!("beyond the valley ({where_to})")
+            format!("beyond the colony ({where_to})")
         } else {
             "away on an expedition".to_string()
         };
         row.set("where", &GString::from(where_str.as_str()));
-        row.set("activity", &GString::from("travelling beyond the valley"));
+        row.set("activity", &GString::from("travelling beyond the colony"));
         row.set("why", &GString::new());
         row.set("feeling", &GString::new());
         return Some(row);

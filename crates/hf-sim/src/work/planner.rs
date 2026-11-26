@@ -496,7 +496,7 @@ pub fn plan_for(w: &World, who: AgentId, d: &Designation) -> Option<Planned> {
             DesignationKind::Chop => "felling a tree".into(),
             DesignationKind::ClearRoof => "clearing snow off the roof".into(),
             DesignationKind::Uproot => "pulling a weed".into(),
-            DesignationKind::Study(_) => "studying something from the old valley".into(),
+            DesignationKind::Study(_) => "studying something from the old settlements".into(),
             DesignationKind::Mine => "quarrying stone".into(),
             DesignationKind::DigStairs => "digging the shaft".into(),
             DesignationKind::Hunt(_) => "hunting".into(),

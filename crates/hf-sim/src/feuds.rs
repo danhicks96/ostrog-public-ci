@@ -323,7 +323,7 @@ fn daily(w: &mut World) {
             w.feuds[n].sides[s] = keep;
         }
         if (0..2).any(|s| !w.feuds[n].sides[s].iter().any(|id| here(w, *id))) {
-            end(w, n, "nobody of one side is left in the valley", None);
+            end(w, n, "nobody of one side is left in the colony", None);
             continue;
         }
         if tick.saturating_sub(w.feuds[n].last) >= FORGOTTEN {

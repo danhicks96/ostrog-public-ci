@@ -42,7 +42,7 @@ pub fn inspect(w: &World, p: TilePos) -> BlockInfo {
             x: p.x,
             y: p.y,
             z: p.z,
-            title: format!("Outside the valley ({}, {}, z{})", p.x, p.y, p.z),
+            title: format!("Outside the local map ({}, {}, z{})", p.x, p.y, p.z),
             ..Default::default()
         };
     }

@@ -324,7 +324,7 @@ pub fn used(w: &mut World, i: usize, kind: crate::work::DesignationKind) {
                     [
                         "raised the walls of a house",
                         "raised the walls of three houses",
-                        "raised half the walls in the valley",
+                        "raised half the walls in the colony",
                     ],
                 )
             }
@@ -336,7 +336,7 @@ pub fn used(w: &mut World, i: usize, kind: crate::work::DesignationKind) {
                     [
                         "roofed a house",
                         "roofed three houses",
-                        "roofed most of the valley",
+                        "roofed most of the colony",
                     ],
                 )
             }
@@ -376,7 +376,7 @@ pub fn used(w: &mut World, i: usize, kind: crate::work::DesignationKind) {
                     [10, 40, 100],
                     [
                         "made a store of goods",
-                        "made the valley's tools",
+                        "made the colony's tools",
                         "made more than anyone remembers",
                     ],
                 )

@@ -190,7 +190,7 @@ fn known_for(w: &World, dead: AgentId) -> Option<&'static str> {
     }
     use crate::mind::skills::Skill::*;
     Some(match best.0 {
-        Foraging => "who gathered the valley's food",
+        Foraging => "who gathered the colony's food",
         Farming => "who tended the fields",
         Cooking => "who fed the table",
         Construction => "who raised the walls",

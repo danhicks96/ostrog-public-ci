@@ -113,7 +113,7 @@ Gates: `a_fetch_names_what_was_lacking`, `the_strange_wood_builds_strange_walls`
   choice is recorded with its reason. Many on both sides is a split with this cause.
 - Where: a place they know: a spot seen on a journey, a ruin from the history pass, a cavern for a
   hollow-building kind, or off the map to a realm site of their own people or empty land.
-- In the valley: they carry what they can, strike tents, leave the old site as a ruin with its
+- In the colony: they carry what they can, strike tents, leave the old site as a ruin with its
   traces.
 - Off the map: they leave by the edge and become a realm site (`realm/sites.rs`), simulated after
   they go (`realm/live.rs`). If everyone leaves, that is the third ending: a recorded event and an

@@ -34,10 +34,10 @@ impl SpellKind {
     fn onset(self) -> &'static str {
         match self {
             SpellKind::HeatWave => "The air turned hot and stayed so: a heat wave.",
-            SpellKind::ColdSnap => "A hard cold came down over the valley.",
+            SpellKind::ColdSnap => "A hard cold came down over the colony.",
             SpellKind::Drought => "The rain stopped coming; the ground began to crack.",
             SpellKind::DarkSky => "A haze closed over the sun and the days went dim.",
-            SpellKind::IllWind => "A sour wind came down the valley, and people began to cough.",
+            SpellKind::IllWind => "A sour wind came down the colony, and people began to cough.",
             SpellKind::GoodYear => "Everything that grew seemed to grow faster.",
         }
     }

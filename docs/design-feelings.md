@@ -105,4 +105,4 @@ and on rites; shame on Loiter and on keeping away from those who saw.
 
 Measures for every step: the 600-day soaks' populations, breakdown and judgement counts stay
 within a fifth of the last round unless the step is meant to move them (FIXLOG 2026-10-23
-C77: a new social pressure soured a valley into splitting before it was tuned).
+C77: a new social pressure soured a colony into splitting before it was tuned).
