@@ -51,6 +51,32 @@
   old enum positions and old saves are preserved.
 - Guards: `tests/foul_sickens.rs::the_flux_teaches_the_drinker` fails without the change;
   safe-drink, immune-drinker and save/evidence round-trip cases cover the other outcomes.
+## 2026-11-26: a census of whether the catch-up names every life event (OST-862)
+
+- Symptom: nothing checked that a returning viewer is told, by name, every death, birth, pairing,
+  arrival and departure, or that no one kind crowds the folded lines.
+- Fix: `examples/catch_up_census.rs` walks opening worlds in 8-game-hour windows from the start of
+  play. For each window it reads the told rows of those kinds from the chronicle and checks each
+  has a line in `summary::changes` that names its person, then counts the folded
+  `summary::catch_up_details` lines per kind. Reads only; exits non-zero on a missing or unnamed row.
+- Result (seeds 1 to 4, 30 days, 360 windows, 91 rows): 0 missing, 0 unnamed. 29 windows had a kind
+  over 3 folded lines (chose, parched, hunted, exhausted, starving, high_water, ruin_wondered,
+  studied, wounded), so the 3-line cap is not met by the folded details; a follow-up is needed.
+- Guard: the example is the check; it fails on any row without a named line.
+
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)
 
 - Symptom: the glance count could not say which activities the client draws as plain standing,

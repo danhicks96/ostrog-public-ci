@@ -90,7 +90,7 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 ### OST-1100 · Read what a person is seen doing without changing anything
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#690](https://github.com/danhicks96/ostrog-public-ci/pull/690)
 
 Add a pure `ActKind` / `act_of` helper in `mind` that classifies a person's current activity as an observer could see it, with no caller wired yet. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
@@ -593,7 +593,7 @@ Extend the alive report with, per game-day, the number of lines that reach the f
 
 ### OST-862 · Check that a returning viewer is told every death, birth and pairing
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** [#721](https://github.com/danhicks96/ostrog-public-ci/pull/721)
 
 Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on opening worlds, compare `summary::changes` and the folded lines against the chronicle's rows of the kinds that name who changed. Tracking issue: [#403](https://github.com/danhicks96/ostrog-public-ci/issues/403).
 
