@@ -377,6 +377,14 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 
 **Acceptance:** An hour after a break the person is at least 0.15 lower in mood than the same person without it. A FIXLOG entry is added and any simulation digest change is explained in the PR.
 
+### OST-173 · Do not repeat a suspicion without new evidence
+
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+`conditions::suspect` writes "has come to suspect" every few nights for the same two people. When someone already holds a suspicion of the same person from the same kind of evidence within the last 20 days, reinforce that memory instead of writing a new event; a new kind of evidence still counts as new.
+
+**Acceptance:** A marked sleeper and one neighbour over 15 nights give exactly one suspected event; a bite on night 16 gives a second. A FIXLOG entry is added.
+
 ### OST-1500 · Record and query unattended simulation diagnostics
 
 **Priority:** High · **Milestone:** Verify long-running simulations · **State:** Claimed · **Developer:** Ostrog CI (OC) · **Public PR:** Pending
