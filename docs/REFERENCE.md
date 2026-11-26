@@ -258,7 +258,7 @@ no neighbours. With `--opening` they run the game as it is played, from the arri
 | Command | Options (defaults) | What it does |
 |---|---|---|
 | `run` | `--seed 1`, `--ticks 28800` (one game-day) or `--days N`, `--opening`, `--small`, `--save PATH`, `--agents 0`, `--engine steady\|relentless\|whimsical`, `--debug-log PATH` (or env `OSTROG_DEBUG_LOG`: JSON Lines, a header then every decision with its scored options, failed and abandoned plans, and a counter line per game day; 32 MiB cap, then `PATH.1`) | generate a world, run it, print plan failures, open designations, structures, ledger drift, every agent's needs and activity (`STUCK` lines for anyone in one activity over 6,000 ticks), event tallies, digest and ms per tick. With `--agents 0` the world is empty. |
-| `soak` | `--seed 1`, `--days 600`, `--agents 12`, `--csv PATH`, `--ring DIR`, `--save-days 5`, `--opening`, `--peoples N` (with `--opening`), `--provision` (without `--opening`: a day's meals each midnight, as `profile --provision`; #369), `--engine steady\|relentless\|whimsical` (which deity paces the soaked world; default steady; #1505) | long run with per-day metrics (tick p50/p99, stalled people, plan failures, leases expired, ledger drift, memories, chronicle rows, RSS) and a final threshold report; `--peoples` also prints a tally of the peoples' events |
+| `soak` | `--seed 1`, `--days 600`, `--agents 12`, `--csv PATH`, `--ring DIR`, `--save-days 5`, `--opening`, `--peoples N` (with `--opening`), `--provision` (without `--opening`: a day's meals each midnight, as `profile --provision`; #369), `--engine steady\|relentless\|whimsical` (which deity paces the soaked world; default steady; #1505), `--alive` (runs the camera director read-only, samples it every 600 ticks and prints `ALIVE key value` lines; OST-868) | long run with per-day metrics (tick p50/p99, stalled people, plan failures, leases expired, ledger drift, memories, chronicle rows, RSS) and a final threshold report; `--peoples` also prints a tally of the peoples' events |
 | `weather` | `--seed 1`, `--days 30` | sky and season changes per day, to find a rainy or snowy hour for a shot |
 | `profile` | `--seed 1`, `--days 60`, `--agents 12`, `--spike-ms 5`, `--provision`, `--mixed` | per-system tick timings and which systems own the spikes; `--provision` stocks meals for the whole party so the load stays at its size, `--mixed` makes the party of every kind at once |
 | `director` | `--seed 7`, `--start 288000`, `--every 1200`, `--frames 30`, `--agents 12` | the camera director's suggestion at each frame, with who is in frame |
@@ -1395,7 +1395,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3201 strings (click to open)</summary>
+<details><summary>3203 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3699,45 +3699,47 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/alive.rs:62 | drowned |
 | view/alive.rs:69 | thirst |
 | view/alive.rs:70 | froze |
-| view/alive.rs:780 | mood_median |
-| view/alive.rs:781 | mood_p10 |
-| view/alive.rs:782 | mood_hi |
-| view/alive.rs:783 | mood_lo |
-| view/alive.rs:784 | mood_clamped |
-| view/alive.rs:785 | mood_spread |
-| view/alive.rs:786 | mood_p25 |
-| view/alive.rs:787 | mood_p75 |
-| view/alive.rs:788 | mood_below_m03 |
-| view/alive.rs:789 | mood_term_needs |
-| view/alive.rs:790 | mood_term_recent |
-| view/alive.rs:791 | mood_term_long |
-| view/alive.rs:792 | mood_term_thoughts |
-| view/alive.rs:793 | standing_share |
-| view/alive.rs:794 | unreadable_share |
-| view/alive.rs:795 | work_share |
-| view/alive.rs:796 | talk_share |
-| view/alive.rs:797 | day_distance |
-| view/alive.rs:798 | act_entropy_sd |
-| view/alive.rs:800 | ties_saturated |
-| view/alive.rs:804 | ties_hostile |
-| view/alive.rs:807 | ties_frozen |
-| view/alive.rs:808 | ties_frozen_max_days |
-| view/alive.rs:810 | ties_to_dead_share |
-| view/alive.rs:813 | grief_drop_2d |
-| view/alive.rs:814 | grief_drop_10d |
-| view/alive.rs:815 | grief_days |
-| view/alive.rs:816 | grief_n |
-| view/alive.rs:817 | cause_repeat |
-| view/alive.rs:818 | lesson_ignored |
-| view/alive.rs:819 | glance_major_n |
-| view/alive.rs:820 | glance_missed_major |
-| view/alive.rs:823 | glance_missed_major_died |
-| view/alive.rs:824 | glance_missed_major_captured |
-| view/alive.rs:825 | glance_missed_major_broke |
-| view/alive.rs:826 | glance_missed_major_exiled |
-| view/alive.rs:827 | glance_missed_major_born |
-| view/alive.rs:828 | glance_missed_major_paired |
-| view/alive.rs:829 | glance_missed_major_returned |
+| view/alive.rs:821 | mood_median |
+| view/alive.rs:822 | mood_p10 |
+| view/alive.rs:823 | mood_hi |
+| view/alive.rs:824 | mood_lo |
+| view/alive.rs:825 | mood_clamped |
+| view/alive.rs:826 | mood_spread |
+| view/alive.rs:827 | mood_p25 |
+| view/alive.rs:828 | mood_p75 |
+| view/alive.rs:829 | mood_below_m03 |
+| view/alive.rs:830 | mood_term_needs |
+| view/alive.rs:831 | mood_term_recent |
+| view/alive.rs:832 | mood_term_long |
+| view/alive.rs:833 | mood_term_thoughts |
+| view/alive.rs:834 | standing_share |
+| view/alive.rs:835 | unreadable_share |
+| view/alive.rs:836 | work_share |
+| view/alive.rs:837 | talk_share |
+| view/alive.rs:838 | day_distance |
+| view/alive.rs:839 | act_entropy_sd |
+| view/alive.rs:841 | ties_saturated |
+| view/alive.rs:845 | ties_hostile |
+| view/alive.rs:848 | ties_frozen |
+| view/alive.rs:849 | ties_frozen_max_days |
+| view/alive.rs:851 | ties_to_dead_share |
+| view/alive.rs:854 | grief_drop_2d |
+| view/alive.rs:855 | grief_drop_10d |
+| view/alive.rs:856 | grief_days |
+| view/alive.rs:857 | grief_n |
+| view/alive.rs:858 | cause_repeat |
+| view/alive.rs:859 | lesson_ignored |
+| view/alive.rs:860 | glance_major_n |
+| view/alive.rs:861 | glance_missed_major |
+| view/alive.rs:862 | feed_lines_day |
+| view/alive.rs:863 | feed_folded_day |
+| view/alive.rs:866 | glance_missed_major_died |
+| view/alive.rs:867 | glance_missed_major_captured |
+| view/alive.rs:868 | glance_missed_major_broke |
+| view/alive.rs:869 | glance_missed_major_exiled |
+| view/alive.rs:870 | glance_missed_major_born |
+| view/alive.rs:871 | glance_missed_major_paired |
+| view/alive.rs:872 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
