@@ -153,6 +153,11 @@ fn hask_presses_plenty_and_lets_go_of_the_broken() {
     let mut ev = Vec::new();
     let mut pressed = false;
     for _ in 0..12 {
+        // Plenty is about food and mood, not company: keep the village's social need topped up
+        // so a Lonely thought (OST-1101) does not push strain over the plenty gate.
+        for a in w.agents.iter_mut().filter(|a| a.community.is_some()) {
+            a.needs.social = 1.0;
+        }
         run(&mut w, 1, &mut ev);
         if w.deity_answers
             .iter()
