@@ -198,7 +198,12 @@ fn infection_can_kill() {
             }
         }
         let a = &w.agents[i];
-        (a.alive, tended || a.death.as_deref() == Some("fever"))
+        // OST-205: a tended, miserable patient may now set out from the valley instead of
+        // staying (no death is recorded then); what matters here is that the fever did not kill.
+        (
+            a.alive || a.death.is_none(),
+            tended || a.death.as_deref() == Some("fever"),
+        )
     };
     let (alive_alone, _) = outcome(false);
     let (alive_tended, was_tended) = outcome(true);

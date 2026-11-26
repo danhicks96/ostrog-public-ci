@@ -1,5 +1,95 @@
 # Fix log
 
+## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
+
+- Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;
+  only the need bar moved the mood.
+- Cause: `systems::strain` added thoughts for hunger and thirst but none for the social need.
+- Fix: `ThoughtKind::Lonely` is appended to the enum (old saves load unchanged), weight -0.15 for
+  half a day. It is added each hour while an awake person's social need is below 0.2 and lapses
+  once the need recovers. Sleepers never get it. Mood and strain for lonely people now read lower,
+  so seeded digests move.
+- Seeded pacing tests moved with it: `hask_presses_plenty` now keeps the village socially content
+  (plenty is about food, not company), and `troubles_overlap_and_then_ease` uses seeds 3, 7, 11 and
+  29 (one turn each, four in all) because 13 and 17 no longer turn within the run.
+- Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
+  sleeper does not; a content person does not).
+## 2026-11-24: the cost of a breakdown or a quarrel lasted one game-minute (OST-241)
+
+- Symptom: a breakdown took 0.2 off mood and a quarrel 0.15, and a game-minute later both were
+  gone, so the day after a break looked like any other.
+- Cause: both were direct writes to `mood`, which the needs pass rebuilds from its terms every
+  stripe.
+- Fix: a break now adds a new `Broke` thought ("broke down", weight -0.25, two days), appended to
+  the thought kinds; the break's direct write is gone. The quarrel's direct write is removed too:
+  the `Quarrel` thought, already added from the recorded event, is its lasting cost.
+- The `Broke` thought is left out of stress (like the arrival's), or one break would feed the next;
+  `tests/stress.rs::a_contented_person_with_one_trouble_does_not_break` guards it.
+- Guard: `tests/breaks.rs::the_cost_of_a_break_lasts_beyond_a_minute` (an hour after a break the
+  person is at least 0.15 below the same person who did not break; fails without the thought).
+- Test follow-up: `tests/building.rs::roofs_are_laid_from_the_walls_and_do_not_fall_in_ordinary_building`
+  now runs 12 days, not 10. The break cost shifts who is calm enough to build; on seed 3 roofs come
+  in batches (0, 6, 10, 16, 16, 16, 22 over days 5-9 on main, a batch later here), so the same
+  build finished a day or two later and stood at 16 on day 10. The floor of 20 is unchanged; at
+  12 days both seeds pass, and the check that no roof falls still runs the whole time.
+- Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
+  mood after a break, which can bring a second break sooner.
+## 2026-11-26: a lived belief is told once a year to each listener (OST-507)
+
+- Symptom: with no fresh tale, the hearth teller told "how they came to hold that ..." most
+  evenings to the same circle (one teller 412 evenings, one listener 380 times), and each
+  hearing raised the listener's confidence in the belief.
+- Cause: `hearth_evening` scored a lived belief 1.0 whenever the teller had one, with no test
+  that anyone lacked it, and called `beliefs::share` on every listener each time.
+- Fix: each person keeps `hearth_heard` (teller, topic or none for the line about the other
+  side of the portal, tick), at most 32. A lived belief (or the portal line) scores only while
+  some other sitter has not heard it from this teller within a year (`HEARTH_RETELL`); a
+  teller with nothing wanted is not chosen. On a telling every listener records it, and only
+  those who had not heard it have the belief passed to them. Tales and realm stories are
+  unchanged.
+- Guard: `tests/culture.rs::a_lived_belief_is_told_once_a_year_to_each_listener` (one telling
+  in ten evenings, once more for a newcomer, again after a year; it fails with the record
+  ignored) and `an_old_save_loads_without_the_hearth_record`. Old saves load; worlds with
+  hearth evenings write fewer tellings, so digests change. The 700-day seeds 1-4 measurement
+  in the issue was not run.
+## 2026-11-26: a guard for mood's needs term reading thirst and warmth (OST-551)
+
+- Symptom: the issue said the needs term ignored thirst and warmth. It no longer does: it
+  averages all six needs and takes the lowest (the #879 fix, tuned by OST-205). No behaviour
+  changes here.
+- Guard: `tests/thirst.rs::one_empty_thirst_or_warmth_is_miserable_on_the_needs_term` sets one
+  need empty with the rest full and requires the needs term at or below -0.3; it fails if the
+  term goes back to four needs.
+
+## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
+
+- Symptom: a suspicion that spread through a camp read the same as one person's grudge, with
+  nothing telling the watcher that someone was now whispered about.
+- Fix: after a new suspicion row, `conditions::whisper` counts the community members holding a
+  fresh suspicion (the OST-173 record) of that person; at three it pushes an appended Notable
+  `WidelySuspected { of, because, count }`, narrated "X is whispered about: 3 now say ...". The
+  tick is kept on the person (`Agent.whispered`, serde-default), so it is said once per twenty
+  days, not for each further suspicion. This is per person and window, not per condition.
+- Guard: `tests/true_dream.rs::three_suspecters_make_one_whisper` fails with the threshold
+  raised; a fourth suspecter adds no second whisper. `an_old_save_loads_without_the_suspicion_fields`
+  covers old saves loading the two new `Agent` fields; a world that reaches three
+  suspecters gains one row, so its digest changes.
+## 2026-11-25: one need at zero no longer hides behind five full ones (OST-205)
+
+- Symptom: a person with hunger at zero and every other need full had a needs term of +0.4 and
+  could sit at mood +1; the term was the mean of the six needs centred on half-full.
+- Cause: a mean hides the one need that matters.
+- Fix: `mood_terms` now reads `0.8 * (mean - 0.75) - 0.6 * max(0, 0.3 - least) / 0.3`, centred
+  on "fine" with the neediest need biting on its own; the old 1.2 weight is folded in.
+- Guards: `tests/mood.rs::a_starving_person_is_not_content` (needs term at most -0.3 with hunger
+  at zero) and `a_comfortable_person_is_only_mildly_lifted_by_needs` (between 0 and 0.15 at 0.85
+  everywhere); both fail without the change.
+- Test follow-ups: `health.rs` counts a tended patient who left the valley as not dead, and
+  `qa_1026.rs` reads the arrival shock fading off the thought, not the camp's mood. The
+  `threats.rs` east-edge band test now fails on the thirst half (the band never reaches water);
+  it is kept strict and tracked in its own issue, which this change waits on.
+- Not covered: the census on seeds 1-4 and break rates were not re-measured, and simulation
+  digests change because mood feeds decisions.
 ## 2026-11-26: a thirsty band is sent to water whose surface sits above the bank (#725)
 
 - Symptom: in the east-edge threats test a band set down 47 tiles from a deep river read thirst 0 and
