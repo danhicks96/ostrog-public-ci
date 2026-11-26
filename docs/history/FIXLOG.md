@@ -10,9 +10,14 @@
   from 0.7 to 0.7 + 0.25 times confidence. Severe thirst can still overcome it. Wells and
   melted water do not inherit a pond's lesson. Empty lesson lists avoid the body scan.
   The existing caller interface and ordinary selection without a lesson are preserved.
+  Rejected learned shores can open the search beyond the first 48 geometric candidates,
+  while at most 48 acceptable places receive reachability checks. A wide bad pond therefore
+  cannot hide a farther fresh one by filling the shore budget.
 - Guard: `tests/foul_water.rs::a_lesson_outlasts_the_forgotten_tag` fails on the lesson-only
   implementation. It checks the fresh pond twenty tiles farther away at thirst 0.55 and
   0.8, severe thirst, a no-lesson control and the same body at a different shore.
+  `a_large_learned_bad_pond_does_not_hide_farther_fresh_water` reproduces the exhausted
+  shore budget on the first lesson-aware implementation.
 - `examples/foul_census.rs` counts actual foul-water illness events, first cases, repeats
   and thirst deaths without changing the simulation. Paired seed 7 and 8 measurements
   are required before this slice is complete.

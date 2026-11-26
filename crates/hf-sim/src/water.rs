@@ -208,14 +208,16 @@ pub fn nearest(w: &World, from: TilePos, radius: i32) -> Option<Spot> {
 /// The places to drink within `radius` of `from`, nearest first by the straight line, the
 /// nearest 48 of them with each stand tile once, none in a flood's way (#418).
 fn candidates(w: &World, from: TilePos, radius: i32) -> Vec<Spot> {
+    candidate_stream(w, from, radius).take(48).collect()
+}
+
+fn candidate_stream(w: &World, from: TilePos, radius: i32) -> impl Iterator<Item = Spot> + '_ {
     let mut tried = std::collections::BTreeSet::new();
     spots(w, from, radius)
         .into_iter()
-        .filter(|s| tried.insert(s.stand))
+        .filter(move |s| tried.insert(s.stand))
         // Not into a flood's way (#418): the next bank clear of it serves.
-        .filter(|s| !crate::systems::hazards::in_floods_way(w, s.stand))
-        .take(48)
-        .collect()
+        .filter(move |s| !crate::systems::hazards::in_floods_way(w, s.stand))
 }
 
 /// What `knowledge` believes of a spot's water, as a `TAG_WATER_*` value (#453, epic #477
@@ -305,13 +307,17 @@ pub fn nearest_knowing(
             .map(|(_, _, confidence)| *confidence)
             .fold(0.0f32, f32::max)
     };
-    let spots: Vec<_> = candidates(w, from, radius)
-        .into_iter()
-        .filter(|s| cooldowns.get(&dry_key(s.stand)).is_none_or(|t| *t <= now))
-        .map(|s| {
-            let confidence = illness(&s);
-            (s, confidence)
-        })
+    let mut available = candidate_stream(w, from, radius);
+    let not_dry = |s: &Spot| cooldowns.get(&dry_key(s.stand)).is_none_or(|t| *t <= now);
+    let with_confidence = |s: Spot| {
+        let confidence = illness(&s);
+        (s, confidence)
+    };
+    let spots: Vec<_> = available
+        .by_ref()
+        .take(48)
+        .filter(not_dry)
+        .map(with_confidence)
         .collect();
     let tag = |s: &Spot| believed_tag(w, knowledge, s);
     let salt = |s: &Spot| tag(s) == Some(crate::floods::TAG_WATER_SALT);
@@ -324,17 +330,27 @@ pub fn nearest_knowing(
             .iter()
             .any(|(s, confidence)| !salt(s) && !foul(s, *confidence));
     let thirst = (1.0 - w.agents[i].needs.thirst).clamp(0.0, 1.0);
+    let allowed = |s: &Spot, confidence: f32| {
+        !salt(s)
+            && (!foul(s, confidence)
+                || if confidence > 0.0 {
+                    thirst > 0.7 + 0.25 * confidence
+                } else {
+                    desperate
+                })
+    };
+    // A learned rejection must not spend all shore slots on one wide bad body. Ordinary
+    // selection keeps its original first 48; a lesson may look farther, still trying at
+    // most 48 acceptable places for reachability.
+    let extend = spots
+        .iter()
+        .any(|(s, confidence)| *confidence > 0.0 && !salt(s) && !allowed(s, *confidence));
+    let extra = if extend { usize::MAX } else { 0 };
     spots
         .into_iter()
-        .filter(|(s, confidence)| {
-            !salt(s)
-                && (!foul(s, *confidence)
-                    || if *confidence > 0.0 {
-                        thirst > 0.7 + 0.25 * confidence
-                    } else {
-                        desperate
-                    })
-        })
+        .chain(available.take(extra).filter(not_dry).map(with_confidence))
+        .filter(|(s, confidence)| allowed(s, *confidence))
+        .take(48)
         .map(|(s, _)| s)
         .find(|s| s.stand == from || nav.reach(from, s.stand))
 }

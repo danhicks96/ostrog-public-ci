@@ -144,6 +144,50 @@ fn a_lesson_outlasts_the_forgotten_tag() {
 }
 
 #[test]
+fn a_large_learned_bad_pond_does_not_hide_farther_fresh_water() {
+    use hf_sim::mind::{ObservationKind, OutcomeKind};
+    let mut w = flat(4561);
+    for (x0, x1, y0, y1) in [(8, 29, 8, 29), (50, 54, 17, 21)] {
+        for y in y0..=y1 {
+            for x in x0..=x1 {
+                w.grid.set(TilePos::new(x, y, 2), water_tile());
+            }
+        }
+    }
+    w.rebuild_caches();
+    floods::survey(&mut w);
+    w.ensure_nav();
+    w.weather.temperature_c = 10.0;
+    let who = w.found_party(1)[0];
+    let i = w.agents.iter().position(|a| a.id == who).unwrap();
+    let from = TilePos::new(30, 19, 2);
+    w.agents[i].pos = from;
+    w.agents[i].needs.thirst = 0.45;
+    let bad = TilePos::new(29, 19, 2);
+    let tick = w.meta.tick;
+    w.agents[i].learning.learn(
+        ObservationKind::FoulWater,
+        OutcomeKind::Illness,
+        Some(bad),
+        true,
+        tick,
+        None,
+    );
+    w.agents[i].learning.lessons[0].confidence = 0.6;
+    assert!(
+        hf_sim::water::spots(&w, from, 60)
+            .iter()
+            .filter(|s| std::ptr::eq(body_at(&w, s.source), body_at(&w, bad)))
+            .count()
+            > 48
+    );
+    let chosen = hf_sim::water::nearest_knowing(&w, i, from, 60, &w.agents[i].knowledge, false)
+        .expect("the large bad pond must not exhaust the budget before farther fresh water");
+    assert!(!std::ptr::eq(body_at(&w, chosen.source), body_at(&w, bad)));
+    assert!(w.nav.as_ref().unwrap().reach(from, chosen.stand));
+}
+
+#[test]
 fn rot_and_a_body_beside_water_foul_it_and_no_further() {
     let mut w = flat(4533);
     for y in 20..=24 {
