@@ -110,10 +110,10 @@ Where: %APPDATA%\Godot\app_userdata\Ostrog\ (type that into the Explorer
     Safe to delete? Yes
 
   timelapse/
-    Only if you turn Timelapse on: one picture of the valley at noon each game
-    day, with a small note of what happened, kept per world so you can watch
-    it grow. At most 120 pictures and 160 MB per world, for at most 6 worlds
-    (about 1 GB in the worst case); the oldest are removed first.
+    Only if you turn Timelapse on: one picture at noon each game day, with a
+    small note of what happened, kept per world so you can watch it grow. At
+    most 120 pictures and 160 MB per world, for at most 6 worlds (about 1 GB
+    in the worst case); the oldest are removed first.
     Sent anywhere? No
     Safe to delete? Yes (you lose the time-lapse)
 
@@ -123,7 +123,7 @@ TEMPORARY FILES
 Where: in your Windows temporary folder, %TEMP%
 
   ostrog/
-    While a game is open, the valley's history is kept in a working file here
+    While a game is open, the world's history is kept in a working file here
     (chronicle-<number>.sqlite, with -wal and -shm companions) instead of in
     memory; your saves copy it. The game removes the file when it closes and
     clears any left over from a crash on a later start. The empty folder

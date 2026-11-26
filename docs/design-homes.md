@@ -98,8 +98,8 @@ Gates: `they_dig_in_after_a_raid`, `no_raid_no_shelter`, `a_shelter_is_shored_by
   rule, tree, wood material, stone material with properties, terrain and plant art.
 - `expedition.rs` `Purpose::Fetch { material, site }`: someone proposes bringing back a material
   the community lacks for a wanted home or shelter (stone with no rock face within reach; wood in
-  a treeless fell), to a place they know of (a past, a rumour, a realm site's stores, a valley
-  spot seen on a journey). The caravan comes back with it, and it is used.
+  a treeless fell), to a place they know of (a past, a rumour, a realm site's stores, a place
+  seen on a journey). The caravan comes back with it, and it is used.
 
 Gates: `a_fetch_names_what_was_lacking`, `the_strange_wood_builds_strange_walls`,
 `the_biome_arises_from_the_world` (it appears only where its rule holds).

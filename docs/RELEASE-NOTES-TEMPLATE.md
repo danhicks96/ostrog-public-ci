@@ -31,7 +31,7 @@ would notice, not a longer page. Nothing is lost: the details stay in the fix lo
    names.** They mean nothing to the reader and age badly.
 4. **No private names, links or download prefixes, and nothing about who or what wrote it.**
 5. **Group by what the watcher would notice**, in this order, and drop empty sections:
-   *Highlights*, *The valley* (world, weather, plants), *The people* (minds, bodies, bonds,
+   *Highlights*, *The land* (world, weather, plants), *The people* (minds, bodies, bonds,
    beliefs), *Settlements* (building, work, trade, raids), *Watching* (camera, feed, panels,
    sounds), *Fixes*, *Performance*.
 6. **Fixes are one line each**: what you would have seen go wrong, in past tense. No cause.
@@ -60,7 +60,7 @@ Copy the block below, fill it in, delete what is empty.
 - <the one change you would tell a friend about>
 - <...3 to 5 in all>
 
-## The valley
+## The land
 - Added / Changed / Fixed ...
 
 ## The people
@@ -79,7 +79,7 @@ Copy the block below, fill it in, delete what is empty.
 - <one line, with a number if you have one>
 
 ## Saves and updates
-<Your <previous version> saves load. / Starting a new valley is recommended because ...>
+<Your <previous version> saves load. / Starting a new world is recommended because ...>
 
 New here? See the download page for install, update and uninstall steps.
 ```
@@ -106,7 +106,7 @@ format, not a published release.
 # Ostrog 0.1.3: Crows, wounds and wild plants
 
 Plants now care where they grow, and people come home hurt in ways you can read. Leave it
-running a few days and the valley looks less even.
+running a few days and the differences in plant growth become visible.
 
 ## Highlights
 
@@ -114,7 +114,7 @@ running a few days and the valley looks less even.
 - Wild plants grow faster by water and slower in shade or a crowd.
 - People read crows as an omen only if they were outside and saw them rise.
 
-## The valley
+## The land
 - Changed: berry bushes on bare scree now grow more slowly than the same bush on wet meadow.
 - Changed: a plant under a mature tree, or among three or more neighbours, grows more slowly.
 

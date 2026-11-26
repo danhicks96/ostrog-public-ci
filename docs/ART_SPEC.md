@@ -57,16 +57,16 @@ is present or absent.
 | grass | material | grassland, meadow edges, woodland, fen tussocks, fell |
 | wildflower | material `meadow` (21) | meadow; rare patches in grassland. Shows as grass in autumn and winter |
 | mossy | material `moss` (22) | damp woodland floor and stream banks; fen moss |
-| packed_earth | material (23) | heath and stony uplands; grassland patches in a dry valley |
-| frozen_soil | material (24) **and** look | fell and snowfield; grassland patches in a cold valley. Also the look of bare soil, clay, wet soil and mud in a hard frost |
-| wet_soil | material (25) **and** look | fen; grassland patches in a wet valley. Also the look of bare soil and clay in rain |
+| packed_earth | material (23) | heath and stony uplands; grassland patches at dry landing sites |
+| frozen_soil | material (24) **and** look | fell and snowfield; grassland patches at cold landing sites. Also the look of bare soil, clay, wet soil and mud in a hard frost |
+| wet_soil | material (25) **and** look | fen; grassland patches at wet landing sites. Also the look of bare soil and clay in rain |
 | scree | material (26) | the foot of rises in stony uplands, fell and heath; stony patches |
 | peat, mud | material | fen (mud at the water's edge) |
 | sand | material | heath, beside water in grassland and meadow |
-| gravel | material | stony uplands, fell; grassland patches in a stony valley |
+| gravel | material | stony uplands, fell; grassland patches at stony landing sites |
 | snow | material | snowfield (cold heights). Falling snow over other ground stays a look |
 | soil | material | bare woodland floor; tilled and burned ground |
-| water | flag | streams and lakes on the valley's lowest ground; more lake in a wet valley |
+| water | flag | streams and lakes; wet sites can have more standing water |
 | deep_water | flag `DEEP` | lake columns two or more tiles from any shore; the outer ring of deep water takes the shallow water at half strength |
 | grass_autumn | look | grass in autumn (drawn instead of grass, edges included), not a family of its own |
 | ash | look | burned ground for ten days |
@@ -152,7 +152,7 @@ does not prove facial readability on every tone or background.
 Deer, boar, wolf, hare, goat, chicken: 4 directions × idle(1), walk(4), sleep(1).
 Goat is a registered species (2026-10-17): wild goats live only on stony uplands and fells,
 graze, breed and are hunted. Chicken is not registered: it has no wild role, so it waits for
-livestock rather than being scattered over the valley as wildlife.
+livestock rather than being scattered across the local map as wildlife.
 
 ## Items (godot/assets/items32/*.png, with legacy fallbacks in items/)
 

@@ -92,5 +92,5 @@ Built in `crates/hf-sim/src/resonance.rs`; epic #508 steps 1 to 4 for one potent
   idle or afraid.
 - More potentials from #508's families, each with its own trigger (grief, terror, an old
   material) and cost.
-- A thing from home that cannot be made again (the tech answer), e.g. a tool of a metal the
-  valley has none of, wearing out for good.
+- A thing from home that cannot be made again (the tech answer), e.g. a tool made of a metal the
+  colony cannot source locally, wearing out for good.

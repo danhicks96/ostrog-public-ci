@@ -8,7 +8,7 @@ slice built on branch `feat-452-stories`, and what would break the rules.
 ## What already does part of this
 
 - The record. Every event is a row in the chronicle (`events.rs`, `chronicle/`), written once
-  with its tick, place, participants and cause. Nothing rewrites a row. The old valley's
+  with its tick, place, participants and cause. Nothing rewrites a row. The region's
   history before the arrival (`deep.rs`: sites, figures, graves, how each hamlet ended) is the
   same kind of record, written before the epoch.
 - Accounts, for the pre-arrival settlements only. `lore.rs` keeps tales: one version of how an old hamlet
