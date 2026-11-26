@@ -1395,7 +1395,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3258 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2708,7 +2708,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | underground.rs:559 | since they touched the underworld's rock in {} |
 | underground.rs:608 | deep_caverns |
 | water.rs:74 | a stand at {stand} does not reach {source} (#608) |
-| water.rs:384 | the flux from foul water |
+| water.rs:477 | the flux from foul water |
 | wells.rs:96 | found no place by home to dig it |
 | wells.rs:134 | dug {MAX_DEPTH} levels down and found no water |
 | wells.rs:150 | dug {depth} levels down to the hard rock and found it dry |
@@ -3146,15 +3146,16 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | save/mod.rs:197 | {}.{i}.hfsave |
 | systems/act.rs:50 | path blocked |
 | systems/act.rs:58 | did not arrive |
-| systems/act.rs:109 | no water here |
-| systems/act.rs:126 | food gone |
-| systems/act.rs:136 | food moved |
-| systems/act.rs:142 | eat |
-| systems/act.rs:186 | nothing to gather |
-| systems/act.rs:221 | forage |
-| systems/act.rs:284 | the bed was taken |
-| systems/act.rs:370 | they left |
-| systems/act.rs:542 | a poisoning from {} |
+| systems/act.rs:105 | remembered foul water; another source is within reach |
+| systems/act.rs:116 | no water here |
+| systems/act.rs:133 | food gone |
+| systems/act.rs:143 | food moved |
+| systems/act.rs:149 | eat |
+| systems/act.rs:193 | nothing to gather |
+| systems/act.rs:228 | forage |
+| systems/act.rs:291 | the bed was taken |
+| systems/act.rs:377 | they left |
+| systems/act.rs:549 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |
