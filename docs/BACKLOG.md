@@ -379,7 +379,7 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 
 ### OST-173 · Do not repeat a suspicion without new evidence
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#700](https://github.com/danhicks96/ostrog-public-ci/pull/700)
 
 `conditions::suspect` writes "has come to suspect" every few nights for the same two people. When someone already holds a suspicion of the same person from the same kind of evidence within the last 20 days, reinforce that memory instead of writing a new event; a new kind of evidence still counts as new.
 

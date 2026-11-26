@@ -738,7 +738,7 @@ pub const SUSPICIONS_KEPT: usize = 16;
 /// Those of the community who noticed come to suspect agent `i`: the one who saw or was hurt
 /// first, then whoever slept nearest. A suspicion is a memory of them with the row as its
 /// source, and a cooler opinion; it can be wrong.
-fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
+pub fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
     let tick = w.meta.tick;
     let (of, me, cid) = (w.agents[i].id, w.agents[i].pos, w.agents[i].community);
     let Some(cid) = cid else { return };
@@ -763,7 +763,6 @@ fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
         .iter_mut()
         .find(|s| s.0 == of && s.1 == tag && tick.saturating_sub(s.2) < SUSPICION_FRESH)
     {
-        s.2 = tick;
         if let Some(m) = a.memories.long.iter_mut().find(|m| {
             m.kind == crate::mind::MemKind::Hardship
                 && m.subject == crate::mind::Subject::Person(of)

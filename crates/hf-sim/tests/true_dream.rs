@@ -289,3 +289,51 @@ fn a_suspicion_is_not_repeated_without_new_evidence() {
     assert_eq!(by_first(&w), 1, "one neighbour suspects");
     assert_eq!(total, 1, "and only once over fifteen nights");
 }
+
+/// The window runs from the first time that evidence was held, so a long run of the same
+/// cry is suspected again once twenty days have passed, and a different kind of evidence
+/// counts as new at once.
+#[test]
+fn a_suspicion_returns_after_the_window_or_on_new_evidence() {
+    let mut w = World::opening_world(61);
+    let cid = w.communities[0].id;
+    let who = w
+        .agents
+        .iter()
+        .find(|a| a.community == Some(cid))
+        .unwrap()
+        .id;
+    let i = hollow_sleeper(&mut w, who);
+    let mut d = 1;
+    while !hf_sim::conditions::has(&w, i, C::TrueDream) {
+        at(&mut w, d, 1);
+        keep_sleeping(&mut w, i);
+        d += 1;
+        assert!(d < 200, "never marked");
+    }
+    w.events.pending.clear();
+    let count = |w: &World| {
+        pending(
+            w,
+            |k| matches!(k, EventKind::Suspected { of, .. } if *of == who),
+        )
+    };
+    for n in 0..15 {
+        at(&mut w, d + n, 1);
+        keep_sleeping(&mut w, i);
+    }
+    assert_eq!(count(&w), 1, "once over fifteen nights");
+    // A different kind of evidence is new at once.
+    let ev = w.events.pending[0].id;
+    hf_sim::conditions::suspect(&mut w, i, ev, "a sleeper woke weak, with two small wounds");
+    assert_eq!(count(&w), 2, "a bite is new evidence");
+    // Past twenty days from the first cry, the same cry is suspected again.
+    for n in 15..30 {
+        at(&mut w, d + n, 1);
+        keep_sleeping(&mut w, i);
+    }
+    assert!(
+        count(&w) >= 3,
+        "the cry is suspected again after the window"
+    );
+}

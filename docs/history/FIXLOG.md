@@ -9,7 +9,11 @@
   against the same person within 20 days only deepens the long memory (+0.1, capped) with no
   event and no opinion change; a new kind of evidence still counts as new.
 - Guard: `tests/true_dream.rs::a_suspicion_is_not_repeated_without_new_evidence` fails with the
-  window set to zero.
+  window set to zero; `a_suspicion_returns_after_the_window_or_on_new_evidence` covers a
+  different kind of evidence and the window running out (it counts from the first time the
+  evidence was held). The new `Agent` field is serde-default, so old saves load; a world that
+  repeated suspicions now writes fewer rows, so its digest changes.
+
 ## 2026-11-24: nothing named what one person could see another doing (OST-1100)
 
 - Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
