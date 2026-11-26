@@ -96,6 +96,8 @@ pub enum ThoughtKind {
     Thirsty,
     /// Appended (OST-241): broke down; the cost is felt for days, not for one needs pass.
     Broke,
+    /// Appended (OST-1101): awake with the social need run low.
+    Lonely,
 }
 
 impl ThoughtKind {
@@ -156,6 +158,7 @@ impl ThoughtKind {
             ThoughtKind::Missing => (-0.2, 4.0),
             ThoughtKind::Thirsty => (-0.3, 0.5),
             ThoughtKind::Broke => (-0.25, 2.0),
+            ThoughtKind::Lonely => (-0.15, 0.5),
         }
     }
     pub fn label(self) -> &'static str {
@@ -214,6 +217,7 @@ impl ThoughtKind {
             ThoughtKind::Missing => "the missing",
             ThoughtKind::Thirsty => "parched",
             ThoughtKind::Broke => "broke down",
+            ThoughtKind::Lonely => "lonely",
         }
     }
 }
