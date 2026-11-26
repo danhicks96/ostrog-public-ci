@@ -15,6 +15,22 @@
   person is at least 0.15 below the same person who did not break; fails without the thought).
 - Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
   mood after a break, which can bring a second break sooner.
+## 2026-11-25: one need at zero no longer hides behind five full ones (OST-205)
+
+- Symptom: a person with hunger at zero and every other need full had a needs term of +0.4 and
+  could sit at mood +1; the term was the mean of the six needs centred on half-full.
+- Cause: a mean hides the one need that matters.
+- Fix: `mood_terms` now reads `0.8 * (mean - 0.75) - 0.6 * max(0, 0.3 - least) / 0.3`, centred
+  on "fine" with the neediest need biting on its own; the old 1.2 weight is folded in.
+- Guards: `tests/mood.rs::a_starving_person_is_not_content` (needs term at most -0.3 with hunger
+  at zero) and `a_comfortable_person_is_only_mildly_lifted_by_needs` (between 0 and 0.15 at 0.85
+  everywhere); both fail without the change.
+- Test follow-ups: `health.rs` counts a tended patient who left the valley as not dead, and
+  `qa_1026.rs` reads the arrival shock fading off the thought, not the camp's mood. The
+  `threats.rs` east-edge band test now fails on the thirst half (the band never reaches water);
+  it is kept strict and tracked in its own issue, which this change waits on.
+- Not covered: the census on seeds 1-4 and break rates were not re-measured, and simulation
+  digests change because mood feeds decisions.
 ## 2026-11-26: a thirsty band is sent to water whose surface sits above the bank (#725)
 
 - Symptom: in the east-edge threats test a band set down 47 tiles from a deep river read thirst 0 and
