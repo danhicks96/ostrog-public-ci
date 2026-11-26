@@ -5,6 +5,11 @@
 M opens the founding colony's chart and roster. The watcher can follow a sworn resident at home or watch the travelling party on its surveyed route. The same route terrain determines finite seasonal forage. The seven scattered survivors stay hidden until discovery.
 
 Local floors, route tiles and world hexes keep their last observation when the party loses sight. Unknown ground hides living occupants and block details. Local observation also works in worlds without a regional chart.
+## 2026-11-26 - Landing-site rivers follow regional drainage
+
+New landing sites on a mapped river inherit channel inlets, outlet and crossing levels from the regional drainage network. Neighbouring river regions share the position and width of a crossing. The river shapes the bed and banks before strata and plants form.
+
+The simulation records directed drops between channel surfaces at generation. A drop is active while both original surfaces are liquid and exposed. Drought, inundation and ice can interrupt it. Existing saves keep their original terrain and water.
 
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 

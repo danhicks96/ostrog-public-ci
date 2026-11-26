@@ -365,3 +365,56 @@ fn the_wizard_shows_the_ground_the_world_will_have() {
     assert!(same * 100 >= n * 99, "{same} of {n} columns as previewed");
     assert_eq!(w.meta.founding_site, p.founding);
 }
+
+#[test]
+fn river_regions_share_a_wet_crossing_at_the_same_height() {
+    use hf_sim::setup::preview_in;
+    let seed = 7;
+    let m = realm::generate(seed, &small());
+    let mut checked = 0;
+    for i in 0..m.river.len() {
+        let j = m.down[i];
+        if !m.river[i]
+            || j == usize::MAX
+            || !m.river[j]
+            || !embark::habitable(&m, i)
+            || !embark::habitable(&m, j)
+        {
+            continue;
+        }
+        let (x, y) = m.xy(i);
+        let (xx, yy) = m.xy(j);
+        let dx = xx as i32 - x as i32;
+        let dy = yy as i32 - y as i32;
+        // Cover both cardinal edges and diagonal corner crossings.
+        if (checked == 0) != (dx == 0 || dy == 0) {
+            continue;
+        }
+        let a = preview_in(seed, &m, None, Some(i));
+        let b = preview_in(seed, &m, None, Some(j));
+        let on_edge = |n, dir, along| match dir {
+            -1 => 0,
+            1 => n - 1,
+            _ => along,
+        };
+        let mut shared = 0;
+        for along in 0..if dx != 0 && dy != 0 { 1 } else { a.width } {
+            let ai =
+                (a.width * on_edge(a.height, dy, along) + on_edge(a.width, dx, along)) as usize;
+            let bi =
+                (b.width * on_edge(b.height, -dy, along) + on_edge(b.width, -dx, along)) as usize;
+            if a.columns[ai] == 255 && b.columns[bi] == 255 && a.heights[ai] == b.heights[bi] {
+                shared += 1;
+            }
+        }
+        assert!(
+            shared >= if dx == 0 || dy == 0 { 3 } else { 1 },
+            "regions {i}/{j}, shared width {shared}"
+        );
+        checked += 1;
+        if checked == 2 {
+            break;
+        }
+    }
+    assert_eq!(checked, 2);
+}

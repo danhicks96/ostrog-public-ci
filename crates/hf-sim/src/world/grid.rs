@@ -51,6 +51,9 @@ pub struct WorldGrid {
     /// before biomes existed and in hand-built grids.
     #[serde(default)]
     pub biome: Vec<crate::world::gen::biome::Biome>,
+    /// Directed surface drops cut by the regional river generator, before water deepening.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub river_spills: Vec<crate::world::gen::watershed::SpillEdge>,
 }
 
 #[cfg(test)]
@@ -76,6 +79,7 @@ impl WorldGrid {
             chunks: BTreeMap::new(),
             materials: MaterialTable::default(),
             biome: Vec::new(),
+            river_spills: Vec::new(),
         }
     }
 

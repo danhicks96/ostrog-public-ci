@@ -60,6 +60,7 @@ fn valley_params(
         landform: landform.unwrap_or_else(|| {
             crate::world::gen::Landform::of_seed(crate::world::gen::ground_seed(seed, place))
         }),
+        river: crate::world::gen::watershed::RiverReach::of_region(seed, m, region),
         place,
         ..GenParams::default()
     }
