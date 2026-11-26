@@ -24,7 +24,7 @@ import sys
 SKIP_PATHS = ("tools/hygiene/", "Cargo.lock", "docs/HYGIENE.md", "tools/tests/hygiene_rules_guard_test.py")
 SKIP_SUFFIX = (".png", ".jpg", ".ogg", ".zip", ".sqlite", ".hfsave", ".lock")
 
-OK_EMAIL = re.compile(r"(@users\.noreply\.github\.com|@example\.(com|org|net)|@[\w.-]*\.(example|invalid|test|local)$|@localhost)", re.I)
+OK_EMAIL = re.compile(r"(@users\.noreply\.github\.com|^support@github\.com$|@example\.(com|org|net)|@[\w.-]*\.(example|invalid|test|local)$|@localhost)", re.I)
 RULES = [
     ("email", re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+"), lambda m: not OK_EMAIL.search(m.group(0)) and not re.search(r"\.(png|jpg|jpeg|gif|webp|svg|ogg)$", m.group(0), re.I) and not re.search(r"@\d+x(\.|$)", m.group(0))),
     ("ipv4", re.compile(r"(?<![\w.])((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)(?![\w.])"), lambda m: not re.match(r"(127\.|0\.0\.0\.0|255\.|192\.0\.2\.|198\.51\.100\.|203\.0\.113\.)", m.group(0))),
