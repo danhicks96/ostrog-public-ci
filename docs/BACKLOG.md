@@ -529,7 +529,7 @@ Hearths are cooked at but never get a pot. Post one from a stored vessel. Tracki
 
 ### OST-1400 · Name three stages of childhood
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#616](https://github.com/danhicks96/ostrog-public-ci/pull/616)
 
 Add an infant, small-child and older-child answer to how far along a child is, with two helpers for later behaviour gates. Decision D101 already records the ages: infant under 2, small under 7, grown at 15 (human years), scaled by each kind's maturity. This is a read-only helper: no caller, no saved field, no behaviour change. The age of authority (16) stays a separate rule.
 
@@ -537,7 +537,7 @@ Add an infant, small-child and older-child answer to how far along a child is, w
 
 ### OST-1401 · Add a threat pacing census example
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#617](https://github.com/danhicks96/ostrog-public-ci/pull/617)
 
 Add a read-only example that prints one CSV row per 100 game-days of band set-outs, hosts besieging, portions raided, endings by kind, deaths not of old age and the longest gap from an ending to the next arrival, so storyteller changes can be measured before and after. No simulation change and no threat tuning.
 
@@ -545,7 +545,7 @@ Add a read-only example that prints one CSV row per 100 game-days of band set-ou
 
 ### OST-1402 · Score a house as a room
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#618](https://github.com/danhicks96/ostrog-public-ci/pull/618)
 
 Add a pure room statistic for a house plan: space per sleeper, furnishing, light, beauty and clutter, folded into one bounded impressiveness number. Nothing calls it, and dirt stays zero until a dirt source exists. Do not wire a consumer, home valuation or the body provenance work in OST-006.
 
@@ -553,7 +553,7 @@ Add a pure room statistic for a house plan: space per sleeper, furnishing, light
 
 ### OST-1403 · Find one tile for a lean-to
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#619](https://github.com/danhicks96/ostrog-public-ci/pull/619)
 
 Add a pure search for the nearest suitable single tile within 12 tiles of home where one person could put up a lean-to. The tile must be flat, walkable, dry, unbuilt, not ordered, outside house plans and the palisade, and not a place the person fears. Nothing calls it. This shares `houses.rs` with OST-1402, so the two land one after the other.
 
@@ -561,7 +561,7 @@ Add a pure search for the nearest suitable single tile within 12 tiles of home w
 
 ### OST-1404 · Let wild plants read their ground
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#620](https://github.com/danhicks96/ostrog-public-ci/pull/620)
 
 Wild, non-crop plants currently grow at the weather's rate alone. Make them read ground, nearby water, shade from a mature tree, and crowding the way crops already read ground, reusing the existing crop ground table. This changes plant growth, so it is a gameplay change, not a refactor.
 
