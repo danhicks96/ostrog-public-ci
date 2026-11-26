@@ -393,6 +393,14 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 
 **First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
 
+### OST-202 · A bounded long-memory term for mood
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** Pending
+
+Mood adds every long memory together with no bound, no fading and no habituation, so a routine meal eaten for years counts as much as a loss. Add the pure function the new mood formula will call: a bounded term that weighs recent and vivid memories and tires of routine ones. Nothing calls it yet.
+
+**Acceptance:** The term is bounded by 0.35 whatever the store size, a routine memory reinforced 200 times adds at most a twentieth of a fresh one, a vivid loss shows among many meals, and an old memory fades. Simulation digests are unchanged.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
