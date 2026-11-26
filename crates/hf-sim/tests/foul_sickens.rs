@@ -164,8 +164,9 @@ fn a_well_does_not_test_the_foul_pond_beside_it() {
                         StructureKind::Well,
                         at.offset(0, 1, 0),
                         Material::STONE_BLOCK,
-                        finished,
+                        true,
                     );
+                    w.structures.last_mut().unwrap().progress = if finished { 1.0 } else { 0.5 };
                     w.ensure_nav();
                     if finished {
                         let chosen = hf_sim::water::nearest_knowing(
