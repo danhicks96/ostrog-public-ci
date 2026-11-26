@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-26: four distinct births have eight valley-born parent links (OST-605)
+
+- The completed original seed-5 600-day opening records 33 births. The production
+  `lineage_stats` helper reads its final save as two living people with a living grandparent
+  and four births to a valley-born parent. The save and simulation digest are unchanged
+  by the inspection.
+- An independent check of all recorded `Born` rows finds the same four children. Each has
+  two valley-born parents, so there are eight parent-child links. Those eight links are
+  not eight separate births; the counter keeps one count per child.
+- The issue's legacy target of eight third-generation births is therefore not reproduced
+  as a distinct-child count. The issue asks whether the target means links or needs a new
+  distinct-birth baseline. This acceptance remains unresolved; no birth rule or counting
+  definition has been changed to force the expected number.
+- The complete seeds 5-8 table, including recorded inherited parent feuds, is still running.
+
 ## 2026-11-25: lineage and inherited parent feuds in the alive report (OST-605)
 
 - Symptom: no in-tree report counted third-generation births or living grandparents.
@@ -19,6 +34,19 @@
 - Seeds 5-8 x 600 days and the seed-5 comparison with eight third-generation births are pending.
   No simulation state, save format, decisions or RNG change.
 
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)
 
 - Symptom: the glance count could not say which activities the client draws as plain standing,
