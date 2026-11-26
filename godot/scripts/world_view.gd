@@ -248,6 +248,7 @@ func reset_world() -> void:
 		for n in chunk_nodes[k]:
 			n.queue_free()
 	chunk_nodes.clear()
+	floor_stamp = Vector2i(-1,-1)
 	chunk_seen.clear()
 	_variety.clear()
 	_variety_key = ""
@@ -259,6 +260,26 @@ func reset_world() -> void:
 	_ruins_ms = -100000
 	focus_id = -1
 
+var observer := ColonyAtlas.new()
+var remembered := {}
+var surveyed_floor := false
+var floor_stamp := Vector2i(-1,-1)
+
+func _read_observed_floor() -> void:
+	var tick: int = sim.tick()
+	var stamp := Vector2i(floori((tick - 17) / 200.0), view_z)
+	if stamp == floor_stamp:
+		return
+	floor_stamp = stamp
+	remembered.clear()
+	var cells := observer.remembered_floor(sim, view_z)
+	surveyed_floor = cells.size() >= 2
+	for i in range(2,cells.size(),6):
+		remembered[Vector2i(cells[i],cells[i+1])] = Vector4i(cells[i+2],cells[i+3],cells[i+4],cells[i+5])
+
+func tile_in_sight(at: Vector2i) -> bool:
+	return not surveyed_floor or remembered.get(at, Vector4i.ZERO).x == 1
+
 var known_only := false
 var sky := 0
 var season := 0
@@ -267,6 +288,7 @@ var occupied := {}
 var explored := {}
 
 func refresh() -> void:
+	_read_observed_floor()
 	levels.clear()
 	explored.clear()
 	if known_only:

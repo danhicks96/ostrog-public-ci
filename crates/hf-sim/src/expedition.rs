@@ -152,6 +152,10 @@ pub struct Overworld {
     pub next_caravan_id: u32,
     /// People off the map, kept whole (identity, memories, skills) until they return.
     pub away: Vec<crate::agents::Agent>,
+    #[serde(default)]
+    pub picked: BTreeMap<(u32, i32, i32), (u64, u32)>,
+    #[serde(default)]
+    pub surveys: BTreeMap<CommunityId, survey::Survey>,
 }
 
 const SITE_NAMES: &[&str] = &[
@@ -220,6 +224,8 @@ impl Overworld {
             caravans: Vec::new(),
             next_caravan_id: 0,
             away: Vec::new(),
+            picked: BTreeMap::new(),
+            surveys: BTreeMap::new(),
         }
     }
 
@@ -327,6 +333,8 @@ impl Overworld {
             caravans: Vec::new(),
             next_caravan_id: 0,
             away: Vec::new(),
+            picked: BTreeMap::new(),
+            surveys: BTreeMap::new(),
         }
     }
 }
@@ -425,4 +433,50 @@ pub fn road_incident(line: &str) -> Option<RoadIncident> {
         .iter()
         .find(|(s, _)| line.contains(s))
         .map(|(_, k)| *k)
+}
+
+#[path = "route_level.rs"]
+pub mod route_level;
+#[path = "expedition_survey.rs"]
+pub mod survey;
+
+pub const ROAD_UNITS_PER_DAY: i64 = 1200;
+
+/// Local road coordinates for observing an expedition between daily travel decisions.
+/// One segment is a travel day. The same clock and caravan state locate the party
+/// when the watcher opens the map, after reload, or while watching a different party.
+pub fn road_distance(c: &Caravan, tick: u64, days: u32) -> i64 {
+    use crate::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
+    let dawn = 6 * TICKS_PER_HOUR;
+    let elapsed = (tick % TICKS_PER_DAY + TICKS_PER_DAY - dawn) % TICKS_PER_DAY;
+    let length = i64::from(days) * ROAD_UNITS_PER_DAY;
+    let along =
+        |day: u32, fraction: i64| (i64::from(day) * ROAD_UNITS_PER_DAY + fraction).min(length);
+    let (travelled, total) = if matches!(c.state, CaravanState::Outbound { day: 0 }) {
+        let since = tick.saturating_sub(c.departed);
+        let until_update =
+            TICKS_PER_DAY - (c.departed % TICKS_PER_DAY + TICKS_PER_DAY - dawn) % TICKS_PER_DAY;
+        (since.min(until_update), until_update)
+    } else {
+        (elapsed, TICKS_PER_DAY)
+    };
+    let fraction = (travelled * ROAD_UNITS_PER_DAY as u64 / total) as i64;
+    match c.state {
+        CaravanState::Outbound { day } => along(day, fraction),
+        CaravanState::Returning { day } => length - along(day, fraction),
+        CaravanState::Stranded {
+            back_day,
+            then_return,
+            ..
+        } => {
+            let at = along(back_day, 0);
+            if then_return {
+                length - at
+            } else {
+                at
+            }
+        }
+        CaravanState::AtSite { .. } => length,
+        _ => 0,
+    }
 }

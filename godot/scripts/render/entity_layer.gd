@@ -202,7 +202,7 @@ func _new_sprite(parent: Node) -> Sprite2D:
 	parent.add_child(s)
 	return s
 
-func _new_person() -> Node2D:
+func _new_person(parent: Node) -> Node2D:
 	var p := Node2D.new()
 	for n in ["body", "cloth", "hair", "band", "equip"]:
 		var s := _new_sprite(p)
@@ -221,7 +221,7 @@ func _new_person() -> Node2D:
 	em.visible = false
 	em.set_meta("kind", 0)
 	p.add_child(em)
-	add_child(p)
+	parent.add_child(p)
 	return p
 
 func _take(kind: String) -> Node:
@@ -232,7 +232,7 @@ func _take(kind: String) -> Node:
 		node = arr[n]
 	else:
 		match kind:
-			"person": node = _new_person()
+			"person": node = _new_person(self)
 			"shadow", "blob", "iblob", "ashadow": node = _new_sprite(shadows)
 			_: node = _new_sprite(self)
 		arr.append(node)
@@ -522,6 +522,8 @@ func _agent(i: int) -> void:
 	var A: PackedInt32Array = v.agents
 	var x: int = A[i + 1]
 	var y: int = A[i + 2]
+	if not v.tile_in_sight(Vector2i(x, y)):
+		return
 	var species: int = A[i + 4]
 	var fx: int = A[i + 12]
 	var fy: int = A[i + 13]
@@ -547,6 +549,31 @@ func _agent(i: int) -> void:
 		return
 	var p: Node2D = _take("person")
 	p.position = foot
+	var carry_kind: int = v.carried.get(A[i], -1)
+	var plan := dress_person(p, A, i, carry_kind)
+	var carry: Sprite2D = p.get_node("carry")
+	carry.texture = null
+	carry.scale = Vector2.ONE
+	if carry_kind >= 0 and carry_kind < v.ITEM_NAME.size():
+		# The same icon as on the ground, its material's where one is drawn, at half size: the
+		# old 16 px set was drawn apart from the 32 px one (#186, QA 2026-10-20, C63).
+		var iname: String = v.ITEM_NAME[carry_kind]
+		var mat: int = v.carried_mat.get(A[i], 0)
+		if mat > 0 and mat < v.mat_slugs.size():
+			carry.texture = v.assets.optional("items32/%s_%s.png" % [iname, v.mat_slugs[mat]])
+		if carry.texture == null:
+			carry.texture = v.assets.optional("items32/%s.png" % iname)
+		if carry.texture != null:
+			var big: int = maxi(carry.texture.get_width(), carry.texture.get_height())
+			carry.scale = Vector2.ONE * (16.0 / float(maxi(big, 1)))
+		else:
+			carry.texture = v._tex("items/%s.png" % iname)
+	carry.visible = carry.texture != null
+	_blob(base + Vector2(16, TILE - 3), 0.4)
+	animated.append(["person", p, i, plan])
+
+## Apply the same inherited appearance and equipment in valley and expedition views.
+func dress_person(p: Node2D, A: PackedInt32Array, i: int, carry_kind: int) -> String:
 	# Strangers from beyond the valley: road dust and hunger on them, so they read apart from
 	# the settlers at a glance.
 	p.modulate = Color(0.86, 0.8, 0.72) if A[i + 21] != 0 else Color(1, 1, 1)
@@ -600,33 +627,13 @@ func _agent(i: int) -> void:
 	var band: Sprite2D = p.get_node("band")
 	band.texture = v._tex("people/overlay_bandage_%s.png" % plan_ba) if A[i + 17] == 1 else null
 	band.visible = band.texture != null
-	var carry_kind: int = v.carried.get(A[i], -1)
 	var equipment: int = A[i + 19]
 	var eq: Sprite2D = p.get_node("equip")
 	eq.texture = null
 	if equipment >= 0 and equipment < v.EQUIPMENT.size() and carry_kind < 0:
 		eq.texture = v._tex("people/equipment_%s%s.png" % [v.EQUIPMENT[equipment], sfx])
 	eq.visible = eq.texture != null
-	var carry: Sprite2D = p.get_node("carry")
-	carry.texture = null
-	carry.scale = Vector2.ONE
-	if carry_kind >= 0 and carry_kind < v.ITEM_NAME.size():
-		# The same icon as on the ground, its material's where one is drawn, at half size: the
-		# old 16 px set was drawn apart from the 32 px one (#186, QA 2026-10-20, C63).
-		var iname: String = v.ITEM_NAME[carry_kind]
-		var mat: int = v.carried_mat.get(A[i], 0)
-		if mat > 0 and mat < v.mat_slugs.size():
-			carry.texture = v.assets.optional("items32/%s_%s.png" % [iname, v.mat_slugs[mat]])
-		if carry.texture == null:
-			carry.texture = v.assets.optional("items32/%s.png" % iname)
-		if carry.texture != null:
-			var big: int = maxi(carry.texture.get_width(), carry.texture.get_height())
-			carry.scale = Vector2.ONE * (16.0 / float(maxi(big, 1)))
-		else:
-			carry.texture = v._tex("items/%s.png" % iname)
-	carry.visible = carry.texture != null
-	_blob(base + Vector2(16, TILE - 3), 0.4)
-	animated.append(["person", p, i, plan])
+	return plan
 
 # ---------------------------------------------------------------- per frame
 func animate() -> void:

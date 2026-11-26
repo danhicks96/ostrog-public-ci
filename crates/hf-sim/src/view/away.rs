@@ -60,6 +60,9 @@ pub struct Away {
 }
 
 fn name_of(w: &World, id: crate::ids::AgentId) -> Option<String> {
+    if crate::view::known::is_unfound(w, id) {
+        return None;
+    }
     w.agents
         .iter()
         .chain(w.overworld.away.iter())

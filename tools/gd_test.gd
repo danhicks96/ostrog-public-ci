@@ -2131,3 +2131,26 @@ func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
 	var since: Dictionary = sim.catch_up_since(0)
 	check(since.has("has_news"), "since-look says whether there is news")
 	sim.free()
+
+func test_colony_observation_respects_membership_and_fog() -> void:
+	var sim := SimHost.new()
+	check(sim.opening(5, [0, 1, 2], PackedInt64Array([]), "steady") == "", "founding colony")
+	var atlas := ColonyAtlas.new()
+	var data := atlas.snapshot(sim, -1)
+	check(data.members.size() == 3, "only the three sworn, discovered founders appear")
+	check(atlas.snapshot(sim, int(data.community) + 1).is_empty(), "another community cannot be selected")
+	check(atlas.level_tiles(sim, int(data.community) + 1, data.members[0].id).is_empty(), "another community cannot read the expedition")
+	var v := WorldView.new()
+	v.surveyed_floor = true
+	v.remembered = {Vector2i(2,1):Vector4i(0,0,0,-1), Vector2i(1,1):Vector4i(1,0,0,-1)}
+	check(v.tile_in_sight(Vector2i(1,1)), "a current cell can be inspected")
+	check(not v.tile_in_sight(Vector2i(2,1)) and not v.tile_in_sight(Vector2i(3,1)), "stale and unknown cells conceal present occupants")
+	var rows := PackedInt32Array()
+	rows.resize(25)
+	rows[0] = 9
+	rows[1] = 2
+	rows[2] = 1
+	var pos := Rules.drawn_at(rows,0) - Vector2(0,8)
+	check(Rules.pick(rows,25,0,pos,1.0,v.tile_in_sight) == -1, "a hidden inhabitant cannot be picked")
+	v.free()
+	sim.free()

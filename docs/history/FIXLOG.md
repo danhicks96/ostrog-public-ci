@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-26 - Follow the colony at home and on the road
+
+M opens the founding colony's chart and roster. The watcher can follow a sworn resident at home or watch the travelling party on its surveyed route. The same route terrain determines finite seasonal forage. The seven scattered survivors stay hidden until discovery.
+
+Local floors, route tiles and world hexes keep their last observation when the party loses sight. Unknown ground hides living occupants and block details. Local observation also works in worlds without a regional chart.
+
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 
 - Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;

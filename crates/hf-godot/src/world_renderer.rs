@@ -169,6 +169,9 @@ pub fn ground_instances(world: &World, z: i32) -> Vec<GroundInstance> {
         .collect()
 }
 
+#[path = "colony_atlas.rs"]
+mod colony_atlas;
+
 #[cfg(test)]
 mod tests {
     use super::*;

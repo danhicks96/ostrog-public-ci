@@ -45,6 +45,39 @@ fn founded(seed: u64) -> (World, hf_sim::ids::CommunityId) {
 }
 
 #[test]
+fn observed_road_follows_the_expedition_clock() {
+    use hf_sim::expedition::road_distance;
+    use hf_sim::time::TICKS_PER_HOUR;
+    let (mut w, cid) = founded(1001);
+    let site = w.overworld.sites[0].id;
+    form_caravan(&mut w, cid, Purpose::Scout { site }).unwrap();
+    let c = &mut w.overworld.caravans[0];
+    let dawn = 6 * TICKS_PER_HOUR;
+    c.departed = dawn + TICKS_PER_HOUR;
+    c.state = CaravanState::Outbound { day: 0 };
+    assert_eq!(road_distance(c, c.departed, 3), 0);
+    let shortly_before_dawn = dawn + TICKS_PER_DAY - 1;
+    let outbound = road_distance(c, shortly_before_dawn, 3);
+    c.state = CaravanState::Outbound { day: 1 };
+    let next = road_distance(c, shortly_before_dawn + 1, 3);
+    assert!(outbound > 0 && next - outbound == 1);
+    c.state = CaravanState::AtSite { day: 0 };
+    let end = road_distance(c, dawn, 3);
+    c.state = CaravanState::Returning { day: 0 };
+    assert_eq!(road_distance(c, dawn, 3), end);
+    assert!(road_distance(c, dawn + TICKS_PER_HOUR, 3) < end);
+    c.state = CaravanState::Stranded {
+        days: 2,
+        then_return: true,
+        back_day: 1,
+    };
+    assert_eq!(
+        road_distance(c, dawn, 3),
+        road_distance(c, dawn + TICKS_PER_HOUR, 3)
+    );
+}
+
+#[test]
 fn caravan_returns_with_outcome() {
     let (w, cid) = founded(1001);
     let mut s = Session::new(w, Chronicle::in_memory().unwrap());

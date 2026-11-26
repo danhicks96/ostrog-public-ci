@@ -48,7 +48,41 @@ func _draw() -> void:
 			draw_line(Vector2(x_a, yy), Vector2(x_b, yy), Color(0.08, 0.06, 0.08, 0.75), 1.0)
 			draw_line(Vector2(x_a, yy + 1), Vector2(x_b, yy + 1), Color(0.95, 0.9, 0.78, 0.45), 1.0)
 		draw_circle(Vector2(ex * TILE + TILE / 2.0, ey * TILE + 6), 1.5, Color(0.08, 0.06, 0.08, 0.7))
-	if v.known_only:
+	if v.surveyed_floor:
+		for y in range(y0,y1):
+			for x in range(x0,x1):
+				var rect := Rect2(x*TILE,y*TILE,TILE,TILE)
+				var at := Vector2i(x,y)
+				if not v.remembered.has(at) or (v.known_only and not v.tile_in_sight(at)):
+					draw_rect(rect,Color("#0e1418"))
+					continue
+				var memory: Vector4i = v.remembered[at]
+				if memory.x != 0:
+					continue
+				# Paint only the stored floor and fitting. Current occupants leave no silhouette.
+				var material := memory.y & 65535
+				if material == 0:
+					material = memory.z
+				var family: String = v.FAMILY.get(material,"grey_stone")
+				if (memory.y >> 24) & 3:
+					family = "water"
+				var tint: Color = v.FALLBACK.get(family, Color("#6d746b"))
+				draw_rect(rect, Color("#141b20").lerp(tint,0.4))
+				var ground_sheet: Texture2D = v.assets.optional("terrain/%s.png" % family)
+				if ground_sheet:
+					var variant := posmod(hash(at), maxi(1,ground_sheet.get_width()/TILE))
+					draw_texture_rect_region(ground_sheet,rect,Rect2(variant*TILE,0,TILE,TILE),Color("#77818a"))
+				if ((memory.y >> 16) & 255) == 2:
+					# A remembered wall keeps its exposed face only where the neighbour
+					# was also recorded. Never inspect the live floor behind the fog.
+					var south: Vector4i = v.remembered.get(at+Vector2i.DOWN,Vector4i(0,2<<16,0,-1))
+					if ((south.y >> 16) & 255) != 2:
+						draw_rect(Rect2(rect.position+Vector2(0,TILE-6),Vector2(TILE,6)),Color(0.04,0.06,0.09,0.52))
+				if memory.w >= 0 and memory.w < v.STRUCT_NAME.size():
+					var texture: Texture2D = v._tex("structures/%s.png" % v.STRUCT_NAME[memory.w])
+					if texture != null:
+						draw_texture_rect_region(texture,rect,Rect2(0,0,32,32),Color("#686d73"))
+	elif v.known_only:
 		for cy in range(y0 >> 3, (y1 >> 3) + 1):
 			for cx in range(x0 >> 3, (x1 >> 3) + 1):
 				if not v.explored.has(Vector2i(cx, cy)):

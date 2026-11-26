@@ -454,7 +454,8 @@ Controls (from `godot/scripts/main.gd`):
 | F | follow the selected person |
 | H | History |
 | L | Legends (Backspace goes back) |
-| V | what the community knows, or everything |
+| M | open the colony map, follow a sworn resident or watch a caravan |
+| V | show or hide remembered terrain outside current sight |
 | F5 / F9 | save / load |
 | Ctrl+F1 to F8 / F1 to F8 | set / go to a bookmark |
 | O | settings |

@@ -9,7 +9,7 @@ const TimelapsePanel := preload("res://scripts/timelapse_panel.gd")
 const HistoryReel := preload("res://scripts/history_reel.gd")
 const AwayMap := preload("res://scripts/away_map.gd")
 ## The key list, shown on [?] (and once, on a first launch) instead of on every HUD line (#181).
-const HELP_TEXT := "[b]Mouse & Keys[/b]\n\n[b]Mouse[/b]\nClick any person or animal to inspect them (Follow, ★ Favourite, Go to)\nClick any ground, water, or rock tile to inspect what it holds\nDrag with any mouse button to pan (dragging stops following)\nMouse wheel zooms toward the pointer\nThe bottom bar has every command (B to hide/show)\nClick any feed line or top announcement to look where it happened\n\n[b]Keys[/b]\n[Space] pause   [1 2 3] speed   [Home] settlement\n[, .] or PgUp/PgDn   level up and down\n[C] camera director   [F] follow inspected   [J] ★ favourites\n[P] people   [H] history   [T] timelapse   [L] legends\n[V] what the community has seen   [G] feed rate   [K] waiting work\n[N] alerts   [Shift+N] pause on major   [B] toggle bar\n[F5] save   [F9] load   [O] settings   [?] help   [U] catch up\n[Ctrl+F1–8] set bookmark, [F1–8] go to it"
+const HELP_TEXT := "[b]Mouse & Keys[/b]\n\n[b]Mouse[/b]\nClick any person or animal to inspect them (Follow, ★ Favourite, Go to)\nClick visible ground, water, or rock to inspect it\nDrag with any mouse button to pan (dragging stops following)\nMouse wheel zooms toward the pointer\nThe bottom bar has every command (B to hide/show)\nClick any feed line or top announcement to look where it happened\n\n[b]Keys[/b]\n[Space] pause   [1 2 3] speed   [Home] settlement\n[, .] or PgUp/PgDn   level up and down\n[C] camera director   [F] follow inspected   [J] ★ favourites\n[P] people   [H] history   [T] timelapse   [L] legends\n[M] colony map   [V] remembered terrain   [G] feed rate   [K] waiting work\n[N] alerts   [Shift+N] pause on major   [B] toggle bar\n[F5] save   [F9] load   [O] settings   [?] help   [U] catch up\n[Ctrl+F1–8] set bookmark, [F1–8] go to it"
 const TICKS_PER_SEC := 20.0
 const SPEEDS := [0, 1, 3, 10]
 
@@ -1395,7 +1395,7 @@ func _on_bar_pressed(id: String) -> void:
 		"known":
 			view.known_only = not view.known_only
 			view.refresh()
-			_note("view: %s" % ("what the community has seen" if view.known_only else "everything"))
+			_note("view: %s" % ("currently in sight" if view.known_only else "current and remembered terrain"))
 			_fx("ui_click")
 		"feed_rate":
 			_cycle_feed_rate()
@@ -1439,7 +1439,7 @@ func _update_bar_buttons() -> void:
 	bar_buttons["spd2"].text = "[3×]" if speed_idx == 2 else "3×"
 	bar_buttons["spd3"].text = "[10×]" if speed_idx == 3 else "10×"
 	bar_buttons["director"].text = "Director: on" if director_on else "Director: off"
-	bar_buttons["known"].text = "Known: on" if (view != null and view.known_only) else "Known: all"
+	bar_buttons["known"].text = "In sight" if (view != null and view.known_only) else "Sight + memory"
 	if bar_buttons.has("feed_rate"):
 		bar_buttons["feed_rate"].text = "Feed: " + Rules.feed_rate_name(feed_rate)
 	bar_buttons["announce"].text = "Alerts: " + Rules.ANNOUNCE_NAMES[announce_mode]
@@ -1461,8 +1461,10 @@ func _inspect_block(p: Vector3i) -> void:
 	selected_block = p
 	hint_inspected_block = true
 	_record_hint_progress()
-	var d: Dictionary = sim.inspect_block(p.x, p.y, p.z)
-	block_box.text = Rules.format_block(d)
+	if p.z == view.view_z and not view.tile_in_sight(Vector2i(p.x, p.y)):
+		block_box.text = "Last observed terrain. Nobody can see this tile now." if view.remembered.has(Vector2i(p.x, p.y)) else "Unobserved terrain."
+	else:
+		block_box.text = Rules.format_block(sim.inspect_block(p.x, p.y, p.z))
 	panels.open(&"block")
 
 func _show_favourites() -> void:
@@ -1577,7 +1579,7 @@ func _update_hud() -> void:
 				hover_tag_text = Rules.hover_tag(hd)
 		if hover_cache_text != "":
 			hud.text += "\n" + hover_cache_text
-	elif hover_id < 0 and hover_tile.x >= 0:
+	elif hover_id < 0 and hover_tile.x >= 0 and view.tile_in_sight(hover_tile):
 		var site: String = sim.site_note(hover_tile.x, hover_tile.y, view.view_z)
 		if site != "":
 			hud.text += "\n> " + site
@@ -1977,7 +1979,7 @@ func _show_history() -> void:
 			s += "[b]%s[/b]  %s\n" % [e[0], e[1]]
 			for n in e[2]:
 				s += "    %s\n" % n
-	s += "\n[color=#9a9a9a]H or Esc to close   [V] toggles the view to what the community has seen[/color]"
+	s += "\n[color=#9a9a9a]H or Esc to close   [V] shows or hides remembered terrain[/color]"
 	summary_box.text = s
 	panels.open(&"summary")
 	_fx("ui_page")
@@ -2323,7 +2325,7 @@ func _agent_pos(id: int) -> Vector2:
 ## Whoever is drawn under the pointer, within a few screen pixels at any zoom (#183, QA
 ## 2026-10-20, C63: the tile's centre and a fixed world radius missed walking people).
 func _pick_agent(world_pos: Vector2) -> int:
-	return Rules.pick(view.agents, view.AGENT_STRIDE, view.view_z, world_pos, cam.zoom.x)
+	return Rules.pick(view.agents, view.AGENT_STRIDE, view.view_z, world_pos, cam.zoom.x, view.tile_in_sight)
 
 ## One wheel step toward the pointer, onto whole-pixel zoom levels (#183).
 func _zoom_step(dir: int) -> void:
@@ -2451,7 +2453,7 @@ func _unhandled_input(e: InputEvent) -> void:
 				_fx("ui_click")
 				view.known_only = not view.known_only
 				view.refresh()
-				_note("view: %s" % ("what the community has seen" if view.known_only else "everything"))
+				_note("view: %s" % ("currently in sight" if view.known_only else "current and remembered terrain"))
 			KEY_F5:
 				if sim.save_to(persist.manual_path()): _note("saving…"); _fx("ui_chime")
 			KEY_F9:

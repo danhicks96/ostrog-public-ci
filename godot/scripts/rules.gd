@@ -224,11 +224,11 @@ static func drawn_at(a: PackedInt32Array, i: int) -> Vector2:
 ## The id of whoever is drawn nearest `world_pos` on level `z`, within PICK_PX screen pixels
 ## at camera zoom `zoom`, else -1 (#183: it compared the tile, not the drawn position, with
 ## a fixed world radius). The point picked is the body's middle, half a tile above the feet.
-static func pick(a: PackedInt32Array, stride: int, z: int, world_pos: Vector2, zoom: float) -> int:
+static func pick(a: PackedInt32Array, stride: int, z: int, world_pos: Vector2, zoom: float, visible: Callable = Callable()) -> int:
 	var best := -1
 	var bd := PICK_PX / maxf(zoom, 0.01)
 	for i in range(0, a.size(), stride):
-		if a[i + 3] != z:
+		if a[i + 3] != z or (visible.is_valid() and not visible.call(Vector2i(a[i+1], a[i+2]))):
 			continue
 		var dd := (drawn_at(a, i) - Vector2(0, 8)).distance_to(world_pos)
 		if dd < bd:

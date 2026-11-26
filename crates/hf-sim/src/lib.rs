@@ -113,7 +113,10 @@ pub struct Session {
 }
 
 impl Session {
-    pub fn new(world: World, chronicle: chronicle::Chronicle) -> Self {
+    pub fn new(mut world: World, chronicle: chronicle::Chronicle) -> Self {
+        if world.overworld.surveys.is_empty() {
+            expedition::survey::observe(&mut world);
+        }
         let written = chronicle.max_event_id().ok().flatten();
         Session {
             world,

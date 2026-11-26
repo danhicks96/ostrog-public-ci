@@ -27,6 +27,7 @@ pub fn step(w: &mut World) {
     let tick = w.meta.tick;
     if tick % 200 == 17 {
         forming(w);
+        crate::expedition::survey::observe(w);
     }
     // New journeys are proposed by someone who wants to go (systems/projects.rs).
     if tick % TICKS_PER_DAY == TICKS_PER_HOUR * 6 {
@@ -429,17 +430,34 @@ fn travel_day(w: &mut World) {
                             let amount = (members.len() as f32 * (1.0 + skill_of(w, who) / 10.0))
                                 .round()
                                 .max(1.0) as u32;
-                            cargo.push((food, amount));
-                            log.push(format!(
-                                "{} {}: {} gathered {} {} by the way",
-                                leg,
-                                day + 1,
-                                name(w, who),
+                            let road = crate::expedition::road_distance(
+                                &c,
+                                tick.saturating_sub(1),
+                                site.days,
+                            );
+                            use crate::expedition::route_level;
+                            let amount = route_level::harvest(
+                                &mut w.overworld,
+                                route_level::route_seed(seed, &site),
+                                &site,
+                                road,
+                                crate::time::Calendar::from_tick(tick),
+                                food,
                                 amount,
-                                lower(food)
-                            ));
-                            if let Some(a) = w.overworld.away.iter_mut().find(|a| a.id == who) {
-                                a.skills.practise(Skill::Foraging, 2.0);
+                            );
+                            if amount > 0 {
+                                cargo.push((food, amount));
+                                log.push(format!(
+                                    "{} {}: {} gathered {} {} by the way",
+                                    leg,
+                                    day + 1,
+                                    name(w, who),
+                                    amount,
+                                    lower(food)
+                                ));
+                                if let Some(a) = w.overworld.away.iter_mut().find(|a| a.id == who) {
+                                    a.skills.practise(Skill::Foraging, 2.0);
+                                }
                             }
                         }
                     }

@@ -124,6 +124,14 @@ fn a_place_holding_a_grudge_threatens_and_grief_shows() {
         r.feeling.as_deref(),
         Some(format!("grieving for {other_name}").as_str())
     );
+
+    // A feeling may be observable even when its subject is still one of the lost.
+    w.survivor_pool = hf_sim::opening::pool(22, &[0; hf_sim::opening::PARTY]);
+    w.survivor_pool[0].state = hf_sim::opening::SurvivorState::Lost {
+        agent: other,
+        found: false,
+    };
+    assert!(!list(&w)[0].line.contains(&other_name));
 }
 
 #[test]
