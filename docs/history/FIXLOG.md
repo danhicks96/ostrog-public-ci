@@ -1,5 +1,17 @@
 # Fix log
 
+## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
+
+- Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;
+  only the need bar moved the mood.
+- Cause: `systems::strain` added thoughts for hunger and thirst but none for the social need.
+- Fix: `ThoughtKind::Lonely` is appended to the enum (old saves load unchanged), weight -0.15 for
+  half a day. It is added each hour while an awake person's social need is below 0.2 and lapses
+  once the need recovers. Sleepers never get it. Mood and strain for lonely people now read lower,
+  so seeded digests move.
+- Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
+  sleeper does not; a content person does not).
+
 ## 2026-11-24: nothing named what one person could see another doing (OST-1100)
 
 - Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground

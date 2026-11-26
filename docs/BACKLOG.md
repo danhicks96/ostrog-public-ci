@@ -98,7 +98,7 @@ Add a pure `ActKind` / `act_of` helper in `mind` that classifies a person's curr
 
 ### OST-1101 · Add a Lonely thought when the social need runs low
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** Pending
 
 Add a `Lonely` thought, appended to the thought list, that appears while an awake person's social need is low and fades when it recovers. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
