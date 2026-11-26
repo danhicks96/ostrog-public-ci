@@ -1127,10 +1127,10 @@ Narratives:
 
 | where | narrative |
 |---|---|
-| systems/culture.rs:593 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
-| systems/culture.rs:614 | We sow and cook more than we need, because {who} starved. |
-| systems/culture.rs:633 | We take in no strangers, since {who} led people away: {cause}. |
-| systems/culture.rs:678 | We do not eat {k}, because {who} fell ill of it and went hungry. |
+| systems/culture.rs:608 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
+| systems/culture.rs:629 | We sow and cook more than we need, because {who} starved. |
+| systems/culture.rs:648 | We take in no strangers, since {who} led people away: {cause}. |
+| systems/culture.rs:693 | We do not eat {k}, because {who} fell ill of it and went hungry. |
 
 #### The Engine (`engine.rs`)
 
@@ -3243,23 +3243,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/crafts.rs:242 | gone |
 | systems/crafts.rs:337 | refused to learn {} from {} |
 | systems/crafts.rs:345 | taught by {} |
-| systems/culture.rs:203 | how their people tell it: {telling} |
-| systems/culture.rs:271 | told by {tname} at the hearth |
-| systems/culture.rs:279 | the tale that {} |
-| systems/culture.rs:301 | how they came to hold that {} |
-| systems/culture.rs:304 | what they remember of the other side of the portal |
-| systems/culture.rs:349 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
-| systems/culture.rs:380 | hold that {} |
-| systems/culture.rs:586 | first |
-| systems/culture.rs:587 | second |
-| systems/culture.rs:588 | third |
-| systems/culture.rs:589 | fourth |
-| systems/culture.rs:590 | fifth |
-| systems/culture.rs:591 | {n}th |
-| systems/culture.rs:609 | starvation |
-| systems/culture.rs:889 | ale |
-| systems/culture.rs:891 | berry wine |
-| systems/culture.rs:894 | drunk |
+| systems/culture.rs:206 | how their people tell it: {telling} |
+| systems/culture.rs:286 | told by {tname} at the hearth |
+| systems/culture.rs:294 | the tale that {} |
+| systems/culture.rs:316 | how they came to hold that {} |
+| systems/culture.rs:319 | what they remember of the other side of the portal |
+| systems/culture.rs:364 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
+| systems/culture.rs:395 | hold that {} |
+| systems/culture.rs:601 | first |
+| systems/culture.rs:602 | second |
+| systems/culture.rs:603 | third |
+| systems/culture.rs:604 | fourth |
+| systems/culture.rs:605 | fifth |
+| systems/culture.rs:606 | {n}th |
+| systems/culture.rs:624 | starvation |
+| systems/culture.rs:904 | ale |
+| systems/culture.rs:906 | berry wine |
+| systems/culture.rs:909 | drunk |
 | systems/decide.rs:99 | someone |
 | systems/decide.rs:103 | search_for_the_lost |
 | systems/decide.rs:104 | go looking for one of the lost near {at} |
