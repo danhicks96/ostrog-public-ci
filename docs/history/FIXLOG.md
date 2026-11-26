@@ -18,6 +18,14 @@
   ignored) and `an_old_save_loads_without_the_hearth_record`. Old saves load; worlds with
   hearth evenings write fewer tellings, so digests change. The 700-day seeds 1-4 measurement
   in the issue was not run.
+## 2026-11-26: a guard for mood's needs term reading thirst and warmth (OST-551)
+
+- Symptom: the issue said the needs term ignored thirst and warmth. It no longer does: it
+  averages all six needs and takes the lowest (the #879 fix, tuned by OST-205). No behaviour
+  changes here.
+- Guard: `tests/thirst.rs::one_empty_thirst_or_warmth_is_miserable_on_the_needs_term` sets one
+  need empty with the rest full and requires the needs term at or below -0.3; it fails if the
+  term goes back to four needs.
 
 ## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
 
