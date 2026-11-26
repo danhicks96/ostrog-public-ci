@@ -395,6 +395,10 @@ pub fn step(w: &mut World) {
         if a.needs.thirst < 0.2 {
             a.thoughts.add(ThoughtKind::Thirsty, tick, None);
         }
+        // OST-1101: awake and starved of company; clears once the need recovers.
+        if a.needs.social < 0.2 && !a.activity.is_asleep() {
+            a.thoughts.add(ThoughtKind::Lonely, tick, None);
+        }
         if a.body.worst_wound() >= 0.3 {
             a.thoughts.add(ThoughtKind::Hurt, tick, None);
         }

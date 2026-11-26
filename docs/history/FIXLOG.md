@@ -14,6 +14,20 @@
   fix). Worlds with small children at the hearth tell fewer tales, so their digest changes. The
   700-day tellers-under-7 measurement was not run.
 
+## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
+
+- Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;
+  only the need bar moved the mood.
+- Cause: `systems::strain` added thoughts for hunger and thirst but none for the social need.
+- Fix: `ThoughtKind::Lonely` is appended to the enum (old saves load unchanged), weight -0.15 for
+  half a day. It is added each hour while an awake person's social need is below 0.2 and lapses
+  once the need recovers. Sleepers never get it. Mood and strain for lonely people now read lower,
+  so seeded digests move.
+- Seeded pacing tests moved with it: `hask_presses_plenty` now keeps the village socially content
+  (plenty is about food, not company), and `troubles_overlap_and_then_ease` uses seeds 3, 7, 11 and
+  29 (one turn each, four in all) because 13 and 17 no longer turn within the run.
+- Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
+  sleeper does not; a content person does not).
 ## 2026-11-24: the cost of a breakdown or a quarrel lasted one game-minute (OST-241)
 
 - Symptom: a breakdown took 0.2 off mood and a quarrel 0.15, and a game-minute later both were
