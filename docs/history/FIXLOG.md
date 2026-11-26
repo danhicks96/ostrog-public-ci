@@ -10,7 +10,8 @@
   tick is kept on the person (`Agent.whispered`, serde-default), so it is said once per twenty
   days, not for each further suspicion. This is per person and window, not per condition.
 - Guard: `tests/true_dream.rs::three_suspecters_make_one_whisper` fails with the threshold
-  raised; a fourth suspecter adds no second whisper. Old saves load; a world that reaches three
+  raised; a fourth suspecter adds no second whisper. `an_old_save_loads_without_the_suspicion_fields`
+  covers old saves loading the two new `Agent` fields; a world that reaches three
   suspecters gains one row, so its digest changes.
 
 ## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)

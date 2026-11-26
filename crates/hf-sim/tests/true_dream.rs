@@ -397,3 +397,16 @@ fn three_suspecters_make_one_whisper() {
         .unwrap();
     assert_eq!(said, 3);
 }
+
+/// A person saved before the suspicion record and the whisper tick existed still loads, with
+/// both empty (OST-173, OST-174).
+#[test]
+fn an_old_save_loads_without_the_suspicion_fields() {
+    let w = World::opening_world(61);
+    let mut v = serde_json::to_value(&w.agents[0]).expect("an agent serialises");
+    let o = v.as_object_mut().unwrap();
+    assert!(o.remove("suspicions").is_some() && o.remove("whispered").is_some());
+    let a: hf_sim::agents::Agent = serde_json::from_value(v).expect("an old agent still loads");
+    assert!(a.suspicions.is_empty());
+    assert_eq!(a.whispered, None);
+}
