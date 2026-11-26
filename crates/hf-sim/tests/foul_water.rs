@@ -299,3 +299,71 @@ fn committed_drinker_rechecks_a_foul_shore_before_the_last_sip() {
         }
     }
 }
+
+#[test]
+fn an_isolated_clean_pond_does_not_rule_out_reachable_foul_water() {
+    use hf_sim::{mind::Known, water};
+    let near = TilePos::new(23, 22, 2);
+    let clean = TilePos::new(28, 22, 2);
+    let from = near.offset(0, 1, 0);
+    for closed in [false, true] {
+        let mut w = flat(4561);
+        w.grid.set(near, water_tile());
+        w.grid.set(clean, water_tile());
+        for x in -2_i32..=2 {
+            for y in -2_i32..=2 {
+                if x.abs().max(y.abs()) == 2 && (closed || (x, y) != (-2, 0)) {
+                    for z in 0..=2 {
+                        w.grid
+                            .set(clean.offset(x, y, z), Tile::solid(Material::GRANITE));
+                    }
+                }
+            }
+        }
+        w.rebuild_caches();
+        floods::survey(&mut w);
+        w.ensure_nav();
+        w.weather.temperature_c = 10.0;
+        let who = w.found_party(1)[0];
+        let i = w.agents.iter().position(|a| a.id == who).unwrap();
+        let clean_bank = water::spots(&w, from, 8)
+            .into_iter()
+            .find(|s| s.source == clean)
+            .unwrap()
+            .stand;
+        assert_eq!(w.nav.as_ref().unwrap().reach(from, clean_bank), !closed);
+        w.waters.foul.insert(near, FOUL_HOURS);
+        let a = &mut w.agents[i];
+        a.pos = from;
+        a.needs.thirst = 0.45;
+        a.knowledge.note(
+            Known::Water(near),
+            near,
+            w.meta.tick,
+            floods::TAG_WATER_FOUL,
+        );
+        a.knowledge.note(
+            Known::Water(clean),
+            clean,
+            w.meta.tick,
+            floods::TAG_WATER_FRESH,
+        );
+        let pick = water::nearest_knowing(&w, i, from, 8, &w.agents[i].knowledge, false);
+        assert_eq!(
+            pick.map(|s| s.source),
+            Some(if closed { near } else { clean })
+        );
+        let desperate_pick =
+            water::nearest_knowing(&w, i, from, 8, &w.agents[i].knowledge, true).unwrap();
+        assert_eq!(desperate_pick.source, near);
+        if closed {
+            w.agents[i].knowledge.note(
+                Known::Water(near),
+                near,
+                w.meta.tick,
+                floods::TAG_WATER_SALT,
+            );
+            assert!(water::nearest_knowing(&w, i, from, 8, &w.agents[i].knowledge, true).is_none());
+        }
+    }
+}

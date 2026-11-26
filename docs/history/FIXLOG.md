@@ -1,5 +1,10 @@
 # Fix log
 
+## 2026-11-26: a clean pond beyond a closed wall cannot supply a drink
+
+- A non-parched person could lose their only reachable water when the clean shore they preferred was cut off. Water selection now keeps the nearest reachable foul source as a fallback while searching for a reachable better one. Known salt and recently dry stands still drop out.
+- Guard: `foul_water::an_isolated_clean_pond_does_not_rule_out_reachable_foul_water` opens and closes one gate around the same clean source, with both ponds still present and remembered.
+
 ## 2026-11-26: a drinker can reconsider a fouled shore at the last sip
 
 - Recheck the water the person remembers before the final drinking action. A reachable known alternative lets them leave without consuming water or marking their stand dry. If the alternative is gone, unknown, or unreachable, or thirst has passed desperation, they can still drink. A nearby finished well can supply its own water.

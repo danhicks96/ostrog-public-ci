@@ -282,19 +282,28 @@ pub fn nearest_knowing(
     let nav = w.nav.as_ref()?;
     let now = w.meta.tick;
     let cooldowns = &w.agents[i].work_cooldowns;
-    let spots: Vec<Spot> = candidates(w, from, radius)
-        .into_iter()
-        .filter(|s| cooldowns.get(&dry_key(s.stand)).is_none_or(|t| *t <= now))
-        .collect();
-    let tag = |s: &Spot| believed_tag(w, knowledge, s);
-    let salt = |s: &Spot| tag(s) == Some(crate::floods::TAG_WATER_SALT);
-    let foul = |s: &Spot| tag(s) == Some(crate::floods::TAG_WATER_FOUL);
-    // Nothing they could believe fresh in reach is its own desperation: foul water or none.
-    let desperate = desperate || !spots.iter().any(|s| !salt(s) && !foul(s));
-    spots
-        .into_iter()
-        .filter(|s| !salt(s) && (desperate || !foul(s)))
-        .find(|s| s.stand == from || nav.reach(from, s.stand))
+    let mut foul_fallback = None;
+    for s in candidates(w, from, radius) {
+        if cooldowns.get(&dry_key(s.stand)).is_some_and(|t| *t > now) {
+            continue;
+        }
+        let tag = believed_tag(w, knowledge, &s);
+        if tag == Some(crate::floods::TAG_WATER_SALT) {
+            continue;
+        }
+        let avoid = !desperate && tag == Some(crate::floods::TAG_WATER_FOUL);
+        if avoid && foul_fallback.is_some() {
+            continue;
+        }
+        if s.stand == from || nav.reach(from, s.stand) {
+            if !avoid {
+                return Some(s);
+            }
+            // Keep the nearest usable foul shore until a better reachable source turns up.
+            foul_fallback = Some(s);
+        }
+    }
+    foul_fallback
 }
 
 /// Whether someone standing at `at` can drink there now: fresh water or a well beside them.
