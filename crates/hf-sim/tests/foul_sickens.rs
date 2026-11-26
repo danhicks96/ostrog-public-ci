@@ -340,3 +340,112 @@ fn an_immune_drinker_stays_healthy() {
         "one who has had the flux and is guarded against it stays healthy"
     );
 }
+
+fn two_ponds_at_one_stand() -> (World, usize, TilePos, TilePos) {
+    use hf_sim::mind::{Known, ObservationKind, OutcomeKind};
+    let mut w = World::generate(4543, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.plants.clear();
+    w.meta.founding_site = TilePos::new(40, 40, 2);
+    w.weather.temperature_c = 10.0;
+    w.meta.tick = 9 * TICKS_PER_HOUR + 300;
+    let stand = TilePos::new(30, 30, 2);
+    let bad = stand.offset(0, 1, 0);
+    let good = stand.offset(1, 0, 0);
+    // Each pool has one bank. They meet the same dry stand but are separate bodies.
+    for x in 28..=33 {
+        for y in 28..=33 {
+            if [(stand.x, stand.y), (bad.x, bad.y), (good.x, good.y)].contains(&(x, y)) {
+                continue;
+            }
+            for z in [2, 3] {
+                w.grid.set(
+                    TilePos::new(x, y, z),
+                    Tile {
+                        material: Material::STONE_BLOCK,
+                        shape: Shape::Wall,
+                        flags: TileFlags::NONE,
+                    },
+                );
+            }
+        }
+    }
+    for p in [bad, good] {
+        w.grid.set(p, water_tile());
+    }
+    w.rebuild_caches();
+    floods::survey(&mut w);
+    assert!(!std::ptr::eq(
+        floods::body_at(&w, bad).unwrap(),
+        floods::body_at(&w, good).unwrap()
+    ));
+    w.waters.foul.insert(bad, FOUL_HOURS);
+    let who = w.found_party(1)[0];
+    let i = w.agents.iter().position(|a| a.id == who).unwrap();
+    w.agents[i].pos = stand;
+    w.agents[i].needs.thirst = 0.45;
+    w.agents[i]
+        .knowledge
+        .map
+        .retain(|k, _| !matches!(k, Known::Water(_)));
+    let tick = w.meta.tick;
+    w.agents[i]
+        .knowledge
+        .note(Known::Water(good), good, tick, floods::TAG_WATER_FRESH);
+    w.agents[i].learning.learn(
+        ObservationKind::FoulWater,
+        OutcomeKind::Illness,
+        Some(bad),
+        true,
+        tick,
+        None,
+    );
+    w.agents[i].learning.lessons[0].confidence = 0.6;
+    assert!(w.agents[i].knowledge.get(Known::Water(bad)).is_none());
+    w.ensure_nav();
+    let spots = hf_sim::water::spots(&w, stand, 3);
+    for source in [bad, good] {
+        assert!(
+            spots.iter().any(|s| s.source == source && s.stand == stand),
+            "both sources must offer the same actual standing tile"
+        );
+    }
+    (w, i, bad, good)
+}
+
+#[test]
+fn two_ponds_sharing_a_stand_keep_the_acceptable_source() {
+    let (w, i, _, good) = two_ponds_at_one_stand();
+    let stand = w.agents[i].pos;
+    let chosen = hf_sim::water::nearest_knowing(&w, i, stand, 3, &w.agents[i].knowledge, false)
+        .expect("the fresh pool beside the refused pool remains a choice");
+    assert_eq!(chosen.stand, stand);
+    assert_eq!(chosen.source, good);
+}
+
+#[test]
+fn two_ponds_sharing_a_stand_supply_the_accepted_water() {
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let (mut w, i, bad, _) = two_ponds_at_one_stand();
+                let before = w.agents[i].learning.lessons.clone();
+                assert!(hf_sim::water::drink(&mut w, i));
+                assert_eq!(
+                    w.agents[i].learning.lessons, before,
+                    "drinking the fresh pool must not test a lesson about the other pool"
+                );
+                assert!(w.agents[i].body.illness.is_none());
+                assert!(w.agents[i]
+                    .knowledge
+                    .get(hf_sim::mind::Known::Water(bad))
+                    .is_none());
+                assert_eq!(w.agents[i].needs.thirst, 1.0);
+                hf_sim::digest::digest(&w)
+            })
+    };
+    assert_eq!(run(1), run(4));
+}

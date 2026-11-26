@@ -208,11 +208,14 @@ pub fn nearest(w: &World, from: TilePos, radius: i32) -> Option<Spot> {
 /// The places to drink within `radius` of `from`, nearest first by the straight line, the
 /// nearest 48 of them with each stand tile once, none in a flood's way (#418).
 fn candidates(w: &World, from: TilePos, radius: i32) -> Vec<Spot> {
-    candidate_stream(w, from, radius).take(48).collect()
+    let mut tried = std::collections::BTreeSet::new();
+    source_candidates(w, from, radius)
+        .filter(move |s| tried.insert(s.stand))
+        .take(48)
+        .collect()
 }
 
-fn candidate_stream(w: &World, from: TilePos, radius: i32) -> impl Iterator<Item = Spot> + '_ {
-    let mut tried = std::collections::BTreeSet::new();
+fn source_candidates(w: &World, from: TilePos, radius: i32) -> impl Iterator<Item = Spot> + '_ {
     let spots = spots(w, from, radius);
     let wells: std::collections::BTreeSet<_> =
         spots.iter().filter(|s| s.well).map(|s| s.stand).collect();
@@ -220,9 +223,36 @@ fn candidate_stream(w: &World, from: TilePos, radius: i32) -> impl Iterator<Item
         .into_iter()
         // A shared stand still offers the well when the open water is refused.
         .filter(move |s| s.well || !wells.contains(&s.stand))
-        .filter(move |s| tried.insert(s.stand))
         // Not into a flood's way (#418): the next bank clear of it serves.
         .filter(move |s| !crate::systems::hazards::in_floods_way(w, s.stand))
+}
+
+/// Keep the original standing-place order, but judge its alternative sources first.
+/// Most stands have one source, so their beliefs need no extra look. Other groups are
+/// judged lazily: an ordinary choice still reads only its first 48 standing places.
+fn preferred_stands(
+    sources: impl Iterator<Item = Spot>,
+    preference: impl Fn(&Spot) -> u8,
+) -> impl Iterator<Item = Spot> {
+    let mut positions = std::collections::BTreeMap::<TilePos, usize>::new();
+    let mut groups: Vec<(Spot, Vec<Spot>)> = Vec::new();
+    for source in sources {
+        if let Some(&index) = positions.get(&source.stand) {
+            groups[index].1.push(source);
+        } else {
+            positions.insert(source.stand, groups.len());
+            groups.push((source, Vec::new()));
+        }
+    }
+    groups.into_iter().map(move |(first, others)| {
+        others.into_iter().fold(first, |best, source| {
+            if preference(&source) < preference(&best) {
+                source
+            } else {
+                best
+            }
+        })
+    })
 }
 
 /// What `knowledge` believes of a spot's water, as a `TAG_WATER_*` value (#453, epic #477
@@ -257,6 +287,72 @@ fn believed_tag(w: &World, knowledge: &crate::mind::knowledge::Knowledge, s: &Sp
     tag
 }
 
+/// The person's water beliefs, including the bodies of their held illness lessons.
+struct WaterBeliefs<'a> {
+    world: &'a World,
+    knowledge: &'a crate::mind::knowledge::Knowledge,
+    lessons: Vec<(TilePos, Option<&'a crate::floods::Body>, f32)>,
+}
+
+impl<'a> WaterBeliefs<'a> {
+    fn new(world: &'a World, i: usize, knowledge: &'a crate::mind::knowledge::Knowledge) -> Self {
+        // The lesson survives an evicted tag. Cache its body once, not for every shore.
+        let lessons = world.agents[i]
+            .learning
+            .lessons
+            .iter()
+            .filter_map(|lesson| {
+                if lesson.cue != crate::mind::ObservationKind::FoulWater
+                    || lesson.outcome != crate::mind::OutcomeKind::Illness
+                {
+                    return None;
+                }
+                let pos = lesson.pos?;
+                Some((
+                    pos,
+                    crate::floods::body_at(world, pos),
+                    lesson.confidence.clamp(0.0, 1.0),
+                ))
+            })
+            .collect();
+        Self {
+            world,
+            knowledge,
+            lessons,
+        }
+    }
+
+    fn illness(&self, s: &Spot) -> f32 {
+        if self.lessons.is_empty() || s.well || !self.world.grid.get(s.source).is_water() {
+            return 0.0;
+        }
+        let body = crate::floods::body_at(self.world, s.source);
+        self.lessons
+            .iter()
+            .filter(|(pos, learned_body, _)| {
+                *pos == s.source
+                    || body
+                        .zip(*learned_body)
+                        .is_some_and(|(a, b)| std::ptr::eq(a, b))
+            })
+            .map(|(_, _, confidence)| *confidence)
+            .fold(0.0f32, f32::max)
+    }
+
+    fn tag(&self, s: &Spot) -> Option<u16> {
+        believed_tag(self.world, self.knowledge, s)
+    }
+
+    fn preference(&self, s: &Spot) -> u8 {
+        match self.tag(s) {
+            Some(crate::floods::TAG_WATER_SALT) => 2,
+            Some(crate::floods::TAG_WATER_FOUL) => 1,
+            _ if self.illness(s) > 0.2 => 1,
+            _ => 0,
+        }
+    }
+}
+
 /// The nearest place to drink within `radius` of `from`, chosen by what `knowledge`
 /// believes of each water (#453, epic #477 part 4, FIXLOG 2026-10-30): a spot whose water is
 /// known salt is never worth the walk; one known foul is shunned unless `desperate` — thirst
@@ -277,45 +373,13 @@ pub fn nearest_knowing(
     let nav = w.nav.as_ref()?;
     let now = w.meta.tick;
     let cooldowns = &w.agents[i].work_cooldowns;
-    // The lesson survives an evicted water tag. Cache its body once, not for every shore.
-    let lessons: Vec<_> = w.agents[i]
-        .learning
-        .lessons
-        .iter()
-        .filter_map(|lesson| {
-            if lesson.cue != crate::mind::ObservationKind::FoulWater
-                || lesson.outcome != crate::mind::OutcomeKind::Illness
-            {
-                return None;
-            }
-            let pos = lesson.pos?;
-            Some((
-                pos,
-                crate::floods::body_at(w, pos),
-                lesson.confidence.clamp(0.0, 1.0),
-            ))
-        })
-        .collect();
-    let illness = |s: &Spot| {
-        if lessons.is_empty() || s.well || !w.grid.get(s.source).is_water() {
-            return 0.0;
-        }
-        let body = crate::floods::body_at(w, s.source);
-        lessons
-            .iter()
-            .filter(|(pos, learned_body, _)| {
-                *pos == s.source
-                    || body
-                        .zip(*learned_body)
-                        .is_some_and(|(a, b)| std::ptr::eq(a, b))
-            })
-            .map(|(_, _, confidence)| *confidence)
-            .fold(0.0f32, f32::max)
-    };
-    let mut available = candidate_stream(w, from, radius);
+    let beliefs = WaterBeliefs::new(w, i, knowledge);
+    let mut available = preferred_stands(source_candidates(w, from, radius), |s| {
+        beliefs.preference(s)
+    });
     let not_dry = |s: &Spot| cooldowns.get(&dry_key(s.stand)).is_none_or(|t| *t <= now);
     let with_confidence = |s: Spot| {
-        let confidence = illness(&s);
+        let confidence = beliefs.illness(&s);
         (s, confidence)
     };
     let spots: Vec<_> = available
@@ -324,7 +388,7 @@ pub fn nearest_knowing(
         .filter(not_dry)
         .map(with_confidence)
         .collect();
-    let tag = |s: &Spot| believed_tag(w, knowledge, s);
+    let tag = |s: &Spot| beliefs.tag(s);
     let salt = |s: &Spot| tag(s) == Some(crate::floods::TAG_WATER_SALT);
     let foul = |s: &Spot, confidence: f32| {
         tag(s) == Some(crate::floods::TAG_WATER_FOUL) || confidence > 0.2
@@ -351,13 +415,15 @@ pub fn nearest_knowing(
         .iter()
         .any(|(s, confidence)| *confidence > 0.0 && !salt(s) && !allowed(s, *confidence));
     let extra = if extend { usize::MAX } else { 0 };
-    spots
+    let chosen = spots
         .into_iter()
         .chain(available.take(extra).filter(not_dry).map(with_confidence))
         .filter(|(s, confidence)| allowed(s, *confidence))
         .take(48)
         .map(|(s, _)| s)
-        .find(|s| s.stand == from || nav.reach(from, s.stand))
+        .find(|s| s.stand == from || nav.reach(from, s.stand));
+    drop(beliefs);
+    chosen
 }
 
 /// Whether someone standing at `at` can drink there now: fresh water or a well beside them.
@@ -378,6 +444,34 @@ pub fn can_drink_at(w: &World, at: TilePos) -> bool {
             && reaches(at, s.pos)
             && (s.kind == StructureKind::Well || (s.kind == StructureKind::Hearth && frozen(w)))
     })
+}
+
+/// Which adjacent open source the person drinks. A single source keeps the old fast
+/// path; at a shared bank the same personal preferences used by the walk pick the water.
+fn open_water_source(w: &World, i: usize, at: TilePos) -> Option<TilePos> {
+    let mut sources = (-1..=0)
+        .flat_map(|dz| {
+            [(0, 1), (1, 0), (0, -1), (-1, 0)]
+                .into_iter()
+                .map(move |(dx, dy)| at.offset(dx, dy, dz))
+        })
+        .filter(|p| w.grid.in_bounds(*p) && fresh(w, *p))
+        .map(|p| spot(at, p, false));
+    let first = sources.next()?;
+    let Some(second) = sources.next() else {
+        return Some(first.source);
+    };
+    let beliefs = WaterBeliefs::new(w, i, &w.agents[i].knowledge);
+    let chosen = std::iter::once(second)
+        .chain(sources)
+        .fold(first, |best, source| {
+            if beliefs.preference(&source) < beliefs.preference(&best) {
+                source
+            } else {
+                best
+            }
+        });
+    Some(chosen.source)
 }
 
 /// Agent `i` drinks from what is beside them (#433): fresh water or a well, else a
@@ -403,12 +497,7 @@ pub fn drink(w: &mut World, i: usize) -> bool {
     let source = if well {
         None
     } else {
-        (-1..=0).find_map(|dz| {
-            [(0, 1), (1, 0), (0, -1), (-1, 0)]
-                .iter()
-                .map(|(dx, dy)| at.offset(*dx, *dy, dz))
-                .find(|q| w.grid.in_bounds(*q) && fresh(w, *q))
-        })
+        open_water_source(w, i, at)
     };
     let tick = w.meta.tick;
     let was_ill = w.agents[i].body.illness.is_some();

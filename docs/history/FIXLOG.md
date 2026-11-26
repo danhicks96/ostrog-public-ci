@@ -1,5 +1,25 @@
 # Fix log
 
+## 2026-11-26: separate ponds sharing a bank keep their own water (OST-447)
+
+- Symptom: a fresh pond could disappear as a choice when a remembered foul pond offered
+  the same standing tile. Drinking there then took the first adjacent source, reinforcing
+  the other pond's illness lesson instead of taking the fresh water.
+- Cause: candidate sources were deduplicated by standing tile before their personal water
+  beliefs were read; the drinking action independently took its first open-water neighbour.
+- Fix: keep alternative sources for each bank, then prefer the source the person believes
+  fresh before spending a navigation attempt. Drinking at a shared bank uses that same
+  preference. First-source order is retained on a tie, and a single-source drink keeps its
+  fast path. Lesson bodies are cached for the look. The ordinary first-48-place limit and
+  the maximum of 48 navigation attempts remain intact; only learned refusals extend the scan.
+- Guards: `two_ponds_sharing_a_stand_keep_the_acceptable_source` and
+  `two_ponds_sharing_a_stand_supply_the_accepted_water` both fail on the former production
+  body after their fixture checks pass. They keep the bad pond's water tag forgotten, prove
+  the two sources are different surveyed bodies, and check the actual drink at one/four threads.
+- Digests change when a shared bank now supplies a different source. No saved fields or
+  enum positions change. Earlier after-runs with only the well correction predate this fix;
+  replacement 600-day after measurements remain pending. The original before-runs continue.
+
 ## 2026-11-25: a well beside remembered foul water supplies its own water (OST-447)
 
 - Symptom: someone refusing a foul pond could lose the well beside it as a choice, or
