@@ -239,6 +239,10 @@ pub struct Agent {
     /// raise the same suspicion again within twenty days (conditions.rs, OST-173).
     #[serde(default)]
     pub suspicions: Vec<(crate::ids::AgentId, u32, u64)>,
+    /// The tick the valley was last told this person is whispered about, so three neighbours'
+    /// suspicion is said once per twenty days and not on every further one (OST-174).
+    #[serde(default)]
+    pub whispered: Option<u64>,
     /// A hidden potential carried through the portal, if any (resonance.rs, #308): shown
     /// nowhere until it shows itself.
     #[serde(default)]
