@@ -1,5 +1,16 @@
 # Fix log
 
+## 2026-11-27: Gourmet and Tidy were never drawn from a genome (OST-1102)
+
+- Symptom: no one was born Gourmet or Tidy, so their effects (binge strain, hauling weight) never
+  showed in a founded or born colony.
+- Cause: `Genome::traits` covered eight traits and had no locus-driven rule for these two.
+- Fix: `genetics.rs` draws Gourmet from a derived locus and Tidy from the `order` disposition, both
+  above 0.8, using the keyed mix that `dispositions` already uses so no random stream is consumed.
+  The three-trait cap still applies. Existing trait order and saves are unchanged.
+- Guard: `tests/gourmet_tidy.rs` (over 500 genomes each trait appears on at least ten people, none
+  exceeds the cap, the same genome draws the same traits).
+
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 
 - Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;
