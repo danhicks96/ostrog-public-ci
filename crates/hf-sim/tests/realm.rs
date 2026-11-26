@@ -293,7 +293,7 @@ fn each_region_of_the_world_is_its_own_valley() {
     // #560: choosing another place on the world map chose only its climate, so the preview
     // showed the same ground with other colours. Each region now has its own ground.
     let seed = 3;
-    let (_, default, picks) = other_regions(seed, 2);
+    let (map, default, picks) = other_regions(seed, 2);
     let a = hf_sim::setup::preview(seed, None, Some(picks[0]));
     let b = hf_sim::setup::preview(seed, None, Some(picks[1]));
     let home = hf_sim::setup::preview(seed, None, Some(default));
@@ -317,27 +317,27 @@ fn each_region_of_the_world_is_its_own_valley() {
     assert!(draw(&a).is_some());
     assert_eq!(draw(&a), draw(&b));
     assert_eq!(draw(&a), draw(&home));
-    // The same place is the same valley every time, and the seed's own region (chosen or not)
-    // keeps the seed's own ground, so worlds made without choosing a region are unchanged.
+    // The default region still uses place zero, whether chosen explicitly or implicitly.
     let again = hf_sim::setup::preview(seed, None, Some(picks[0]));
     assert_eq!(a.tiles, again.tiles);
     assert_eq!(a.plants, again.plants);
     let unchosen = hf_sim::setup::preview(seed, None, None);
     assert_eq!(unchosen.tiles, home.tiles);
-    let own = hf_sim::World::generate(seed, unchosen_params(seed, &unchosen));
+    let (landform, ocean) = realm::terrain::at(&map, default);
+    let own = hf_sim::World::generate(
+        seed,
+        hf_sim::world::gen::GenParams {
+            character: Some(unchosen.character),
+            landform,
+            ocean,
+            ..Default::default()
+        },
+    );
     let heights: Vec<i32> = (0..own.grid.height)
         .flat_map(|y| (0..own.grid.width).map(move |x| (x, y)))
         .map(|(x, y)| own.grid.ground_z(x, y))
         .collect();
     assert_eq!(heights, home.heights, "place 0 draws the seed's own ground");
-}
-
-fn unchosen_params(seed: u64, p: &hf_sim::setup::Preview) -> hf_sim::world::gen::GenParams {
-    hf_sim::world::gen::GenParams {
-        character: Some(p.character),
-        landform: hf_sim::world::gen::Landform::of_seed(seed),
-        ..Default::default()
-    }
 }
 
 #[test]

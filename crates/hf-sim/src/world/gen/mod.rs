@@ -42,6 +42,9 @@ pub struct GenParams {
     /// out of a save at 0, so every world that keeps the seed's ground keeps its digest.
     #[serde(default, skip_serializing_if = "is_zero")]
     pub place: u64,
+    /// Directions of ocean neighbors on the regional map, including diagonal corners.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub ocean: Vec<(i8, i8)>,
 }
 
 /// The lie of the land at the landing (#352).
@@ -99,11 +102,27 @@ impl Default for GenParams {
             character: None,
             landform: Landform::Valley,
             place: 0,
+            ocean: Vec::new(),
         }
     }
 }
 
 impl GenParams {
+    /// Normalized distance from a column to the nearest ocean-facing edge or corner.
+    /// An uncharted, explicitly chosen coast retains its original west-facing profile.
+    fn shore_distance(&self, x: f32, y: f32) -> f32 {
+        let to_edge = |v: f32, side: i8| match side {
+            -1 => v,
+            1 => 1.0 - v,
+            _ => 0.0,
+        };
+        self.ocean
+            .iter()
+            .map(|&(dx, dy)| to_edge(x, dx).hypot(to_edge(y, dy)))
+            .reduce(f32::min)
+            .unwrap_or(x)
+    }
+
     pub fn small() -> Self {
         GenParams {
             width: 64,

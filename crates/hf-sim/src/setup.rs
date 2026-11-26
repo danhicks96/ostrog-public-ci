@@ -55,11 +55,11 @@ fn valley_params(
     landform: Option<crate::world::gen::Landform>,
 ) -> GenParams {
     let place = place_of(seed, m, region);
+    let (regional_landform, ocean) = crate::realm::terrain::at(m, region);
     GenParams {
         character: character.or(Some(crate::realm::embark::character_of(m, region))),
-        landform: landform.unwrap_or_else(|| {
-            crate::world::gen::Landform::of_seed(crate::world::gen::ground_seed(seed, place))
-        }),
+        landform: landform.unwrap_or(regional_landform),
+        ocean,
         place,
         ..GenParams::default()
     }
@@ -168,9 +168,8 @@ impl WorldSetup {
             Some((last, [])) => last.clone(),
             Some((last, rest)) => format!("{} and that {last}", rest.join(", that ")),
         };
-        let _ = w;
         // The lie of the land, when it is not a valley (#352).
-        let lf = self.landform();
+        let lf = w.meta.params.landform;
         let ch = if lf == crate::world::gen::Landform::Valley {
             ch
         } else {

@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 · Landings follow the terrain around their region
+
+Seed 7 produced a coast at inland taiga region 16423, 54 regional cells from the nearest ocean. Regional landings now use surrounding elevation, drainage and biome to choose their landform. At a coast, the ground slopes down and the water meets the ocean-facing edges or corners. Existing saves retain their generated grid. Newly generated regional worlds can have different terrain and simulation digests. The landform tests exercise the inland taiga and an east-facing ocean through the setup and preview paths.
+
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 
 - Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;

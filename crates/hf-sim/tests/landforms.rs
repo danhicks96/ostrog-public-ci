@@ -65,3 +65,51 @@ fn every_landform_has_somewhere_to_land() {
     }
     assert!(done.len() >= 5, "{done:?}");
 }
+
+#[test]
+fn an_inland_taiga_landing_is_not_a_seacoast() {
+    use hf_sim::setup::{preview, WorldSetup};
+    let mut setup = WorldSetup::new(7);
+    setup.region = Some(16423);
+    let world = hf_sim::World::from_setup(&setup);
+    assert_ne!(world.meta.params.landform, Landform::Coast);
+    assert!(world.meta.params.ocean.is_empty());
+    let picture = preview(7, None, setup.region);
+    assert_eq!(picture.region, 16423);
+    assert_eq!(world.meta.founding_site, picture.founding);
+}
+
+#[test]
+fn the_sea_appears_on_the_side_of_the_ocean() {
+    use hf_sim::realm::{self, embark, RBiome, RealmParams};
+    use hf_sim::setup::{preview_in, WorldSetup};
+    let seed = 7;
+    let map = realm::generate(seed, &RealmParams::default());
+    let site = (0..map.biome.len())
+        .find(|&i| {
+            let (x, y) = map.xy(i);
+            x > 0
+                && x + 1 < map.size
+                && y > 0
+                && y + 1 < map.size
+                && embark::habitable(&map, i)
+                && map.biome[map.idx(x + 1, y)] == RBiome::Ocean
+                && (y - 1..=y + 1).all(|yy| map.biome[map.idx(x - 1, yy)] != RBiome::Ocean)
+        })
+        .unwrap();
+    let mut setup = WorldSetup::new(seed);
+    setup.region = Some(site);
+    let world = hf_sim::World::from_setup(&setup);
+    assert_eq!(world.meta.params.landform, Landform::Coast);
+    let picture = preview_in(seed, &map, None, Some(site));
+    assert_eq!(picture.founding, world.meta.founding_site);
+    let w = world.grid.width as usize;
+    let h = world.grid.height as usize;
+    let wet = |x| {
+        (h / 4..3 * h / 4)
+            .filter(|&y| picture.columns[y * w + x] == 255)
+            .count()
+    };
+    assert_eq!(wet(w - 1), h / 2, "sea along the east edge");
+    assert!(wet(0) < h / 2, "inland ground on the opposite edge");
+}
