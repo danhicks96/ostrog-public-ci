@@ -82,7 +82,8 @@ pub fn step(w: &mut World) {
             }
             Activity::Drinking { ticks_left, back } => {
                 if ticks_left <= 1 {
-                    if crate::water::drink(w, i) {
+                    let drink = crate::water::finish_drink(w, i);
+                    if drink == crate::water::DrinkResult::Drank {
                         // Back to where they were, the work or the company they left for it
                         // (#433: one who walked off to the water stayed there).
                         let here = w.agents[i].pos;
@@ -97,6 +98,12 @@ pub fn step(w: &mut World) {
                             }
                             _ => finish(w, i, 10),
                         }
+                    } else if drink == crate::water::DrinkResult::RememberedFoul {
+                        fail(
+                            w,
+                            i,
+                            "remembered foul water; another source is within reach",
+                        );
                     } else {
                         // FIXLOG 2026-11-03 #608: a stand where no drink was had is not
                         // offered to them again for a while (water.rs `dry_key`), so they go

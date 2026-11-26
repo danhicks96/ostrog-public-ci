@@ -317,27 +317,111 @@ pub fn can_drink_at(w: &World, at: TilePos) -> bool {
     })
 }
 
-/// Agent `i` drinks from what is beside them (#433): fresh water or a well, else a
-/// household's barrel with water in it. True if they drank.
+/// A refusal leaves the stand wet and available for a later, more desperate drink.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(crate) enum DrinkResult {
+    Drank,
+    Dry,
+    RememberedFoul,
+}
+
+/// Reuse the planner's live candidates (including wells, melted snow and barrel stores).
+/// Reconsider a committed drink once, at the last sip, and only for a place the person
+/// remembers. A remembered shore that froze, dried or became unreachable cannot help.
+fn known_alternative(w: &World, i: usize, at: TilePos) -> bool {
+    use crate::mind::Known;
+    let a = &w.agents[i];
+    let Some(nav) = &w.nav else { return false };
+    let known_facilities: std::collections::BTreeSet<_> = w
+        .structures
+        .iter()
+        .filter(|s| {
+            matches!(
+                s.kind,
+                StructureKind::Well | StructureKind::Barrel | StructureKind::Hearth
+            ) && a
+                .knowledge
+                .get(Known::Structure(s.id))
+                .is_some_and(|b| b.pos == s.pos)
+        })
+        .map(|s| s.pos)
+        .collect();
+    candidates(w, at, 60).into_iter().any(|s| {
+        let known = if fresh(w, s.source) && !s.well {
+            a.knowledge.get(Known::Water(s.source)).is_some()
+        } else {
+            known_facilities.contains(&s.source)
+        };
+        known
+            && a.work_cooldowns
+                .get(&dry_key(s.stand))
+                .is_none_or(|t| *t <= w.meta.tick)
+            && (s.well
+                || !matches!(
+                    believed_tag(w, &a.knowledge, &s),
+                    Some(crate::floods::TAG_WATER_FOUL | crate::floods::TAG_WATER_SALT)
+                ))
+            && (s.stand == at || nav.reach(at, s.stand))
+    })
+}
+
+/// Whether the drink was taken. The activity executor also distinguishes dry stands from
+/// drinking opportunities an agent chooses to leave.
 pub fn drink(w: &mut World, i: usize) -> bool {
+    finish_drink(w, i) == DrinkResult::Drank
+}
+pub(crate) fn finish_drink(w: &mut World, i: usize) -> DrinkResult {
     let at = w.agents[i].pos;
     if !can_drink_at(w, at) {
         let store = w.communities.iter().position(|c| {
             !c.dissolved && c.water > 0 && barrel(w, c.home).is_some_and(|b| reaches(at, b))
         });
         let Some(k) = store else {
-            return false;
+            return DrinkResult::Dry;
         };
         w.communities[k].water -= 1;
     }
     // Where they drank is water they know of (#433): a lake a level under its bank was not
     // seen by the eye's scan of their own level.
-    let source = (-1..=0).find_map(|dz| {
-        [(0, 1), (1, 0), (0, -1), (-1, 0)]
-            .iter()
-            .map(|(dx, dy)| at.offset(*dx, *dy, dz))
-            .find(|q| w.grid.in_bounds(*q) && fresh(w, *q))
+    let covered_source = w.structures.iter().any(|s| {
+        s.progress >= 1.0
+            && reaches(at, s.pos)
+            && (s.kind == StructureKind::Well || (s.kind == StructureKind::Hearth && frozen(w)))
     });
+    let source = if covered_source {
+        None
+    } else {
+        let mut beside = (-1..=0)
+            .flat_map(|dz| {
+                [(0, 1), (1, 0), (0, -1), (-1, 0)]
+                    .into_iter()
+                    .map(move |(dx, dy)| at.offset(dx, dy, dz))
+            })
+            .filter(|q| w.grid.in_bounds(*q) && fresh(w, *q));
+        let first = beside.next();
+        if let Some(p) = first.filter(|p| {
+            let knowledge = &w.agents[i].knowledge;
+            1.0 - w.agents[i].needs.thirst <= 0.7
+                && knowledge
+                    .iter_kind(|k| matches!(k, crate::mind::Known::Water(_)))
+                    .any(|(_, b)| b.tag == crate::floods::TAG_WATER_FOUL)
+                && believed_tag(w, &w.agents[i].knowledge, &spot(at, *p, false))
+                    == Some(crate::floods::TAG_WATER_FOUL)
+        }) {
+            let safer = beside.find(|q| {
+                !matches!(
+                    believed_tag(w, &w.agents[i].knowledge, &spot(at, *q, false)),
+                    Some(crate::floods::TAG_WATER_FOUL | crate::floods::TAG_WATER_SALT)
+                )
+            });
+            if safer.is_none() && known_alternative(w, i, at) {
+                return DrinkResult::RememberedFoul;
+            }
+            safer.or(Some(p))
+        } else {
+            first
+        }
+    };
     let tick = w.meta.tick;
     // Tagged with what the drink taught them (#453 part 4): a fouled tile tasted is
     // remembered foul.
@@ -386,7 +470,7 @@ pub fn drink(w: &mut World, i: usize) -> bool {
             }
         }
     }
-    true
+    DrinkResult::Drank
 }
 
 /// The planner's part (systems/settlement.rs): a household whose water is more than a few

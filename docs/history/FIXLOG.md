@@ -1,5 +1,10 @@
 # Fix log
 
+## 2026-11-26: a drinker can reconsider a fouled shore at the last sip
+
+- Recheck the water the person remembers before the final drinking action. A reachable known alternative lets them leave without consuming water or marking their stand dry. If the alternative is gone, unknown, or unreachable, or thirst has passed desperation, they can still drink. A nearby finished well can supply its own water.
+- Guard: `foul_water::committed_drinker_rechecks_a_foul_shore_before_the_last_sip` changes knowledge between the two final activity ticks and checks the resulting need, refusal and bank cooldown.
+
 ## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
 
 - Symptom: a suspicion that spread through a camp read the same as one person's grudge, with

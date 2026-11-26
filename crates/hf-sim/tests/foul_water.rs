@@ -176,3 +176,126 @@ fn waters_without_the_foul_field_load_with_none() {
     let wa: floods::Waters = serde_json::from_str(old).expect("an old-format Waters loads");
     assert!(wa.foul.is_empty());
 }
+
+#[test]
+fn committed_drinker_rechecks_a_foul_shore_before_the_last_sip() {
+    use hf_sim::mind::{Activity, Known};
+    use hf_sim::{systems::act, water};
+    let foul = TilePos::new(24, 22, 2);
+    let clean = foul.offset(4, 0, 0);
+    let bank = foul.offset(1, 0, 0);
+
+    #[derive(Clone, Copy)]
+    enum Alternative {
+        Reachable,
+        Unknown,
+        Dried,
+        CoolingDown,
+        Sealed,
+        WellHere,
+    }
+    use Alternative::*;
+    for (recognized, alternative, thirst, refuses) in [
+        (true, Reachable, 0.67, true),
+        (false, Reachable, 0.67, false),
+        (true, Unknown, 0.67, false),
+        (true, Dried, 0.67, false),
+        (true, CoolingDown, 0.67, false),
+        (true, Sealed, 0.67, false),
+        (true, WellHere, 0.67, false),
+        (true, Reachable, 0.20, false),
+    ] {
+        let mut w = flat(4561);
+        w.grid.set(foul, water_tile());
+        if !matches!(alternative, Dried) {
+            w.grid.set(clean, water_tile());
+        }
+        if matches!(alternative, Sealed) {
+            for (dx, dy) in [(0, 1), (1, 0), (0, -1), (-1, 0)] {
+                for dz in 0..=1 {
+                    w.grid
+                        .set(clean.offset(dx, dy, dz), Tile::solid(Material::GRANITE));
+                }
+            }
+        }
+        if matches!(alternative, WellHere) {
+            w.place_structure(
+                hf_sim::structures::StructureKind::Well,
+                bank,
+                Material::GRANITE,
+                false,
+            );
+        }
+        w.rebuild_caches();
+        floods::survey(&mut w);
+        w.ensure_nav();
+        w.weather.temperature_c = 10.0;
+        let who = w.found_party(1)[0];
+        let i = w.agents.iter().position(|a| a.id == who).unwrap();
+        w.waters.foul.insert(foul, FOUL_HOURS);
+        let a = &mut w.agents[i];
+        a.pos = bank;
+        a.needs.thirst = thirst;
+        a.activity = Activity::Drinking {
+            ticks_left: 2,
+            back: None,
+        };
+        if !matches!(alternative, Unknown) {
+            a.knowledge.note(
+                Known::Water(clean),
+                clean,
+                w.meta.tick,
+                floods::TAG_WATER_FRESH,
+            );
+        }
+        if matches!(alternative, CoolingDown) {
+            let stand = water::spots(&w, bank, 60)
+                .into_iter()
+                .find(|s| s.source == clean)
+                .unwrap()
+                .stand;
+            w.agents[i]
+                .work_cooldowns
+                .insert(water::dry_key(stand), w.meta.tick + 100);
+        }
+        act::step(&mut w);
+        assert_eq!(w.agents[i].needs.thirst, thirst);
+        if recognized {
+            w.agents[i].knowledge.note(
+                Known::Water(foul),
+                foul,
+                w.meta.tick,
+                floods::TAG_WATER_FOUL,
+            );
+        }
+        if refuses {
+            let chosen =
+                water::nearest_knowing(&w, i, bank, 60, &w.agents[i].knowledge, false).unwrap();
+            assert_eq!(chosen.source, clean);
+        }
+        act::step(&mut w);
+        assert_eq!(w.agents[i].needs.thirst, if refuses { thirst } else { 1.0 });
+        assert!(!w.agents[i]
+            .work_cooldowns
+            .contains_key(&water::dry_key(bank)));
+        if refuses {
+            assert!(matches!(w.agents[i].activity, Activity::Idle));
+            let reason = w.events.pending.iter().find_map(|e| match &e.kind {
+                hf_sim::events::EventKind::PlanFailed { agent, reason, .. } if *agent == who => {
+                    Some(reason)
+                }
+                _ => None,
+            });
+            assert!(reason.is_some_and(|r| r.contains("foul water")));
+            let chosen =
+                water::nearest_knowing(&w, i, bank, 60, &w.agents[i].knowledge, false).unwrap();
+            w.agents[i].pos = chosen.stand;
+            w.agents[i].activity = Activity::Drinking {
+                ticks_left: 1,
+                back: None,
+            };
+            act::step(&mut w);
+            assert_eq!(w.agents[i].needs.thirst, 1.0);
+        }
+    }
+}
