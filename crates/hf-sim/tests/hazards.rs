@@ -113,22 +113,28 @@ fn a_fire_nearby_is_a_personal_problem() {
             .unwrap()
             .install(|| {
                 let mut w = meadow(1731);
-                let ids = w.found_party(3);
+                let ids = w.found_party(4);
                 let indices: Vec<_> = ids
                     .iter()
                     .map(|id| w.agents.iter().position(|a| a.id == *id).unwrap())
                     .collect();
-                let [near, far, hidden] = [indices[0], indices[1], indices[2]];
+                let [near, far, hidden, sleeping] =
+                    [indices[0], indices[1], indices[2], indices[3]];
                 let fire = TilePos::new(20, 20, 2);
                 for (i, pos) in [
                     (near, fire.offset(4, 0, 0)),
                     (far, fire.offset(10, 0, 0)),
                     (hidden, fire.offset(-4, 0, 0)),
+                    (sleeping, fire.offset(0, 4, 0)),
                 ] {
                     w.agents[i].pos = pos;
                     w.agents[i].from = pos;
                     w.agents[i].activity = hf_sim::mind::Activity::Idle;
                 }
+                w.agents[sleeping].activity = hf_sim::mind::Activity::Sleeping {
+                    bed: None,
+                    until: w.meta.tick + TICKS_PER_HOUR,
+                };
                 w.grid.set(
                     fire.offset(-2, 0, 0),
                     Tile {
@@ -166,7 +172,7 @@ fn a_fire_nearby_is_a_personal_problem() {
                         && o.evidence == Evidence::Direct
                         && o.pos == w.agents[near].pos
                 }));
-                for i in [far, hidden] {
+                for i in [far, hidden, sleeping] {
                     assert!(!w.agents[i]
                         .problems
                         .records

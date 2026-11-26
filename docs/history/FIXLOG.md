@@ -5,11 +5,11 @@
 - Symptom: seeing nearby flames produced a passing thought but no observation or problem
   the person could later respond to or learn from.
 - Cause: the fire sighting branch only added the saw-fire thought.
-- Fix: the same six-tile, line-of-sight check also records direct fire evidence and an open
-  problem at the observer's position, using the existing bounded personal ledgers. Repeated
+- Fix: an awake observer within six tiles and with line of sight records direct fire
+  evidence and an open problem at their position, using the existing bounded personal ledgers. Repeated
   sightings refresh that record. Fire-response choices and attempts are unchanged.
 - Guard: `tests/hazards.rs::a_fire_nearby_is_a_personal_problem` fails without the change;
-  it covers a visible fire, distance and wall exclusions, refresh, saved evidence and matching
+  it covers a visible fire, distance, wall and sleep exclusions, refresh, saved evidence and matching
   results with one and four threads. No response or lesson is fabricated by a sighting.
 - Digests change when people see fire because their existing saved evidence now records it.
 

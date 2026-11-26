@@ -516,7 +516,9 @@ fn fire_step(w: &mut World) {
         });
         if seen {
             w.agents[i].thoughts.add(ThoughtKind::SawFire, tick, None);
-            observe_problem(w, i, crate::mind::ProblemKind::Fire, 0.7);
+            if !w.agents[i].activity.is_asleep() {
+                observe_problem(w, i, crate::mind::ProblemKind::Fire, 0.7);
+            }
         }
     }
     // The fire's end, with every tile it burned since the first start (#258: "burned 3" was
