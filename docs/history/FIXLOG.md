@@ -13,6 +13,20 @@
   No simulation or saved state is added; rough-answer counts await the logged chooser.
 - Guards: `tests/sleep_bed.rs::sleep_census_counts_bed_changes`,
   `sleep_census_counts_rough_streaks`, and the unknown-bed/purity case.
+- Measured baseline: `sleep_rough` on seeds 1-4 for 120 days, with the unchanged simulation
+  at `2b2e921` and the collector at `76adba9`. The share pools each person's nights in their
+  own most-used bed. Rough episodes include unfinished ones; the final column identifies
+  the person by AgentId within that seed. Every run reported zero unknown bed identifiers
+  and zero exact "the bed was taken" failures.
+
+  | Seed | Bed-nights | Rough nights | Most-used bed share | Longest rough episode (nights, person) |
+  | --- | ---: | ---: | ---: | --- |
+  | 1 | 2462 | 50 | 19.09% | 8, AgentId(0) |
+  | 2 | 1219 | 1183 | 31.99% | 19, AgentId(6) |
+  | 3 | 1318 | 1264 | 35.05% | 19, AgentId(4) |
+  | 4 | 1200 | 972 | 34.33% | 15, AgentId(238) |
+
+  The 300-day measurements required by OST-371 remain to be recorded.
 ## 2026-11-24: the soak can run the camera director (OST-868)
 
 - Symptom: only the game client ran the director, so no headless run could say where the camera
