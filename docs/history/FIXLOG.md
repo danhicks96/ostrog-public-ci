@@ -22,6 +22,20 @@
   attempt outcomes, explicit coverage notices, and a read-only query.
 - Guard: cover repeated rotation, injected flush failure, off/on digest and durable chronicle,
   and an unattended choice-to-blocked-route-to-retry example.
+## 2026-11-26: a bounded long-memory term for mood, not yet used (OST-202)
+
+- Symptom: mood adds every long memory with no bound, no fading and no habituation, so a meal
+  eaten for years counts as much as a loss.
+- Fix: `Memories::mood_term(now)` returns `0.35 * tanh(sum / 4)` over the long memories, each
+  `valence * strength * recency * habit`: recency halves every 10 days (routine kinds: meals, rest,
+  company) or 30 days (hardship, work, discovery) from the last renewal, and habit is
+  `1 / (1 + reinforced / 8)` for routine kinds. `tanh` is taken from the deterministic exp. Nothing
+  calls it, so no behaviour, save or digest changed; OST-203 swaps it into mood.
+- Guards: `tests/mood.rs::long_term_is_bounded_by_memory_count`, `routine_memories_tire`,
+  `a_vivid_loss_shows_among_many_meals` and `old_memories_fade_from_mood`.
+- Note: the issue asked that a loss show as at least 0.05 among many meals; with its own constants
+  the most one such loss can move the term is about 0.039, so the guard asks for 0.03. OST-207
+  tunes the constants.
 ## 2026-11-26: a census of whether the catch-up names every life event (OST-862)
 
 - Symptom: nothing checked that a returning viewer is told, by name, every death, birth, pairing,
