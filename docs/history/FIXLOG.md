@@ -1,5 +1,23 @@
 # Fix log
 
+## 2026-11-26: a lived belief is told once a year to each listener (OST-507)
+
+- Symptom: with no fresh tale, the hearth teller told "how they came to hold that ..." most
+  evenings to the same circle (one teller 412 evenings, one listener 380 times), and each
+  hearing raised the listener's confidence in the belief.
+- Cause: `hearth_evening` scored a lived belief 1.0 whenever the teller had one, with no test
+  that anyone lacked it, and called `beliefs::share` on every listener each time.
+- Fix: each person keeps `hearth_heard` (teller, topic or none for the line about the other
+  side of the portal, tick), at most 32. A lived belief (or the portal line) scores only while
+  some other sitter has not heard it from this teller within a year (`HEARTH_RETELL`); a
+  teller with nothing wanted is not chosen. On a telling every listener records it, and only
+  those who had not heard it have the belief passed to them. Tales and realm stories are
+  unchanged.
+- Guard: `tests/culture.rs::a_lived_belief_is_told_once_a_year_to_each_listener` (one telling
+  in ten evenings, once more for a newcomer, again after a year; it fails with the record
+  ignored) and `an_old_save_loads_without_the_hearth_record`. Old saves load; worlds with
+  hearth evenings write fewer tellings, so digests change. The 700-day seeds 1-4 measurement
+  in the issue was not run.
 ## 2026-11-26: a guard for mood's needs term reading thirst and warmth (OST-551)
 
 - Symptom: the issue said the needs term ignored thirst and warmth. It no longer does: it

@@ -1127,10 +1127,10 @@ Narratives:
 
 | where | narrative |
 |---|---|
-| systems/culture.rs:547 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
-| systems/culture.rs:568 | We sow and cook more than we need, because {who} starved. |
-| systems/culture.rs:587 | We take in no strangers, since {who} led people away: {cause}. |
-| systems/culture.rs:632 | We do not eat {k}, because {who} fell ill of it and went hungry. |
+| systems/culture.rs:593 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
+| systems/culture.rs:614 | We sow and cook more than we need, because {who} starved. |
+| systems/culture.rs:633 | We take in no strangers, since {who} led people away: {cause}. |
+| systems/culture.rs:678 | We do not eat {k}, because {who} fell ill of it and went hungry. |
 
 #### The Engine (`engine.rs`)
 
@@ -1456,9 +1456,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:511 | someone |
 | accounts.rs:521 | {} and {} more |
 | accounts.rs:525 |  Said: {words} ({by}). |
-| agents.rs:483 | fur |
-| agents.rs:484 | feathers |
-| agents.rs:485 | scales |
+| agents.rs:489 | fur |
+| agents.rs:490 | feathers |
+| agents.rs:491 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2125,24 +2125,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:578 | {name} is already back with the others |
-| opening.rs:579 | what became of {name} is already known |
-| opening.rs:591 | no sign of {who} here |
-| opening.rs:602 | {who} was alive, and is coming back |
-| opening.rs:609 | something |
-| opening.rs:613 | {who} had died there, of {cause} |
-| opening.rs:792 | coming through the portal |
-| opening.rs:944 | the herb-woman |
-| opening.rs:947 | apprenticed to {master} |
-| opening.rs:956 | the carpenter |
-| opening.rs:957 | apprenticed to {master} |
-| opening.rs:966 | the smith |
-| opening.rs:967 | apprenticed to {master} |
-| opening.rs:983 | the quarry |
-| opening.rs:984 | apprenticed to {master} |
-| opening.rs:988 | the baker |
-| opening.rs:989 | apprenticed to {master} |
-| opening.rs:1101 | brought through the portal |
+| opening.rs:579 | {name} is already back with the others |
+| opening.rs:580 | what became of {name} is already known |
+| opening.rs:592 | no sign of {who} here |
+| opening.rs:603 | {who} was alive, and is coming back |
+| opening.rs:610 | something |
+| opening.rs:614 | {who} had died there, of {cause} |
+| opening.rs:793 | coming through the portal |
+| opening.rs:945 | the herb-woman |
+| opening.rs:948 | apprenticed to {master} |
+| opening.rs:957 | the carpenter |
+| opening.rs:958 | apprenticed to {master} |
+| opening.rs:967 | the smith |
+| opening.rs:968 | apprenticed to {master} |
+| opening.rs:984 | the quarry |
+| opening.rs:985 | apprenticed to {master} |
+| opening.rs:989 | the baker |
+| opening.rs:990 | apprenticed to {master} |
+| opening.rs:1102 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
@@ -2362,14 +2362,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:448 | scenario |
-| scenario.rs:489 | brought by the founders |
-| scenario.rs:799 | scenario |
-| scenario.rs:806 | scenario |
-| scenario.rs:814 | scenario |
-| scenario.rs:833 | scenario |
-| scenario.rs:853 | scenario |
-| scenario.rs:1023 | scenario |
+| scenario.rs:450 | scenario |
+| scenario.rs:491 | brought by the founders |
+| scenario.rs:801 | scenario |
+| scenario.rs:808 | scenario |
+| scenario.rs:816 | scenario |
+| scenario.rs:835 | scenario |
+| scenario.rs:855 | scenario |
+| scenario.rs:1025 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |
@@ -3243,23 +3243,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/crafts.rs:242 | gone |
 | systems/crafts.rs:337 | refused to learn {} from {} |
 | systems/crafts.rs:345 | taught by {} |
-| systems/culture.rs:170 | how their people tell it: {telling} |
-| systems/culture.rs:226 | told by {tname} at the hearth |
-| systems/culture.rs:234 | the tale that {} |
-| systems/culture.rs:255 | how they came to hold that {} |
-| systems/culture.rs:258 | what they remember of the other side of the portal |
-| systems/culture.rs:303 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
-| systems/culture.rs:334 | hold that {} |
-| systems/culture.rs:540 | first |
-| systems/culture.rs:541 | second |
-| systems/culture.rs:542 | third |
-| systems/culture.rs:543 | fourth |
-| systems/culture.rs:544 | fifth |
-| systems/culture.rs:545 | {n}th |
-| systems/culture.rs:563 | starvation |
-| systems/culture.rs:843 | ale |
-| systems/culture.rs:845 | berry wine |
-| systems/culture.rs:848 | drunk |
+| systems/culture.rs:203 | how their people tell it: {telling} |
+| systems/culture.rs:271 | told by {tname} at the hearth |
+| systems/culture.rs:279 | the tale that {} |
+| systems/culture.rs:301 | how they came to hold that {} |
+| systems/culture.rs:304 | what they remember of the other side of the portal |
+| systems/culture.rs:349 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
+| systems/culture.rs:380 | hold that {} |
+| systems/culture.rs:586 | first |
+| systems/culture.rs:587 | second |
+| systems/culture.rs:588 | third |
+| systems/culture.rs:589 | fourth |
+| systems/culture.rs:590 | fifth |
+| systems/culture.rs:591 | {n}th |
+| systems/culture.rs:609 | starvation |
+| systems/culture.rs:889 | ale |
+| systems/culture.rs:891 | berry wine |
+| systems/culture.rs:894 | drunk |
 | systems/decide.rs:99 | someone |
 | systems/decide.rs:103 | search_for_the_lost |
 | systems/decide.rs:104 | go looking for one of the lost near {at} |
