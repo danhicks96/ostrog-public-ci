@@ -2,7 +2,7 @@
 
 ## 2026-11-26 - Watch a river drop from a clear bank
 
-A sworn observer on a clear outdoor bank can see the exposed face of a one-level drop from above. The pool floor stays hidden until someone surveys it. Walls, roofs and frozen water interrupt the sight of falling water. Surface ripples stop when the water freezes.
+A sworn observer on a clear outdoor bank can see the exposed face of a one-level drop from above. The pool floor stays hidden until someone surveys it. Walls, roofs and frozen water interrupt the sight of falling water. When exposed water freezes, its ripples stop and its surface turns pale blue in sight. Remembered water keeps its recorded appearance.
 
 ## 2026-11-26 - Follow the colony at home and on the road
 

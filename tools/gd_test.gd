@@ -2132,6 +2132,24 @@ func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
 	check(since.has("has_news"), "since-look says whether there is news")
 	sim.free()
 
+func test_surface_ice_requires_witnessed_water_on_the_inspected_floor() -> void:
+	var v := WorldView.new()
+	v.w = 1
+	v.h = 1
+	v.view_z = 2
+	v.zmax = 4
+	var water := 2 << 24
+	v.levels[3] = PackedInt32Array([0])
+	check(not v._observed_water_surface(0, 0, 2), "unknown water has no live ice")
+	v.remembered[Vector2i.ZERO] = Vector4i(0, water, 0, -1)
+	check(not v._observed_water_surface(0, 0, 2), "remembered water has no live ice")
+	v.remembered[Vector2i.ZERO] = Vector4i(1, water, 0, -1)
+	check(v._observed_water_surface(0, 0, 2), "currently observed exposed water takes the frozen surface")
+	check(not v._observed_water_surface(0, 0, 1), "view through the floor has no independent water observation")
+	v.levels[3] = PackedInt32Array([water])
+	check(not v._observed_water_surface(0, 0, 2), "a submerged layer does not show a second frozen surface")
+	v.free()
+
 func test_empty_watcher_has_no_visible_river_drops() -> void:
 	var sim := SimHost.new()
 	var atlas := ColonyAtlas.new()

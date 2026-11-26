@@ -691,11 +691,7 @@ func _draw_dynamic(ci: CanvasItem) -> void:
 			var y: int = d[1]
 			match d[2]:
 				"water":
-					draw_family(d[3], x, y, d[4], d[5] < water_freeze_level)
-					# Deep water shades in from the shallows: its outer ring takes the shallow
-					# water at half strength, so a lake centre darkens in two steps.
-					if d[3] == "deep_water" and _deep_rim(x, y, d[5]):
-						draw_family("water", x, y, d[4], d[5] < water_freeze_level, 0.5)
+					_draw_water(d[3], x, y, d[4], d[5])
 				"fire":
 					var fire := _tex("structures/fire.png")
 					var r := Rect2(x * TILE, y * TILE, TILE, TILE)
@@ -790,6 +786,36 @@ func _ground_family(x: int, y: int) -> Array:
 				fam = "cave_floor"
 			return [fam, dim, false, z + 1]
 	return ["black_stone", 0.9, false, -99999]
+
+## The water sheets carry depth and local texture. Frost glazes them only on a
+## witnessed, exposed water surface. A remembered floor has no ice observation.
+func _draw_water(family: String, x: int, y: int, dim: float, z: int) -> void:
+	var flowing := z < water_freeze_level
+	draw_family(family, x, y, dim, flowing)
+	if family == "deep_water" and _deep_rim(x, y, z):
+		draw_family("water", x, y, dim, flowing, 0.5)
+	if flowing or not _observed_water_surface(x, y, z):
+		return
+	var origin := Vector2(x * TILE, y * TILE)
+	var glaze := Color("#c5e7ef") if family == "water" else Color("#abcdda")
+	glaze.a = 0.83
+	_ci.draw_rect(Rect2(origin, Vector2(TILE, TILE)), glaze)
+	# A few short, still highlights break up the surface without implying cracks or strength.
+	var mark := _variant(x, y, 11)
+	if mark < 4:
+		var offset := Vector2(4 + _variant(y, x, 12), 6 + mark * 5)
+		_ci.draw_line(origin + offset, origin + offset + Vector2(8 + mark, -2), Color(0.85, 0.94, 0.96, 0.47), 1.2, true)
+
+func _observed_water_surface(x: int, y: int, z: int) -> bool:
+	if z != view_z:
+		return false
+	var record: Vector4i = remembered.get(Vector2i(x, y), Vector4i.ZERO)
+	if record.x != 1 or not (flags_of(record.y) & 3):
+		return false
+	if z == zmax:
+		return true
+	var above := tile_at(z + 1, x, y)
+	return shape_of(above) != 2 and (flags_of(above) & 3) == 0
 
 func _deep_rim(x: int, y: int, z: int) -> bool:
 	for dy in range(-1, 2):
@@ -910,7 +936,10 @@ func _draw_ground(x: int, y: int) -> void:
 	if g[2] and _chunk_mode:
 		_dyn_rec.append([x, y, "water", fam, g[1], g[3]])
 	else:
-		draw_family(fam, x, y, g[1], g[2] and g[3] < water_freeze_level)
+		if g[2]:
+			_draw_water(fam, x, y, g[1], g[3])
+		else:
+			draw_family(fam, x, y, g[1])
 		if sh < 5:
 			_draw_blend(x, y)
 		_draw_underground_details(fam, x, y, g[3])
