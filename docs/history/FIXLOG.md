@@ -14,6 +14,26 @@
   29 (one turn each, four in all) because 13 and 17 no longer turn within the run.
 - Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
   sleeper does not; a content person does not).
+## 2026-11-24: the cost of a breakdown or a quarrel lasted one game-minute (OST-241)
+
+- Symptom: a breakdown took 0.2 off mood and a quarrel 0.15, and a game-minute later both were
+  gone, so the day after a break looked like any other.
+- Cause: both were direct writes to `mood`, which the needs pass rebuilds from its terms every
+  stripe.
+- Fix: a break now adds a new `Broke` thought ("broke down", weight -0.25, two days), appended to
+  the thought kinds; the break's direct write is gone. The quarrel's direct write is removed too:
+  the `Quarrel` thought, already added from the recorded event, is its lasting cost.
+- The `Broke` thought is left out of stress (like the arrival's), or one break would feed the next;
+  `tests/stress.rs::a_contented_person_with_one_trouble_does_not_break` guards it.
+- Guard: `tests/breaks.rs::the_cost_of_a_break_lasts_beyond_a_minute` (an hour after a break the
+  person is at least 0.15 below the same person who did not break; fails without the thought).
+- Test follow-up: `tests/building.rs::roofs_are_laid_from_the_walls_and_do_not_fall_in_ordinary_building`
+  now runs 12 days, not 10. The break cost shifts who is calm enough to build; on seed 3 roofs come
+  in batches (0, 6, 10, 16, 16, 16, 22 over days 5-9 on main, a batch later here), so the same
+  build finished a day or two later and stood at 16 on day 10. The floor of 20 is unchanged; at
+  12 days both seeds pass, and the check that no roof falls still runs the whole time.
+- Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
+  mood after a break, which can bring a second break sooner.
 ## 2026-11-26: a lived belief is told once a year to each listener (OST-507)
 
 - Symptom: with no fresh tale, the hearth teller told "how they came to hold that ..." most

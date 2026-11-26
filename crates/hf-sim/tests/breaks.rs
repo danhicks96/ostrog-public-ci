@@ -458,3 +458,58 @@ fn an_unfound_subject_does_not_hide_the_break_or_leak_the_explanation() {
     assert_eq!(shown[0].2, headline);
     assert_eq!(shown[0].3, None);
 }
+
+/// OST-241: the mood a person has `ticks` after a break day, with or without the break; the
+/// needs pass rebuilds mood from its terms every stripe, so only a lasting term can show.
+fn mood_after_break_day(broke: bool) -> (f32, bool) {
+    let mut w = World::generate(3323, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.rebuild_caches();
+    w.found_party(4);
+    w.meta.autoplan = false;
+    let who = w.agents[0].id;
+    for a in w.agents.iter_mut() {
+        a.stress = 0.0;
+        a.last_break = 0;
+        a.needs.hunger = 1.0;
+        a.activity = hf_sim::mind::Activity::Idle;
+    }
+    w.meta.tick = 3 * TICKS_PER_DAY + 12 * TICKS_PER_HOUR + 900;
+    if broke {
+        w.agents[0].stress = 1.0;
+    }
+    w.events.pending.clear();
+    hf_sim::systems::strain::step(&mut w);
+    let did_break = w
+        .events
+        .pending
+        .iter()
+        .any(|e| matches!(&e.kind, EventKind::Broke { agent, .. } if *agent == who));
+    // One game hour on, needs pass every tick (it only touches its own stripe each time).
+    for _ in 0..TICKS_PER_HOUR {
+        w.meta.tick += 1;
+        for a in w.agents.iter_mut() {
+            a.needs.hunger = 1.0;
+            a.needs.rest = 1.0;
+            a.needs.social = 1.0;
+            a.needs.comfort = 1.0;
+            a.needs.thirst = 1.0;
+            a.needs.warmth = 1.0;
+        }
+        hf_sim::systems::needs::step(&mut w);
+    }
+    (w.agents[0].mood, did_break)
+}
+
+#[test]
+fn the_cost_of_a_break_lasts_beyond_a_minute() {
+    let (with, did_break) = mood_after_break_day(true);
+    let (without, none) = mood_after_break_day(false);
+    assert!(did_break, "the stressed person did not break");
+    assert!(!none, "the calm person broke");
+    assert!(
+        without - with >= 0.15,
+        "an hour after a break mood {with} vs {without} without it"
+    );
+}

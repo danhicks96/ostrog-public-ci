@@ -433,6 +433,14 @@ Mood's needs term already averages all six needs and takes the lowest (it landed
 
 **Acceptance:** The guard passes on the current code and fails if the term goes back to four needs. A FIXLOG entry records that the behaviour was already in place.
 
+### OST-511 · Let small children listen at the hearth and not tell
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+Everyone awake near the hearth sits, and any sitter can be the teller, so a four-month-old tells a realm battle. Keep children in the circle as listeners, but let only someone old enough tell: a realm story or an old-valley tale needs the older childhood stage, and a lived belief needs someone of age.
+
+**Acceptance:** A hearth with a three-year-old who alone holds a realm story and two adults who lack it: the child tells nothing over five evenings and is among the listeners of the adults' tellings. A ten-year-old in the same place tells it. A FIXLOG entry is added.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain

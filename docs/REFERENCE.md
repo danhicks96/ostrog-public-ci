@@ -1091,6 +1091,7 @@ Thoughts feed mood and stress. The bridge sends the strongest six as `{label} {w
 | Prayed | prayed at the shrine in hard times | 0.2 | 2.0 |
 | Missing | the missing | -0.2 | 4.0 |
 | Thirsty | parched | -0.3 | 0.5 |
+| Broke | broke down | -0.25 | 2.0 |
 | Lonely | lonely | -0.15 | 0.5 |
 
 #### Breaks (`systems/strain.rs`)
@@ -3155,7 +3156,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/act.rs:221 | forage |
 | systems/act.rs:284 | the bed was taken |
 | systems/act.rs:370 | they left |
-| systems/act.rs:542 | a poisoning from {} |
+| systems/act.rs:543 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |
@@ -3603,18 +3604,18 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:344 | cold |
 | systems/strain.rs:345 | loneliness |
 | systems/strain.rs:346 | discomfort |
-| systems/strain.rs:537 | from {} |
-| systems/strain.rs:541 | because they were {} |
-| systems/strain.rs:545 | from {n} |
-| systems/strain.rs:597 | {}'s {} |
-| systems/strain.rs:630 | breaking the {label} |
-| systems/strain.rs:658 | eaten in a binge |
-| systems/strain.rs:692 | set by {name} in a rage |
-| systems/strain.rs:772 | wondered where {who} is |
-| systems/strain.rs:773 | the rest of the party is not here |
-| systems/strain.rs:796 | starting a fight |
-| systems/strain.rs:844 | in a fight |
-| systems/strain.rs:869 | in a fight |
+| systems/strain.rs:542 | from {} |
+| systems/strain.rs:546 | because they were {} |
+| systems/strain.rs:550 | from {n} |
+| systems/strain.rs:606 | {}'s {} |
+| systems/strain.rs:639 | breaking the {label} |
+| systems/strain.rs:667 | eaten in a binge |
+| systems/strain.rs:701 | set by {name} in a rage |
+| systems/strain.rs:781 | wondered where {who} is |
+| systems/strain.rs:782 | the rest of the party is not here |
+| systems/strain.rs:805 | starting a fight |
+| systems/strain.rs:853 | in a fight |
+| systems/strain.rs:878 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
