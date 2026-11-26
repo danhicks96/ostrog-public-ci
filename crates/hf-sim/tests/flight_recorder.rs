@@ -107,4 +107,44 @@ fn unattended_choices_and_failures_are_readable_after_close_without_changing_sta
     assert_eq!(rows[failure]["reason"], "path blocked");
     assert_ne!(rows[first_attempt]["to"], rows[next_attempt]["to"]);
     assert_eq!(rows[next_attempt]["outcome"], "found");
+    a_capture_cannot_span_two_world_sessions(tmp.path());
+}
+
+// Called from the test above because both checks use the same process-wide sink.
+fn a_capture_cannot_span_two_world_sessions(tmp: &std::path::Path) {
+    let mut first = World::generate(77, GenParams::small());
+    first.meta.tick = 24;
+    for (i, seed) in [78, 77].into_iter().enumerate() {
+        let dest = tmp.join(format!("replacement-{i}"));
+        debuglog::configure_recorder(dest.clone(), Vec::new()).unwrap();
+        // First startup or first save load must not end the armed capture.
+        debuglog::finish_recorder_for_world_replacement(false);
+        assert_eq!(debuglog::path().as_ref(), Some(&dest));
+        debuglog::decision(&first, 0, "first world", Vec::new());
+        debuglog::finish_recorder_for_world_replacement(true);
+        assert!(!debuglog::enabled());
+        assert!(debuglog::path().is_none());
+        let rewound = World::generate(seed, GenParams::small());
+        // The same agent ID in another world or on a rewound timeline cannot join the trace.
+        debuglog::decision(&rewound, 0, "replacement world", Vec::new());
+        let survey: Vec<Value> = fs::read_to_string(dest.join("survey.jsonl"))
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        assert_eq!(survey.len(), 2);
+        assert_eq!(survey[0]["seed"], 77);
+        assert_eq!(survey[0]["start_tick"], 24);
+        assert_eq!(survey[1]["t"], "closed");
+        let raw = fs::read_to_string(dest.join("trace-0000000000.jsonl")).unwrap();
+        assert_eq!(raw.lines().count(), 1);
+        assert!(raw.contains("first world"));
+    }
+
+    let legacy = tmp.join("legacy.jsonl");
+    debuglog::configure(legacy.clone(), Vec::new(), String::new());
+    debuglog::finish_recorder_for_world_replacement(true);
+    assert!(debuglog::enabled());
+    assert_eq!(debuglog::path(), Some(legacy));
+    debuglog::disable();
 }

@@ -128,6 +128,20 @@ pub fn disable() {
     *g = None;
 }
 
+/// Seal a Flight Recorder capture before replacing an existing world, including a
+/// rewind to the same seed. First startup and the legacy decision log are unaffected.
+pub fn finish_recorder_for_world_replacement(replacing_world: bool) {
+    if !replacing_world || !enabled() {
+        return;
+    }
+    let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
+    if let Some(recorder) = g.as_mut().and_then(|sink| sink.recorder.as_mut()) {
+        recorder.finish();
+        ENABLED.store(false, Ordering::Relaxed);
+        *g = None;
+    }
+}
+
 /// Flush what is buffered (call at the end of a run or before reading the file).
 pub fn flush() {
     let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());

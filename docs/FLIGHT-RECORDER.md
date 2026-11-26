@@ -13,7 +13,9 @@ python3 -I tools/soak/read_flight.py capture --agent 1 --limit 30
 ```
 
 Use a new directory for each capture. The CLI option also works with `soak`. For the desktop,
-set `OSTROG_FLIGHT_RECORDER` to a new directory before launching the Godot client.
+set `OSTROG_FLIGHT_RECORDER` to a new directory before launching the Godot client. A successful
+load or new world that replaces the running session closes the capture, even at the same seed.
+A failed load does not close it. Relaunch with a fresh directory to capture another session.
 Nothing is recorded in this mode unless explicitly enabled. The ordinary decision log and the
 world save keep their existing format. Captures are local files; inspect them before sharing.
 

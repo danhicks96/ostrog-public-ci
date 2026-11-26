@@ -1,5 +1,13 @@
 # Fix log
 
+## 2026-11-26: keep flight tracks within one world session (OST-1500)
+
+- Symptom: a desktop save load or fresh world could mix two timelines under one capture header.
+- Fix: settle in-flight ticks and seal the capture when replacing a running session, not at first
+  startup or on a failed load. Leave the legacy decision log unchanged.
+- Guard: a capture closes with one world's decisions when replaced by a new seed or a rewind of
+  the same seed, even when the ID is reused; initial capture and the legacy log stay armed.
+
 ## 2026-11-25: detect partially copied flight evidence (OST-1500)
 
 - Symptom: a clean cover survey could mask missing raw events at either edge or every raw segment.
