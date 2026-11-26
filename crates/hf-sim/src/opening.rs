@@ -477,6 +477,7 @@ impl Identity {
             prayed_over: Vec::new(),
             graves_read: Vec::new(),
             suspicions: Vec::new(),
+            whispered: None,
             resonance: None,
             denned: false,
             fed: 0,
