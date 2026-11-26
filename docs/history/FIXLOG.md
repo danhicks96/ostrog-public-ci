@@ -1,5 +1,21 @@
 # Fix log
 
+## 2026-11-25: per-person activity spread in the alive report (OST-334)
+
+- Symptom: the report could not reproduce the audit's spread in time spent loitering.
+- Cause: it kept per-person hours but exposed only aggregate distance and entropy.
+- Fix: report the mean, min, max and interpolated p90-p10 of each activity's per-person
+  share, all in percent. Each person has equal weight, including zero shares. Require
+  2,400 observed hours (100 sampled days), including qualified people who later died or left.
+  Preserve the older distance/entropy keys' 2,000-hour population. Export raw counts and a
+  pure helper so runs can pool people, retaining seed identity, rather than average spreads.
+  `aim_lift_share` is explicitly zero until active-want pursuit (OST-337) is wired.
+- Guards: `aims_pursuit::day_spread_counts_hours_by_activity` scripts two people's day,
+  checks all printed measures against hand counts and preserves the world digest. Further
+  guards check the 100-day boundary, interpolation, zero shares and pooled-person weighting.
+- Seeds 5-8 x 600 days and the pooled 6.7 +/- 2-point comparison are pending. No simulation
+  state, save format or decisions change.
+
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)
 
 - Symptom: the glance count could not say which activities the client draws as plain standing,

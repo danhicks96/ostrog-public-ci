@@ -32,6 +32,8 @@ const SPREAD_MIN_PEOPLE: usize = 5;
 /// docs/TIME.md), long enough for a mix to be a habit rather than one season's luck. The audit's
 /// per-person table used the same cut, so the numbers stay comparable with it.
 const ACT_MIN_HOURS: u32 = 2_000;
+/// Day-spread eligibility (OST-334): 100 sampled game days, at 24 samples per day.
+pub const DAY_SPREAD_MIN_HOURS: u32 = 100 * 24;
 
 /// A tie at or above this opinion is counted as sitting on the +1.00 clamp (`Agent::relate`
 /// clamps to +-1): 0.995 is the lowest value that prints as +1.00, as for `MOOD_CLAMPED`.
@@ -141,6 +143,125 @@ fn slot(a: &Activity) -> usize {
         Activity::Drinking { .. } => 9,
     }
 }
+
+/// Per-person activity shares in percent, including zero shares. The spread is p90 minus
+/// p10 in percentage points, with linear interpolation between adjacent ordered shares.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct ActivitySpread {
+    pub mean: f64,
+    pub min: f64,
+    pub max: f64,
+    pub p90_p10: f64,
+}
+
+/// A pooled population, giving each eligible person equal weight rather than each hour or seed.
+/// Activity order is idle, going, eating, foraging, sleeping, talking, loitering, wandering,
+/// working, drinking: the same exhaustive classing used by the other alive keys.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct DaySpread {
+    pub people: usize,
+    pub activities: [ActivitySpread; ACTIVITIES],
+}
+
+/// Read per-person activity-hour rows. Pool rows from multiple seeds before calling this;
+/// averaging their spreads would give a different measure. Empty rows are never eligible.
+pub fn day_spread(hours: &[[u32; ACTIVITIES]], min_hours: u32) -> DaySpread {
+    let mixes: Vec<[f64; ACTIVITIES]> = hours
+        .iter()
+        .filter_map(|row| {
+            let total: u64 = row.iter().map(|n| u64::from(*n)).sum();
+            (total > 0 && total >= u64::from(min_hours))
+                .then(|| row.map(|n| 100.0 * f64::from(n) / total as f64))
+        })
+        .collect();
+    let mut result = DaySpread {
+        people: mixes.len(),
+        ..DaySpread::default()
+    };
+    if mixes.is_empty() {
+        return result;
+    }
+    for (i, spread) in result.activities.iter_mut().enumerate() {
+        let mut shares: Vec<f64> = mixes.iter().map(|row| row[i]).collect();
+        shares.sort_by(f64::total_cmp);
+        let percentile = |fraction: f64| {
+            let at = fraction * (shares.len() - 1) as f64;
+            let lower = at.floor() as usize;
+            let upper = at.ceil() as usize;
+            shares[lower] + (shares[upper] - shares[lower]) * at.fract()
+        };
+        *spread = ActivitySpread {
+            mean: shares.iter().sum::<f64>() / shares.len() as f64,
+            min: shares[0],
+            max: shares[shares.len() - 1],
+            p90_p10: percentile(0.9) - percentile(0.1),
+        };
+    }
+    result
+}
+
+const DAY_KEYS: [[&str; 4]; ACTIVITIES] = [
+    [
+        "day_idle_mean",
+        "day_idle_min",
+        "day_idle_max",
+        "day_idle_p90_p10",
+    ],
+    [
+        "day_going_mean",
+        "day_going_min",
+        "day_going_max",
+        "day_going_p90_p10",
+    ],
+    [
+        "day_eating_mean",
+        "day_eating_min",
+        "day_eating_max",
+        "day_eating_p90_p10",
+    ],
+    [
+        "day_foraging_mean",
+        "day_foraging_min",
+        "day_foraging_max",
+        "day_foraging_p90_p10",
+    ],
+    [
+        "day_sleeping_mean",
+        "day_sleeping_min",
+        "day_sleeping_max",
+        "day_sleeping_p90_p10",
+    ],
+    [
+        "day_talking_mean",
+        "day_talking_min",
+        "day_talking_max",
+        "day_talking_p90_p10",
+    ],
+    [
+        "day_loitering_mean",
+        "day_loitering_min",
+        "day_loitering_max",
+        "day_loitering_p90_p10",
+    ],
+    [
+        "day_wandering_mean",
+        "day_wandering_min",
+        "day_wandering_max",
+        "day_wandering_p90_p10",
+    ],
+    [
+        "day_working_mean",
+        "day_working_min",
+        "day_working_max",
+        "day_working_p90_p10",
+    ],
+    [
+        "day_drinking_mean",
+        "day_drinking_min",
+        "day_drinking_max",
+        "day_drinking_p90_p10",
+    ],
+];
 
 /// What the client draws for each activity (OST-867). Index = the activity's counter slot, so
 /// the rows are in `slot` order. `still` is the frame shown when the person is not moving and
@@ -270,6 +391,8 @@ pub struct AliveTally {
     activity_hours: BTreeMap<AgentId, [u32; ACTIVITIES]>,
     /// The sampled hours a person needs before the per-person activity keys read them.
     min_hours: u32,
+    /// The independent 100-day threshold for the newer day-spread population.
+    spread_min_hours: u32,
     /// What the latest `observe_ties` saw (#1491); all zero until it is called.
     ties: TieCounts,
     /// (hostile, top-five) tie counts added up over the `observe_ties` calls, the one tie key
@@ -329,7 +452,7 @@ struct MajorWatch {
 
 impl Default for AliveTally {
     fn default() -> Self {
-        Self::with_min_hours(ACT_MIN_HOURS)
+        Self::with_limits(ACT_MIN_HOURS, DAY_SPREAD_MIN_HOURS)
     }
 }
 
@@ -413,12 +536,17 @@ impl AliveTally {
     /// An empty tally whose per-person keys (`day_distance`, `act_entropy_sd`) read only people
     /// sampled at least `min_hours` hours. `default()` uses 2,000; a test with a short run lowers it.
     pub fn with_min_hours(min_hours: u32) -> Self {
+        Self::with_limits(min_hours, min_hours)
+    }
+
+    fn with_limits(min_hours: u32, spread_min_hours: u32) -> Self {
         AliveTally {
             mood: Vec::new(),
             spread: Vec::new(),
             by_day_mean: BTreeMap::new(),
             activity_hours: BTreeMap::new(),
             min_hours,
+            spread_min_hours,
             ties: TieCounts::default(),
             hostile_pool: (0, 0),
             last_look: None,
@@ -437,6 +565,13 @@ impl AliveTally {
             feed_rows: Vec::new(),
             feed_days: Vec::new(),
         }
+    }
+
+    /// All observed people, including those who later died or left, in stable ID order.
+    /// Each row counts their sampled hours in the ten activity classes. Keep seed identity
+    /// alongside the ID when pooling runs: IDs are local to a world.
+    pub fn activity_hours(&self) -> impl Iterator<Item = (AgentId, [u32; ACTIVITIES])> + '_ {
+        self.activity_hours.iter().map(|(id, hours)| (*id, *hours))
     }
 
     /// Feed one tick's events to the day's feed count (OST-864): the rows that would reach the
@@ -851,6 +986,11 @@ impl AliveTally {
     /// - `standing_share`, `unreadable_share`, `work_share`, `talk_share`: the share of waking
     ///   hours in idle + loitering; idle + loitering + going; working; talking. 0.0 when nobody
     ///   was sampled awake.
+    /// - `day_<activity>_mean`, `_min`, `_max`, `_p90_p10`: equal-person activity
+    ///   shares in percent, over people sampled at least 2,400 hours (100 days) by default.
+    ///   Percentiles interpolate adjacent ordered shares. Includes dead and departed people
+    ///   who reached the threshold; `day_spread_n` reports this population. The older keys
+    ///   retain their independent 2,000-hour threshold. `aim_lift_share` is zero until OST-337.
     /// - `day_distance`: over people sampled at least `min_hours` hours, each person's share
     ///   vector is their hours in each of the ten activities (sleeping included) over their own
     ///   sampled hours; the colony's mean day is the mean of those vectors (each person counts
@@ -977,6 +1117,19 @@ impl AliveTally {
             ("feed_lines_day", self.feed_means().0),
             ("feed_folded_day", self.feed_means().1),
         ];
+        let hours: Vec<_> = self.activity_hours.values().copied().collect();
+        let days = day_spread(&hours, self.spread_min_hours);
+        rows.push(("day_spread_n", days.people as f64));
+        // No active-want pursuit is wired yet (OST-337); the measured lifted share is zero.
+        rows.push(("aim_lift_share", 0.0));
+        for (keys, spread) in DAY_KEYS.iter().zip(days.activities) {
+            rows.extend(keys.iter().copied().zip([
+                spread.mean,
+                spread.min,
+                spread.max,
+                spread.p90_p10,
+            ]));
+        }
         const GLANCE_KEYS: [&str; 7] = [
             "glance_missed_major_died",
             "glance_missed_major_captured",

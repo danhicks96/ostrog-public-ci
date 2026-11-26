@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3299 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3688,111 +3688,153 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:1979 | hunt |
 | systems/work.rs:2112 | set about putting a lamp where they work below |
 | systems/work.rs:2113 | because it is too dark down there to see the rock |
-| view/alive.rs:46 | died |
-| view/alive.rs:46 | captured |
-| view/alive.rs:46 | broke |
-| view/alive.rs:46 | exiled |
-| view/alive.rs:46 | born |
-| view/alive.rs:46 | paired |
-| view/alive.rs:46 | returned |
-| view/alive.rs:62 | drowned |
-| view/alive.rs:69 | thirst |
-| view/alive.rs:70 | froze |
-| view/alive.rs:161 | idle |
-| view/alive.rs:162 | stand loop with a glance |
-| view/alive.rs:163 | walk |
-| view/alive.rs:167 | going |
-| view/alive.rs:168 | stand loop with a glance |
-| view/alive.rs:169 | walk |
-| view/alive.rs:173 | eating |
-| view/alive.rs:174 | eating cycle |
-| view/alive.rs:175 | walk |
-| view/alive.rs:179 | foraging |
-| view/alive.rs:180 | stoop cycle |
-| view/alive.rs:181 | walk |
-| view/alive.rs:185 | sleeping |
-| view/alive.rs:186 | sleep, breathing and stirring |
-| view/alive.rs:187 | walk |
-| view/alive.rs:191 | talking |
-| view/alive.rs:192 | talking cycle |
-| view/alive.rs:193 | walk |
-| view/alive.rs:197 | loitering |
-| view/alive.rs:198 | stand loop with a glance |
-| view/alive.rs:199 | walk |
-| view/alive.rs:203 | wandering |
-| view/alive.rs:204 | stand loop with a glance |
-| view/alive.rs:205 | walk |
-| view/alive.rs:209 | working |
-| view/alive.rs:210 | see `work_drawn`; stand loop when not at the work step |
-| view/alive.rs:211 | walk, or carry cycle |
-| view/alive.rs:215 | drinking |
-| view/alive.rs:216 | drinking cycle |
-| view/alive.rs:217 | walk |
-| view/alive.rs:233 | swing |
-| view/alive.rs:233 | tool |
-| view/alive.rs:234 | swing |
-| view/alive.rs:234 | sledgehammer |
-| view/alive.rs:240 | tap |
-| view/alive.rs:240 | hammer |
-| view/alive.rs:241 | tap |
-| view/alive.rs:241 | saw |
-| view/alive.rs:242 | tap |
-| view/alive.rs:242 | vessel |
-| view/alive.rs:243 | stoop |
-| view/alive.rs:243 | tool |
-| view/alive.rs:244 | stoop |
-| view/alive.rs:244 | bucket |
-| view/alive.rs:245 | stoop |
-| view/alive.rs:245 | bucket |
-| view/alive.rs:246 | tend cycle |
-| view/alive.rs:246 | poultice |
-| view/alive.rs:247 | stoop |
-| view/alive.rs:247 | weapon |
-| view/alive.rs:248 | stoop |
-| view/alive.rs:248 | record |
-| view/alive.rs:256 | stoop |
-| view/alive.rs:256 | none |
-| view/alive.rs:936 | mood_median |
-| view/alive.rs:937 | mood_p10 |
-| view/alive.rs:938 | mood_hi |
-| view/alive.rs:939 | mood_lo |
-| view/alive.rs:940 | mood_clamped |
-| view/alive.rs:941 | mood_spread |
-| view/alive.rs:942 | mood_p25 |
-| view/alive.rs:943 | mood_p75 |
-| view/alive.rs:944 | mood_below_m03 |
-| view/alive.rs:945 | mood_term_needs |
-| view/alive.rs:946 | mood_term_recent |
-| view/alive.rs:947 | mood_term_long |
-| view/alive.rs:948 | mood_term_thoughts |
-| view/alive.rs:949 | standing_share |
-| view/alive.rs:950 | unreadable_share |
-| view/alive.rs:951 | work_share |
-| view/alive.rs:952 | talk_share |
-| view/alive.rs:953 | day_distance |
-| view/alive.rs:954 | act_entropy_sd |
-| view/alive.rs:956 | ties_saturated |
-| view/alive.rs:960 | ties_hostile |
-| view/alive.rs:963 | ties_frozen |
-| view/alive.rs:964 | ties_frozen_max_days |
-| view/alive.rs:966 | ties_to_dead_share |
-| view/alive.rs:969 | grief_drop_2d |
-| view/alive.rs:970 | grief_drop_10d |
-| view/alive.rs:971 | grief_days |
-| view/alive.rs:972 | grief_n |
-| view/alive.rs:973 | cause_repeat |
-| view/alive.rs:974 | lesson_ignored |
-| view/alive.rs:975 | glance_major_n |
-| view/alive.rs:976 | glance_missed_major |
-| view/alive.rs:977 | feed_lines_day |
-| view/alive.rs:978 | feed_folded_day |
-| view/alive.rs:981 | glance_missed_major_died |
-| view/alive.rs:982 | glance_missed_major_captured |
-| view/alive.rs:983 | glance_missed_major_broke |
-| view/alive.rs:984 | glance_missed_major_exiled |
-| view/alive.rs:985 | glance_missed_major_born |
-| view/alive.rs:986 | glance_missed_major_paired |
-| view/alive.rs:987 | glance_missed_major_returned |
+| view/alive.rs:48 | died |
+| view/alive.rs:48 | captured |
+| view/alive.rs:48 | broke |
+| view/alive.rs:48 | exiled |
+| view/alive.rs:48 | born |
+| view/alive.rs:48 | paired |
+| view/alive.rs:48 | returned |
+| view/alive.rs:64 | drowned |
+| view/alive.rs:71 | thirst |
+| view/alive.rs:72 | froze |
+| view/alive.rs:205 | day_idle_mean |
+| view/alive.rs:206 | day_idle_min |
+| view/alive.rs:207 | day_idle_max |
+| view/alive.rs:208 | day_idle_p90_p10 |
+| view/alive.rs:211 | day_going_mean |
+| view/alive.rs:212 | day_going_min |
+| view/alive.rs:213 | day_going_max |
+| view/alive.rs:214 | day_going_p90_p10 |
+| view/alive.rs:217 | day_eating_mean |
+| view/alive.rs:218 | day_eating_min |
+| view/alive.rs:219 | day_eating_max |
+| view/alive.rs:220 | day_eating_p90_p10 |
+| view/alive.rs:223 | day_foraging_mean |
+| view/alive.rs:224 | day_foraging_min |
+| view/alive.rs:225 | day_foraging_max |
+| view/alive.rs:226 | day_foraging_p90_p10 |
+| view/alive.rs:229 | day_sleeping_mean |
+| view/alive.rs:230 | day_sleeping_min |
+| view/alive.rs:231 | day_sleeping_max |
+| view/alive.rs:232 | day_sleeping_p90_p10 |
+| view/alive.rs:235 | day_talking_mean |
+| view/alive.rs:236 | day_talking_min |
+| view/alive.rs:237 | day_talking_max |
+| view/alive.rs:238 | day_talking_p90_p10 |
+| view/alive.rs:241 | day_loitering_mean |
+| view/alive.rs:242 | day_loitering_min |
+| view/alive.rs:243 | day_loitering_max |
+| view/alive.rs:244 | day_loitering_p90_p10 |
+| view/alive.rs:247 | day_wandering_mean |
+| view/alive.rs:248 | day_wandering_min |
+| view/alive.rs:249 | day_wandering_max |
+| view/alive.rs:250 | day_wandering_p90_p10 |
+| view/alive.rs:253 | day_working_mean |
+| view/alive.rs:254 | day_working_min |
+| view/alive.rs:255 | day_working_max |
+| view/alive.rs:256 | day_working_p90_p10 |
+| view/alive.rs:259 | day_drinking_mean |
+| view/alive.rs:260 | day_drinking_min |
+| view/alive.rs:261 | day_drinking_max |
+| view/alive.rs:262 | day_drinking_p90_p10 |
+| view/alive.rs:282 | idle |
+| view/alive.rs:283 | stand loop with a glance |
+| view/alive.rs:284 | walk |
+| view/alive.rs:288 | going |
+| view/alive.rs:289 | stand loop with a glance |
+| view/alive.rs:290 | walk |
+| view/alive.rs:294 | eating |
+| view/alive.rs:295 | eating cycle |
+| view/alive.rs:296 | walk |
+| view/alive.rs:300 | foraging |
+| view/alive.rs:301 | stoop cycle |
+| view/alive.rs:302 | walk |
+| view/alive.rs:306 | sleeping |
+| view/alive.rs:307 | sleep, breathing and stirring |
+| view/alive.rs:308 | walk |
+| view/alive.rs:312 | talking |
+| view/alive.rs:313 | talking cycle |
+| view/alive.rs:314 | walk |
+| view/alive.rs:318 | loitering |
+| view/alive.rs:319 | stand loop with a glance |
+| view/alive.rs:320 | walk |
+| view/alive.rs:324 | wandering |
+| view/alive.rs:325 | stand loop with a glance |
+| view/alive.rs:326 | walk |
+| view/alive.rs:330 | working |
+| view/alive.rs:331 | see `work_drawn`; stand loop when not at the work step |
+| view/alive.rs:332 | walk, or carry cycle |
+| view/alive.rs:336 | drinking |
+| view/alive.rs:337 | drinking cycle |
+| view/alive.rs:338 | walk |
+| view/alive.rs:354 | swing |
+| view/alive.rs:354 | tool |
+| view/alive.rs:355 | swing |
+| view/alive.rs:355 | sledgehammer |
+| view/alive.rs:361 | tap |
+| view/alive.rs:361 | hammer |
+| view/alive.rs:362 | tap |
+| view/alive.rs:362 | saw |
+| view/alive.rs:363 | tap |
+| view/alive.rs:363 | vessel |
+| view/alive.rs:364 | stoop |
+| view/alive.rs:364 | tool |
+| view/alive.rs:365 | stoop |
+| view/alive.rs:365 | bucket |
+| view/alive.rs:366 | stoop |
+| view/alive.rs:366 | bucket |
+| view/alive.rs:367 | tend cycle |
+| view/alive.rs:367 | poultice |
+| view/alive.rs:368 | stoop |
+| view/alive.rs:368 | weapon |
+| view/alive.rs:369 | stoop |
+| view/alive.rs:369 | record |
+| view/alive.rs:377 | stoop |
+| view/alive.rs:377 | none |
+| view/alive.rs:1076 | mood_median |
+| view/alive.rs:1077 | mood_p10 |
+| view/alive.rs:1078 | mood_hi |
+| view/alive.rs:1079 | mood_lo |
+| view/alive.rs:1080 | mood_clamped |
+| view/alive.rs:1081 | mood_spread |
+| view/alive.rs:1082 | mood_p25 |
+| view/alive.rs:1083 | mood_p75 |
+| view/alive.rs:1084 | mood_below_m03 |
+| view/alive.rs:1085 | mood_term_needs |
+| view/alive.rs:1086 | mood_term_recent |
+| view/alive.rs:1087 | mood_term_long |
+| view/alive.rs:1088 | mood_term_thoughts |
+| view/alive.rs:1089 | standing_share |
+| view/alive.rs:1090 | unreadable_share |
+| view/alive.rs:1091 | work_share |
+| view/alive.rs:1092 | talk_share |
+| view/alive.rs:1093 | day_distance |
+| view/alive.rs:1094 | act_entropy_sd |
+| view/alive.rs:1096 | ties_saturated |
+| view/alive.rs:1100 | ties_hostile |
+| view/alive.rs:1103 | ties_frozen |
+| view/alive.rs:1104 | ties_frozen_max_days |
+| view/alive.rs:1106 | ties_to_dead_share |
+| view/alive.rs:1109 | grief_drop_2d |
+| view/alive.rs:1110 | grief_drop_10d |
+| view/alive.rs:1111 | grief_days |
+| view/alive.rs:1112 | grief_n |
+| view/alive.rs:1113 | cause_repeat |
+| view/alive.rs:1114 | lesson_ignored |
+| view/alive.rs:1115 | glance_major_n |
+| view/alive.rs:1116 | glance_missed_major |
+| view/alive.rs:1117 | feed_lines_day |
+| view/alive.rs:1118 | feed_folded_day |
+| view/alive.rs:1122 | day_spread_n |
+| view/alive.rs:1124 | aim_lift_share |
+| view/alive.rs:1134 | glance_missed_major_died |
+| view/alive.rs:1135 | glance_missed_major_captured |
+| view/alive.rs:1136 | glance_missed_major_broke |
+| view/alive.rs:1137 | glance_missed_major_exiled |
+| view/alive.rs:1138 | glance_missed_major_born |
+| view/alive.rs:1139 | glance_missed_major_paired |
+| view/alive.rs:1140 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |
