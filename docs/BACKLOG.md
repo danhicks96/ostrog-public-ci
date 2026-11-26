@@ -593,7 +593,7 @@ Extend the alive report with, per game-day, the number of lines that reach the f
 
 ### OST-862 · Check that a returning viewer is told every death, birth and pairing
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
 
 Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on opening worlds, compare `summary::changes` and the folded lines against the chronicle's rows of the kinds that name who changed. Tracking issue: [#403](https://github.com/danhicks96/ostrog-public-ci/issues/403).
 
