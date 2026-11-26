@@ -395,7 +395,7 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 
 ### OST-203 · Use the bounded long-memory term in mood
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#742](https://github.com/danhicks96/ostrog-public-ci/pull/742)
 
 Mood still added every long memory together. It now reads the bounded, fading, habituating term from OST-202.
 
