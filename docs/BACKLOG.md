@@ -403,7 +403,7 @@ Mood adds every long memory together with no bound, no fading and no habituation
 
 ### OST-174 · Say once that someone is whispered about
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#730](https://github.com/danhicks96/ostrog-public-ci/pull/730)
 
 A suspicion held by three neighbours reads like one held by one. When three different community members come to hold a suspicion of the same person, say it once per person per twenty days with an appended Notable `WidelySuspected` event, and not again for a fourth.
 
