@@ -47,6 +47,33 @@ pub enum ObservationKind {
     Joint,
 }
 
+impl ObservationKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::WaterDepth => "water depth",
+            Self::WaterCurrent => "water current",
+            Self::Flooding => "flooding",
+            Self::Wetness => "wetness",
+            Self::Saturation => "saturation",
+            Self::Pressure => "pressure",
+            Self::Heat => "heat",
+            Self::Cold => "cold",
+            Self::Fire => "fire",
+            Self::Smoke => "smoke",
+            Self::Spoilage => "spoilage",
+            Self::FoodExposure => "food exposure",
+            Self::ResourceDepletion => "resource depletion",
+            Self::Regrowth => "regrowth",
+            Self::StructuralWeakness => "structural weakness",
+            Self::Shelter => "shelter",
+            Self::Other => "other",
+            Self::Soil => "the ground",
+            Self::Tracks => "animal sign",
+            Self::Joint => "a stuck building site",
+        }
+    }
+}
+
 /// Cues no code writes yet. Each wiring slice removes its kind here and from the test's
 /// hand-kept list of written kinds.
 pub const RESERVED: &[ObservationKind] = &[
@@ -116,6 +143,22 @@ pub enum OutcomeKind {
     Benefit,
     Discovery,
     NoChange,
+}
+
+impl OutcomeKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Harm => "harm",
+            Self::Illness => "illness",
+            Self::Loss => "loss",
+            Self::Displacement => "displacement",
+            Self::Death => "death",
+            Self::Safety => "safety",
+            Self::Benefit => "benefit",
+            Self::Discovery => "discovery",
+            Self::NoChange => "no change",
+        }
+    }
 }
 
 /// A personal, revisable association between a cue and an outcome.

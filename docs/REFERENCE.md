@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3201 strings (click to open)</summary>
+<details><summary>3202 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2408,9 +2408,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | siege.rs:347 | driven off |
 | siege.rs:348 | tired of waiting |
 | siege.rs:421 | a ransom |
-| social.rs:247 | {name}'s family is at feud with theirs |
-| social.rs:249 | they think ill of {name} |
-| social.rs:257 | kept {} to themselves |
+| social.rs:297 | {name}'s family is at feud with theirs |
+| social.rs:299 | they think ill of {name} |
+| social.rs:307 | kept {} to themselves |
 | society.rs:76 | a cramped site |
 | society.rs:77 | a grown household |
 | society.rs:78 | their cultural preference |
@@ -2784,6 +2784,35 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | mind/intentions.rs:115 | abandoned |
 | mind/intentions.rs:116 | expired |
 | mind/intentions.rs:117 | superseded |
+| mind/learning.rs:53 | water depth |
+| mind/learning.rs:54 | water current |
+| mind/learning.rs:55 | flooding |
+| mind/learning.rs:56 | wetness |
+| mind/learning.rs:57 | saturation |
+| mind/learning.rs:58 | pressure |
+| mind/learning.rs:59 | heat |
+| mind/learning.rs:60 | cold |
+| mind/learning.rs:61 | fire |
+| mind/learning.rs:62 | smoke |
+| mind/learning.rs:63 | spoilage |
+| mind/learning.rs:64 | food exposure |
+| mind/learning.rs:65 | resource depletion |
+| mind/learning.rs:66 | regrowth |
+| mind/learning.rs:67 | structural weakness |
+| mind/learning.rs:68 | shelter |
+| mind/learning.rs:69 | other |
+| mind/learning.rs:70 | the ground |
+| mind/learning.rs:71 | animal sign |
+| mind/learning.rs:72 | a stuck building site |
+| mind/learning.rs:151 | harm |
+| mind/learning.rs:152 | illness |
+| mind/learning.rs:153 | loss |
+| mind/learning.rs:154 | displacement |
+| mind/learning.rs:155 | death |
+| mind/learning.rs:156 | safety |
+| mind/learning.rs:157 | benefit |
+| mind/learning.rs:158 | discovery |
+| mind/learning.rs:159 | no change |
 | mind/problems.rs:46 | dangerous water |
 | mind/problems.rs:47 | flooding |
 | mind/problems.rs:48 | food spoiling |
@@ -2805,7 +2834,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | mind/problems.rs:101 | ignore it |
 | mind/problems.rs:102 | flee |
 | mind/problems.rs:103 | try something else |
-| mind/telling.rs:62 | which {} is the bad one |
+| mind/telling.rs:67 | which {} is the bad one |
+| mind/telling.rs:70 | that {} at that place brings {} |
 | mind/traits.rs:28 | industrious |
 | mind/traits.rs:29 | easygoing |
 | mind/traits.rs:30 | sociable |
@@ -4063,53 +4093,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/director.rs:282 | settlement |
 | view/director.rs:283 | settlement |
 | view/experience.rs:181 | pending |
-| view/experience.rs:204 | water depth |
-| view/experience.rs:205 | water current |
-| view/experience.rs:206 | flooding |
-| view/experience.rs:207 | wetness |
-| view/experience.rs:208 | saturation |
-| view/experience.rs:209 | pressure |
-| view/experience.rs:210 | heat |
-| view/experience.rs:211 | cold |
-| view/experience.rs:212 | fire |
-| view/experience.rs:213 | smoke |
-| view/experience.rs:214 | spoilage |
-| view/experience.rs:215 | food exposure |
-| view/experience.rs:216 | resource depletion |
-| view/experience.rs:217 | regrowth |
-| view/experience.rs:218 | structural weakness |
-| view/experience.rs:219 | shelter |
-| view/experience.rs:220 | other |
-| view/experience.rs:221 | the ground |
-| view/experience.rs:222 | animal sign |
-| view/experience.rs:223 | a stuck building site |
-| view/experience.rs:232 | good ground: crops would do well here |
-| view/experience.rs:235 | fair ground: crops would grow at {pct}% of the pace |
-| view/experience.rs:238 | poor ground: crops would grow at {pct}% of the pace |
-| view/experience.rs:241 | a {} passed near |
-| view/experience.rs:244 | stuck for want of {count} {} |
-| view/experience.rs:251 | harm |
-| view/experience.rs:252 | illness |
-| view/experience.rs:253 | loss |
-| view/experience.rs:254 | displacement |
-| view/experience.rs:255 | death |
-| view/experience.rs:256 | safety |
-| view/experience.rs:257 | benefit |
-| view/experience.rs:258 | discovery |
-| view/experience.rs:259 | no change |
-| view/experience.rs:266 | directly observed |
-| view/experience.rs:267 | inferred |
-| view/experience.rs:268 | told by Agent#{} |
-| view/experience.rs:269 | misled by Agent#{} |
-| view/experience.rs:270 | remembered event #{} |
-| view/experience.rs:276 | open |
-| view/experience.rs:277 | attempted |
-| view/experience.rs:278 | resolved |
-| view/experience.rs:279 | failed |
-| view/experience.rs:280 | abandoned |
-| view/experience.rs:287 | pending |
-| view/experience.rs:288 | succeeded |
-| view/experience.rs:289 | failed |
+| view/experience.rs:210 | good ground: crops would do well here |
+| view/experience.rs:213 | fair ground: crops would grow at {pct}% of the pace |
+| view/experience.rs:216 | poor ground: crops would grow at {pct}% of the pace |
+| view/experience.rs:219 | a {} passed near |
+| view/experience.rs:222 | stuck for want of {count} {} |
+| view/experience.rs:233 | directly observed |
+| view/experience.rs:234 | inferred |
+| view/experience.rs:235 | told by Agent#{} |
+| view/experience.rs:236 | misled by Agent#{} |
+| view/experience.rs:237 | remembered event #{} |
+| view/experience.rs:243 | open |
+| view/experience.rs:244 | attempted |
+| view/experience.rs:245 | resolved |
+| view/experience.rs:246 | failed |
+| view/experience.rs:247 | abandoned |
+| view/experience.rs:254 | pending |
+| view/experience.rs:255 | succeeded |
+| view/experience.rs:256 | failed |
 | view/fold.rs:18 | suspected:{} |
 | view/fold.rs:19 | true_dream:{what} |
 | view/fold.rs:21 | carried_off:{}:{}:{} |

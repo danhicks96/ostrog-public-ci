@@ -12,6 +12,7 @@ use hf_sim::mind::{Activity, Dispositions, Technique};
 use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::world::gen::GenParams;
 use hf_sim::World;
+use rand::Rng;
 
 fn camp(seed: u64, n: usize) -> (World, Vec<AgentId>) {
     let mut w = World::generate(seed, GenParams::small());
@@ -74,6 +75,220 @@ fn teacher(w: &mut World, who: AgentId, t: Technique) {
     let i = idx(w, who);
     let now = w.meta.tick;
     w.agents[i].techniques.learn(t, Learned::Past, 0.7, now);
+}
+
+fn a_lesson_talk(w: &mut World, a: AgentId, b: AgentId, misheard: bool) {
+    use hf_sim::rng::{purpose, stream};
+    let tick = (1..=1000)
+        .map(|h| w.meta.tick + h * TICKS_PER_HOUR)
+        .find(|&tick| {
+            let mut offer = stream(
+                w.meta.seed,
+                &[purpose::AGENT_SOCIAL, 0x1E55, a.0 as u64, b.0 as u64, tick],
+            );
+            let mut hearing = stream(
+                w.meta.seed,
+                &[purpose::AGENT_SOCIAL, 0x487B, a.0 as u64, b.0 as u64, tick],
+            );
+            offer.gen_bool(0.25)
+                && (hearing.gen::<f32>() < hf_sim::mind::telling::MISHEAR) == misheard
+        })
+        .expect("a seeded talk with the requested hearing outcome");
+    w.meta.tick = tick - TICKS_PER_HOUR;
+    talk(w, a, b, 1);
+}
+
+#[test]
+fn a_lesson_is_told_and_kept_with_its_teller() {
+    use hf_sim::mind::{Evidence, ObservationKind, OutcomeKind};
+    use hf_sim::save::{decode, encode, snapshot::Snapshot};
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let mut digests = Vec::new();
+                for feud in [false, true] {
+                    let (mut w, ids) = camp(4879, 2);
+                    let (a, b) = (ids[0], ids[1]);
+                    let (ai, bi) = (idx(&w, a), idx(&w, b));
+                    if feud {
+                        hf_sim::feuds::begin(&mut w, a, b);
+                        assert!(hf_sim::feuds::across(&w, a, b));
+                    }
+                    // Isolate willingness across a feud from the listener's ordinary trust gate.
+                    w.agents[ai].relationships.clear();
+                    w.agents[bi].relationships.clear();
+                    set_opinion(&mut w, a, b, 0.8, 0.8);
+                    set_opinion(&mut w, b, a, 0.8, 0.8);
+                    let at = TilePos::new(40, 40, 2);
+                    let tick = w.meta.tick;
+                    w.agents[ai].learning.learn(
+                        ObservationKind::Cold,
+                        OutcomeKind::Death,
+                        Some(at),
+                        true,
+                        tick,
+                        None,
+                    );
+                    w.agents[ai].learning.lessons[0].confidence = 0.7;
+                    a_lesson_talk(&mut w, a, b, false);
+                    let lesson = w.agents[bi].learning.lesson(
+                        ObservationKind::Cold,
+                        OutcomeKind::Death,
+                        Some(at),
+                    );
+                    if feud {
+                        assert!(
+                            w.agents[bi].learning.lessons.is_empty(),
+                            "the feud blocks the telling"
+                        );
+                    } else {
+                        let lesson = lesson.expect("the listener holds the teller's lesson");
+                        assert!(lesson.confidence > 0.0 && lesson.confidence <= 0.42);
+                        assert!(w.agents[bi]
+                            .told
+                            .iter()
+                            .any(|t| t.from == a && t.took == Took::Taken));
+                        assert!(w.agents[bi]
+                            .learning
+                            .observations
+                            .iter()
+                            .any(|o| o.kind == ObservationKind::Cold
+                                && o.pos == at
+                                && o.evidence == Evidence::ToldBy(a)));
+                    }
+                    // Stage a complete tick before saving, including pending fixture events.
+                    w.step();
+                    let mut back = decode(&encode(&Snapshot::capture(&w)).unwrap())
+                        .unwrap()
+                        .restore();
+                    assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                    w.run(100);
+                    back.run(100);
+                    assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&back));
+                    digests.push(hf_sim::digest::digest(&w));
+                }
+                digests
+            })
+    };
+    assert_eq!(run(1), run(4));
+}
+
+#[test]
+fn a_misheard_lesson_keeps_the_teller_but_points_one_tile_away() {
+    use hf_sim::mind::{Evidence, ObservationKind, OutcomeKind};
+    let (mut w, ids) = camp(4880, 2);
+    let (a, b) = (ids[0], ids[1]);
+    let ai = idx(&w, a);
+    set_opinion(&mut w, b, a, 0.8, 0.8);
+    let at = TilePos::new(40, 40, 2);
+    let tick = w.meta.tick;
+    w.agents[ai].learning.learn(
+        ObservationKind::Cold,
+        OutcomeKind::Death,
+        Some(at),
+        true,
+        tick,
+        None,
+    );
+    w.agents[ai].learning.lessons[0].confidence = 0.7;
+    a_lesson_talk(&mut w, a, b, true);
+    let listener = &w.agents[idx(&w, b)];
+    assert!(listener
+        .learning
+        .lesson(ObservationKind::Cold, OutcomeKind::Death, Some(at))
+        .is_none());
+    let lesson = listener
+        .learning
+        .lessons
+        .iter()
+        .find(|l| l.cue == ObservationKind::Cold)
+        .expect("a misheard warning");
+    let heard = lesson.pos.unwrap();
+    assert_eq!(heard.dist(at), 1);
+    assert!(lesson.confidence <= 0.42);
+    assert!(listener
+        .learning
+        .observations
+        .iter()
+        .any(|o| o.pos == heard && o.evidence == Evidence::ToldBy(a)));
+    assert!(listener
+        .told
+        .iter()
+        .any(|t| t.from == a && t.took == Took::Misheard));
+}
+
+#[test]
+fn a_misheard_warning_does_not_replace_a_lesson_already_held() {
+    use hf_sim::mind::{ObservationKind, OutcomeKind};
+    let (mut w, ids) = camp(4882, 2);
+    let (a, b) = (ids[0], ids[1]);
+    let (ai, bi) = (idx(&w, a), idx(&w, b));
+    let at = TilePos::new(40, 40, 2);
+    let heard = at.offset(1, 0, 0);
+    let tick = w.meta.tick;
+    for (i, pos, confidence) in [(ai, at, 0.7), (bi, heard, 0.9)] {
+        w.agents[i].learning.learn(
+            ObservationKind::Cold,
+            OutcomeKind::Death,
+            Some(pos),
+            true,
+            tick,
+            None,
+        );
+        w.agents[i].learning.lessons[0].confidence = confidence;
+    }
+    set_opinion(&mut w, b, a, 0.8, 0.8);
+    a_lesson_talk(&mut w, a, b, true);
+    let lesson = w.agents[bi]
+        .learning
+        .lesson(ObservationKind::Cold, OutcomeKind::Death, Some(heard))
+        .unwrap();
+    assert_eq!(
+        lesson.confidence, 0.9,
+        "hearsay must not weaken the held lesson"
+    );
+    assert_eq!(lesson.last_tested, tick);
+    assert!(w.agents[bi]
+        .told
+        .iter()
+        .any(|t| t.from == a && t.took == Took::Misheard));
+}
+
+#[test]
+fn a_refused_lesson_does_not_spread_and_is_not_pressed_again() {
+    use hf_sim::mind::{ObservationKind, OutcomeKind};
+    let (mut w, ids) = camp(4881, 3);
+    let (a, b, c) = (ids[0], ids[1], ids[2]);
+    let ai = idx(&w, a);
+    let at = TilePos::new(40, 40, 2);
+    let tick = w.meta.tick;
+    w.agents[ai].learning.learn(
+        ObservationKind::Cold,
+        OutcomeKind::Death,
+        Some(at),
+        true,
+        tick,
+        None,
+    );
+    w.agents[ai].learning.lessons[0].confidence = 0.7;
+    set_opinion(&mut w, b, a, -0.6, 0.0);
+    set_opinion(&mut w, c, b, 0.8, 0.8);
+    a_lesson_talk(&mut w, a, b, false);
+    talk(&mut w, a, b, 40);
+    let listener = &w.agents[idx(&w, b)];
+    let refused: Vec<_> = listener
+        .told
+        .iter()
+        .filter(|t| matches!(t.what, What::Lesson { .. }) && t.from == a)
+        .collect();
+    assert_eq!(refused.len(), 1);
+    assert_eq!(refused[0].took, Took::Refused);
+    assert!(listener.learning.lessons.is_empty());
+    talk(&mut w, b, c, 40);
+    assert!(w.agents[idx(&w, c)].learning.lessons.is_empty());
 }
 
 #[test]

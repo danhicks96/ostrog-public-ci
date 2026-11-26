@@ -1,5 +1,26 @@
 # Fix log
 
+## 2026-11-25: personal danger lessons can be told in talk (OST-453)
+
+- Symptom: a person could explain a technique or a bad plant but could not pass on a
+  personally held lesson about danger at a place.
+- Cause: the saved telling kinds and the talk observer had no lesson channel.
+- Fix: append a lesson telling carrying its cue, outcome and place. A quarter of eligible
+  talks offer the strongest located death, harm or illness lesson at confidence 0.3 or more
+  that the listener lacks and has not recently refused. Existing willingness and trust gates
+  apply. The listener records the teller as evidence and receives confidence capped at
+  0.6 of the source; a mishearing points one tile off. Cue and outcome words share the
+  existing inspect labels. Each telling is kept in the existing bounded saved record.
+  A mishearing that points at an already held lesson leaves its evidence and confidence intact.
+  The telling census counts different topics in one conversation separately.
+- Guard: `tests/social_learning.rs::a_lesson_is_told_and_kept_with_its_teller` fails without
+  the channel and checks provenance, bounded confidence, a feud control, saved tellings,
+  continued save/resume and one/four-thread agreement.
+- Guard: `a_misheard_warning_does_not_replace_a_lesson_already_held` caught a misheard
+  warning lowering an existing 0.9-confidence lesson to 0.42; the existing lesson now stays intact.
+- Digests change when lessons spread. Saved telling variants are appended; existing
+  technique and plant tellings retain their positions and rules.
+
 ## 2026-11-24: the soak can run the camera director (OST-868)
 
 - Symptom: only the game client ran the director, so no headless run could say where the camera

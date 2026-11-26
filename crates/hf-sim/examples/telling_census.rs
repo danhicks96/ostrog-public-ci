@@ -33,7 +33,7 @@ fn main() {
         let mut w = World::opening_world(seed);
         let start = knowers(&w);
         let mut withheld = 0u64;
-        let mut seen: BTreeMap<(u32, u64), Took> = BTreeMap::new();
+        let mut seen: BTreeMap<(u32, u64, u32, What), Took> = BTreeMap::new();
         let mut tallies: BTreeMap<(&str, &str), u64> = BTreeMap::new();
         for _ in 0..days * TICKS_PER_DAY {
             w.step();
@@ -47,12 +47,13 @@ fn main() {
             for a in w.agents.iter() {
                 for t in &a.told {
                     if seen
-                        .insert((a.id.0, t.tick ^ (t.from.0 as u64) << 40), t.took)
+                        .insert((a.id.0, t.tick, t.from.0, t.what), t.took)
                         .is_none()
                     {
                         let kind = match t.what {
                             What::Technique(_) => "technique",
                             What::LookAlike(_) => "look-alike",
+                            What::Lesson { .. } => "lesson",
                         };
                         let took = match t.took {
                             Took::Taken => "taken",

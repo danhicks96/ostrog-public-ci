@@ -200,29 +200,7 @@ pub fn inspect(a: &Agent) -> ExperienceReadout {
 }
 
 fn observation_label(kind: ObservationKind) -> String {
-    match kind {
-        ObservationKind::WaterDepth => "water depth",
-        ObservationKind::WaterCurrent => "water current",
-        ObservationKind::Flooding => "flooding",
-        ObservationKind::Wetness => "wetness",
-        ObservationKind::Saturation => "saturation",
-        ObservationKind::Pressure => "pressure",
-        ObservationKind::Heat => "heat",
-        ObservationKind::Cold => "cold",
-        ObservationKind::Fire => "fire",
-        ObservationKind::Smoke => "smoke",
-        ObservationKind::Spoilage => "spoilage",
-        ObservationKind::FoodExposure => "food exposure",
-        ObservationKind::ResourceDepletion => "resource depletion",
-        ObservationKind::Regrowth => "regrowth",
-        ObservationKind::StructuralWeakness => "structural weakness",
-        ObservationKind::Shelter => "shelter",
-        ObservationKind::Other => "other",
-        ObservationKind::Soil => "the ground",
-        ObservationKind::Tracks => "animal sign",
-        ObservationKind::Joint => "a stuck building site",
-    }
-    .to_string()
+    kind.label().to_string()
 }
 
 /// What the person made of a cue, in words (#569).
@@ -247,18 +225,7 @@ pub fn reading_label(r: crate::mind::Reading) -> String {
 }
 
 fn outcome_label(outcome: OutcomeKind) -> String {
-    match outcome {
-        OutcomeKind::Harm => "harm",
-        OutcomeKind::Illness => "illness",
-        OutcomeKind::Loss => "loss",
-        OutcomeKind::Displacement => "displacement",
-        OutcomeKind::Death => "death",
-        OutcomeKind::Safety => "safety",
-        OutcomeKind::Benefit => "benefit",
-        OutcomeKind::Discovery => "discovery",
-        OutcomeKind::NoChange => "no change",
-    }
-    .to_string()
+    outcome.label().to_string()
 }
 
 fn evidence_label(evidence: Evidence) -> String {

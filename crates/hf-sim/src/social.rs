@@ -47,6 +47,8 @@ pub fn observe(w: &mut World) {
                 tell_look_alike(w, b, a);
                 tell_how(w, a, b);
                 tell_how(w, b, a);
+                tell_lesson(w, a, b);
+                tell_lesson(w, b, a);
                 make_up(w, a, b, warmth);
             }
             EventKind::Tended { healer, patient } => owe(w, patient, healer, tick),
@@ -227,6 +229,54 @@ fn tell_how(w: &mut World, a: AgentId, b: AgentId) {
     tell(w, ai, bi, What::Technique(t));
 }
 
+/// A personally held warning, chosen by confidence; the existing willingness and trust
+/// gates still decide whether it passes (OST-453).
+fn tell_lesson(w: &mut World, a: AgentId, b: AgentId) {
+    use crate::mind::telling::{refused_lately, What};
+    use crate::mind::OutcomeKind;
+    let (Some(ai), Some(bi)) = (idx(w, a), idx(w, b)) else {
+        return;
+    };
+    let now = w.meta.tick;
+    let what = w.agents[ai]
+        .learning
+        .lessons
+        .iter()
+        .enumerate()
+        .filter_map(|(order, lesson)| {
+            if lesson.confidence < 0.3
+                || !matches!(
+                    lesson.outcome,
+                    OutcomeKind::Death | OutcomeKind::Harm | OutcomeKind::Illness
+                )
+            {
+                return None;
+            }
+            let at = lesson.pos?;
+            let what = What::Lesson {
+                cue: lesson.cue,
+                outcome: lesson.outcome,
+                at,
+            };
+            (w.agents[bi]
+                .learning
+                .lesson(lesson.cue, lesson.outcome, Some(at))
+                .is_none()
+                && !refused_lately(&w.agents[bi].told, what, a, now))
+            .then_some((what, lesson.confidence, order))
+        })
+        .max_by(|a, b| a.1.total_cmp(&b.1).then(b.2.cmp(&a.2)))
+        .map(|x| x.0);
+    let Some(what) = what else { return };
+    let mut r = stream(
+        w.meta.seed,
+        &[purpose::AGENT_SOCIAL, 0x1E55, a.0 as u64, b.0 as u64, now],
+    );
+    if r.gen_bool(0.25) {
+        tell(w, ai, bi, what);
+    }
+}
+
 /// One telling from `ai` to `bi` (#487): withheld, refused, misheard or taken, and kept.
 fn tell(w: &mut World, ai: usize, bi: usize, what: crate::mind::telling::What) {
     use crate::mind::telling::{remember, trust, willing, Told, Took, What, BELIEVE};
@@ -264,7 +314,7 @@ fn tell(w: &mut World, ai: usize, bi: usize, what: crate::mind::telling::What) {
     let trust = trust(&w.agents[bi], a);
     let took = if trust < BELIEVE {
         Took::Refused
-    } else if matches!(what, What::Technique(_)) && {
+    } else if matches!(what, What::Technique(_) | What::Lesson { .. }) && {
         let mut r = stream(
             w.meta.seed,
             &[purpose::AGENT_SOCIAL, 0x487B, a.0 as u64, b.0 as u64, now],
@@ -276,6 +326,28 @@ fn tell(w: &mut World, ai: usize, bi: usize, what: crate::mind::telling::What) {
         Took::Taken
     };
     let teller = w.agents[ai].name.clone();
+    let lesson_confidence = if let What::Lesson { cue, outcome, at } = what {
+        w.agents[ai]
+            .learning
+            .lesson(cue, outcome, Some(at))
+            .map_or(0.0, |l| l.confidence.clamp(0.0, 1.0) * 0.6)
+    } else {
+        0.0
+    };
+    let lesson_at = if let What::Lesson { at, .. } = what {
+        let shifted = at.offset(1, 0, 0);
+        Some(if took == Took::Misheard {
+            if w.grid.in_bounds(shifted) {
+                shifted
+            } else {
+                at.offset(-1, 0, 0)
+            }
+        } else {
+            at
+        })
+    } else {
+        None
+    };
     let l = &mut w.agents[bi];
     match (what, took) {
         (_, Took::Refused) => {}
@@ -297,6 +369,32 @@ fn tell(w: &mut World, ai: usize, bi: usize, what: crate::mind::telling::What) {
                 now,
                 &teller,
             );
+        }
+        (What::Lesson { cue, outcome, .. }, Took::Taken | Took::Misheard) => {
+            let at = lesson_at.expect("a lesson has a place");
+            l.learning.observe(crate::mind::Observation {
+                tick: now,
+                pos: at,
+                kind: cue,
+                strength: lesson_confidence,
+                evidence: crate::mind::Evidence::ToldBy(a),
+                event: None,
+                full: false,
+                reading: None,
+            });
+            // A mishearing may point at another lesson already held. Keep that person's
+            // evidence and confidence rather than replacing it with the weaker warning.
+            if l.learning.lesson(cue, outcome, Some(at)).is_none() {
+                l.learning.learn(cue, outcome, Some(at), true, now, None);
+                if let Some(lesson) = l
+                    .learning
+                    .lessons
+                    .iter_mut()
+                    .find(|l| l.cue == cue && l.outcome == outcome && l.pos == Some(at))
+                {
+                    lesson.confidence = lesson.confidence.min(lesson_confidence);
+                }
+            }
         }
     }
     remember(

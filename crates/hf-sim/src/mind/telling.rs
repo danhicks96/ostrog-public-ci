@@ -11,7 +11,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::AgentId;
+use crate::ids::{AgentId, TilePos};
 use crate::mind::techniques::Technique;
 use crate::plants::PlantKind;
 
@@ -30,10 +30,15 @@ pub const MISHEAR: f32 = 0.1;
 /// The trust a listener must place in the teller to take their word.
 pub const BELIEVE: f32 = 0.45;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub enum What {
     Technique(Technique),
     LookAlike(PlantKind),
+    Lesson {
+        cue: crate::mind::ObservationKind,
+        outcome: crate::mind::OutcomeKind,
+        at: TilePos,
+    },
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
@@ -60,6 +65,13 @@ impl What {
         match self {
             What::Technique(t) => t.name().to_string(),
             What::LookAlike(k) => format!("which {} is the bad one", k.label()),
+            What::Lesson { cue, outcome, .. } => {
+                format!(
+                    "that {} at that place brings {}",
+                    cue.label(),
+                    outcome.label()
+                )
+            }
         }
     }
 }
