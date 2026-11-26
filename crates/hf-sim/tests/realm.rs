@@ -425,7 +425,8 @@ fn a_drainage_divide_can_have_a_lake_or_no_surface_water() {
 
     let seed = 7;
     let map = realm::generate(seed, &RealmParams::default());
-    for (site, expect_lake) in [(9368, false), (8792, true)] {
+    // On the original bed the first two sites drain to the edge. The third has a rim.
+    for (site, expect_lake) in [(9368, false), (8792, false), (8224, true)] {
         assert!(!map.river[site] && !map.down.contains(&site));
         let preview = preview_in(seed, &map, None, Some(site));
         assert_eq!(preview.region, site);

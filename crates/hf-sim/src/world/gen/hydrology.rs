@@ -11,6 +11,39 @@ use crate::ids::TilePos;
 use crate::rng::{hash64, purpose};
 use crate::world::{Material, Shape, Tile, TileFlags, WorldGrid};
 
+/// Lowest height water must cross to leave each column. Flood inward from the map edges
+/// using the same four cardinal neighbors as surface-water bodies. The bed and water in
+/// the live grid occupy whole tiles, so a sub-tile hollow cannot hold a tile of water.
+fn outlet_heights(grid: &WorldGrid) -> Vec<i32> {
+    use std::cmp::Reverse;
+    use std::collections::BinaryHeap;
+
+    let mut outlet = vec![i32::MAX; grid.ground.len()];
+    let mut front = BinaryHeap::new();
+    for y in 0..grid.height {
+        for x in 0..grid.width {
+            if x == 0 || y == 0 || x == grid.width - 1 || y == grid.height - 1 {
+                let c = grid.col(x, y);
+                outlet[c] = grid.ground[c];
+                front.push(Reverse((outlet[c], x, y)));
+            }
+        }
+    }
+    while let Some(Reverse((level, x, y))) = front.pop() {
+        for (xx, yy) in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)] {
+            if xx < 0 || yy < 0 || xx >= grid.width || yy >= grid.height {
+                continue;
+            }
+            let c = grid.col(xx, yy);
+            if outlet[c] == i32::MAX {
+                outlet[c] = level.max(grid.ground[c]);
+                front.push(Reverse((outlet[c], xx, yy)));
+            }
+        }
+    }
+    outlet
+}
+
 pub fn apply(seed: u64, p: &GenParams, grid: &mut WorldGrid, ch: &Character) -> Vec<bool> {
     apply_with_channel(seed, p, grid, ch, None)
 }
@@ -35,6 +68,13 @@ pub(super) fn apply_with_channel(
         zs.sort_unstable();
         zs[(zs.len() / 20).min(zs.len() - 1)]
     };
+    // Regional marshes and coastal frontage have independent water supplies. On an
+    // inland divide local rain can pool only below the lowest outlet to the map edge.
+    let outlet = (p.drainage_divide
+        && river.is_none()
+        && p.ocean.is_empty()
+        && p.landform != super::Landform::Marsh)
+        .then(|| outlet_heights(grid));
     // A meandering stream: a band around a noisy curve across the map.
     for y in 0..p.height {
         for x in 0..p.width {
@@ -57,7 +97,11 @@ pub(super) fn apply_with_channel(
             } else {
                 false
             };
-            let is_lake = g <= lake_level && moist > 1.0 - sea;
+            let is_lake = g <= lake_level
+                && moist > 1.0 - sea
+                && outlet
+                    .as_ref()
+                    .is_none_or(|levels| g < levels[grid.col(x, y)]);
             let ocean = p.landform == super::Landform::Coast
                 && !p.ocean.is_empty()
                 && g == 0
@@ -178,5 +222,31 @@ pub fn deepen(grid: &mut WorldGrid, water: &[bool], biome: &[Biome]) {
             t.material = bed;
             grid.set(q, t);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_pond_needs_a_rim_above_its_bed() {
+        let mut grid = WorldGrid::new(7, 5, -4, 5);
+        grid.ground.fill(3);
+        let basin = grid.col(1, 2);
+        let flats = grid.col(3, 2);
+        grid.ground[basin] = 0;
+        // The saddle is the basin's lowest outlet. Beyond it a level bank drains
+        // down to a lower east edge. None of that bank can hold surface water.
+        for x in 2..6 {
+            let c = grid.col(x, 2);
+            grid.ground[c] = 1;
+        }
+        let edge = grid.col(6, 2);
+        grid.ground[edge] = 0;
+        let outlet = outlet_heights(&grid);
+        assert_eq!(outlet[basin], 1);
+        assert_eq!(outlet[flats], grid.ground[flats]);
+        assert_eq!(outlet[edge], grid.ground[edge]);
     }
 }
