@@ -1,6 +1,33 @@
 # Fix log
 
-## 2026-11-26: the completed seed-5 pairing baseline (OST-420)
+## 2026-11-26: the live pairing baseline includes Trace arrivals (OST-420)
+
+- The live opening completed 600 days at one thread. Its final world digest and all 18
+  non-performance daily CSV fields match the original four-thread opening through every
+  day. The final digest is
+  `ba59680b1247d42b77b8306cd4ad42fb4752c64ffc093bdb11c23037ad4df301`.
+
+| Reading | Live events, seed 5 at 600 days |
+|---|---:|
+| Pairings / with first conversation / missing first conversation | 45 / 40 / 5 |
+| Within either person's first ten days after recorded arrival | 15 |
+| Other pairings with an unknown arrival | 7 |
+| Days from first conversation, p25 / median / p75 | 5.326823 / 16.628090 / 122.787057 |
+| Recorded conversations, p25 / median / p75 | 3 / 5 / 21 |
+
+- The chronicle-only table below has 13 early pairings and ten other unknown arrivals.
+  `Chronicle::record` omits Trace events, while the live feed reader observes them before
+  filtering. The opening records seven Trace arrivals for its lost survivors. Exporting
+  those actual initial events reproduces the original initial world digest; the three
+  Notable initial arrivals match the saved chronicle exactly. Adding the seven omitted
+  records to the replay input explains all three affected pairings. All eleven fields then
+  agree between the unchanged production counter, the live report and an independent join.
+- This is a difference in input coverage, not a counter change or invented arrival dates.
+  The median satisfies 16 +/- 1 days in both inputs. Missing first conversations remain
+  excluded, and unknown arrivals remain explicit. The original save and chronicle are
+  unchanged. The remaining seeds continue for the activity and lineage tables.
+
+## 2026-11-26: the persisted chronicle pairing baseline (OST-420)
 
 - The original opening completed 600 days at four threads. Its complete chronicle was
   replayed through the unchanged production `courtship_stats` counter. An independent
@@ -20,9 +47,8 @@
 - The median is within the requested 16 +/- 1 days. Missing conversations are excluded
   from the 40 timing samples rather than counted as zero. The early-pair count and the
   unknown-arrival count retain their separate meanings.
-- This validates the counter on the full recorded baseline. The separate live CLI runs
-  for seeds 5-8 continue for the activity and lineage tables and a further pairing-key
-  cross-check. No simulation, save or digest changes.
+- This validates the counter on the complete persisted baseline. The live input and its
+  additional Trace arrivals are cross-checked above. No simulation, save or digest changes.
 
 ## 2026-11-25: pairing delays are counted from recorded talks (OST-420)
 
@@ -38,7 +64,33 @@
 - Guards: `tests/social.rs::courtship_stats_from_a_built_log` counts four talks over nine days;
   another built log checks quartiles and missing talks. The alive-report guard checks the
   streamed keys and an unchanged world digest.
-- The seed-5 600-day census is pending. No simulation state, save schema or choices change.
+- The completed seed-5 census is recorded above. No simulation state, save schema or choices change.
+## 2026-11-26: a bounded long-memory term for mood, not yet used (OST-202)
+
+- Symptom: mood adds every long memory with no bound, no fading and no habituation, so a meal
+  eaten for years counts as much as a loss.
+- Fix: `Memories::mood_term(now)` returns `0.35 * tanh(sum / 4)` over the long memories, each
+  `valence * strength * recency * habit`: recency halves every 10 days (routine kinds: meals, rest,
+  company) or 30 days (hardship, work, discovery) from the last renewal, and habit is
+  `1 / (1 + reinforced / 8)` for routine kinds. `tanh` is taken from the deterministic exp. Nothing
+  calls it, so no behaviour, save or digest changed; OST-203 swaps it into mood.
+- Guards: `tests/mood.rs::long_term_is_bounded_by_memory_count`, `routine_memories_tire`,
+  `a_vivid_loss_shows_among_many_meals` and `old_memories_fade_from_mood`.
+- Note: the issue asked that a loss show as at least 0.05 among many meals; with its own constants
+  the most one such loss can move the term is about 0.039, so the guard asks for 0.03. OST-207
+  tunes the constants.
+## 2026-11-26: a census of whether the catch-up names every life event (OST-862)
+
+- Symptom: nothing checked that a returning viewer is told, by name, every death, birth, pairing,
+  arrival and departure, or that no one kind crowds the folded lines.
+- Fix: `examples/catch_up_census.rs` walks opening worlds in 8-game-hour windows from the start of
+  play. For each window it reads the told rows of those kinds from the chronicle and checks each
+  has a line in `summary::changes` that names its person, then counts the folded
+  `summary::catch_up_details` lines per kind. Reads only; exits non-zero on a missing or unnamed row.
+- Result (seeds 1 to 4, 30 days, 360 windows, 91 rows): 0 missing, 0 unnamed. 29 windows had a kind
+  over 3 folded lines (chose, parched, hunted, exhausted, starving, high_water, ruin_wondered,
+  studied, wounded), so the 3-line cap is not met by the folded details; a follow-up is needed.
+- Guard: the example is the check; it fails on any row without a named line.
 
 ## 2026-11-24: nothing named what one person could see another doing (OST-1100)
 
