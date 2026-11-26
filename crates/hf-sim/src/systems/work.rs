@@ -1,6 +1,6 @@
 //! Execute work plans step by step, and apply the effects of finished designations.
 
-use crate::events::{EventKind, Severity};
+use crate::events::{EventKind, HaulDestination, HaulLoad, Severity};
 use crate::ids::AgentId;
 use rand::Rng;
 
@@ -298,12 +298,25 @@ pub fn run(w: &mut World, i: usize) -> bool {
                             agent: who,
                             item: id,
                             to: site_pos,
+                            load: Some(HaulLoad {
+                                kind,
+                                count: delivered,
+                                destination: HaulDestination::Worksite(w.designations[dx].kind),
+                            }),
                         },
                     );
                 }
                 None => {
                     // Into a same-kind stack on the tile, else beside it (`put_down`).
                     let id = w.items[ix].id;
+                    let count = w.items[ix].count;
+                    let destination = if w.structures.iter().any(|s| {
+                        s.pos == to && s.kind == StructureKind::Stockpile && s.progress >= 1.0
+                    }) {
+                        HaulDestination::Stockpile
+                    } else {
+                        HaulDestination::Ground
+                    };
                     put_down(w, ix, to);
                     w.events.push(
                         tick,
@@ -313,6 +326,11 @@ pub fn run(w: &mut World, i: usize) -> bool {
                             agent: who,
                             item: id,
                             to,
+                            load: Some(HaulLoad {
+                                kind,
+                                count,
+                                destination,
+                            }),
                         },
                     );
                     w.agents[i].knowledge.note(

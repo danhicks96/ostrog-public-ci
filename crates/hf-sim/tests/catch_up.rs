@@ -305,6 +305,7 @@ fn summary_counts_read_as_words() {
                 agent: a,
                 item: ItemId(1),
                 to: TilePos { x: 0, y: 0, z: 0 },
+                load: None,
             },
             Severity::Minor,
         );
@@ -500,6 +501,7 @@ fn catch_up_has_news_only_for_a_named_change_or_a_notable_line() {
                 agent: a,
                 item: ItemId(1),
                 to: TilePos { x: 0, y: 0, z: 0 },
+                load: None,
             },
         )
     };

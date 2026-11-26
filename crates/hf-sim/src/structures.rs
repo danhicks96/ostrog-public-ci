@@ -50,6 +50,18 @@ pub enum StructureKind {
 }
 
 impl StructureKind {
+    pub fn label(self) -> String {
+        match self {
+            Self::CookingPot => "cooking pot".into(),
+            Self::CarpenterBench => "carpenter's bench".into(),
+            Self::FencePost => "fence post".into(),
+            Self::PortalStone => "portal stone".into(),
+            Self::WardStone => "ward stone".into(),
+            Self::LeanTo => "lean-to".into(),
+            other => format!("{other:?}").to_lowercase(),
+        }
+    }
+
     /// Where one person sleeps: a bed, a tent, a nest, a lean-to (C57, #1081).
     pub fn is_sleeping_place(self) -> bool {
         matches!(

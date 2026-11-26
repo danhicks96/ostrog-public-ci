@@ -599,8 +599,8 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Slept | slept | Minor | {agent} slept {hours} hours. |
 | Foraged | foraged | Minor | {agent} gathered food. |
 | Harvested | harvested | Minor | {agent} harvested a crop. |
-| Hauled | hauled | Trace, Minor | {agent} carried goods to the stockpile. |
-| Built | built | Trace | {k} / {agent} finished the {what}. / {agent} finished building. / cooking pot / carpenter's bench |
+| Hauled | hauled | Trace, Minor | {who} carried goods. / {who} brought {what} to the {order} site, where none were accepted. / {who} delivered {count} {what} to the {order} site. / {who} carried {count} {what} to the stockpile. / {who} set down {count} {what}. |
+| Built | built | Trace | {agent} finished the {what}. / {agent} finished building. |
 | Mined | mined | Notable | {agent} struck {f} while mining. / {agent} mined rock. |
 | Cooked | cooked | Minor | {agent} cooked a meal. |
 | Talked | talked | Minor | {a} and {b} talked {how}. / warmly / a while |
@@ -1010,7 +1010,7 @@ Designation labels (`work/designation.rs` `label`):
 | BuildRoof | roof |
 | ClearRoof | clearing snow |
 | Study | study |
-| BuildStructure | {k} |
+| BuildStructure | (the structure label) |
 | Chop | felling |
 | Mine | mining |
 | DigStairs | shaft |
@@ -1396,7 +1396,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3263 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2632,7 +2632,13 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | spells.rs:39 | A haze closed over the sun and the days went dim. |
 | spells.rs:40 | A sour wind came down the valley, and people began to cough. |
 | spells.rs:41 | Everything that grew seemed to grow faster. |
-| structures.rs:156 | A {words} of {} |
+| structures.rs:55 | cooking pot |
+| structures.rs:56 | carpenter's bench |
+| structures.rs:57 | fence post |
+| structures.rs:58 | portal stone |
+| structures.rs:59 | ward stone |
+| structures.rs:60 | lean-to |
+| structures.rs:168 | A {words} of {} |
 | taken.rs:87 | brought back |
 | taken.rs:88 | lost |
 | taken.rs:89 | hurt |
@@ -3644,52 +3650,52 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:249 | nothing carried |
 | systems/work.rs:258 | site gone |
 | systems/work.rs:288 | delivered |
-| systems/work.rs:342 | the prey is gone |
-| systems/work.rs:358 | not at the site |
-| systems/work.rs:361 | materials missing |
-| systems/work.rs:418 | from a slipped axe |
-| systems/work.rs:423 | from falling stone |
-| systems/work.rs:428 | at the building site |
-| systems/work.rs:484 | building |
-| systems/work.rs:484 | digging |
-| systems/work.rs:560 | the old valley |
-| systems/work.rs:586 | studying the {what} left at {site} |
-| systems/work.rs:1085 | chop |
-| systems/work.rs:1167 | mine |
-| systems/work.rs:1169 | iron ore |
-| systems/work.rs:1178 | mine |
-| systems/work.rs:1180 | copper ore |
-| systems/work.rs:1183 | mine |
-| systems/work.rs:1193 | mine |
-| systems/work.rs:1195 | coal |
-| systems/work.rs:1215 | mine |
-| systems/work.rs:1223 | mine |
-| systems/work.rs:1225 | rough gems |
-| systems/work.rs:1236 | mine |
-| systems/work.rs:1265 | {f} here |
-| systems/work.rs:1284 | {}, a cavern grown with pale fungus{} |
-| systems/work.rs:1286 |  around a still pool |
-| systems/work.rs:1289 | a cave |
-| systems/work.rs:1364 | dig |
-| systems/work.rs:1380 | a way down |
-| systems/work.rs:1416 | dig |
-| systems/work.rs:1473 | harvest |
-| systems/work.rs:1575 | beating at a fire |
-| systems/work.rs:1587 | poultice |
-| systems/work.rs:1691 | {n} {} |
-| systems/work.rs:1693 |  and  |
-| systems/work.rs:1763 | craft |
-| systems/work.rs:1772 | craft |
-| systems/work.rs:1799 | set with a {gem_name} |
-| systems/work.rs:1853 | cook |
-| systems/work.rs:1866 | cook |
-| systems/work.rs:1929 | from a boar's tusk |
-| systems/work.rs:1931 | from a wolf's bite |
-| systems/work.rs:1947 | hunted |
-| systems/work.rs:1971 | hunt |
-| systems/work.rs:1979 | hunt |
-| systems/work.rs:2112 | set about putting a lamp where they work below |
-| systems/work.rs:2113 | because it is too dark down there to see the rock |
+| systems/work.rs:360 | the prey is gone |
+| systems/work.rs:376 | not at the site |
+| systems/work.rs:379 | materials missing |
+| systems/work.rs:436 | from a slipped axe |
+| systems/work.rs:441 | from falling stone |
+| systems/work.rs:446 | at the building site |
+| systems/work.rs:502 | building |
+| systems/work.rs:502 | digging |
+| systems/work.rs:578 | the old valley |
+| systems/work.rs:604 | studying the {what} left at {site} |
+| systems/work.rs:1103 | chop |
+| systems/work.rs:1185 | mine |
+| systems/work.rs:1187 | iron ore |
+| systems/work.rs:1196 | mine |
+| systems/work.rs:1198 | copper ore |
+| systems/work.rs:1201 | mine |
+| systems/work.rs:1211 | mine |
+| systems/work.rs:1213 | coal |
+| systems/work.rs:1233 | mine |
+| systems/work.rs:1241 | mine |
+| systems/work.rs:1243 | rough gems |
+| systems/work.rs:1254 | mine |
+| systems/work.rs:1283 | {f} here |
+| systems/work.rs:1302 | {}, a cavern grown with pale fungus{} |
+| systems/work.rs:1304 |  around a still pool |
+| systems/work.rs:1307 | a cave |
+| systems/work.rs:1382 | dig |
+| systems/work.rs:1398 | a way down |
+| systems/work.rs:1434 | dig |
+| systems/work.rs:1491 | harvest |
+| systems/work.rs:1593 | beating at a fire |
+| systems/work.rs:1605 | poultice |
+| systems/work.rs:1709 | {n} {} |
+| systems/work.rs:1711 |  and  |
+| systems/work.rs:1781 | craft |
+| systems/work.rs:1790 | craft |
+| systems/work.rs:1817 | set with a {gem_name} |
+| systems/work.rs:1871 | cook |
+| systems/work.rs:1884 | cook |
+| systems/work.rs:1947 | from a boar's tusk |
+| systems/work.rs:1949 | from a wolf's bite |
+| systems/work.rs:1965 | hunted |
+| systems/work.rs:1989 | hunt |
+| systems/work.rs:1997 | hunt |
+| systems/work.rs:2130 | set about putting a lamp where they work below |
+| systems/work.rs:2131 | because it is too dark down there to see the rock |
 | view/alive.rs:46 | died |
 | view/alive.rs:46 | captured |
 | view/alive.rs:46 | broke |
@@ -4486,23 +4492,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:59 | An |
 | view/narrate.rs:60 | {article} {n} |
 | view/narrate.rs:71 | community {} |
-| view/narrate.rs:1839 | It was over {}. |
-| view/narrate.rs:1842 | They broke down {cause}. |
-| view/narrate.rs:1844 | No one could name the cause. |
-| view/narrate.rs:1876 | some {} |
-| view/narrate.rs:1877 | a torch |
-| view/narrate.rs:1878 | a sheaf of grain |
-| view/narrate.rs:1879 | a stone block |
-| view/narrate.rs:1898 | aeiouAEIOU |
-| view/narrate.rs:1899 | {} {what} |
-| view/narrate.rs:1899 | an |
-| view/narrate.rs:1899 | a |
-| view/narrate.rs:1905 | first |
-| view/narrate.rs:1906 | second |
-| view/narrate.rs:1907 | third |
-| view/narrate.rs:1908 | fourth |
-| view/narrate.rs:1909 | fifth |
-| view/narrate.rs:1910 | {n}th |
+| view/narrate.rs:1845 | It was over {}. |
+| view/narrate.rs:1848 | They broke down {cause}. |
+| view/narrate.rs:1850 | No one could name the cause. |
+| view/narrate.rs:1882 | some {} |
+| view/narrate.rs:1883 | a torch |
+| view/narrate.rs:1884 | a sheaf of grain |
+| view/narrate.rs:1885 | a stone block |
+| view/narrate.rs:1904 | aeiouAEIOU |
+| view/narrate.rs:1905 | {} {what} |
+| view/narrate.rs:1905 | an |
+| view/narrate.rs:1905 | a |
+| view/narrate.rs:1911 | first |
+| view/narrate.rs:1912 | second |
+| view/narrate.rs:1913 | third |
+| view/narrate.rs:1914 | fourth |
+| view/narrate.rs:1915 | fifth |
+| view/narrate.rs:1916 | {n}th |
 | view/summary.rs:81 | died |
 | view/summary.rs:82 | born |
 | view/summary.rs:83 | paired |

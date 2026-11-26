@@ -28,6 +28,22 @@ pub enum BreakExplanation {
     },
 }
 
+/// The load the destination accepted at the time of the haul. A work order may
+/// outlive its materials, and can itself disappear before someone reads the history.
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
+pub struct HaulLoad {
+    pub kind: crate::items::ItemKind,
+    pub count: u32,
+    pub destination: HaulDestination,
+}
+
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
+pub enum HaulDestination {
+    Worksite(crate::work::DesignationKind),
+    Stockpile,
+    Ground,
+}
+
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub enum EventKind {
     WorldCreated {
@@ -311,6 +327,8 @@ pub enum EventKind {
         agent: AgentId,
         item: ItemId,
         to: TilePos,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        load: Option<HaulLoad>,
     },
     Built {
         agent: AgentId,

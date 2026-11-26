@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-26 · Worksite deliveries in the history
+
+A carpenter's bench received three logs while the history described the trip as a stockpile haul.
+Both drop actions used the same event without recording its load or purpose. The event now records
+the quantity accepted and the work order at delivery, including deliveries into a stockpile.
+Earlier records retain the carrier and omit the unknown load and purpose.
+
 ## 2026-11-24: the cost of a breakdown or a quarrel lasted one game-minute (OST-241)
 
 - Symptom: a breakdown took 0.2 off mood and a quarrel 0.15, and a game-minute later both were

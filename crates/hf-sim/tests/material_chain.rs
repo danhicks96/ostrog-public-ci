@@ -116,3 +116,103 @@ fn walls_want_made_things_and_the_benches_are_ordered_to_make_them() {
     assert!(crafts.contains(&recipes::PLANK), "{crafts:?}");
     assert!(crafts.contains(&recipes::DOOR), "{crafts:?}");
 }
+
+#[test]
+fn a_bench_delivery_remembers_its_own_load_and_destination() {
+    use hf_sim::events::EventKind;
+    use hf_sim::mind::Activity;
+    use hf_sim::view::narrate;
+    use hf_sim::work::{Plan, Step};
+
+    let (mut w, cid) = valley(6711);
+    a_morning(&mut w, cid);
+    let order = w
+        .designations
+        .iter()
+        .find(|d| {
+            matches!(
+                d.kind,
+                DesignationKind::BuildStructure(StructureKind::CarpenterBench, _)
+            )
+        })
+        .unwrap();
+    let (order, at) = (order.id, order.pos);
+    let i = w
+        .agents
+        .iter()
+        .position(|a| a.community == Some(cid))
+        .unwrap();
+    let who = w.agents[i].id;
+    w.agents[i].pos = at;
+    let mut records = Vec::new();
+    let pile = at.offset(1, 0, 0);
+    let id = w.alloc_structure_id();
+    w.structures.push(Structure {
+        id,
+        kind: StructureKind::Stockpile,
+        pos: pile,
+        material: Material::WOOD,
+        progress: 1.0,
+        active: false,
+        condition: 1.0,
+        owner: None,
+        quality: 0.5,
+    });
+    for (qty, destination, to) in [
+        (4, Some(order), at),
+        (1, Some(order), at),
+        (1, None, pile),
+        (2, None, at),
+    ] {
+        w.create_item(ItemKind::Log, qty, ItemPlace::Carried(who), 0.6, "test");
+        w.agents[i].activity = Activity::Working {
+            plan: Plan {
+                designation: order,
+                cursor: 0,
+                label: "hauling".into(),
+                steps: vec![Step::DropAt {
+                    to,
+                    kind: ItemKind::Log,
+                    for_site: destination,
+                }],
+            },
+        };
+        hf_sim::systems::work::run(&mut w, i);
+        records.push(
+            w.events
+                .drain()
+                .into_iter()
+                .find(|e| matches!(e.kind, EventKind::Hauled { .. }))
+                .unwrap(),
+        );
+    }
+    assert_eq!(
+        w.designations
+            .iter()
+            .find(|d| d.id == order)
+            .unwrap()
+            .requirements[0]
+            .delivered,
+        3
+    );
+    w.designations.clear();
+    w.items.clear();
+    let expected = [
+        "delivered 3 logs to the carpenter's bench site.",
+        "brought logs to the carpenter's bench site, where none were accepted.",
+        "carried 1 log to the stockpile.",
+        "set down 2 logs.",
+    ];
+    for (event, words) in records.iter().zip(expected) {
+        let text = narrate::line(&w, event);
+        assert!(text.ends_with(words), "{text}");
+    }
+    // A saved haul from before loads and destinations were recorded.
+    let mut old = serde_json::to_value(&records[0]).unwrap();
+    old["kind"]["Hauled"]
+        .as_object_mut()
+        .unwrap()
+        .remove("load");
+    let old = serde_json::from_value(old).unwrap();
+    assert!(narrate::line(&w, &old).ends_with("carried goods."));
+}

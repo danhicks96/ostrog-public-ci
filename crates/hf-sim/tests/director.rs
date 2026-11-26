@@ -57,6 +57,7 @@ fn a_death_outweighs_a_stockpile_of_hauling() {
                 agent: AgentId(0),
                 item: ItemId(0),
                 to: a,
+                load: None,
             },
         ));
     }

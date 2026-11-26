@@ -500,7 +500,10 @@ def strings_sim():
     rows = [('any other (building)' if r[0] == '_' else r[0], r[1]) for r in rows]
     desig = sim('work/designation.rs')
     files['desig'] = desig
-    drows = {variant(p): ' / '.join(templates(e)) or '(the recipe label)' for p, e, _ in desig.fn_arms('label')}
+    start = desig.src.index('impl DesignationKind')
+    drows = {variant(p): ' / '.join(templates(e)) or
+             ('(the structure label)' if variant(p) == 'BuildStructure' else '(the recipe label)')
+             for p, e, _ in desig.fn_arms('label', start)}
     parts.append('#### Work plan labels (`work/planner.rs`)\n\nShown as the activity of someone '
                  'working. `{label}` is the designation label (next table); for a craft it is '
                  'the recipe label.\n\n' + table(['DesignationKind', 'text'], rows)

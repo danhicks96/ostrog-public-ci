@@ -455,16 +455,22 @@ pub fn line(w: &World, e: &Event) -> String {
         Slept { agent, hours, .. } => format!("{} slept {:.0} hours.", named_as(w, e.tick, *agent), hours),
         Foraged { agent, .. } => format!("{} gathered food.", named_as(w, e.tick, *agent)),
         Harvested { agent, .. } => format!("{} harvested a crop.", named_as(w, e.tick, *agent)),
-        Hauled { agent, .. } => format!("{} carried goods to the stockpile.", named_as(w, e.tick, *agent)),
+        Hauled { agent, load, .. } => {
+            use crate::events::HaulDestination;
+            let who = named_as(w, e.tick, *agent);
+            let Some(load) = load else { return format!("{who} carried goods."); };
+            let count = load.count;
+            let what = load.kind.label_for_count(count);
+            match load.destination {
+                HaulDestination::Worksite(order) if count == 0 => format!("{who} brought {what} to the {} site, where none were accepted.", order.label()),
+                HaulDestination::Worksite(order) => format!("{who} delivered {count} {what} to the {} site.", order.label()),
+                HaulDestination::Stockpile => format!("{who} carried {count} {what} to the stockpile."),
+                HaulDestination::Ground => format!("{who} set down {count} {what}."),
+            }
+        }
         Built { agent, at, .. } => match w.structures.iter().find(|s| s.pos == *at) {
             Some(s) => {
-                let what = match s.kind {
-                    crate::structures::StructureKind::CookingPot => "cooking pot".to_string(),
-                    crate::structures::StructureKind::CarpenterBench => {
-                        "carpenter's bench".to_string()
-                    }
-                    k => format!("{k:?}").to_lowercase(),
-                };
+                let what = s.kind.label();
                 format!("{} finished the {what}.", named_as(w, e.tick, *agent))
             }
             None => format!("{} finished building.", named_as(w, e.tick, *agent)),

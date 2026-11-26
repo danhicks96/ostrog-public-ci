@@ -160,7 +160,13 @@ impl Designation {
             .map(|r| (r.kind, r.needed - r.delivered, r.want))
     }
     pub fn label(&self) -> String {
-        match self.kind {
+        self.kind.label()
+    }
+}
+
+impl DesignationKind {
+    pub fn label(self) -> String {
+        match self {
             DesignationKind::BuildWall(_) => "wall".into(),
             DesignationKind::BuildDoor => "door".into(),
             DesignationKind::BuildStairs(_) => "stairs".into(),
@@ -168,7 +174,7 @@ impl Designation {
             DesignationKind::BuildRoof(_) => "roof".into(),
             DesignationKind::ClearRoof => "clearing snow".into(),
             DesignationKind::Study(_) => "study".into(),
-            DesignationKind::BuildStructure(k, _) => format!("{k:?}").to_lowercase(),
+            DesignationKind::BuildStructure(k, _) => k.label(),
             DesignationKind::Chop => "felling".into(),
             DesignationKind::Mine => "mining".into(),
             DesignationKind::DigStairs => "shaft".into(),
