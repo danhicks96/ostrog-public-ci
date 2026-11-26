@@ -274,3 +274,100 @@ fn a_new_death_can_found_a_new_rest_day() {
         "the new custom has a new cause"
     );
 }
+
+/// OST-507: a belief someone came to hold from what happened to them is told at the hearth to
+/// whoever has not heard it from them this year, not every evening to the same circle.
+#[test]
+fn a_lived_belief_is_told_once_a_year_to_each_listener() {
+    use hf_sim::events::EventKind;
+    use hf_sim::mind::beliefs::Source;
+    use hf_sim::mind::Activity;
+    use hf_sim::past::Topic;
+    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR, TICKS_PER_YEAR};
+
+    let mut w = hf_sim::World::opening_world(61);
+    let cid = w.communities[0].id;
+    let home = w.communities.iter().find(|c| c.id == cid).unwrap().home;
+    if hf_sim::systems::culture::hearth_of(&w, cid).is_none() {
+        w.place_structure(
+            hf_sim::structures::StructureKind::Hearth,
+            home,
+            hf_sim::world::Material::STONE_BLOCK,
+            true,
+        );
+    }
+    let h = hf_sim::systems::culture::hearth_of(&w, cid).unwrap();
+    for a in w.agents.iter_mut() {
+        a.pos = hf_sim::ids::TilePos::new(h.x + 30, h.y + 30, h.z);
+    }
+    // Five sitters: the first lived through something; none holds a story or a tale.
+    let seat = |w: &mut hf_sim::World, k: usize| {
+        let a = &mut w.agents[k];
+        a.community = Some(cid);
+        a.band = None;
+        a.pos = h.offset(1, 0, 0);
+        a.activity = Activity::Idle;
+        a.stories.clear();
+        a.tales.clear();
+        a.beliefs = Default::default();
+    };
+    for k in 0..4 {
+        seat(&mut w, k);
+    }
+    let teller = w.agents[0].id;
+    w.agents[0].beliefs.hold(
+        Topic::Fire,
+        0.8,
+        0.8,
+        Source::Event(hf_sim::ids::EventId(1)),
+        0,
+    );
+    let told = |w: &mut hf_sim::World, tick: u64| {
+        w.meta.tick = tick;
+        w.events.pending.clear();
+        for k in 0..w.agents.len() {
+            if w.agents[k].community == Some(cid) && w.agents[k].pos.dist(h) <= 2 {
+                w.agents[k].activity = Activity::Idle;
+            }
+        }
+        hf_sim::systems::culture::step(w);
+        w.events
+            .pending
+            .iter()
+            .filter(|e| {
+                matches!(&e.kind, EventKind::HearthTale { teller: t, what, .. }
+                    if *t == teller && what.starts_with("how they came to hold"))
+            })
+            .count()
+    };
+    let evening = |day: u64| day * TICKS_PER_DAY + 19 * TICKS_PER_HOUR + TICKS_PER_HOUR / 2;
+    let mut tellings = 0;
+    for day in 1..=10 {
+        if day == 6 {
+            // A newcomer sits down.
+            seat(&mut w, 4);
+            assert_eq!(
+                told(&mut w, evening(day)),
+                1,
+                "the newcomer hears it once more"
+            );
+            tellings += 1;
+            continue;
+        }
+        tellings += told(&mut w, evening(day));
+    }
+    assert_eq!(tellings, 2, "once, and once more for the newcomer");
+    // After a year it can be told again.
+    let later = evening(10) + TICKS_PER_YEAR;
+    assert_eq!(told(&mut w, later), 1, "a year on it can be told again");
+}
+
+/// A person saved before the hearth record existed still loads, with it empty (OST-507).
+#[test]
+fn an_old_save_loads_without_the_hearth_record() {
+    let w = hf_sim::World::opening_world(61);
+    let mut v = serde_json::to_value(&w.agents[0]).expect("an agent serialises");
+    assert!(v.as_object_mut().unwrap().remove("hearth_heard").is_some());
+    let a: hf_sim::agents::Agent = serde_json::from_value(v).expect("an old agent still loads");
+    assert!(a.hearth_heard.is_empty());
+}

@@ -425,7 +425,8 @@ pub fn step(w: &mut World) {
                                 0.6,
                                 None,
                             );
-                            a.mood = (a.mood - 0.15).max(-1.0);
+                            // OST-241: the Quarrel thought (added from the event below) is the
+                            // lasting cost; a direct mood write lasted one needs pass.
                         }
                         let here = w.agents[i].pos;
                         let qid = w.events.push(
