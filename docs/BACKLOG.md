@@ -106,7 +106,7 @@ Add a `Lonely` thought, appended to the thought list, that appears while an awak
 
 ### OST-1102 · Draw Gourmet and Tidy traits from the genome
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#743](https://github.com/danhicks96/ostrog-public-ci/pull/743)
 
 Draw the Gourmet and Tidy traits from the genome so that people can have them. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
