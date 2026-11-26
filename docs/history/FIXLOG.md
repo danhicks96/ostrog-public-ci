@@ -10,6 +10,13 @@
   age and tires of routine memories.
 - Guard: `tests/mood.rs::routine_meals_do_not_raise_mood_without_limit` (48 routine meals renewed
   200 times lift the long term by at most 0.2; the old sum gave 5.4, so it fails without the fix).
+- Test follow-up: `tests/health.rs::illness_spreads_then_fades` counted a person who had walked out of
+  the valley as lost to the fever. With the old sum cushioning mood, nobody in the sick house fell
+  low enough to break and walk out; now four of ten sat at mood -1.00 and left (no death recorded),
+  leaving six. The survival count now includes people with no recorded death, as in
+  `infection_can_kill` (OST-205); the floor of eight and the recovery check are unchanged. That a
+  fever house loses four people to walk-outs is a mood-calibration question left to OST-204 and
+  OST-207, not something this test should hide or decide.
 - Measured, seeds 1-4, 12 game days, days 3-12 (this branch / main): breaks 23, 2, 27, 18 / 22, 2,
   26, 20; people at mood 0.99 or more: 0% / 0%. The short run does not fill the memory stores, so
   the issue's long-run clamp census (59-72% before) is not reproduced here; a longer census is left
