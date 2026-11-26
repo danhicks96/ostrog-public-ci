@@ -1,5 +1,22 @@
 # Fix log
 
+## 2026-11-26: a shared bank keeps the source allowed by its own lesson (OST-447)
+
+- Symptom: at 85% thirst, a bank shared by ponds remembered with confidence 0.9 and 0.3
+  offered neither, even though the weaker lesson permits that drink.
+- Cause: ranking both sources simply as foul discarded the weaker lesson before applying
+  its own desperation threshold. The drinking action had the same coarse ranking.
+- Fix: within a shared bank, keep fresh water first, then a source already permitted by
+  its lesson, then a foul tag needing fallback desperation, before a lesson still refusing
+  water. The existing confidence thresholds, first-source tie order and navigation budget
+  stay intact. Choosing and drinking use the same ranking.
+- Guard: `shared_bank_keeps_the_water_allowed_by_its_own_confidence` fails against the
+  previous shared-bank correction after both distinct-source fixture checks pass. It also
+  checks the actual drink and the refused pond's unchanged lesson at one/four threads.
+- Digests change when the newly retained source changes a later drink. No saved field or
+  enum position changes. Final paired 600-day repeat-illness and thirst measurements remain
+  pending; all earlier measurements are retained with their original source versions.
+
 ## 2026-11-26: separate ponds sharing a bank keep their own water (OST-447)
 
 - Symptom: a fresh pond could disappear as a choice when a remembered foul pond offered

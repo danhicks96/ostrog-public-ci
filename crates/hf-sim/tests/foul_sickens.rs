@@ -449,3 +449,62 @@ fn two_ponds_sharing_a_stand_supply_the_accepted_water() {
     };
     assert_eq!(run(1), run(4));
 }
+
+#[test]
+fn shared_bank_keeps_the_water_allowed_by_its_own_confidence() {
+    use hf_sim::mind::{ObservationKind, OutcomeKind};
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let (mut w, i, bad, good) = two_ponds_at_one_stand();
+                w.agents[i].learning.lessons[0].confidence = 0.9;
+                w.agents[i].learning.learn(
+                    ObservationKind::FoulWater,
+                    OutcomeKind::Illness,
+                    Some(good),
+                    true,
+                    w.meta.tick,
+                    None,
+                );
+                w.agents[i]
+                    .learning
+                    .lessons
+                    .iter_mut()
+                    .find(|l| l.pos == Some(good))
+                    .unwrap()
+                    .confidence = 0.3;
+                w.agents[i].needs.thirst = 0.15;
+                assert_eq!(w.agents[i].learning.lessons.len(), 2);
+                let bad_lesson = w.agents[i]
+                    .learning
+                    .lessons
+                    .iter()
+                    .find(|l| l.pos == Some(bad))
+                    .unwrap()
+                    .clone();
+                assert_eq!(bad_lesson.confidence, 0.9);
+                let at = w.agents[i].pos;
+                let chosen =
+                    hf_sim::water::nearest_knowing(&w, i, at, 3, &w.agents[i].knowledge, true)
+                        .expect("the other pond's weaker lesson permits drinking at this thirst");
+                assert_eq!(chosen.source, good);
+                assert!(hf_sim::water::drink(&mut w, i));
+                assert_eq!(
+                    w.agents[i]
+                        .learning
+                        .lessons
+                        .iter()
+                        .find(|l| l.pos == Some(bad)),
+                    Some(&bad_lesson),
+                    "the refused pond did not supply the drink"
+                );
+                assert!(w.agents[i].body.illness.is_none());
+                assert_eq!(w.agents[i].needs.thirst, 1.0);
+                hf_sim::digest::digest(&w)
+            })
+    };
+    assert_eq!(run(1), run(4));
+}

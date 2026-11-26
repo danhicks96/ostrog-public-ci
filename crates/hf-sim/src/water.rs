@@ -343,12 +343,22 @@ impl<'a> WaterBeliefs<'a> {
         believed_tag(self.world, self.knowledge, s)
     }
 
-    fn preference(&self, s: &Spot) -> u8 {
-        match self.tag(s) {
-            Some(crate::floods::TAG_WATER_SALT) => 2,
-            Some(crate::floods::TAG_WATER_FOUL) => 1,
-            _ if self.illness(s) > 0.2 => 1,
-            _ => 0,
+    fn preference(&self, s: &Spot, thirst: f32) -> u8 {
+        let confidence = self.illness(s);
+        let tag = self.tag(s);
+        if tag == Some(crate::floods::TAG_WATER_SALT) {
+            4
+        } else if tag != Some(crate::floods::TAG_WATER_FOUL) && confidence <= 0.2 {
+            0
+        } else if confidence <= 0.0 {
+            // A tag without a lesson needs the chooser's fallback desperation.
+            2
+        } else if thirst > 0.7 + 0.25 * confidence {
+            // This source is already allowed at its own lesson's threshold. Keep it
+            // before a tagged fallback or a stronger lesson that still refuses water.
+            1
+        } else {
+            3
         }
     }
 }
@@ -373,9 +383,10 @@ pub fn nearest_knowing(
     let nav = w.nav.as_ref()?;
     let now = w.meta.tick;
     let cooldowns = &w.agents[i].work_cooldowns;
+    let thirst = (1.0 - w.agents[i].needs.thirst).clamp(0.0, 1.0);
     let beliefs = WaterBeliefs::new(w, i, knowledge);
     let mut available = preferred_stands(source_candidates(w, from, radius), |s| {
-        beliefs.preference(s)
+        beliefs.preference(s, thirst)
     });
     let not_dry = |s: &Spot| cooldowns.get(&dry_key(s.stand)).is_none_or(|t| *t <= now);
     let with_confidence = |s: Spot| {
@@ -398,7 +409,6 @@ pub fn nearest_knowing(
         || !spots
             .iter()
             .any(|(s, confidence)| !salt(s) && !foul(s, *confidence));
-    let thirst = (1.0 - w.agents[i].needs.thirst).clamp(0.0, 1.0);
     let allowed = |s: &Spot, confidence: f32| {
         !salt(s)
             && (!foul(s, confidence)
@@ -462,10 +472,11 @@ fn open_water_source(w: &World, i: usize, at: TilePos) -> Option<TilePos> {
         return Some(first.source);
     };
     let beliefs = WaterBeliefs::new(w, i, &w.agents[i].knowledge);
+    let thirst = (1.0 - w.agents[i].needs.thirst).clamp(0.0, 1.0);
     let chosen = std::iter::once(second)
         .chain(sources)
         .fold(first, |best, source| {
-            if beliefs.preference(&source) < beliefs.preference(&best) {
+            if beliefs.preference(&source, thirst) < beliefs.preference(&best, thirst) {
                 source
             } else {
                 best
