@@ -9,6 +9,9 @@ Dry drainage divides inherited the seeded low-ground stream even when no water f
 New landing sites on a mapped river inherit channel inlets, outlet and crossing levels from the regional drainage network. Neighbouring river regions share the position and width of a crossing. The river shapes the bed and banks before strata and plants form.
 
 The simulation records directed drops between channel surfaces at generation. A drop is active while both original surfaces are liquid and exposed. Drought, inundation and ice can interrupt it. Existing saves keep their original terrain and water.
+## 2026-11-26 · Landings follow the terrain around their region
+
+Seed 7 produced a coast at inland taiga region 16423, 54 regional cells from the nearest ocean. Regional landings now use surrounding elevation, drainage and biome to choose their landform. At a coast, the ground slopes down and the water meets the ocean-facing edges or corners. Existing saves retain their generated grid. Newly generated regional worlds can have different terrain and simulation digests. The landform tests exercise the inland taiga and an east-facing ocean through the setup and preview paths.
 
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 

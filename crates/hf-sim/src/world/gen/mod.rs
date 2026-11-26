@@ -1,5 +1,5 @@
-//! World generation pipeline: heightmap → strata → hydrology → caves → ores → climate and
-//! biomes → surface ground → water depth → ramps → cave mouths → flora.
+//! World generation pipeline: heightmap â†’ strata â†’ hydrology â†’ caves â†’ ores â†’ climate and
+//! biomes â†’ surface ground â†’ water depth â†’ ramps â†’ cave mouths â†’ flora.
 //! Every stage draws from its own purpose-tagged stream so stages can be tuned independently.
 
 pub mod biome;
@@ -49,6 +49,9 @@ pub struct GenParams {
     /// A selected region with no mapped river or upstream inflow. Local lakes can still form.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub drainage_divide: bool,
+    /// Directions of ocean neighbors on the regional map, including diagonal corners.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub ocean: Vec<(i8, i8)>,
 }
 
 /// The lie of the land at the landing (#352).
@@ -108,11 +111,27 @@ impl Default for GenParams {
             place: 0,
             river: None,
             drainage_divide: false,
+            ocean: Vec::new(),
         }
     }
 }
 
 impl GenParams {
+    /// Normalized distance from a column to the nearest ocean-facing edge or corner.
+    /// An uncharted, explicitly chosen coast retains its original west-facing profile.
+    fn shore_distance(&self, x: f32, y: f32) -> f32 {
+        let to_edge = |v: f32, side: i8| match side {
+            -1 => v,
+            1 => 1.0 - v,
+            _ => 0.0,
+        };
+        self.ocean
+            .iter()
+            .map(|&(dx, dy)| to_edge(x, dx).hypot(to_edge(y, dy)))
+            .reduce(f32::min)
+            .unwrap_or(x)
+    }
+
     pub fn small() -> Self {
         GenParams {
             width: 64,

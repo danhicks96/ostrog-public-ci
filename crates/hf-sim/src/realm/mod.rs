@@ -12,6 +12,7 @@ pub mod peoples;
 pub mod relations;
 pub mod sites;
 pub mod stories;
+pub mod terrain;
 pub mod war;
 
 pub use map::{generate, RBiome, RealmMap, RealmParams};

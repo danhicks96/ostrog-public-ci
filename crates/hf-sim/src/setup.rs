@@ -55,11 +55,11 @@ fn valley_params(
     landform: Option<crate::world::gen::Landform>,
 ) -> GenParams {
     let place = place_of(seed, m, region);
+    let (regional_landform, ocean) = crate::realm::terrain::at(m, region);
     GenParams {
         character: character.or(Some(crate::realm::embark::character_of(m, region))),
-        landform: landform.unwrap_or_else(|| {
-            crate::world::gen::Landform::of_seed(crate::world::gen::ground_seed(seed, place))
-        }),
+        landform: landform.unwrap_or(regional_landform),
+        ocean,
         river: crate::world::gen::watershed::RiverReach::of_region(seed, m, region),
         drainage_divide: !m.river[region]
             && !crate::realm::map::neighbours(m.size, region).any(|j| m.down[j] == region),
@@ -85,7 +85,10 @@ pub fn region_lines(m: &crate::realm::RealmMap, i: usize) -> Vec<String> {
     if !m.lake[i] && crate::realm::map::neighbours(m.size, i).any(|j| m.lake[j]) {
         out.push("A lake lies in a neighboring region.".into());
     }
-    if !crate::realm::embark::habitable(m, i) {
+    if crate::realm::embark::habitable(m, i) {
+        let (landform, _) = crate::realm::terrain::at(m, i);
+        out.push(format!("The terrain here is {}.", landform.name()));
+    } else {
         out.push("Nobody could live here.".into());
     }
     out
@@ -173,9 +176,8 @@ impl WorldSetup {
             Some((last, [])) => last.clone(),
             Some((last, rest)) => format!("{} and that {last}", rest.join(", that ")),
         };
-        let _ = w;
         // The lie of the land, when it is not a valley (#352).
-        let lf = self.landform();
+        let lf = w.meta.params.landform;
         let ch = if lf == crate::world::gen::Landform::Valley {
             ch
         } else {

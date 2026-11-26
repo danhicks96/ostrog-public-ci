@@ -58,10 +58,14 @@ pub(super) fn apply_with_channel(
                 false
             };
             let is_lake = g <= lake_level && moist > 1.0 - sea;
-            if stream || is_lake {
+            let ocean = p.landform == super::Landform::Coast
+                && !p.ocean.is_empty()
+                && g == 0
+                && p.shore_distance(x as f32 / p.width as f32, y as f32 / p.height as f32) < 0.2;
+            if stream || is_lake || ocean {
                 let c = grid.col(x, y);
                 water[c] = true;
-                lake[c] = is_lake;
+                lake[c] = is_lake || ocean;
                 // Water occupies the surface tile above the ground (the bed stays solid).
                 let surf = TilePos::new(x, y, g + 1);
                 grid.set(

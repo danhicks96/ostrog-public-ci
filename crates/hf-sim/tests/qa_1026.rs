@@ -270,13 +270,19 @@ fn the_arrival_is_a_shock_that_fades_and_the_calm_shake_it_faster() {
     }
     // OST-205: needs now bite in mood, so the camp's hunger can keep the mood down for days;
     // the shock fading is read off the thought, which is what it is.
-    let thought = |w: &World| {
+    let thought = |w: &World, arrival_only: bool| {
         let now = w.meta.tick;
         let m: Vec<f32> = w
             .agents
             .iter()
             .filter(|a| a.alive && members.contains(&a.id))
-            .map(|a| a.thoughts.sum(now))
+            .map(|a| {
+                if arrival_only {
+                    a.thoughts.sum_of(ThoughtKind::Arrival, now)
+                } else {
+                    a.thoughts.sum(now)
+                }
+            })
             .collect();
         m.iter().sum::<f32>() / m.len().max(1) as f32
     };
@@ -297,13 +303,14 @@ fn the_arrival_is_a_shock_that_fades_and_the_calm_shake_it_faster() {
             // thought costs — in an unpinned camp that edge can even outweigh the thought
             // (the PR #501 failure at this gate), so the camp is pinned and this gate
             // compares the pure thought cost.
-            let (shocked, not) = (thought(&w), thought(&calm));
+            let (shocked, not) = (thought(&w, false), thought(&calm, false));
             assert!(
                 shocked < not - 0.1,
                 "day 1 thoughts: {shocked} against {not}"
             );
         }
-        daily.push(thought(&w));
+        // Other thoughts about the new camp can worsen while the arrival shock fades.
+        daily.push(thought(&w, true));
     }
     assert!(daily[0] < daily[5] - 0.1, "{daily:?}");
     assert!(

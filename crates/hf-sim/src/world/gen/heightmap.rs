@@ -32,7 +32,7 @@ pub fn height_field(seed: u64, p: &GenParams) -> Vec<f32> {
                     (0.3 * v + 0.2 + rise).clamp(0.0, 1.0)
                 }
                 super::Landform::Coast => {
-                    let shore = (fx / 0.3).min(1.0);
+                    let shore = (p.shore_distance(fx, fy) / 0.3).min(1.0);
                     (v * shore + 0.0 * (1.0 - shore)).clamp(0.0, 1.0)
                 }
                 super::Landform::Marsh => 0.16 + 0.12 * v,
