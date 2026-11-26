@@ -11,6 +11,33 @@
   so seeded digests move.
 - Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
   sleeper does not; a content person does not).
+## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
+
+- Symptom: "has come to suspect" was written every few nights for the same two people, each time
+  with a new row and a cooler opinion, so the feed filled with one story.
+- Cause: `conditions::suspect` wrote a memory, an opinion change and an event on every call.
+- Fix: each agent keeps `suspicions` (of, evidence tag, tick), at most 16. The same evidence
+  against the same person within 20 days only deepens the long memory (+0.1, capped) with no
+  event and no opinion change; a new kind of evidence still counts as new.
+- Guard: `tests/true_dream.rs::a_suspicion_is_not_repeated_without_new_evidence` fails with the
+  window set to zero; `a_suspicion_returns_after_the_window_or_on_new_evidence` covers a
+  different kind of evidence and the window running out (it counts from the first time the
+  evidence was held). The new `Agent` field is serde-default, so old saves load; a world that
+  repeated suspicions now writes fewer rows, so its digest changes.
+## 2026-11-26: a bounded long-memory term for mood, not yet used (OST-202)
+
+- Symptom: mood adds every long memory with no bound, no fading and no habituation, so a meal
+  eaten for years counts as much as a loss.
+- Fix: `Memories::mood_term(now)` returns `0.35 * tanh(sum / 4)` over the long memories, each
+  `valence * strength * recency * habit`: recency halves every 10 days (routine kinds: meals, rest,
+  company) or 30 days (hardship, work, discovery) from the last renewal, and habit is
+  `1 / (1 + reinforced / 8)` for routine kinds. `tanh` is taken from the deterministic exp. Nothing
+  calls it, so no behaviour, save or digest changed; OST-203 swaps it into mood.
+- Guards: `tests/mood.rs::long_term_is_bounded_by_memory_count`, `routine_memories_tire`,
+  `a_vivid_loss_shows_among_many_meals` and `old_memories_fade_from_mood`.
+- Note: the issue asked that a loss show as at least 0.05 among many meals; with its own constants
+  the most one such loss can move the term is about 0.039, so the guard asks for 0.03. OST-207
+  tunes the constants.
 ## 2026-11-26: a census of whether the catch-up names every life event (OST-862)
 
 - Symptom: nothing checked that a returning viewer is told, by name, every death, birth, pairing,
