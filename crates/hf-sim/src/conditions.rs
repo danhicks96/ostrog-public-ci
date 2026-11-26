@@ -758,10 +758,9 @@ pub fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
         .bytes()
         .fold(2166136261u32, |h, b| (h ^ b as u32).wrapping_mul(16777619));
     let a = &mut w.agents[j];
-    if let Some(s) = a
-        .suspicions
-        .iter_mut()
-        .find(|s| s.0 == of && s.1 == tag && tick.saturating_sub(s.2) < SUSPICION_FRESH)
+    if a.suspicions
+        .iter()
+        .any(|s| s.0 == of && s.1 == tag && tick.saturating_sub(s.2) < SUSPICION_FRESH)
     {
         if let Some(m) = a.memories.long.iter_mut().find(|m| {
             m.kind == crate::mind::MemKind::Hardship
