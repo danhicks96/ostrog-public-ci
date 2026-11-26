@@ -3,13 +3,13 @@
 
 pub mod activity;
 pub mod acts;
+pub mod aims;
 pub mod attention;
 pub mod beliefs;
 pub mod conscience;
 pub mod dispositions;
 pub mod feelings;
 pub mod fragment;
-pub mod intentions;
 pub mod knowledge;
 pub mod learning;
 pub mod memory;

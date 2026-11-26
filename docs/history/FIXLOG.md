@@ -1,5 +1,17 @@
 # Fix log
 
+## 2026-11-25: an unused intentions lifecycle looked like a second goal system (OST-325)
+
+- Symptom: `mind::intentions` exported a string-based goal lifecycle, but no simulation code
+  created or read its records. It suggested that forgetting was already part of decisions.
+- Cause: the module was added without a caller or a field in the saved world.
+- Fix: preserve the complete old file under `to_delete/`, remove its module declaration, and
+  keep the unchanged `slip_chance`, `remind_chance` and `SlipReason` codes in `mind::aims`.
+  The helpers still have no runtime caller; actual forgetting remains OST-343. No saved state,
+  random draws or simulation choices change.
+- Checks: the two existing chance tests move to `mind::aims::tests` as
+  `slip_chance_is_bounded` and `remind_chance_is_bounded` without changing their assertions.
+
 ## 2026-11-24: nothing named what one person could see another doing (OST-1100)
 
 - Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground

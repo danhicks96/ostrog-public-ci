@@ -1394,7 +1394,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3249 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2738,6 +2738,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | why.rs:241 | {}: put off until food and shelter are secure |
 | why.rs:243 | {}: put off while the arrival is fresh |
 | world_state.rs:644 | returned |
+| mind/aims.rs:31 | forgot |
+| mind/aims.rs:32 | distracted |
+| mind/aims.rs:33 | too_tired |
+| mind/aims.rs:34 | preempted |
+| mind/aims.rs:35 | expired |
+| mind/aims.rs:36 | incapacitated |
+| mind/aims.rs:37 | abandoned |
+| mind/aims.rs:38 | superseded |
 | mind/attention.rs:42 | the ground |
 | mind/attention.rs:43 | animal sign |
 | mind/attention.rs:44 | a stuck building |
@@ -2768,22 +2776,6 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | mind/feelings.rs:34 | glad |
 | mind/feelings.rs:35 | in awe |
 | mind/feelings.rs:36 | ashamed |
-| mind/intentions.rs:74 | forgot |
-| mind/intentions.rs:75 | distracted |
-| mind/intentions.rs:76 | too_tired |
-| mind/intentions.rs:77 | preempted |
-| mind/intentions.rs:78 | expired |
-| mind/intentions.rs:79 | incapacitated |
-| mind/intentions.rs:80 | abandoned |
-| mind/intentions.rs:81 | superseded |
-| mind/intentions.rs:110 | created |
-| mind/intentions.rs:111 | deferred |
-| mind/intentions.rs:112 | reminded |
-| mind/intentions.rs:113 | triggered |
-| mind/intentions.rs:114 | acted_on |
-| mind/intentions.rs:115 | abandoned |
-| mind/intentions.rs:116 | expired |
-| mind/intentions.rs:117 | superseded |
 | mind/problems.rs:46 | dangerous water |
 | mind/problems.rs:47 | flooding |
 | mind/problems.rs:48 | food spoiling |
