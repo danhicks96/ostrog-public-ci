@@ -14,6 +14,7 @@ pub mod ores;
 pub mod ramps;
 pub mod scree;
 pub mod strata;
+pub mod watershed;
 
 use serde::{Deserialize, Serialize};
 
@@ -42,6 +43,9 @@ pub struct GenParams {
     /// out of a save at 0, so every world that keeps the seed's ground keeps its digest.
     #[serde(default, skip_serializing_if = "is_zero")]
     pub place: u64,
+    /// River crossings inherited from the selected realm region. Older saves keep their grid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub river: Option<watershed::RiverReach>,
 }
 
 /// The lie of the land at the landing (#352).
@@ -99,6 +103,7 @@ impl Default for GenParams {
             character: None,
             landform: Landform::Valley,
             place: 0,
+            river: None,
         }
     }
 }
@@ -147,9 +152,13 @@ pub fn generate(seed: u64, p: &GenParams) -> Generated {
     let seed = ground_seed(seed, p.place);
     let mut grid = WorldGrid::new(p.width, p.height, p.z_min, p.z_max);
     heightmap::apply(seed, p, &mut grid);
+    let river = p
+        .river
+        .as_ref()
+        .map(|reach| reach.carve(seed, p, &mut grid));
     strata::apply(seed, p, &mut grid);
     let ch = biome::Character::resolve(seed, p);
-    let water = hydrology::apply(seed, p, &mut grid, &ch);
+    let water = hydrology::apply_with_channel(seed, p, &mut grid, &ch, river.as_deref());
     caves::apply(seed, p, &mut grid);
     caverns::apply(seed, p, &mut grid);
     ores::apply(seed, p, &mut grid);

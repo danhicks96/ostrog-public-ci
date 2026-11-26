@@ -2372,30 +2372,30 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | scenario.rs:835 | scenario |
 | scenario.rs:855 | scenario |
 | scenario.rs:1025 | scenario |
-| setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
-| setup.rs:81 | A river runs by. |
-| setup.rs:84 | Nobody could live here. |
-| setup.rs:169 | {} and that {last} |
-| setup.rs:169 | , that  |
-| setup.rs:177 | {ch}, on {} |
-| setup.rs:189 | drink ruins people |
-| setup.rs:190 | a drink eases a hard life |
-| setup.rs:191 | no hand is raised in anger |
-| setup.rs:192 | force answers force |
-| setup.rs:193 | a fire is fought |
-| setup.rs:194 | you run from a fire |
-| setup.rs:195 | in hunger, food is shared |
-| setup.rs:196 | in hunger, each keeps their own |
-| setup.rs:197 | strangers are welcome |
-| setup.rs:198 | strangers are a danger |
-| setup.rs:199 | the dead are let go |
-| setup.rs:200 | the living are held close |
-| setup.rs:201 | wrongs are forgiven |
-| setup.rs:202 | trust is earned slowly |
-| setup.rs:346 | character |
-| setup.rs:347 | biome mix |
-| setup.rs:348 | flora draw: |
-| setup.rs:349 | flora not drawn: |
+| setup.rs:73 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
+| setup.rs:82 | A river runs by. |
+| setup.rs:85 | Nobody could live here. |
+| setup.rs:170 | {} and that {last} |
+| setup.rs:170 | , that  |
+| setup.rs:178 | {ch}, on {} |
+| setup.rs:190 | drink ruins people |
+| setup.rs:191 | a drink eases a hard life |
+| setup.rs:192 | no hand is raised in anger |
+| setup.rs:193 | force answers force |
+| setup.rs:194 | a fire is fought |
+| setup.rs:195 | you run from a fire |
+| setup.rs:196 | in hunger, food is shared |
+| setup.rs:197 | in hunger, each keeps their own |
+| setup.rs:198 | strangers are welcome |
+| setup.rs:199 | strangers are a danger |
+| setup.rs:200 | the dead are let go |
+| setup.rs:201 | the living are held close |
+| setup.rs:202 | wrongs are forgiven |
+| setup.rs:203 | trust is earned slowly |
+| setup.rs:347 | character |
+| setup.rs:348 | biome mix |
+| setup.rs:349 | flora draw: |
+| setup.rs:350 | flora not drawn: |
 | shrines.rs:106 | gave up on the shrine |
 | shrines.rs:107 | found no place for it on their own ground |
 | shrines.rs:186 | it burned |
@@ -4650,12 +4650,12 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | world/gen/caverns.rs:78 | Grotto |
 | world/gen/caverns.rs:78 | Undercroft |
 | world/gen/caverns.rs:80 | the {} {} |
-| world/gen/mod.rs:67 | a valley |
-| world/gen/mod.rs:68 | a plain |
-| world/gen/mod.rs:69 | a plateau |
-| world/gen/mod.rs:70 | a ridge |
-| world/gen/mod.rs:71 | a coast |
-| world/gen/mod.rs:72 | a marsh |
+| world/gen/mod.rs:71 | a valley |
+| world/gen/mod.rs:72 | a plain |
+| world/gen/mod.rs:73 | a plateau |
+| world/gen/mod.rs:74 | a ridge |
+| world/gen/mod.rs:75 | a coast |
+| world/gen/mod.rs:76 | a marsh |
 | world/gen/mouths.rs:210 | mouths: want {want}, {} cave cells near, {} faces |
 | world/gen/mouths.rs:238 | mouths: {found} routes found, {failed} failed the walk, {apart} too near another, {} cut |
 

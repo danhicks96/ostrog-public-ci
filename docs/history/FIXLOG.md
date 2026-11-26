@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-26 - Landing-site rivers follow regional drainage
+
+New landing sites on a mapped river inherit channel inlets, outlet and crossing levels from the regional drainage network. Neighbouring river regions share the position and width of a crossing. The river shapes the bed and banks before strata and plants form.
+
+The simulation records directed drops between channel surfaces at generation. A drop is active while both original surfaces are liquid and exposed. Drought, inundation and ice can interrupt it. Existing saves keep their original terrain and water.
+
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 
 - Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;

@@ -12,6 +12,16 @@ use crate::rng::{hash64, purpose};
 use crate::world::{Material, Shape, Tile, TileFlags, WorldGrid};
 
 pub fn apply(seed: u64, p: &GenParams, grid: &mut WorldGrid, ch: &Character) -> Vec<bool> {
+    apply_with_channel(seed, p, grid, ch, None)
+}
+
+pub(super) fn apply_with_channel(
+    seed: u64,
+    p: &GenParams,
+    grid: &mut WorldGrid,
+    ch: &Character,
+    river: Option<&[bool]>,
+) -> Vec<bool> {
     let s = hash64(&[seed, purpose::WORLDGEN_WATER]);
     let n = (p.width * p.height) as usize;
     let mut water = vec![false; n];
@@ -37,10 +47,14 @@ pub fn apply(seed: u64, p: &GenParams, grid: &mut WorldGrid, ch: &Character) -> 
                 2.0,
                 0.5,
             );
-            let t = x as f32 / p.width as f32;
-            let curve = 0.5 + (fbm2(s ^ 0x77, t * 3.0, 0.0, 3, 2.0, 0.5) - 0.5) * 0.7;
-            let dy = (y as f32 / p.height as f32 - curve).abs();
-            let stream = dy < 0.018 && g <= 1;
+            let stream = if let Some(channel) = river {
+                channel[grid.col(x, y)]
+            } else {
+                let t = x as f32 / p.width as f32;
+                let curve = 0.5 + (fbm2(s ^ 0x77, t * 3.0, 0.0, 3, 2.0, 0.5) - 0.5) * 0.7;
+                let dy = (y as f32 / p.height as f32 - curve).abs();
+                dy < 0.018 && g <= 1
+            };
             let is_lake = g <= lake_level && moist > 1.0 - sea;
             if stream || is_lake {
                 let c = grid.col(x, y);
