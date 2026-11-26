@@ -401,6 +401,14 @@ Mood adds every long memory together with no bound, no fading and no habituation
 
 **Acceptance:** The term is bounded by 0.35 whatever the store size, a routine memory reinforced 200 times adds at most a twentieth of a fresh one, a vivid loss shows among many meals, and an old memory fades. Simulation digests are unchanged.
 
+### OST-174 · Say once that someone is whispered about
+
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+A suspicion held by three neighbours reads like one held by one. When three different community members come to hold a suspicion of the same person, say it once per condition with an appended Notable `WidelySuspected` event, and not again for a fourth.
+
+**Acceptance:** Three neighbours who suspect a marked sleeper on different nights give exactly one `WidelySuspected` with a count of three, on the night of the third, and none after a fourth. The enum-order check passes and a FIXLOG entry is added.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
