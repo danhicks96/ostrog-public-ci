@@ -105,3 +105,62 @@ fn a_colony_without_a_realm_still_observes_its_floor_and_keeps_the_seven_hidden(
     let memory = &w.overworld.surveys[&cid];
     assert!(memory.valley.values().all(|row| row.0 < memory.tick));
 }
+
+#[test]
+fn old_overworld_bytes_survive_and_nonempty_watcher_records_round_trip() {
+    // Preserve the original field order: the world digest hashes the named MessagePack bytes.
+    #[derive(serde::Serialize)]
+    struct LegacyOverworld {
+        sites: Vec<hf_sim::expedition::Site>,
+        caravans: Vec<hf_sim::expedition::Caravan>,
+        next_caravan_id: u32,
+        away: Vec<hf_sim::agents::Agent>,
+    }
+    let legacy = LegacyOverworld {
+        sites: vec![],
+        caravans: vec![],
+        next_caravan_id: 0,
+        away: vec![],
+    };
+    let bytes = rmp_serde::to_vec_named(&legacy).unwrap();
+    let world: Overworld = rmp_serde::from_slice(&bytes).unwrap();
+    assert_eq!(rmp_serde::to_vec_named(&world).unwrap(), bytes);
+    let colony = hf_sim::ids::CommunityId(7);
+    let patch = (3, 4, 5);
+    let floor = (9, 8, -1);
+    for picked in [false, true] {
+        for surveyed in [false, true] {
+            let mut world = world.clone();
+            if picked {
+                world.picked.insert(patch, (200, 12));
+            }
+            if surveyed {
+                let chart = world.surveys.entry(colony).or_default();
+                chart.tick = 333;
+                chart.valley.insert(floor, (310, 42, 2, -1));
+            }
+            let bytes = rmp_serde::to_vec_named(&world).unwrap();
+            let fields: std::collections::BTreeMap<String, serde::de::IgnoredAny> =
+                rmp_serde::from_slice(&bytes).unwrap();
+            assert_eq!(fields.contains_key("picked"), picked);
+            assert_eq!(fields.contains_key("surveys"), surveyed);
+            let back: Overworld = rmp_serde::from_slice(&bytes).unwrap();
+            assert_eq!(
+                back.picked.get(&patch).copied(),
+                picked.then_some((200, 12))
+            );
+            assert_eq!(
+                back.surveys
+                    .get(&colony)
+                    .map(|s| (s.tick, s.valley[&floor])),
+                surveyed.then_some((333, (310, 42, 2, -1)))
+            );
+        }
+    }
+    let mut explicit = serde_json::to_value(&legacy).unwrap();
+    explicit["picked"] = serde_json::json!({});
+    explicit["surveys"] = serde_json::json!({});
+    let old_watcher: Overworld =
+        rmp_serde::from_slice(&rmp_serde::to_vec_named(&explicit).unwrap()).unwrap();
+    assert_eq!(rmp_serde::to_vec_named(&old_watcher).unwrap(), bytes);
+}

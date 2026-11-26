@@ -152,9 +152,9 @@ pub struct Overworld {
     pub next_caravan_id: u32,
     /// People off the map, kept whole (identity, memories, skills) until they return.
     pub away: Vec<crate::agents::Agent>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub picked: BTreeMap<(u32, i32, i32), (u64, u32)>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub surveys: BTreeMap<CommunityId, survey::Survey>,
 }
 

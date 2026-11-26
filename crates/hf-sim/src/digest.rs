@@ -1,5 +1,5 @@
 //! World digest: a stable hash of all simulation state, for determinism and save tests.
-//! Uses the bincode encoding of the snapshot so that any new state field is covered
+//! Uses the named MessagePack encoding of the snapshot so that any new state field is covered
 //! automatically once it is part of the snapshot.
 
 use sha2::{Digest, Sha256};
