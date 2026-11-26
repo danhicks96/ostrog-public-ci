@@ -1571,6 +1571,13 @@ pub enum EventKind {
     SaplingTrampled {
         at: TilePos,
     },
+    /// Appended (OST-174): three different neighbours have come to suspect the same person
+    /// (conditions.rs). Said once per twenty days, not for each further suspicion.
+    WidelySuspected {
+        of: AgentId,
+        because: String,
+        count: u32,
+    },
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
@@ -1817,6 +1824,7 @@ impl Event {
             AteDead { agent, of } => vec![*agent, *of],
             Unbound { agent, by, .. } => vec![*agent, *by],
             Suspected { by, of, .. } => vec![*by, *of],
+            WidelySuspected { of, .. } => vec![*of],
             BeastStirred { .. } => vec![],
             Refugees { agents, .. } => agents.clone(),
             DrankTogether { drinkers, .. } => drinkers.clone(),
@@ -1956,6 +1964,7 @@ impl Event {
             TurnedToStone { .. } => "turned_to_stone",
             Unbound { .. } => "unbound",
             Suspected { .. } => "suspected",
+            WidelySuspected { .. } => "widely_suspected",
             FromBelow { .. } => "from_below",
             BeastStirred { .. } => "beast_stirred",
             ThinStirred { .. } => "thin_stirred",

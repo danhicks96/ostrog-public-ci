@@ -852,6 +852,10 @@ pub fn line(w: &World, e: &Event) -> String {
             named_as(w, e.tick, *by),
             named_as(w, e.tick, *of)
         ),
+        WidelySuspected { of, because, count } => format!(
+            "{} is whispered about: {count} now say {because}.",
+            named_as(w, e.tick, *of)
+        ),
         Breached { agent, cavern } => format!(
             "{} broke through into {cavern}, a cavern of the deep.",
             named_as(w, e.tick, *agent)

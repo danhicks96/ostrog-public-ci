@@ -393,6 +393,14 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 
 **First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
 
+### OST-205 · Let the worst need bite in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#708](https://github.com/danhicks96/ostrog-public-ci/pull/708)
+
+The needs term of mood was a plain mean of the six needs centred on half-full, so one need at zero with the rest full still read as mildly pleased. It is now centred on "fine" and the neediest need bites on its own.
+
+**Acceptance:** A person with hunger at zero and every other need full, no memories or thoughts, has mood at most -0.3; with every need at 0.85 the needs term is mildly positive. A FIXLOG entry is added and any simulation digest change is explained in the PR.
+
 ### OST-202 · A bounded long-memory term for mood
 
 **Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#726](https://github.com/danhicks96/ostrog-public-ci/pull/726)
@@ -403,11 +411,19 @@ Mood adds every long memory together with no bound, no fading and no habituation
 
 ### OST-174 · Say once that someone is whispered about
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#730](https://github.com/danhicks96/ostrog-public-ci/pull/730)
 
 A suspicion held by three neighbours reads like one held by one. When three different community members come to hold a suspicion of the same person, say it once per person per twenty days with an appended Notable `WidelySuspected` event, and not again for a fourth.
 
 **Acceptance:** Three neighbours who suspect a marked sleeper on different nights give exactly one `WidelySuspected` with a count of three, on the night of the third, and none after a fourth. The enum-order check passes and a FIXLOG entry is added.
+
+### OST-551 · Pin that mood's needs term reads thirst and warmth
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+Mood's needs term already averages all six needs and takes the lowest (it landed with the thirst and warmth fix), but no test states the issue's own acceptance. Add a guard that one empty thirst, or one empty warmth, with every other need full, puts the needs term at or below -0.3 with no memories or thoughts.
+
+**Acceptance:** The guard passes on the current code and fails if the term goes back to four needs. A FIXLOG entry records that the behaviour was already in place.
 
 ## Waiting on code or measurement
 
