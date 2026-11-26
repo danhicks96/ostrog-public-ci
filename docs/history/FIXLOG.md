@@ -14,6 +14,19 @@
   29 (one turn each, four in all) because 13 and 17 no longer turn within the run.
 - Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
   sleeper does not; a content person does not).
+## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
+
+- Symptom: a suspicion that spread through a camp read the same as one person's grudge, with
+  nothing telling the watcher that someone was now whispered about.
+- Fix: after a new suspicion row, `conditions::whisper` counts the community members holding a
+  fresh suspicion (the OST-173 record) of that person; at three it pushes an appended Notable
+  `WidelySuspected { of, because, count }`, narrated "X is whispered about: 3 now say ...". The
+  tick is kept on the person (`Agent.whispered`, serde-default), so it is said once per twenty
+  days, not for each further suspicion. This is per person and window, not per condition.
+- Guard: `tests/true_dream.rs::three_suspecters_make_one_whisper` fails with the threshold
+  raised; a fourth suspecter adds no second whisper. `an_old_save_loads_without_the_suspicion_fields`
+  covers old saves loading the two new `Agent` fields; a world that reaches three
+  suspecters gains one row, so its digest changes.
 ## 2026-11-25: one need at zero no longer hides behind five full ones (OST-205)
 
 - Symptom: a person with hunger at zero and every other need full had a needs term of +0.4 and

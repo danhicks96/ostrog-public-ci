@@ -668,6 +668,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | TurnedToStone | turned_to_stone | Major | {agent} died standing, turned to stone, since they touched the underworld's rock in {cavern}. |
 | Unbound | unbound | Major | {by} lifted {condition} from {agent}. |
 | Suspected | suspected | Notable | {by} has come to suspect {of}: {because}. |
+| WidelySuspected | widely_suspected | Notable | {of} is whispered about: {count} now say {because}. |
 | Breached | breached | Major | {agent} broke through into {cavern}, a cavern of the deep. |
 | FromBelow | from_below | Major | {who} came up from below, from {from}. |
 | BeastStirred | beast_stirred | Major | Something lairs in the deep beyond {cavern}: {beast}, by the world's record. |
@@ -1456,9 +1457,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:511 | someone |
 | accounts.rs:521 | {} and {} more |
 | accounts.rs:525 |  Said: {words} ({by}). |
-| agents.rs:479 | fur |
-| agents.rs:480 | feathers |
-| agents.rs:481 | scales |
+| agents.rs:483 | fur |
+| agents.rs:484 | feathers |
+| agents.rs:485 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2125,24 +2126,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:577 | {name} is already back with the others |
-| opening.rs:578 | what became of {name} is already known |
-| opening.rs:590 | no sign of {who} here |
-| opening.rs:601 | {who} was alive, and is coming back |
-| opening.rs:608 | something |
-| opening.rs:612 | {who} had died there, of {cause} |
-| opening.rs:791 | coming through the portal |
-| opening.rs:943 | the herb-woman |
-| opening.rs:946 | apprenticed to {master} |
-| opening.rs:955 | the carpenter |
-| opening.rs:956 | apprenticed to {master} |
-| opening.rs:965 | the smith |
-| opening.rs:966 | apprenticed to {master} |
-| opening.rs:982 | the quarry |
-| opening.rs:983 | apprenticed to {master} |
-| opening.rs:987 | the baker |
-| opening.rs:988 | apprenticed to {master} |
-| opening.rs:1100 | brought through the portal |
+| opening.rs:578 | {name} is already back with the others |
+| opening.rs:579 | what became of {name} is already known |
+| opening.rs:591 | no sign of {who} here |
+| opening.rs:602 | {who} was alive, and is coming back |
+| opening.rs:609 | something |
+| opening.rs:613 | {who} had died there, of {cause} |
+| opening.rs:792 | coming through the portal |
+| opening.rs:944 | the herb-woman |
+| opening.rs:947 | apprenticed to {master} |
+| opening.rs:956 | the carpenter |
+| opening.rs:957 | apprenticed to {master} |
+| opening.rs:966 | the smith |
+| opening.rs:967 | apprenticed to {master} |
+| opening.rs:983 | the quarry |
+| opening.rs:984 | apprenticed to {master} |
+| opening.rs:988 | the baker |
+| opening.rs:989 | apprenticed to {master} |
+| opening.rs:1101 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
@@ -2362,14 +2363,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:446 | scenario |
-| scenario.rs:487 | brought by the founders |
-| scenario.rs:797 | scenario |
-| scenario.rs:804 | scenario |
-| scenario.rs:812 | scenario |
-| scenario.rs:831 | scenario |
-| scenario.rs:851 | scenario |
-| scenario.rs:1021 | scenario |
+| scenario.rs:448 | scenario |
+| scenario.rs:489 | brought by the founders |
+| scenario.rs:799 | scenario |
+| scenario.rs:806 | scenario |
+| scenario.rs:814 | scenario |
+| scenario.rs:833 | scenario |
+| scenario.rs:853 | scenario |
+| scenario.rs:1023 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |
@@ -4485,23 +4486,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/narrate.rs:59 | An |
 | view/narrate.rs:60 | {article} {n} |
 | view/narrate.rs:71 | community {} |
-| view/narrate.rs:1835 | It was over {}. |
-| view/narrate.rs:1838 | They broke down {cause}. |
-| view/narrate.rs:1840 | No one could name the cause. |
-| view/narrate.rs:1872 | some {} |
-| view/narrate.rs:1873 | a torch |
-| view/narrate.rs:1874 | a sheaf of grain |
-| view/narrate.rs:1875 | a stone block |
-| view/narrate.rs:1894 | aeiouAEIOU |
-| view/narrate.rs:1895 | {} {what} |
-| view/narrate.rs:1895 | an |
-| view/narrate.rs:1895 | a |
-| view/narrate.rs:1901 | first |
-| view/narrate.rs:1902 | second |
-| view/narrate.rs:1903 | third |
-| view/narrate.rs:1904 | fourth |
-| view/narrate.rs:1905 | fifth |
-| view/narrate.rs:1906 | {n}th |
+| view/narrate.rs:1839 | It was over {}. |
+| view/narrate.rs:1842 | They broke down {cause}. |
+| view/narrate.rs:1844 | No one could name the cause. |
+| view/narrate.rs:1876 | some {} |
+| view/narrate.rs:1877 | a torch |
+| view/narrate.rs:1878 | a sheaf of grain |
+| view/narrate.rs:1879 | a stone block |
+| view/narrate.rs:1898 | aeiouAEIOU |
+| view/narrate.rs:1899 | {} {what} |
+| view/narrate.rs:1899 | an |
+| view/narrate.rs:1899 | a |
+| view/narrate.rs:1905 | first |
+| view/narrate.rs:1906 | second |
+| view/narrate.rs:1907 | third |
+| view/narrate.rs:1908 | fourth |
+| view/narrate.rs:1909 | fifth |
+| view/narrate.rs:1910 | {n}th |
 | view/summary.rs:81 | died |
 | view/summary.rs:82 | born |
 | view/summary.rs:83 | paired |
