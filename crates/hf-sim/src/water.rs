@@ -162,7 +162,19 @@ pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
                 if d > radius || !fresh(w, p) {
                     continue;
                 }
-                if let Some(stand) = stand_by(w, p) {
+                // A surface standing above the bank (a river two tiles deep over ground the
+                // bank shares): the bank reaches the water tile at its own level, which is where
+                // `can_drink_at` looks, so use the one below the listed surface when the surface
+                // itself has no stand.
+                let found = stand_by(w, p).map(|st| (st, p)).or_else(|| {
+                    let lower = p.offset(0, 0, -1);
+                    if w.grid.in_bounds(lower) && fresh(w, lower) {
+                        stand_by(w, lower).map(|st| (st, lower))
+                    } else {
+                        None
+                    }
+                });
+                if let Some((stand, p)) = found {
                     // A river in spate is drunk from only where the bank stands above any
                     // flood yet seen: nobody goes down into a flood to drink.
                     if b.high && w.waters.flooded_once(stand.x, stand.y) {

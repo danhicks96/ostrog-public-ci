@@ -379,7 +379,7 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 
 ### OST-173 · Do not repeat a suspicion without new evidence
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#700](https://github.com/danhicks96/ostrog-public-ci/pull/700)
 
 `conditions::suspect` writes "has come to suspect" every few nights for the same two people. When someone already holds a suspicion of the same person from the same kind of evidence within the last 20 days, reinforce that memory instead of writing a new event; a new kind of evidence still counts as new.
 
@@ -400,6 +400,14 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 Mood adds every long memory together with no bound, no fading and no habituation, so a routine meal eaten for years counts as much as a loss. This adds the pure function the new mood formula will call: a bounded term that weighs recent and vivid memories and tires of routine ones. Nothing calls it yet.
 
 **Acceptance:** The term is bounded by 0.35 whatever the store size, a routine memory reinforced 200 times adds at most a twentieth of a fresh one, a vivid loss shows among many meals, and an old memory fades. Simulation digests are unchanged.
+
+### OST-174 · Say once that someone is whispered about
+
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+A suspicion held by three neighbours reads like one held by one. When three different community members come to hold a suspicion of the same person, say it once per person per twenty days with an appended Notable `WidelySuspected` event, and not again for a fourth.
+
+**Acceptance:** Three neighbours who suspect a marked sleeper on different nights give exactly one `WidelySuspected` with a count of three, on the night of the third, and none after a fourth. The enum-order check passes and a FIXLOG entry is added.
 
 ## Waiting on code or measurement
 
