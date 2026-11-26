@@ -2,6 +2,7 @@
 //! is currently committed to. Decisions are made in `systems::decide` from these parts.
 
 pub mod activity;
+pub mod acts;
 pub mod attention;
 pub mod beliefs;
 pub mod conscience;

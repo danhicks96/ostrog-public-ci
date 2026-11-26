@@ -55,6 +55,13 @@ updates:
     groups:
       actions-minor-patch:
         update-types: ["minor", "patch"]
+    ignore:
+      # upload-artifact and download-artifact must stay on matching majors (the digest jobs use both),
+      # and v5+ change defaults (digest mismatches fail). Bump them together by hand.
+      - dependency-name: "actions/upload-artifact"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "actions/download-artifact"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "pip"
     directory: "/tools"

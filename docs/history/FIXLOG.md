@@ -14,6 +14,31 @@
   attempt outcomes, explicit coverage notices, and a read-only query.
 - Guard: cover repeated rotation, injected flush failure, off/on digest and durable chronicle,
   and an unattended choice-to-blocked-route-to-retry example.
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
+## 2026-11-24: a table of what the client draws for each activity (OST-867)
+
+- Symptom: the glance count could not say which activities the client draws as plain standing,
+  so a "working" person drawn standing still would have flattered it.
+- Cause: the pose choice lives in the client and the bridge, and nothing in the simulation recorded it.
+- Fix: `view::alive::READABLE` lists, per activity, the frame drawn still and moving and whether it
+  is plain standing; `work_drawn` gives the frame and emote for each work kind (exhaustive, so a
+  new kind needs an entry). Read from `entity_layer.gd` and `person_pose`. No simulation, save or
+  digest behaviour changed; nothing calls the table yet.
+- Guard: `tests/alive_report.rs::the_readable_table_names_every_activity_and_marks_plain_standing`
+  (fails to compile without the table).
+- Not covered: the long-run glance share that will use the table (OST-868 and a later slice).
 ## 2026-11-25: the alive report counts the feed's repeats (OST-864)
 
 - Symptom: nothing measured how many of a day's feed lines are the same news again, so the folding
