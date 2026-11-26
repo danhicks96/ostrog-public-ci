@@ -61,6 +61,8 @@ fn valley_params(
             crate::world::gen::Landform::of_seed(crate::world::gen::ground_seed(seed, place))
         }),
         river: crate::world::gen::watershed::RiverReach::of_region(seed, m, region),
+        drainage_divide: !m.river[region]
+            && !crate::realm::map::neighbours(m.size, region).any(|j| m.down[j] == region),
         place,
         ..GenParams::default()
     }
@@ -75,11 +77,13 @@ pub fn region_lines(m: &crate::realm::RealmMap, i: usize) -> Vec<String> {
         m.temperature[i],
         m.rain[i] * 100.0
     )];
-    let (x, y) = m.xy(i);
-    let near_river = (x.saturating_sub(1)..=(x + 1).min(m.size - 1))
-        .any(|xx| (y.saturating_sub(1)..=(y + 1).min(m.size - 1)).any(|yy| m.river[m.idx(xx, yy)]));
-    if near_river {
-        out.push("A river runs by.".into());
+    if m.river[i] {
+        out.push("A river crosses this region.".into());
+    } else if crate::realm::map::neighbours(m.size, i).any(|j| m.river[j]) {
+        out.push("A river runs through a neighboring region.".into());
+    }
+    if !m.lake[i] && crate::realm::map::neighbours(m.size, i).any(|j| m.lake[j]) {
+        out.push("A lake lies in a neighboring region.".into());
     }
     if !crate::realm::embark::habitable(m, i) {
         out.push("Nobody could live here.".into());

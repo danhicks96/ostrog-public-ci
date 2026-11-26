@@ -418,3 +418,75 @@ fn river_regions_share_a_wet_crossing_at_the_same_height() {
     }
     assert_eq!(checked, 2);
 }
+
+#[test]
+fn a_drainage_divide_can_have_a_lake_or_no_surface_water() {
+    use hf_sim::setup::{preview_in, WorldSetup};
+
+    let seed = 7;
+    let map = realm::generate(seed, &RealmParams::default());
+    for (site, expect_lake) in [(9368, false), (8792, true)] {
+        assert!(!map.river[site] && !map.down.contains(&site));
+        let preview = preview_in(seed, &map, None, Some(site));
+        assert_eq!(preview.region, site);
+        let mut setup = WorldSetup::new(seed);
+        setup.region = Some(site);
+        setup.history_years = 0;
+        setup.realm_years = 200;
+        let world = hf_sim::World::from_setup(&setup);
+        assert!(world.meta.params.drainage_divide);
+        assert_eq!(preview.columns.contains(&255), expect_lake);
+        for y in 0..preview.height {
+            for x in 0..preview.width {
+                let at = world.grid.surface(x, y);
+                let wet =
+                    world.grid.get(at).is_water() || world.grid.get(at.offset(0, 0, -1)).is_water();
+                assert_eq!(preview.columns[world.grid.col(x, y)] == 255, wet);
+            }
+        }
+    }
+}
+
+#[test]
+fn a_small_catchment_keeps_its_stream_below_the_regional_river_threshold() {
+    use hf_sim::setup::preview_in;
+
+    let seed = 7;
+    let site = 7732;
+    let mut map = realm::generate(seed, &RealmParams::default());
+    assert!(!map.river[site]);
+    let catchment = preview_in(seed, &map, None, Some(site));
+    // The same climate and ground without any inflow isolates the lake basins.
+    for to in &mut map.down {
+        if *to == site {
+            *to = usize::MAX;
+        }
+    }
+    let divide = preview_in(seed, &map, None, Some(site));
+    assert!(divide
+        .columns
+        .iter()
+        .zip(&catchment.columns)
+        .all(|(basin, full)| *basin != 255 || *full == 255));
+    let wet = |columns: &[u8]| columns.iter().filter(|&&v| v == 255).count();
+    assert!(wet(&catchment.columns) > wet(&divide.columns));
+    assert!(wet(&divide.columns) > 0);
+}
+
+#[test]
+fn the_wizard_distinguishes_water_in_a_neighboring_region() {
+    use hf_sim::setup::region_lines;
+
+    let map = realm::generate(7, &RealmParams::default());
+    assert!(region_lines(&map, 7729)
+        .iter()
+        .any(|l| l == "A river crosses this region."));
+    let beside = region_lines(&map, 8316);
+    assert!(beside
+        .iter()
+        .any(|l| l == "A river runs through a neighboring region."));
+    assert!(!beside.iter().any(|l| l == "A river crosses this region."));
+    assert!(region_lines(&map, 10871)
+        .iter()
+        .any(|l| l == "A lake lies in a neighboring region."));
+}

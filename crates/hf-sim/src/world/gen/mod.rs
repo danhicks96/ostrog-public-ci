@@ -46,6 +46,9 @@ pub struct GenParams {
     /// River crossings inherited from the selected realm region. Older saves keep their grid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub river: Option<watershed::RiverReach>,
+    /// A selected region with no mapped river or upstream inflow. Local lakes can still form.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub drainage_divide: bool,
 }
 
 /// The lie of the land at the landing (#352).
@@ -104,6 +107,7 @@ impl Default for GenParams {
             landform: Landform::Valley,
             place: 0,
             river: None,
+            drainage_divide: false,
         }
     }
 }

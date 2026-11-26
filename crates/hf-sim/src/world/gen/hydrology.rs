@@ -1,6 +1,6 @@
-//! Water: columns on the valley's lowest ground whose moisture noise is high become lakes;
-//! a stream meanders across. A wet
-//! world (biome::Character) has more lake, a dry one less. Lake columns two or more tiles from
+//! Moist, low ground forms lakes. Regional rivers use their carved channels, while smaller
+//! catchments can carry a seeded stream across low terrain. Wet worlds have more lake than
+//! dry ones. Lake columns two or more tiles from
 //! any shore are deep. Returns the set of water columns for flora and founding-site use.
 //! `deepen` then gives the water its depth (#390), once the biomes are known.
 
@@ -49,11 +49,13 @@ pub(super) fn apply_with_channel(
             );
             let stream = if let Some(channel) = river {
                 channel[grid.col(x, y)]
-            } else {
+            } else if !p.drainage_divide {
                 let t = x as f32 / p.width as f32;
                 let curve = 0.5 + (fbm2(s ^ 0x77, t * 3.0, 0.0, 3, 2.0, 0.5) - 0.5) * 0.7;
                 let dy = (y as f32 / p.height as f32 - curve).abs();
                 dy < 0.018 && g <= 1
+            } else {
+                false
             };
             let is_lake = g <= lake_level && moist > 1.0 - sea;
             if stream || is_lake {

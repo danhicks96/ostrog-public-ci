@@ -143,7 +143,7 @@ const NEIGHBOURS: [(i32, i32); 8] = [
     (-1, -1),
 ];
 
-fn neighbours(size: usize, i: usize) -> impl Iterator<Item = usize> {
+pub(crate) fn neighbours(size: usize, i: usize) -> impl Iterator<Item = usize> {
     let (x, y) = ((i % size) as i32, (i / size) as i32);
     NEIGHBOURS.iter().filter_map(move |(dx, dy)| {
         let (nx, ny) = (x + dx, y + dy);
