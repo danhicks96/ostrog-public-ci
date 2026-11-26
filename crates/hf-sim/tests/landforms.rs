@@ -74,6 +74,12 @@ fn an_inland_taiga_landing_is_not_a_seacoast() {
     let world = hf_sim::World::from_setup(&setup);
     assert_ne!(world.meta.params.landform, Landform::Coast);
     assert!(world.meta.params.ocean.is_empty());
+    let map = world.realm_map.as_ref().unwrap();
+    let note = hf_sim::setup::region_lines(map, 16423);
+    assert!(note.contains(&format!(
+        "The terrain here is {}.",
+        world.meta.params.landform.name()
+    )));
     let picture = preview(7, None, setup.region);
     assert_eq!(picture.region, 16423);
     assert_eq!(world.meta.founding_site, picture.founding);

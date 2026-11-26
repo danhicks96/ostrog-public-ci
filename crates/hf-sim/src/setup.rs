@@ -80,7 +80,10 @@ pub fn region_lines(m: &crate::realm::RealmMap, i: usize) -> Vec<String> {
     if near_river {
         out.push("A river runs by.".into());
     }
-    if !crate::realm::embark::habitable(m, i) {
+    if crate::realm::embark::habitable(m, i) {
+        let (landform, _) = crate::realm::terrain::at(m, i);
+        out.push(format!("The terrain here is {}.", landform.name()));
+    } else {
         out.push("Nobody could live here.".into());
     }
     out

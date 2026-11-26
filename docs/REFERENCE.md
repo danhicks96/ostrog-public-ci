@@ -1397,7 +1397,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3258 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2374,28 +2374,29 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | scenario.rs:1025 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
-| setup.rs:84 | Nobody could live here. |
-| setup.rs:169 | {} and that {last} |
-| setup.rs:169 | , that  |
-| setup.rs:176 | {ch}, on {} |
-| setup.rs:188 | drink ruins people |
-| setup.rs:189 | a drink eases a hard life |
-| setup.rs:190 | no hand is raised in anger |
-| setup.rs:191 | force answers force |
-| setup.rs:192 | a fire is fought |
-| setup.rs:193 | you run from a fire |
-| setup.rs:194 | in hunger, food is shared |
-| setup.rs:195 | in hunger, each keeps their own |
-| setup.rs:196 | strangers are welcome |
-| setup.rs:197 | strangers are a danger |
-| setup.rs:198 | the dead are let go |
-| setup.rs:199 | the living are held close |
-| setup.rs:200 | wrongs are forgiven |
-| setup.rs:201 | trust is earned slowly |
-| setup.rs:345 | character |
-| setup.rs:346 | biome mix |
-| setup.rs:347 | flora draw: |
-| setup.rs:348 | flora not drawn: |
+| setup.rs:85 | The terrain here is {}. |
+| setup.rs:87 | Nobody could live here. |
+| setup.rs:172 | {} and that {last} |
+| setup.rs:172 | , that  |
+| setup.rs:179 | {ch}, on {} |
+| setup.rs:191 | drink ruins people |
+| setup.rs:192 | a drink eases a hard life |
+| setup.rs:193 | no hand is raised in anger |
+| setup.rs:194 | force answers force |
+| setup.rs:195 | a fire is fought |
+| setup.rs:196 | you run from a fire |
+| setup.rs:197 | in hunger, food is shared |
+| setup.rs:198 | in hunger, each keeps their own |
+| setup.rs:199 | strangers are welcome |
+| setup.rs:200 | strangers are a danger |
+| setup.rs:201 | the dead are let go |
+| setup.rs:202 | the living are held close |
+| setup.rs:203 | wrongs are forgiven |
+| setup.rs:204 | trust is earned slowly |
+| setup.rs:348 | character |
+| setup.rs:349 | biome mix |
+| setup.rs:350 | flora draw: |
+| setup.rs:351 | flora not drawn: |
 | shrines.rs:106 | gave up on the shrine |
 | shrines.rs:107 | found no place for it on their own ground |
 | shrines.rs:186 | it burned |
