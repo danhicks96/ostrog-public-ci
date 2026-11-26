@@ -1688,6 +1688,7 @@ fn alive_observe(
         .cloned()
         .collect();
     tally.observe_major_events(&events);
+    tally.observe_feed(w, &w.last_events);
     director.observe(tick, &events);
     let sampled = tick.is_multiple_of(SAMPLE_STRIDE);
     if sampled {
