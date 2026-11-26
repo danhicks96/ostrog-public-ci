@@ -10,6 +10,10 @@
 - Guards: `tests/mood.rs::a_starving_person_is_not_content` (needs term at most -0.3 with hunger
   at zero) and `a_comfortable_person_is_only_mildly_lifted_by_needs` (between 0 and 0.15 at 0.85
   everywhere); both fail without the change.
+- Test follow-ups: `health.rs` counts a tended patient who left the valley as not dead, and
+  `qa_1026.rs` reads the arrival shock fading off the thought, not the camp's mood. The
+  `threats.rs` east-edge band test now fails on the thirst half (the band never reaches water);
+  it is kept strict and tracked in its own issue, which this change waits on.
 - Not covered: the census on seeds 1-4 and break rates were not re-measured, and simulation
   digests change because mood feeds decisions.
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)
