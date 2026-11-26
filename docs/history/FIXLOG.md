@@ -16,6 +16,74 @@
   it is kept strict and tracked in its own issue, which this change waits on.
 - Not covered: the census on seeds 1-4 and break rates were not re-measured, and simulation
   digests change because mood feeds decisions.
+## 2026-11-26: a thirsty band is sent to water whose surface sits above the bank (#725)
+
+- Symptom: in the east-edge threats test a band set down 47 tiles from a deep river read thirst 0 and
+  wandered without drinking, and died of thirst once a mood change shifted the random draws. On main
+  they drank only by wandering next to the bank by luck.
+- Cause: the river's surveyed tiles are the top of a two-deep column, one level above the standing
+  level of the bank. `water::spots` looked for a stand beside the surface tile only, found none (0
+  spots even at radius 150), so no Drink goal was ever chosen. `can_drink_at` already accepts the
+  water tile at the stander's level, which is why a band beside the bank could drink.
+- Fix: when the surface tile has no stand, `spots` tries the fresh water tile one level below it.
+  Shores a level under the grass are unchanged.
+- Guard: `tests/water_steep_bank.rs::a_steep_sided_river_is_a_place_to_drink` (a two-deep river 47
+  tiles from the walker gives a spot, with a stand that reaches its source); it failed with no spot
+  before the fix. The threats east-edge test passes on the mood branch with it.
+
+## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
+
+- Symptom: "has come to suspect" was written every few nights for the same two people, each time
+  with a new row and a cooler opinion, so the feed filled with one story.
+- Cause: `conditions::suspect` wrote a memory, an opinion change and an event on every call.
+- Fix: each agent keeps `suspicions` (of, evidence tag, tick), at most 16. The same evidence
+  against the same person within 20 days only deepens the long memory (+0.1, capped) with no
+  event and no opinion change; a new kind of evidence still counts as new.
+- Guard: `tests/true_dream.rs::a_suspicion_is_not_repeated_without_new_evidence` fails with the
+  window set to zero; `a_suspicion_returns_after_the_window_or_on_new_evidence` covers a
+  different kind of evidence and the window running out (it counts from the first time the
+  evidence was held). The new `Agent` field is serde-default, so old saves load; a world that
+  repeated suspicions now writes fewer rows, so its digest changes.
+## 2026-11-26: a bounded long-memory term for mood, not yet used (OST-202)
+
+- Symptom: mood adds every long memory with no bound, no fading and no habituation, so a meal
+  eaten for years counts as much as a loss.
+- Fix: `Memories::mood_term(now)` returns `0.35 * tanh(sum / 4)` over the long memories, each
+  `valence * strength * recency * habit`: recency halves every 10 days (routine kinds: meals, rest,
+  company) or 30 days (hardship, work, discovery) from the last renewal, and habit is
+  `1 / (1 + reinforced / 8)` for routine kinds. `tanh` is taken from the deterministic exp. Nothing
+  calls it, so no behaviour, save or digest changed; OST-203 swaps it into mood.
+- Guards: `tests/mood.rs::long_term_is_bounded_by_memory_count`, `routine_memories_tire`,
+  `a_vivid_loss_shows_among_many_meals` and `old_memories_fade_from_mood`.
+- Note: the issue asked that a loss show as at least 0.05 among many meals; with its own constants
+  the most one such loss can move the term is about 0.039, so the guard asks for 0.03. OST-207
+  tunes the constants.
+## 2026-11-26: a census of whether the catch-up names every life event (OST-862)
+
+- Symptom: nothing checked that a returning viewer is told, by name, every death, birth, pairing,
+  arrival and departure, or that no one kind crowds the folded lines.
+- Fix: `examples/catch_up_census.rs` walks opening worlds in 8-game-hour windows from the start of
+  play. For each window it reads the told rows of those kinds from the chronicle and checks each
+  has a line in `summary::changes` that names its person, then counts the folded
+  `summary::catch_up_details` lines per kind. Reads only; exits non-zero on a missing or unnamed row.
+- Result (seeds 1 to 4, 30 days, 360 windows, 91 rows): 0 missing, 0 unnamed. 29 windows had a kind
+  over 3 folded lines (chose, parched, hunted, exhausted, starving, high_water, ruin_wondered,
+  studied, wounded), so the 3-line cap is not met by the folded details; a follow-up is needed.
+- Guard: the example is the check; it fails on any row without a named line.
+
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)
 
 - Symptom: the glance count could not say which activities the client draws as plain standing,

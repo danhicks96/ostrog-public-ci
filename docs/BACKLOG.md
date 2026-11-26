@@ -90,7 +90,7 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 ### OST-1100 · Read what a person is seen doing without changing anything
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#690](https://github.com/danhicks96/ostrog-public-ci/pull/690)
 
 Add a pure `ActKind` / `act_of` helper in `mind` that classifies a person's current activity as an observer could see it, with no caller wired yet. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
@@ -379,7 +379,7 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 
 ### OST-173 · Do not repeat a suspicion without new evidence
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#700](https://github.com/danhicks96/ostrog-public-ci/pull/700)
 
 `conditions::suspect` writes "has come to suspect" every few nights for the same two people. When someone already holds a suspicion of the same person from the same kind of evidence within the last 20 days, reinforce that memory instead of writing a new event; a new kind of evidence still counts as new.
 
@@ -400,6 +400,14 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 The needs term of mood was a plain mean of the six needs centred on half-full, so one need at zero with the rest full still read as mildly pleased. It is now centred on "fine" and the neediest need bites on its own.
 
 **Acceptance:** A person with hunger at zero and every other need full, no memories or thoughts, has mood at most -0.3; with every need at 0.85 the needs term is mildly positive. A FIXLOG entry is added and any simulation digest change is explained in the PR.
+
+### OST-202 · A bounded long-memory term for mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#726](https://github.com/danhicks96/ostrog-public-ci/pull/726)
+
+Mood adds every long memory together with no bound, no fading and no habituation, so a routine meal eaten for years counts as much as a loss. This adds the pure function the new mood formula will call: a bounded term that weighs recent and vivid memories and tires of routine ones. Nothing calls it yet.
+
+**Acceptance:** The term is bounded by 0.35 whatever the store size, a routine memory reinforced 200 times adds at most a twentieth of a fresh one, a vivid loss shows among many meals, and an old memory fades. Simulation digests are unchanged.
 
 ## Waiting on code or measurement
 
@@ -601,7 +609,7 @@ Extend the alive report with, per game-day, the number of lines that reach the f
 
 ### OST-862 · Check that a returning viewer is told every death, birth and pairing
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** [#721](https://github.com/danhicks96/ostrog-public-ci/pull/721)
 
 Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on opening worlds, compare `summary::changes` and the folded lines against the chronicle's rows of the kinds that name who changed. Tracking issue: [#403](https://github.com/danhicks96/ostrog-public-ci/issues/403).
 
