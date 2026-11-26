@@ -448,7 +448,7 @@ impl AliveTally {
     fn observe_lineage_events(&mut self, w: &World, events: &[Event]) {
         for e in events {
             if let EventKind::FeudInherited { agent, from, .. } = e.kind {
-                if w.agents.iter().any(|a| {
+                if w.agents.iter().chain(&w.overworld.away).any(|a| {
                     a.id == agent
                         && a.species == Species::Person
                         && (a.mother == Some(from) || a.father == Some(from))

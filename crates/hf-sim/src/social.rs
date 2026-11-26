@@ -26,12 +26,14 @@ pub struct LineageStats {
 }
 
 /// Read the saved parent links without changing anyone. Only `give_birth` writes these links;
-/// founders and incoming strangers have none. Missing parents are unknown, not inferred from
+/// founders and incoming strangers have none. Present and away people share the same lookup.
+/// Missing parents are unknown, not inferred from
 /// age, name, home or an opinion. Each grandchild counts once even with several grandparents.
 pub fn lineage_stats(w: &World) -> LineageStats {
     let people: std::collections::BTreeMap<_, _> = w
         .agents
         .iter()
+        .chain(&w.overworld.away)
         .filter(|a| a.species == crate::agents::Species::Person)
         .map(|a| (a.id, a))
         .collect();

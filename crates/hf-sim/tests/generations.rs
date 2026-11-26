@@ -430,3 +430,39 @@ fn lineage_keys_read_family_and_recorded_parent_feuds() {
     );
     assert_eq!(before, hf_sim::digest::digest(&w));
 }
+
+#[test]
+fn lineage_stats_follow_family_members_who_are_away() {
+    let mut w = World::generate(605, GenParams::small());
+    let founders = w.found_party(3);
+    let mother = w.give_birth(founders[0], founders[1]).unwrap();
+    let child = w.give_birth(mother, founders[2]).unwrap();
+    for id in [founders[0], founders[1], mother, child] {
+        let index = w.agents.iter().position(|a| a.id == id).unwrap();
+        w.overworld.away.push(w.agents.remove(index));
+        let stats = hf_sim::social::lineage_stats(&w);
+        assert_eq!(
+            stats.living_with_living_grandparent, 1,
+            "a living family member away is not a missing ancestor or child"
+        );
+        assert_eq!(
+            stats.births_to_valley_born_parent, 1,
+            "a journey cannot erase an earlier birth"
+        );
+    }
+    let event = hf_sim::events::Event {
+        id: hf_sim::ids::EventId(902),
+        tick: w.tick(),
+        at: None,
+        severity: hf_sim::events::Severity::Minor,
+        kind: EventKind::FeudInherited {
+            agent: child,
+            from: mother,
+            against: founders[2],
+        },
+    };
+    let mut tally = hf_sim::view::alive::AliveTally::default();
+    tally.observe_hour(&w);
+    tally.observe_feed(&w, &[event]);
+    assert_eq!(tally.report().get("lineage_feud_to_child"), Some(1.0));
+}

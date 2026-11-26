@@ -6,12 +6,15 @@
 - Cause: the saved parent links and inherited-feud events were never read together.
 - Fix: `social::lineage_stats` reads parent links into the latest hourly report: living
   people with a living grandparent, and all births to a valley-born parent (third or later
-  generation). Multiple parents/grandparents count a child once; dead intermediates retain
-  links, while missing ancestors are unknown. Historical births include the subsequently dead.
+  generation). Present and away people share the lookup, so journeys, captivity and being
+  taken below cannot erase a family. Multiple parents/grandparents count a child once; dead
+  intermediates retain links, while missing ancestors are unknown. Historical births include
+  the subsequently dead.
   Count distinct recorded feud inheritances from a parent in both complete event readers.
   Inherited ties await the relevant inheritance mechanism; no provenance or count is invented.
 - Guards: `generations::lineage_stats_count_a_built_family` constructs three generations,
-  checks deaths and missing links; the streamed report guard checks parent/stranger events,
+  checks deaths and missing links; a further guard moves each generation to the away list.
+  The streamed report guard checks parent/stranger events,
   reader deduplication and an unchanged world digest.
 - Seeds 5-8 x 600 days and the seed-5 comparison with eight third-generation births are pending.
   No simulation state, save format, decisions or RNG change.

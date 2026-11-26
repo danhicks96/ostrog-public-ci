@@ -2408,9 +2408,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | siege.rs:347 | driven off |
 | siege.rs:348 | tired of waiting |
 | siege.rs:421 | a ransom |
-| social.rs:292 | {name}'s family is at feud with theirs |
-| social.rs:294 | they think ill of {name} |
-| social.rs:302 | kept {} to themselves |
+| social.rs:294 | {name}'s family is at feud with theirs |
+| social.rs:296 | they think ill of {name} |
+| social.rs:304 | kept {} to themselves |
 | society.rs:76 | a cramped site |
 | society.rs:77 | a grown household |
 | society.rs:78 | their cultural preference |
