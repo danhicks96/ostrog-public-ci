@@ -10,10 +10,6 @@
 - Guards: `tests/mood.rs::a_starving_person_is_not_content` (needs term at most -0.3 with hunger
   at zero) and `a_comfortable_person_is_only_mildly_lifted_by_needs` (between 0 and 0.15 at 0.85
   everywhere); both fail without the change.
-- Test follow-ups: three tests read mood-sensitive outcomes and moved with it. `health.rs` counts a
-  tended patient who left the valley as not dead; `qa_1026.rs` reads the arrival shock fading off
-  the thought, not the camp's mood; `threats.rs` leaves out of the thirst count a band member who
-  broke down on the way (a parched band now breaks and some die of thirst while dazed).
 - Not covered: the census on seeds 1-4 and break rates were not re-measured, and simulation
   digests change because mood feeds decisions.
 ## 2026-11-24: a table of what the client draws for each activity (OST-867)

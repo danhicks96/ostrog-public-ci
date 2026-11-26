@@ -917,18 +917,11 @@ fn assert_band_comes_in(w: &mut World, band: u32) {
         .map(|m| w.agents[idx_of(w, *m)].pos.dist(b.camp))
         .collect();
     let mut thirst_deaths = Vec::new();
-    // OST-205: a band walked in parched now reads as miserable and may break down on the way;
-    // someone in a breakdown who dies of thirst is not what this gate is about (the walk and
-    // the water are), so those are left out of the count.
-    let mut broke = Vec::new();
     for _ in 0..2 * TICKS_PER_DAY {
         w.step();
         for e in &w.last_events {
-            if let EventKind::Broke { agent, .. } = &e.kind {
-                broke.push(*agent);
-            }
             if let EventKind::Died { agent, cause } = &e.kind {
-                if b.members.contains(agent) && cause.contains("thirst") && !broke.contains(agent) {
+                if b.members.contains(agent) && cause.contains("thirst") {
                     thirst_deaths.push(*agent);
                 }
             }
