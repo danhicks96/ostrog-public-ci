@@ -419,7 +419,7 @@ A suspicion held by three neighbours reads like one held by one. When three diff
 
 ### OST-507 · Tell a lived belief only to those who have not heard it from this teller this year
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#739](https://github.com/danhicks96/ostrog-public-ci/pull/739)
 
 When no tale is fresh, the hearth teller tells "how they came to hold that ..." nightly to the same circle, and every retelling raises each listener's confidence in the belief. Record, per listener, which lived-belief telling they have heard from which teller and when; tell a lived belief (or the line about the other side of the portal) only when at least one other sitter has not heard it from this teller within a year, and pass the belief on only to those who had not.
 
@@ -427,7 +427,7 @@ When no tale is fresh, the hearth teller tells "how they came to hold that ..." 
 
 ### OST-551 · Pin that mood's needs term reads thirst and warmth
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#735](https://github.com/danhicks96/ostrog-public-ci/pull/735)
 
 Mood's needs term already averages all six needs and takes the lowest (it landed with the thirst and warmth fix), but no test states the issue's own acceptance. Add a guard that one empty thirst, or one empty warmth, with every other need full, puts the needs term at or below -0.3 with no memories or thoughts.
 
