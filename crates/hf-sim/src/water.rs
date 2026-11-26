@@ -213,8 +213,13 @@ fn candidates(w: &World, from: TilePos, radius: i32) -> Vec<Spot> {
 
 fn candidate_stream(w: &World, from: TilePos, radius: i32) -> impl Iterator<Item = Spot> + '_ {
     let mut tried = std::collections::BTreeSet::new();
-    spots(w, from, radius)
+    let spots = spots(w, from, radius);
+    let wells: std::collections::BTreeSet<_> =
+        spots.iter().filter(|s| s.well).map(|s| s.stand).collect();
+    spots
         .into_iter()
+        // A shared stand still offers the well when the open water is refused.
+        .filter(move |s| s.well || !wells.contains(&s.stand))
         .filter(move |s| tried.insert(s.stand))
         // Not into a flood's way (#418): the next bank clear of it serves.
         .filter(move |s| !crate::systems::hazards::in_floods_way(w, s.stand))
@@ -390,12 +395,21 @@ pub fn drink(w: &mut World, i: usize) -> bool {
     }
     // Where they drank is water they know of (#433): a lake a level under its bank was not
     // seen by the eye's scan of their own level.
-    let source = (-1..=0).find_map(|dz| {
-        [(0, 1), (1, 0), (0, -1), (-1, 0)]
-            .iter()
-            .map(|(dx, dy)| at.offset(*dx, *dy, dz))
-            .find(|q| w.grid.in_bounds(*q) && fresh(w, *q))
-    });
+    // A finished well supplies its own water even when a pond also reaches this stand.
+    let well = w
+        .structures
+        .iter()
+        .any(|s| s.kind == StructureKind::Well && s.progress >= 1.0 && reaches(at, s.pos));
+    let source = if well {
+        None
+    } else {
+        (-1..=0).find_map(|dz| {
+            [(0, 1), (1, 0), (0, -1), (-1, 0)]
+                .iter()
+                .map(|(dx, dy)| at.offset(*dx, *dy, dz))
+                .find(|q| w.grid.in_bounds(*q) && fresh(w, *q))
+        })
+    };
     let tick = w.meta.tick;
     let was_ill = w.agents[i].body.illness.is_some();
     // Tagged with what the drink taught them (#453 part 4): a fouled tile tasted is

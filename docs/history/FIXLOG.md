@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-25: a well beside remembered foul water supplies its own water (OST-447)
+
+- Symptom: someone refusing a foul pond could lose the well beside it as a choice, or
+  choose the well and still catch the pond's flux or change their lesson about the pond.
+- Cause: standing tiles were deduplicated before refusal, dropping a well behind a pond
+  shore at the same stand. Drinking then chose an adjacent open-water tile even when a
+  finished well served the stand.
+- Fix: retain the well for a shared stand and take its water before scanning the pond.
+  This keeps the selected safe source and the water actually drunk consistent.
+- Guards: `a_well_sharing_a_stand_with_a_foul_pond_is_kept` and
+  `a_well_does_not_test_the_foul_pond_beside_it` in `tests/foul_sickens.rs` both fail before
+  the correction. The second includes an unfinished-well control and one/four-thread checks.
+- Digests change where a well beside open water now supplies the drink. No new save fields.
+
 ## 2026-11-25: an illness lesson outlasts a forgotten water tag (OST-447)
 
 - Symptom: after forgetting a foul-water belief, someone could return to a pond that had

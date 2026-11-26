@@ -93,6 +93,113 @@ fn a_drink_from_fouled_water_brings_the_flux() {
 }
 
 #[test]
+fn a_well_sharing_a_stand_with_a_foul_pond_is_kept() {
+    use hf_sim::mind::{Known, ObservationKind, OutcomeKind};
+    use hf_sim::structures::StructureKind;
+    let (mut w, fouled) = fouled_pond(4543);
+    let i = drinker_beside(&mut w, fouled);
+    let from = w.agents[i].pos;
+    let tick = w.meta.tick;
+    w.agents[i].needs.thirst = 0.45;
+    w.agents[i]
+        .knowledge
+        .note(Known::Water(fouled), fouled, tick, floods::TAG_WATER_FOUL);
+    w.agents[i].learning.learn(
+        ObservationKind::FoulWater,
+        OutcomeKind::Illness,
+        Some(fouled),
+        true,
+        tick,
+        None,
+    );
+    w.agents[i].learning.lessons[0].confidence = 0.6;
+    w.place_structure(
+        StructureKind::Well,
+        from.offset(0, -1, 0),
+        Material::STONE_BLOCK,
+        true,
+    );
+    w.ensure_nav();
+    let chosen = hf_sim::water::nearest_knowing(&w, i, from, 30, &w.agents[i].knowledge, false)
+        .expect("a shared stand must keep its well when the pond is refused");
+    assert!(chosen.well, "the reachable well is still a choice");
+    assert_eq!(chosen.stand, from);
+}
+
+#[test]
+fn a_well_does_not_test_the_foul_pond_beside_it() {
+    use hf_sim::mind::{Known, ObservationKind, OutcomeKind};
+    use hf_sim::structures::StructureKind;
+    let run = |threads| {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let mut digests = Vec::new();
+                for finished in [false, true] {
+                    let (mut w, original_foul) = fouled_pond(4543);
+                    let i = drinker_beside(&mut w, original_foul);
+                    let fouled = original_foul.offset(0, 2, 0);
+                    w.waters.foul.insert(fouled, FOUL_HOURS);
+                    let at = w.agents[i].pos;
+                    let tick = w.meta.tick;
+                    w.agents[i].needs.thirst = 0.45;
+                    w.agents[i].knowledge.note(
+                        Known::Water(fouled),
+                        fouled,
+                        tick,
+                        floods::TAG_WATER_FOUL,
+                    );
+                    w.agents[i].learning.learn(
+                        ObservationKind::FoulWater,
+                        OutcomeKind::Illness,
+                        Some(fouled),
+                        true,
+                        tick,
+                        None,
+                    );
+                    w.agents[i].learning.lessons[0].confidence = 0.6;
+                    w.place_structure(
+                        StructureKind::Well,
+                        at.offset(0, 1, 0),
+                        Material::STONE_BLOCK,
+                        finished,
+                    );
+                    w.ensure_nav();
+                    if finished {
+                        let chosen = hf_sim::water::nearest_knowing(
+                            &w,
+                            i,
+                            at,
+                            30,
+                            &w.agents[i].knowledge,
+                            false,
+                        )
+                        .expect("the well is within reach");
+                        assert!(chosen.well, "they chose the well over the known foul pond");
+                        w.agents[i].pos = chosen.stand;
+                    }
+                    assert!(hf_sim::water::drink(&mut w, i));
+                    if finished {
+                        assert!(
+                            w.agents[i].body.illness.is_none(),
+                            "the chosen well must supply its own water"
+                        );
+                        assert_eq!(w.agents[i].learning.lessons[0].confidence, 0.6);
+                        assert_eq!(w.agents[i].learning.lessons[0].contradictions, 0);
+                    } else {
+                        assert_eq!(w.agents[i].body.illness.unwrap().kind, IllnessKind::Flux);
+                    }
+                    digests.push(hf_sim::digest::digest(&w));
+                }
+                digests
+            })
+    };
+    assert_eq!(run(1), run(4));
+}
+
+#[test]
 fn the_flux_teaches_the_drinker() {
     use hf_sim::mind::{Evidence, OutcomeKind};
     let (mut w, fouled) = fouled_pond(4543);
