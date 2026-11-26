@@ -110,6 +110,7 @@ var roof_layer: Node2D
 var carried := {}
 ## What each carried load is made of (an id into mat_slugs), for its icon in hand (#186).
 var carried_mat := {}
+var carried_count := {}
 var hour := 12.0
 var anim_t := 0.0
 var animation_frozen := false
@@ -312,10 +313,12 @@ func refresh() -> void:
 		built[Vector2i(bo[i], bo[i + 1])] = bo[i + 2]
 	carried.clear()
 	carried_mat.clear()
-	var c: PackedInt32Array = sim.carried()
-	for i in range(0, c.size(), 3):
+	carried_count.clear()
+	var c: PackedInt32Array = sim.carried_stacks()
+	for i in range(0, c.size(), 4):
 		carried[c[i]] = c[i + 1]
 		carried_mat[c[i]] = c[i + 2]
+		carried_count[c[i]] = c[i + 3]
 	hour = sim.hour()
 	sky = sim.sky()
 	season = sim.season()

@@ -498,6 +498,23 @@ fn preview_dict(p: &hf_sim::setup::Preview) -> VarDictionary {
 }
 
 impl SimHost {
+    fn carried_rows(&self, with_count: bool) -> PackedInt32Array {
+        let mut out = PackedInt32Array::new();
+        if let Some(w) = self.world() {
+            for it in &w.items {
+                if let hf_sim::items::ItemPlace::Carried(id) = it.place {
+                    out.push(id.0 as i32);
+                    out.push(it.kind as i32);
+                    out.push(it.material.0 as i32);
+                    if with_count {
+                        out.push(it.count.min(i32::MAX as u32) as i32);
+                    }
+                }
+            }
+        }
+        out
+    }
+
     /// The world the view reads: the session's, or while the session is on the step thread,
     /// the snapshot of it as the last batch of ticks left it (#603).
     fn world(&self) -> Option<&World> {
@@ -3585,17 +3602,13 @@ impl SimHost {
     /// `material_slugs`) picks the same icon in hand as on the ground (#186).
     #[func]
     fn carried(&self) -> PackedInt32Array {
-        let mut out = PackedInt32Array::new();
-        if let Some(w) = self.world() {
-            for it in &w.items {
-                if let hf_sim::items::ItemPlace::Carried(id) = it.place {
-                    out.push(id.0 as i32);
-                    out.push(it.kind as i32);
-                    out.push(it.material.0 as i32);
-                }
-            }
-        }
-        out
+        self.carried_rows(false)
+    }
+
+    /// Held item stacks as [carrier, item kind, material, count] for the world renderer.
+    #[func]
+    fn carried_stacks(&self) -> PackedInt32Array {
+        self.carried_rows(true)
     }
 
     /// Carved walls (C35), 4 ints each: x, y, z, quality tier 0..5.

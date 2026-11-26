@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-26 - Held loads and expressive inhabitants
+
+Orsin's hands showed a single log as he carried three to a carpenter's bench in Ashcross. Another inhabitant held a root in front of their face during a walking pose. The client now reads the stack count and anchors the load to the holding or walking arms. A hand stack of logs, planks or stone blocks shows up to three pieces, using the carried material's existing icon. The ground plank icon depicts two boards. A held plank uses one lighter board face so Toriwick's pair remains visible against the loom and clothing. One average adult human appearance uses higher-resolution face, hair and vest sheets within its usual footprint. Equipment and bandages stay independent.
+
+The optional batch renderer skipped the person sprites and assigned a generic body atlas to a batch without a mesh. It now draws people with the same layered sprites as the default renderer, keeping the other batches in place. Client guards check directional pose alignment, sprite reuse, carried quantity and one visible sprite per person.
+
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 
 - Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;

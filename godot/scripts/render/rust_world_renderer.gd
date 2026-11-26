@@ -8,7 +8,6 @@ const TILE := 32.0
 const STRIDE := 8
 const GROUND_STRIDE := 5
 var view
-var people: MultiMeshInstance2D
 var animals: MultiMeshInstance2D
 var ground: MultiMeshInstance2D
 var plants: MultiMeshInstance2D
@@ -17,19 +16,16 @@ var items: MultiMeshInstance2D
 
 func setup(v) -> void:
 	view = v
-	people = _batch(v._tex("people/body_average_adult.png"), 2)
 	animals = _batch(v._tex("animals/deer.png"), 2)
 	ground = _batch(v._tex("terrain/grass.png"), -3)
 	plants = _batch(v._tex("plants/shrub.png"), 2)
 	structures = _batch(v._tex("structures/crate.png"), 3)
 	items = _batch(v._tex("items/log.png"), 4)
-	people.z_index = 2
 	animals.z_index = 2
 	ground.z_index = -3
 	plants.z_index = 2
 	structures.z_index = 3
 	items.z_index = 4
-	add_child(people)
 	add_child(animals)
 	add_child(ground)
 	add_child(plants)
@@ -55,15 +51,15 @@ const STATIC_EVERY := 0.5
 # (WP-06 6.4, FIXLOG 2026-11-13): rebuild() runs every frame from world_view._process and again in
 # refresh(), and each full rebuild cost about 15 ms on the main thread at 500 people, 9 of them
 # for the whole level's ground (16 384 tiles) that only changes when the ground does.
-var _people_key := ""
+var _animal_key := ""
 var _static_z := -999999
 var _static_age := 999.0
 var _ground_key := 0
 ## How many times each batch has been built (read by tools/gd_test.gd).
-var builds := {"people": 0, "static": 0, "ground": 0}
+var builds := {"animals": 0, "static": 0, "ground": 0}
 
 ## Rebuild what changed. `delta` is the frame time when called from _process (0 from refresh), for
-## the static batches' half-second rule. People and animals: when the tick or the level changes
+## the static batches' half-second rule. Animals: when the tick or the level changes
 ## (their rows are the sim's state, the same until the next tick). Static things: when the level
 ## changes, else at most every STATIC_EVERY seconds. Ground: when the level or any chunk's version
 ## changes (`chunk_versions` sums every chunk's version, so any changed tile on any level shows).
@@ -71,20 +67,12 @@ func rebuild(delta := 0.0, force := false) -> void:
 	if view == null or view.sim == null:
 		return
 	var z: int = view.view_z
-	var people_key := "%d|%d" % [z, view.sim.tick()]
-	if force or people_key != _people_key:
-		_people_key = people_key
-		builds["people"] += 1
+	var animal_key := "%d|%d" % [z, view.sim.tick()]
+	if force or animal_key != _animal_key:
+		_animal_key = animal_key
+		builds["animals"] += 1
 		var rows: PackedFloat32Array = view.sim.render_batches(z)
-		var people_count := 0
-		var animal_count := 0
-		for i in range(0, rows.size(), STRIDE):
-			if int(rows[i + 4]) == 0:
-				people_count += 1
-			else:
-				animal_count += 1
-		_upload(people, rows, people_count, false)
-		_upload(animals, rows, animal_count, true)
+		_upload_animals(rows)
 	_static_age += delta
 	if force or z != _static_z or _static_age >= STATIC_EVERY:
 		_static_z = z
@@ -102,12 +90,16 @@ func rebuild(delta := 0.0, force := false) -> void:
 		var ground_rows: PackedInt32Array = view.sim.render_ground_batches(z)
 		_upload_ground(ground, ground_rows)
 
-func _upload(n: MultiMeshInstance2D, rows: PackedFloat32Array, count: int, animal: bool) -> void:
-	var mm: MultiMesh = n.multimesh
+func _upload_animals(rows: PackedFloat32Array) -> void:
+	var count := 0
+	for i in range(0, rows.size(), STRIDE):
+		if int(rows[i + 4]) != 0:
+			count += 1
+	var mm: MultiMesh = animals.multimesh
 	mm.instance_count = count
 	var k := 0
 	for i in range(0, rows.size(), STRIDE):
-		if (int(rows[i + 4]) != 0) != animal:
+		if int(rows[i + 4]) == 0:
 			continue
 		var at := Vector2(rows[i + 1] * TILE, rows[i + 2] * TILE)
 		mm.set_instance_transform_2d(k, Transform2D(0.0, at))

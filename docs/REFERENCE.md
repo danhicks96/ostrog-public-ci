@@ -4943,7 +4943,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:738 | _summary_page | nothing beyond what each has lived |
 | godot/scripts/setup.gd:739 | _summary_page | Making the world runs the valley's past first; it takes a moment. |
 | godot/scripts/setup.gd:770 | refused | Could not begin: %s. |
-| godot/scripts/world_view.gd:186 | setup | ostrog/render/world_renderer |
+| godot/scripts/world_view.gd:187 | setup | ostrog/render/world_renderer |
 | godot/scripts/audio/sound.gd:96 | _buses | Master |
 | godot/scripts/audio/sound.gd:173 | ui | %.2f %s ui ui |
 
@@ -5737,7 +5737,7 @@ row. Policy and counts: ASSETS.md.
 
 #### godot/assets/people/
 
-<details><summary>2143 files (click to open)</summary>
+<details><summary>2146 files (click to open)</summary>
 
 | file | pixels | layout | generator |
 |---|---|---|---|
@@ -7001,6 +7001,9 @@ row. Policy and counts: ASSETS.md.
 | equipment_spear_winged_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | equipment_spear_winged_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | equipment_spear_winged_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| expressive_bowl_body.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_bowl_clothing.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_bowl_hair.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
 | hair_01.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | hair_01_amphibious_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | hair_01_amphibious_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
@@ -8224,7 +8227,8 @@ Other read models in `crates/hf-godot/src/lib.rs`, all flat `PackedInt32Array`s:
 material, active, progress x 100), `items()` 6 (id, x, y, z, kind, count), `designations()` 7
 (id, x, y, z, code, progress, materials complete; codes 0 wall, 1 door, 2 floor, 3 + kind x 100
 structure, 4 chop, 5 mine, 6 sow, 7 harvest, 8 haul, 9 cook, 10 dig stairs, 11 hunt, 12 craft,
-13 tend, 14 douse, 15 beat out), `carried()` pairs (agent id, item kind), `lights()` 4 (x, y, z,
+13 tend, 14 douse, 15 beat out), `carried()` triples (agent id, item kind, material),
+`carried_stacks()` quadruples (agent id, item kind, material, count), `lights()` 4 (x, y, z,
 structure kind), `scorched(z, days)` 3 (x, y, hours since it burned), `explored(cid, z)` pairs of
 8x8 cells. Scalars: `sky()` 0 clear, 1 overcast, 2 rain, 3 snow; `season()` 0..3; `hour()`;
 `temperature()` in C; `calendar()`; `population()` (living humans). `drain_sounds()` returns the

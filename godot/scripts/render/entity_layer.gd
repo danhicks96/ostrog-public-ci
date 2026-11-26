@@ -64,7 +64,7 @@ const A_SLEEP := 8
 const CARRY_AT := [Vector2(8, -TILE + 14), Vector2(4, -TILE + 14), Vector2(12, -TILE + 14), Vector2(8, -TILE + 8)]
 ## People are drawn in 48 px cells since style bible v2 (tools/art/people.py writes the cell size
 ## into swaps.json); the cell is centred on its tile with the feet on the tile's bottom edge.
-const CARRY_AT_48 := [Vector2(8, -31), Vector2(2, -31), Vector2(14, -31), Vector2(8, -36)]
+const CARRY_AT_48 := [Vector2(8, -24), Vector2(2, -25), Vector2(14, -25), Vector2(8, -36)]
 
 func _pcell(plan := "") -> int:
 	var cell := int(v.assets.swaps.get("layout", {}).get("cell", TILE))
@@ -202,7 +202,7 @@ func _new_sprite(parent: Node) -> Sprite2D:
 	parent.add_child(s)
 	return s
 
-func _new_person() -> Node2D:
+func _new_person(parent: Node) -> Node2D:
 	var p := Node2D.new()
 	for n in ["body", "cloth", "hair", "band", "equip"]:
 		var s := _new_sprite(p)
@@ -221,7 +221,7 @@ func _new_person() -> Node2D:
 	em.visible = false
 	em.set_meta("kind", 0)
 	p.add_child(em)
-	add_child(p)
+	parent.add_child(p)
 	return p
 
 func _take(kind: String) -> Node:
@@ -232,7 +232,7 @@ func _take(kind: String) -> Node:
 		node = arr[n]
 	else:
 		match kind:
-			"person": node = _new_person()
+			"person": node = _new_person(self)
 			"shadow", "blob", "iblob", "ashadow": node = _new_sprite(shadows)
 			_: node = _new_sprite(self)
 		arr.append(node)
@@ -310,11 +310,13 @@ func rebuild(cull: Rect2i, with_static: bool) -> void:
 			if I[i + 3] == z and I[i + 1] >= x0 and I[i + 1] < x1 and I[i + 2] >= y0 and I[i + 2] < y1:
 				_item(i)
 	_thin(z)
-	if not v.rust_renderer_enabled:
-		var A: PackedInt32Array = v.agents
-		for i in range(0, A.size(), v.AGENT_STRIDE):
-			if A[i + 3] == z and A[i + 1] >= x0 and A[i + 1] < x1 and A[i + 2] >= y0 and A[i + 2] < y1:
-				_agent(i)
+	# People use layered sprites in both renderers for faces, clothing and held items.
+	var A: PackedInt32Array = v.agents
+	for i in range(0, A.size(), v.AGENT_STRIDE):
+		if v.rust_renderer_enabled and A[i + 4] != 0:
+			continue
+		if A[i + 3] == z and A[i + 1] >= x0 and A[i + 1] < x1 and A[i + 2] >= y0 and A[i + 2] < y1:
+			_agent(i)
 	for k in groups:
 		if not _pool.has(k):
 			continue
@@ -547,6 +549,72 @@ func _agent(i: int) -> void:
 		return
 	var p: Node2D = _take("person")
 	p.position = foot
+	var carry_kind: int = v.carried.get(A[i], -1)
+	var plan := dress_person(p, A, i, carry_kind)
+	var carry: Sprite2D = p.get_node("carry")
+	carry.texture = null
+	var icon_scale := 1.0
+	var iname := ""
+	if carry_kind >= 0 and carry_kind < v.ITEM_NAME.size():
+		# The same icon as on the ground, its material's where one is drawn, at half size: the
+		# old 16 px set was drawn apart from the 32 px one (#186, QA 2026-10-20, C63).
+		iname = v.ITEM_NAME[carry_kind]
+		var mat: int = v.carried_mat.get(A[i], 0)
+		if mat > 0 and mat < v.mat_slugs.size():
+			carry.texture = v.assets.optional("items32/%s_%s.png" % [iname, v.mat_slugs[mat]])
+		if carry.texture == null:
+			carry.texture = v.assets.optional("items32/%s.png" % iname)
+		if carry.texture != null:
+			var big: int = maxi(carry.texture.get_width(), carry.texture.get_height())
+			icon_scale = 16.0 / float(maxi(big, 1))
+		else:
+			carry.texture = v._tex("items/%s.png" % iname)
+	_set_carry_stack(carry, iname, v.carried_count.get(A[i], 0), icon_scale)
+	carry.visible = carry.texture != null
+	_blob(base + Vector2(16, TILE - 3), 0.4)
+	animated.append(["person", p, i, plan])
+
+## A handful of building materials uses the same icon and hand anchor for every unit.
+## Keep the far pieces inside the silhouette of the carrier, clear of the lead hand.
+func _set_carry_stack(carry: Sprite2D, kind: String, count: int, icon_scale: float) -> void:
+	# The 32 px ground plank icon in each wood shows two boards. Use one face per
+	# held unit so a real pair still reads as two against the loom or the carrier.
+	var plank := kind == "plank" and carry.texture != null and carry.texture.get_size() == Vector2(32, 32)
+	carry.scale = Vector2.ONE * icon_scale
+	carry.region_enabled = plank
+	carry.offset = Vector2.ZERO
+	carry.self_modulate = Color.WHITE
+	if plank:
+		carry.region_rect = Rect2(0, 6, 32, 10)
+		carry.scale = Vector2(0.76, 0.72)
+		carry.offset = Vector2(-4, 6) / carry.scale
+		# Keep the wood texture's own colour, with a lighter cut face in the hands.
+		carry.self_modulate = Color(1.65, 1.57, 1.45)
+	var extras := 0
+	if carry.texture != null and kind in ["log", "stone_block", "plank"]:
+		extras = clampi(count - 1, 0, 2)
+	while carry.get_child_count() < extras:
+		var piece := Sprite2D.new()
+		piece.centered = false
+		piece.show_behind_parent = true
+		carry.add_child(piece)
+	for i in carry.get_child_count():
+		var piece: Sprite2D = carry.get_child(i)
+		piece.visible = i < extras
+		if piece.visible:
+			piece.texture = carry.texture
+			piece.region_enabled = plank
+			piece.region_rect = carry.region_rect
+			piece.offset = carry.offset
+			piece.self_modulate = carry.self_modulate
+			# Back row first, then the top unit. Work in world pixels for either icon resolution.
+			var delta := Vector2(4, -1) if i == 0 else Vector2(2, -5)
+			if plank:
+				delta = Vector2(4, -4) if i == 0 else Vector2(1, -8)
+			piece.position = delta / carry.scale
+
+## Dress each pooled sprite with the current person's inherited appearance and equipment.
+func dress_person(p: Node2D, A: PackedInt32Array, i: int, carry_kind: int) -> String:
 	# Strangers from beyond the valley: road dust and hunger on them, so they read apart from
 	# the settlers at a glance.
 	p.modulate = Color(0.86, 0.8, 0.72) if A[i + 21] != 0 else Color(1, 1, 1)
@@ -589,6 +657,13 @@ func _agent(i: int) -> void:
 		["cloth", "people/clothing_%s%s.png" % [v.OUTFIT[A[i + 10] % 8], sfx], "cloth", A[i + 11]],
 		["hair", "people/hair_%02d%s.png" % [A[i + 8] % 10 + 1, sfx], "hair", A[i + 9]],
 	]
+	# A detailed bowl cut uses the same inherited colours and pose grid. Clothing still
+	# follows the wearer's outfit, and other body plans keep their own proportions.
+	if body_set == "human" and ba == "average_adult" and A[i + 8] % 10 == 1:
+		layers[0][1] = "people/expressive_bowl_body.png"
+		layers[2][1] = "people/expressive_bowl_hair.png"
+		if v.OUTFIT[A[i + 10] % 8] == "vest":
+			layers[1][1] = "people/expressive_bowl_clothing.png"
 	for l in layers:
 		var s: Sprite2D = p.get_node(l[0])
 		s.texture = v._swapped(l[1], l[2], l[3])
@@ -600,33 +675,13 @@ func _agent(i: int) -> void:
 	var band: Sprite2D = p.get_node("band")
 	band.texture = v._tex("people/overlay_bandage_%s.png" % plan_ba) if A[i + 17] == 1 else null
 	band.visible = band.texture != null
-	var carry_kind: int = v.carried.get(A[i], -1)
 	var equipment: int = A[i + 19]
 	var eq: Sprite2D = p.get_node("equip")
 	eq.texture = null
 	if equipment >= 0 and equipment < v.EQUIPMENT.size() and carry_kind < 0:
 		eq.texture = v._tex("people/equipment_%s%s.png" % [v.EQUIPMENT[equipment], sfx])
 	eq.visible = eq.texture != null
-	var carry: Sprite2D = p.get_node("carry")
-	carry.texture = null
-	carry.scale = Vector2.ONE
-	if carry_kind >= 0 and carry_kind < v.ITEM_NAME.size():
-		# The same icon as on the ground, its material's where one is drawn, at half size: the
-		# old 16 px set was drawn apart from the 32 px one (#186, QA 2026-10-20, C63).
-		var iname: String = v.ITEM_NAME[carry_kind]
-		var mat: int = v.carried_mat.get(A[i], 0)
-		if mat > 0 and mat < v.mat_slugs.size():
-			carry.texture = v.assets.optional("items32/%s_%s.png" % [iname, v.mat_slugs[mat]])
-		if carry.texture == null:
-			carry.texture = v.assets.optional("items32/%s.png" % iname)
-		if carry.texture != null:
-			var big: int = maxi(carry.texture.get_width(), carry.texture.get_height())
-			carry.scale = Vector2.ONE * (16.0 / float(maxi(big, 1)))
-		else:
-			carry.texture = v._tex("items/%s.png" % iname)
-	carry.visible = carry.texture != null
-	_blob(base + Vector2(16, TILE - 3), 0.4)
-	animated.append(["person", p, i, plan])
+	return plan
 
 # ---------------------------------------------------------------- per frame
 func animate() -> void:
@@ -651,6 +706,9 @@ func animate() -> void:
 			"person":
 				var i: int = e[2]
 				var pose: int = A[i + 15]
+				# Idle/walking agents can already have a load before their activity changes.
+				if pose in [0, 1] and v.carried.has(A[i]):
+					pose = 3
 				var ph: float = t + float(A[i] % 7) * 0.137
 				var frame := P_IDLE
 				var bob := 0
@@ -689,12 +747,7 @@ func animate() -> void:
 					10: frame = P_TALK + Rules.everyday_frame(pose, ph)
 					11: frame = P_EAT + Rules.everyday_frame(pose, ph)
 					12: frame = Rules.held_frame(Rules.P_DRINK, ph, Rules.DRINK_TIMES)
-				var pc := _pcell(e[3])
-				var r := Rect2(frame * pc, A[i + 5] * pc, pc, pc)
-				for n in ["body", "cloth", "hair", "band", "equip"]:
-					var s: Sprite2D = e[1].get_node(n)
-					if s.visible:
-						s.region_rect = r
+				set_person_frame(e[1], e[3], frame, A[i + 5])
 				var c: Sprite2D = e[1].get_node("carry")
 				if c.visible:
 					var facing: int = A[i + 5] % 4
@@ -724,6 +777,21 @@ func animate() -> void:
 				else:
 					em.visible = true
 
+
+## Each sheet may have a different pixel density, but body layers share a logical
+## cell, foot origin and frame index in both local and travelling scenes.
+func set_person_frame(person: Node2D, plan: String, frame: int, facing: int) -> void:
+	var logical_cell := _pcell(plan)
+	for layer_name in ["body", "cloth", "hair", "band", "equip"]:
+		var layer: Sprite2D = person.get_node(layer_name)
+		if layer.texture == null or not layer.visible:
+			continue
+		var source_cell := layer.texture.get_height() / 4
+		var density := float(source_cell) / logical_cell
+		layer.region_rect = Rect2(frame * source_cell, facing * source_cell, source_cell, source_cell)
+		layer.offset = _person_offset(plan) * density
+		layer.scale = Vector2.ONE / density
+		layer.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR if density > 1.0 else CanvasItem.TEXTURE_FILTER_PARENT_NODE
 
 ## Index of the frame within a work cycle at time t; times are each frame's hold in seconds.
 func _cycle(t: float, times: Array) -> int:

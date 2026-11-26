@@ -12604,6 +12604,36 @@ sha256_16 = "19084693ef17ead1"
 description = "equipment layer, fixed palette ramps, 48 frames x 4 dirs"
 
 [[asset]]
+path = "godot/assets/people/expressive_bowl_body.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "3cb9b43f9f5447d6"
+description = "average adult human, detailed bowl cut, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_bowl_clothing.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "2351903c368d315e"
+description = "average adult human, detailed bowl cut, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_bowl_hair.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "7967be238ce0516e"
+description = "average adult human, detailed bowl cut, 48 frames x 4 dirs"
+
+[[asset]]
 path = "godot/assets/people/hair_01.png"
 generator = "tools/art/people.py"
 command = "python3 tools/art/people.py"

@@ -5912,6 +5912,18 @@
     "sha256": "19084693ef17ead169268d094f1b2239d698e14c4fa8e1bebabc24573ec65b72"
   },
   {
+    "path": "godot/assets/people/expressive_bowl_body.png",
+    "sha256": "3cb9b43f9f5447d68c0fd7d81b404451b23826ea6b44d208538db60b3992fff3"
+  },
+  {
+    "path": "godot/assets/people/expressive_bowl_clothing.png",
+    "sha256": "2351903c368d315edeb6c26e38727579cf7d05094dcd4a3ebb49422bd632d1d9"
+  },
+  {
+    "path": "godot/assets/people/expressive_bowl_hair.png",
+    "sha256": "7967be238ce0516e7eb00c7a5e54214a69c45c6de5deb7f1248a756900ddf4cd"
+  },
+  {
     "path": "godot/assets/people/hair_01.png",
     "sha256": "d5b80b0ba74eb6e019d5da6ec38483fa2afdda542efde26d2b58f206d6884fdc"
   },

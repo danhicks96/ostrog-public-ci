@@ -2719,6 +2719,8 @@ def sheet_list():
 def describe(fn):
     """Provenance description for one sheet file."""
     n = '%d frames x 4 dirs' % len(FRAMES)
+    if fn.startswith('expressive_bowl_'):
+        return 'average adult human, detailed bowl cut, ' + n
     if fn.startswith('body_'):
         return 'body layer, skin swap source colours, ' + n
     if fn.startswith('hair_'):
@@ -2797,6 +2799,12 @@ def main():
     for fn, kind, b, a, arg, plan, *sp in sheet_list():
         if fn.startswith(only):
             make_sheet(kind, b, a, arg, plan, sp[0] if sp else 'human').save(os.path.join(OUT, fn))
+        keep.add(fn)
+    import expressive_biped
+    for layer in ('body', 'hair', 'clothing'):
+        fn = 'expressive_bowl_%s.png' % layer
+        if fn.startswith(only):
+            expressive_biped.make_sheet(sys.modules[__name__], layer).save(os.path.join(OUT, fn))
         keep.add(fn)
     print('wrote %d sheets (%d frames x 4 dirs each)' % (len(keep), len(FRAMES)))
     with open(os.path.join(OUT, 'swaps.json'), 'w') as f:

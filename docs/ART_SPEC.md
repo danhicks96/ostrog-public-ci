@@ -123,11 +123,13 @@ reeds stand as snowed straw in winter; flowering plants die back to their first 
 wildflowers are not drawn in winter. A missing season sheet falls back to the plain one.
 
 ## Inhabitants (godot/assets/people/*.png), composed at runtime
-Layers share one parametric skeleton and one 48×48 cell (64×64 taur; 96×96 huge/serpentine),
+Layers share one parametric skeleton and one logical 48×48 cell (64×64 taur; 96×96 huge/serpentine),
 with four directions (S, W, E, N) and 48 frames: idle(4), walk(6), swing/stoop/tap work(3 each),
 hold(1), carry(6), sleep/sit(1 each), strike(3), hit/fall/lying(1 each), talk(3), eat(3),
 sleep breathing and stirring(2), tend(3), drink(3).
 `tools/art/people.py` and `swaps.json` are authoritative for exact column order and plan cells.
+
+The average adult human with a bowl cut has a 96×96 face and hair layer per frame. The vest for this appearance uses the same density. All retain the existing foot anchor and inherited palette. Bare-hand loads use the item identified by the simulation and sit against the chest while standing or walking.
 
 - Body: slim/average/broad builds × child/adult, in skin swap colours. Species and body plans
   supply authored heads, parts and proportions; `silhouette_check.py` compares every kind at 1×.

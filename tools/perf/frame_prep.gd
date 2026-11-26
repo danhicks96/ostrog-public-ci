@@ -76,7 +76,7 @@ func _measure() -> void:
 		_t("bridge engravings", func(): sim.engravings())
 		_t("bridge designations", func(): sim.designations())
 		_t("bridge roofs+built_of", func(): sim.roofs(z); sim.built_of(z))
-		_t("bridge carried", func(): sim.carried())
+		_t("bridge carried stacks", func(): sim.carried_stacks())
 		_t("bridge scorched", func(): sim.scorched(z - 1, 10))
 		_t("view.refresh (all reads + script)", func(): view.refresh())
 		_t("view entity rebuild (static)", func(): view._rebuild_entities(true))

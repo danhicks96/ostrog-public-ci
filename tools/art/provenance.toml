@@ -10799,6 +10799,27 @@ generator = "tools/art/people.py"
 licence = "project-original"
 
 [[asset]]
+path = "godot/assets/people/expressive_bowl_body.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_bowl_clothing.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_bowl_hair.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
 path = "godot/assets/people/hair_01.png"
 kind = "people"
 source = "generated"

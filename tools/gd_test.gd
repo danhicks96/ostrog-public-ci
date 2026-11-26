@@ -100,12 +100,12 @@ func _process(_d: float) -> bool:
 		if wizard != null:
 			wizard.free()
 			wizard = null
-		_wizard_valley_tests()
+		_scene_tests()
 	return false
 
-# The wizard tests that need frames: each runs in turn, then the totals are printed.
-func _wizard_valley_tests() -> void:
-	for n in ["wizard_seed_is_random_per_new_game_and_kept_across_pages", "wizard_preview_follows_the_place"]:
+# Tests that need an active viewport run once the scene tree is ready.
+func _scene_tests() -> void:
+	for n in ["wizard_seed_is_random_per_new_game_and_kept_across_pages", "wizard_preview_follows_the_place", "batch_mode_draws_people_once_through_the_layered_renderer"]:
 		var before := failed
 		await call(n)
 		if failed == before:
@@ -903,6 +903,64 @@ func test_world_load_resets_effect_pool_and_history() -> void:
 	world.free()
 	fx.free()
 	sim.free()
+
+# Double-density art shares one foot anchor with ordinary clothing, injuries and equipment.
+func test_expressive_biped_layers_follow_the_same_cell_and_reuse() -> void:
+	var world := WorldView.new()
+	world.assets = preload("res://scripts/assets.gd").new()
+	world.species_art[0] = {"body": "human", "plan": "biped"}
+	var entities := preload("res://scripts/render/entity_layer.gd").new()
+	entities.v = world
+	var person := entities._new_person(entities)
+	var appearance := PackedInt32Array()
+	appearance.resize(world.AGENT_STRIDE)
+	appearance[6] = 1 # average adult
+	appearance[8] = 1 # bowl cut
+	appearance[10] = 7 # vest
+	appearance[17] = 1 # existing bandage on the ordinary resolution sheet
+	appearance[19] = -1
+	var plan := entities.dress_person(person, appearance, 0, 7)
+	for facing in 4:
+		entities.set_person_frame(person, plan, entities.P_CARRY, facing)
+		for layer_name in ["body", "hair", "cloth", "band"]:
+			var layer: Sprite2D = person.get_node(layer_name)
+			var cell := 48 if layer_name == "band" else 96
+			check(layer.visible and layer.region_rect == Rect2(entities.P_CARRY * cell, facing * cell, cell, cell), "correct source cell: " + layer_name)
+			check(layer.offset * layer.scale == Vector2(-8, -48), "same foot anchor: " + layer_name)
+	appearance[8] = 0 # same pooled node, next person wears the crop
+	entities.dress_person(person, appearance, 0, -1)
+	entities.set_person_frame(person, plan, entities.P_IDLE, 0)
+	var body: Sprite2D = person.get_node("body")
+	check(body.scale == Vector2.ONE and body.region_rect.size == Vector2(48,48), "ordinary appearance restored on reuse")
+	entities.free()
+	world.free()
+
+func test_building_stack_tracks_real_count_and_resets_when_pooled() -> void:
+	var entities := preload("res://scripts/render/entity_layer.gd").new()
+	var carry := Sprite2D.new()
+	carry.texture = ImageTexture.create_from_image(Image.create_empty(32, 32, false, Image.FORMAT_RGBA8))
+	carry.scale = Vector2(0.5, 0.5)
+	for count in [1, 3, 2, 20, 1, 0]:
+		entities._set_carry_stack(carry, "log", count, 0.5)
+		var extras := 0
+		for piece in carry.get_children():
+			if piece.visible:
+				extras += 1
+				check(piece.texture == carry.texture and piece.position != Vector2.ZERO, "same material, distinct silhouette")
+		check(extras == clampi(count - 1, 0, 2), "carried stack follows current inventory on reuse")
+	entities._set_carry_stack(carry, "plank", 2, 0.5)
+	var second: Sprite2D = carry.get_child(0)
+	check(carry.region_enabled and carry.region_rect == Rect2(0, 6, 32, 10), "one board face per held plank")
+	check(second.visible and second.region_rect == carry.region_rect and second.self_modulate == carry.self_modulate, "both boards keep the same wood")
+	check(second.position * carry.scale == Vector2(4, -4), "second board exposes its end")
+	entities._set_carry_stack(carry, "log", 2, 0.5)
+	check(not carry.region_enabled and not second.region_enabled and carry.offset == Vector2.ZERO and carry.scale == Vector2(0.5, 0.5), "next load uses its whole icon")
+	check(carry.self_modulate == Color.WHITE and second.self_modulate == Color.WHITE, "next load keeps its usual colours")
+	entities._set_carry_stack(carry, "root", 3, 0.5)
+	for piece in carry.get_children():
+		check(not piece.visible, "a subsequent root load uses its own single icon")
+	carry.free()
+	entities.free()
 
 # #181: the HUD keeps clear of the inspect panel.
 func test_hud_keeps_clear_of_the_inspector() -> void:
@@ -1996,6 +2054,33 @@ class _RendererView extends Node:
 	func _tex(_p: String) -> Texture2D:
 		return PlaceholderTexture2D.new()
 
+func batch_mode_draws_people_once_through_the_layered_renderer() -> void:
+	var sim := SimHost.new()
+	sim.stage_demo(1)
+	var key := "ostrog/render/world_renderer"
+	var previous = ProjectSettings.get_setting(key, false)
+	ProjectSettings.set_setting(key, true)
+	var world := WorldView.new()
+	root.add_child(world)
+	world.setup(sim, preload("res://scripts/assets.gd").new())
+	ProjectSettings.set_setting(key, previous)
+	world.view_z = sim.founding_site().z
+	world.refresh()
+	var people := {}
+	for entry in world.entities.animated:
+		check(entry[0] == "person", "the animal batch still owns animals")
+		var id: int = world.agents[entry[2]]
+		check(not people.has(id), "one layered sprite per person")
+		people[id] = true
+	for i in range(0, world.agents.size(), world.AGENT_STRIDE):
+		if world.agents[i + 3] == world.view_z and world.agents[i + 4] == 0:
+			check(people.has(world.agents[i]), "batch mode draws each person on this level")
+	check(not people.is_empty(), "fixture contains people in view")
+	for batch in world.rust_renderer.get_children():
+		check(not batch.texture.resource_path.begins_with("res://assets/people/"), "no duplicate body batch")
+	world.free()
+	sim.free()
+
 # WP-06 6.4 (FIXLOG 2026-11-13): the Rust renderer rebuilds only what changed. It runs every frame
 # from world_view._process and again in refresh(), and rebuilding everything each time (the whole
 # level's ground included) cost about 15 ms of every frame on the main thread at 500 people.
@@ -2007,22 +2092,22 @@ func test_rust_renderer_rebuilds_only_what_changed() -> void:
 	v.view_z = sim.founding_site().z
 	var rr = preload("res://scripts/render/rust_world_renderer.gd").new()
 	rr.setup(v)
-	check(rr.builds["people"] == 1 and rr.builds["static"] == 1 and rr.builds["ground"] == 1, "setup builds each batch once")
+	check(rr.builds["animals"] == 1 and rr.builds["static"] == 1 and rr.builds["ground"] == 1, "setup builds each batch once")
 	rr.rebuild(1.0 / 60.0)
-	check(rr.builds["people"] == 1 and rr.builds["static"] == 1 and rr.builds["ground"] == 1, "a frame with nothing changed rebuilds nothing")
+	check(rr.builds["animals"] == 1 and rr.builds["static"] == 1 and rr.builds["ground"] == 1, "a frame with nothing changed rebuilds nothing")
 	var t0: int = sim.tick()
 	sim.step(1)
 	sim.sync()
 	check(sim.tick() > t0, "fixture: the tick advanced")
 	rr.rebuild(1.0 / 60.0)
-	check(rr.builds["people"] == 2, "a new tick rebuilds people and animals")
+	check(rr.builds["animals"] == 2, "a new tick rebuilds animals")
 	check(rr.builds["static"] == 1, "static things wait for their half second")
 	rr.rebuild(0.6)
 	check(rr.builds["static"] == 2, "after half a second static things rebuild")
 	var ground_before: int = rr.builds["ground"]
 	v.view_z += 1
 	rr.rebuild(0.0)
-	check(rr.builds["people"] == 3 and rr.builds["static"] == 3 and rr.builds["ground"] == ground_before + 1, "a new level rebuilds all three")
+	check(rr.builds["animals"] == 3 and rr.builds["static"] == 3 and rr.builds["ground"] == ground_before + 1, "a new level rebuilds all three")
 	rr.free()
 	v.free()
 	sim.free()
