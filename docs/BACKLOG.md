@@ -417,6 +417,14 @@ A suspicion held by three neighbours reads like one held by one. When three diff
 
 **Acceptance:** Three neighbours who suspect a marked sleeper on different nights give exactly one `WidelySuspected` with a count of three, on the night of the third, and none after a fourth. The enum-order check passes and a FIXLOG entry is added.
 
+### OST-551 · Pin that mood's needs term reads thirst and warmth
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+Mood's needs term already averages all six needs and takes the lowest (it landed with the thirst and warmth fix), but no test states the issue's own acceptance. Add a guard that one empty thirst, or one empty warmth, with every other need full, puts the needs term at or below -0.3 with no memories or thoughts.
+
+**Acceptance:** The guard passes on the current code and fails if the term goes back to four needs. A FIXLOG entry records that the behaviour was already in place.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
