@@ -795,6 +795,48 @@ pub fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
             because: because.to_string(),
         },
     );
+    whisper(w, i, because);
+}
+
+/// How many different neighbours must suspect one person before the valley is told.
+const WHISPER_AT: usize = 3;
+
+/// When `WHISPER_AT` different members of their community hold a fresh suspicion of agent `i`,
+/// say so once per twenty days (OST-174).
+fn whisper(w: &mut World, i: usize, because: &str) {
+    let tick = w.meta.tick;
+    let (of, me, cid) = (w.agents[i].id, w.agents[i].pos, w.agents[i].community);
+    if w.agents[i]
+        .whispered
+        .is_some_and(|t| tick.saturating_sub(t) < SUSPICION_FRESH)
+    {
+        return;
+    }
+    let count = w
+        .agents
+        .iter()
+        .filter(|a| {
+            a.alive
+                && a.community == cid
+                && a.suspicions
+                    .iter()
+                    .any(|s| s.0 == of && tick.saturating_sub(s.2) < SUSPICION_FRESH)
+        })
+        .count();
+    if count < WHISPER_AT {
+        return;
+    }
+    w.agents[i].whispered = Some(tick);
+    w.events.push(
+        tick,
+        Some(me),
+        Severity::Notable,
+        EventKind::WidelySuspected {
+            of,
+            because: because.to_string(),
+            count: count as u32,
+        },
+    );
 }
 
 /// A healer who knows the unbinding lifts the Beast-hunger or the Thirst from one of their
