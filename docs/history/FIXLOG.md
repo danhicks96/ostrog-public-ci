@@ -20,6 +20,19 @@
   warning lowering an existing 0.9-confidence lesson to 0.42; the existing lesson now stays intact.
 - Digests change when lessons spread. Saved telling variants are appended; existing
   technique and plant tellings retain their positions and rules.
+## 2026-11-25: the alive report counts the feed's repeats (OST-864)
+
+- Symptom: nothing measured how many of a day's feed lines are the same news again, so the folding
+  rule (`view::fold`) could not be judged by a number before and after.
+- Fix: `AliveTally::observe_feed` keeps each game-day's rows at Notable or above that the viewer may
+  be told of (`view::known::told`); when the day changes it settles the count of lines and the count
+  after `view::fold::fold`. The report gains `feed_lines_day` and `feed_folded_day` (means over
+  settled days; the unfinished last day is left out), and `soak --alive` feeds it. Reads only.
+- Guard: `tests/alive_report.rs::the_feed_repeat_keys_count_lines_before_and_after_folding` (five
+  suspicions of one person fold to one line, with a death and a Minor row left out: 6 lines, 2
+  folded), and the empty-tally shape test lists the new keys.
+- Not covered: the baseline over seeds 1-8, three deities and 300 days. It was not run here, so the
+  numbers the entry asks for are still to be recorded.
 
 ## 2026-11-24: the soak can run the camera director (OST-868)
 
