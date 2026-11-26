@@ -1,5 +1,17 @@
 # Fix log
 
+## 2026-11-24: a table of what the client draws for each activity (OST-867)
+
+- Symptom: the glance count could not say which activities the client draws as plain standing,
+  so a "working" person drawn standing still would have flattered it.
+- Cause: the pose choice lives in the client and the bridge, and nothing in the simulation recorded it.
+- Fix: `view::alive::READABLE` lists, per activity, the frame drawn still and moving and whether it
+  is plain standing; `work_drawn` gives the frame and emote for each work kind (exhaustive, so a
+  new kind needs an entry). Read from `entity_layer.gd` and `person_pose`. No simulation, save or
+  digest behaviour changed; nothing calls the table yet.
+- Guard: `tests/alive_report.rs::the_readable_table_names_every_activity_and_marks_plain_standing`
+  (fails to compile without the table).
+- Not covered: the long-run glance share that will use the table (OST-868 and a later slice).
 ## 2026-11-25: the alive report counts the feed's repeats (OST-864)
 
 - Symptom: nothing measured how many of a day's feed lines are the same news again, so the folding
