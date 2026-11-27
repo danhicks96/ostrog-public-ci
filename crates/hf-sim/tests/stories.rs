@@ -210,8 +210,15 @@ fn hearth_with(
     n: usize,
     lacking: usize,
 ) -> (World, Vec<hf_sim::ids::AgentId>, Option<u32>) {
+    let (mut w, ids, s) = hearth_ready(seed, n, lacking);
+    let told = hearth_step(&mut w, s);
+    (w, ids, told)
+}
+
+/// The circle seated and the story dealt out, before the evening: `n` sitters, the last
+/// `lacking` without the story.
+fn hearth_ready(seed: u64, n: usize, lacking: usize) -> (World, Vec<hf_sim::ids::AgentId>, u32) {
     use hf_sim::mind::activity::Activity;
-    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
     let mut w = old_world(seed);
     let c = w.realm.stories.last().map(|s| s.culture).expect("stories");
     let cid = w
@@ -249,18 +256,23 @@ fn hearth_with(
             a.stories.push(s);
         }
     }
+    (w, ids, s)
+}
+
+/// One evening at the hearth: the story told, if a realm story was.
+fn hearth_step(w: &mut World, s: u32) -> Option<u32> {
+    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
     let day = w.meta.tick / TICKS_PER_DAY + 1;
     w.meta.tick = day * TICKS_PER_DAY + 19 * TICKS_PER_HOUR + TICKS_PER_HOUR / 2;
-    hf_sim::systems::culture::step(&mut w);
-    let told = w.events.pending.iter().find_map(|e| match &e.kind {
+    hf_sim::systems::culture::step(w);
+    w.events.pending.iter().find_map(|e| match &e.kind {
         hf_sim::events::EventKind::HearthTale { what, .. }
             if what.starts_with("how their people tell it: ") =>
         {
             Some(s)
         }
         _ => None,
-    });
-    (w, ids, told)
+    })
 }
 
 #[test]
@@ -274,5 +286,46 @@ fn a_story_most_have_heard_is_not_told_again() {
     for id in &ids {
         let a = w.agents.iter().find(|a| a.id == *id).unwrap();
         assert!(a.stories.contains(&s), "everyone now holds it");
+    }
+}
+
+#[test]
+fn a_small_child_at_the_hearth_listens_and_does_not_tell() {
+    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_YEAR};
+    // Three sitters: the first holds the story, the other two lack it.
+    let tellers_of = |w: &World, who: hf_sim::ids::AgentId| {
+        w.events
+            .pending
+            .iter()
+            .filter(|e| matches!(&e.kind, hf_sim::events::EventKind::HearthTale { teller, .. } if *teller == who))
+            .count()
+    };
+    for (years, tells) in [(3u64, false), (10, true)] {
+        let (mut w, ids, s) = hearth_ready(41, 3, 2);
+        let now = w.meta.tick + 5 * TICKS_PER_DAY;
+        w.agents.iter_mut().for_each(|a| {
+            if a.id == ids[0] {
+                a.born = (now - years * TICKS_PER_YEAR) as i64;
+            } else if ids.contains(&a.id) {
+                a.born = (now as i64) - 30 * TICKS_PER_YEAR as i64;
+            }
+        });
+        let mut told = 0;
+        for _ in 0..5 {
+            if hearth_step(&mut w, s).is_some() {
+                told += 1;
+            }
+        }
+        let child = tellers_of(&w, ids[0]);
+        if tells {
+            assert!(child > 0, "a ten-year-old tells it ({told} tellings)");
+            for id in &ids[1..] {
+                let a = w.agents.iter().find(|a| a.id == *id).unwrap();
+                assert!(a.stories.contains(&s), "the adults now hold it");
+            }
+        } else {
+            assert_eq!(child, 0, "a three-year-old tells nothing");
+            assert_eq!(told, 0, "so the story is not told");
+        }
     }
 }

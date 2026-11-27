@@ -102,7 +102,7 @@ fn the_keepers_tool_becomes_a_relic_kept_at_the_shrine_and_its_theft_is_felt() {
         Some(true)
     );
 
-    // One of them picks it up and leaves the valley with it.
+    // One of them picks it up and leaves the colony with it.
     w.last_events.clear();
     w.events.drain();
     w.meta.tick += 1;
@@ -120,7 +120,7 @@ fn the_keepers_tool_becomes_a_relic_kept_at_the_shrine_and_its_theft_is_felt() {
     });
     assert_eq!(
         lost,
-        Some(("it was carried out of the valley".to_string(), Some(ids[1])))
+        Some(("it was carried out of the colony".to_string(), Some(ids[1])))
     );
     assert!(!hf_sim::relics::is_relic(&w, tool));
     let k = idx(&w, ids[2]);

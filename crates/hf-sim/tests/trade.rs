@@ -365,7 +365,7 @@ fn a_trade_shows_on_the_map_and_the_settlements_page() {
     let page = hf_sim::view::legends::page(&w, &c, &format!("site:{rs}"));
     assert!(page.contains("They hold for trade:"), "{page}");
     assert!(
-        page.contains(&format!("A caravan from the valley traded {took} logs for")),
+        page.contains(&format!("A caravan from the colony traded {took} logs for")),
         "{page}"
     );
 }

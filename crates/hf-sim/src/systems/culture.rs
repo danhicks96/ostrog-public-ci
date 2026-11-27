@@ -157,7 +157,10 @@ fn hearth_evening(w: &mut World) {
         // the same battle again. A teller offers the story the most sitters lack.
         let mut story: Option<(usize, u32)> = None;
         for &t in &sitting {
-            if told.contains(&w.agents[t].id) {
+            // A small child listens and does not tell (OST-511).
+            if told.contains(&w.agents[t].id)
+                || !w.agents[t].old_enough_for(crate::agents::Childhood::Older, tick)
+            {
                 continue;
             }
             let mut best: Option<(usize, u32)> = None;
@@ -218,16 +221,28 @@ fn hearth_evening(w: &mut World) {
             if told.contains(&w.agents[t].id) {
                 continue;
             }
-            let fresh = w.agents[t]
-                .tales
-                .iter()
-                .find(|x| {
-                    sitting
-                        .iter()
-                        .any(|&l| l != t && !crate::lore::has_tale(w, l, x))
-                })
-                .cloned();
-            let lived = lived_belief(&w.agents[t]);
+            // A child tells a tale only from the older stage, and what they came to hold only
+            // once of age (OST-511).
+            let may_tale = w.agents[t].old_enough_for(crate::agents::Childhood::Older, tick);
+            let grown = w.agents[t].of_age(tick);
+            let fresh = if may_tale {
+                w.agents[t]
+                    .tales
+                    .iter()
+                    .find(|x| {
+                        sitting
+                            .iter()
+                            .any(|&l| l != t && !crate::lore::has_tale(w, l, x))
+                    })
+                    .cloned()
+            } else {
+                None
+            };
+            let lived = if grown {
+                lived_belief(&w.agents[t])
+            } else {
+                None
+            };
             // A lived belief only counts while someone here has not heard it from this
             // teller this year (OST-507).
             let key = lived.as_ref().map(|b| b.topic);
@@ -235,7 +250,7 @@ fn hearth_evening(w: &mut World) {
             let wanted = sitting
                 .iter()
                 .any(|&l| l != t && !heard_lately(&w.agents[l], teller_id, key, tick));
-            let own = if !wanted {
+            let own = if !wanted || !grown {
                 0.0
             } else if lived.is_some() {
                 1.0
