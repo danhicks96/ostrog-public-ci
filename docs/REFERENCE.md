@@ -1397,7 +1397,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3260 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3448,8 +3448,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moods.rs:285 | made in a fey mood, {} |
 | systems/moods.rs:287 | a figure of {}, made in a fey mood, {} |
 | systems/movement.rs:93 | fell through the floor |
-| systems/movement.rs:170 | slipped going down and fell |
-| systems/movement.rs:218 | fell |
+| systems/movement.rs:144 | slipped going down and fell |
+| systems/movement.rs:214 | slipped going down and fell |
+| systems/movement.rs:247 | fell |
 | systems/moving.rs:31 | old age |
 | systems/moving.rs:45 | strangers from {} took from the store |
 | systems/moving.rs:50 | the rock came down |
@@ -3651,46 +3652,48 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:418 | from a slipped axe |
 | systems/work.rs:423 | from falling stone |
 | systems/work.rs:428 | at the building site |
-| systems/work.rs:484 | building |
-| systems/work.rs:484 | digging |
-| systems/work.rs:560 | the old valley |
-| systems/work.rs:586 | studying the {what} left at {site} |
-| systems/work.rs:1085 | chop |
-| systems/work.rs:1167 | mine |
-| systems/work.rs:1169 | iron ore |
-| systems/work.rs:1178 | mine |
-| systems/work.rs:1180 | copper ore |
-| systems/work.rs:1183 | mine |
-| systems/work.rs:1193 | mine |
-| systems/work.rs:1195 | coal |
-| systems/work.rs:1215 | mine |
-| systems/work.rs:1223 | mine |
-| systems/work.rs:1225 | rough gems |
-| systems/work.rs:1236 | mine |
-| systems/work.rs:1265 | {f} here |
-| systems/work.rs:1284 | {}, a cavern grown with pale fungus{} |
-| systems/work.rs:1286 |  around a still pool |
-| systems/work.rs:1289 | a cave |
-| systems/work.rs:1364 | dig |
-| systems/work.rs:1380 | a way down |
-| systems/work.rs:1416 | dig |
-| systems/work.rs:1473 | harvest |
-| systems/work.rs:1575 | beating at a fire |
-| systems/work.rs:1587 | poultice |
-| systems/work.rs:1691 | {n} {} |
-| systems/work.rs:1693 |  and  |
-| systems/work.rs:1763 | craft |
-| systems/work.rs:1772 | craft |
-| systems/work.rs:1799 | set with a {gem_name} |
-| systems/work.rs:1853 | cook |
-| systems/work.rs:1866 | cook |
-| systems/work.rs:1929 | from a boar's tusk |
-| systems/work.rs:1931 | from a wolf's bite |
-| systems/work.rs:1947 | hunted |
-| systems/work.rs:1971 | hunt |
-| systems/work.rs:1979 | hunt |
-| systems/work.rs:2112 | set about putting a lamp where they work below |
-| systems/work.rs:2113 | because it is too dark down there to see the rock |
+| systems/work.rs:490 | building a wall |
+| systems/work.rs:491 | waiting for a safe step away from the wall |
+| systems/work.rs:502 | building |
+| systems/work.rs:502 | digging |
+| systems/work.rs:578 | the old valley |
+| systems/work.rs:604 | studying the {what} left at {site} |
+| systems/work.rs:1103 | chop |
+| systems/work.rs:1185 | mine |
+| systems/work.rs:1187 | iron ore |
+| systems/work.rs:1196 | mine |
+| systems/work.rs:1198 | copper ore |
+| systems/work.rs:1201 | mine |
+| systems/work.rs:1211 | mine |
+| systems/work.rs:1213 | coal |
+| systems/work.rs:1233 | mine |
+| systems/work.rs:1241 | mine |
+| systems/work.rs:1243 | rough gems |
+| systems/work.rs:1254 | mine |
+| systems/work.rs:1283 | {f} here |
+| systems/work.rs:1302 | {}, a cavern grown with pale fungus{} |
+| systems/work.rs:1304 |  around a still pool |
+| systems/work.rs:1307 | a cave |
+| systems/work.rs:1382 | dig |
+| systems/work.rs:1398 | a way down |
+| systems/work.rs:1434 | dig |
+| systems/work.rs:1491 | harvest |
+| systems/work.rs:1593 | beating at a fire |
+| systems/work.rs:1605 | poultice |
+| systems/work.rs:1709 | {n} {} |
+| systems/work.rs:1711 |  and  |
+| systems/work.rs:1781 | craft |
+| systems/work.rs:1790 | craft |
+| systems/work.rs:1817 | set with a {gem_name} |
+| systems/work.rs:1871 | cook |
+| systems/work.rs:1884 | cook |
+| systems/work.rs:1947 | from a boar's tusk |
+| systems/work.rs:1949 | from a wolf's bite |
+| systems/work.rs:1965 | hunted |
+| systems/work.rs:1989 | hunt |
+| systems/work.rs:1997 | hunt |
+| systems/work.rs:2130 | set about putting a lamp where they work below |
+| systems/work.rs:2131 | because it is too dark down there to see the rock |
 | view/alive.rs:46 | died |
 | view/alive.rs:46 | captured |
 | view/alive.rs:46 | broke |

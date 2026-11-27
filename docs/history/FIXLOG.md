@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 — Builders could seal themselves on a ledge
+
+Two residents who closed adjoining walls lost their only route home. One could have stepped onto a still-open planned wall site. The other was standing on a stair with a usable exit below. Before completing a solid wall, the builder checks each occupant’s legal steps against the finished wall and uses the ordinary stride time. Work waits with its materials if anyone lacks a safe exit. The rescue tests cover a planned crossing, a stair, a blocked diagonal and a second occupant.
+
 ## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
 
 - Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten

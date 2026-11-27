@@ -288,3 +288,104 @@ fn a_builder_walling_the_way_off_a_ledge_steps_off_on_the_home_side() {
         "stepped off onto the plateau, the home side"
     );
 }
+
+#[test]
+fn finishing_a_wall_uses_a_real_stride_or_leaves_everyone_and_materials_in_place() {
+    use hf_sim::mind::Activity;
+    use hf_sim::systems::{settlement, work};
+    use hf_sim::work::{DesignationKind, Plan, Step};
+    use hf_sim::world::{Material, Shape};
+    for case in [
+        "planned crossing",
+        "stairs",
+        "shut corner",
+        "second occupant",
+    ] {
+        let mut w = World::generate(4472, GenParams::small());
+        w.flatten(2, 2, 60, 60, 1);
+        let ids = w.found_party(2);
+        let i = w.agents.iter().position(|a| a.id == ids[0]).unwrap();
+        let j = w.agents.iter().position(|a| a.id == ids[1]).unwrap();
+        let p = TilePos::new(30, 30, 4);
+        let exit = if case == "stairs" {
+            p.offset(0, 0, -1)
+        } else {
+            p.offset(1, 0, 0)
+        };
+        let west = p.offset(-1, 0, 0);
+        let floor = |w: &mut World, at: TilePos| {
+            w.grid
+                .set(at.offset(0, 0, -1), Tile::solid(Material::GRANITE));
+        };
+        floor(&mut w, p);
+        floor(&mut w, west);
+        floor(&mut w, exit);
+        if case == "stairs" {
+            let mut stair = Tile::solid(Material::WOOD);
+            stair.shape = Shape::StairsDown;
+            w.grid.set(p, stair);
+            stair.shape = Shape::StairsUp;
+            w.grid.set(exit, stair);
+        }
+        let cid = w.agents[i].community.unwrap();
+        w.communities.iter_mut().find(|c| c.id == cid).unwrap().home = exit;
+        if case == "shut corner" {
+            // An isolated diagonal perch cannot be stepped onto through two missing flanks.
+            let diagonal = p.offset(1, 1, 0);
+            floor(&mut w, diagonal);
+            w.grid.set(exit.offset(0, 0, -1), Tile::AIR);
+            w.communities.iter_mut().find(|c| c.id == cid).unwrap().home = diagonal;
+        }
+        if case == "second occupant" {
+            let other = w.found_community(TilePos::new(10, 10, 2));
+            w.join_community(ids[1], other);
+            w.agents[j].pos = p;
+            w.agents[j].from = p;
+        }
+        w.agents[i].pos = p;
+        w.agents[i].from = p;
+        let mut order = settlement::make(&mut w, DesignationKind::BuildWall(Material::WOOD), p, 5);
+        for q in &mut order.requirements {
+            q.delivered = q.needed;
+        }
+        assert!(!order.requirements.is_empty());
+        order.work_left = 1;
+        let id = order.id;
+        let materials = order.requirements.clone();
+        w.designations.push(order);
+        let later = settlement::make(&mut w, DesignationKind::BuildWall(Material::WOOD), exit, 5);
+        w.designations.push(later);
+        w.agents[i].activity = Activity::Working {
+            plan: Plan {
+                designation: id,
+                steps: vec![Step::Work {
+                    designation: id,
+                    station: None,
+                }],
+                cursor: 0,
+                label: "building a wall".into(),
+            },
+        };
+        work::run(&mut w, i);
+        let a = &w.agents[i];
+        let order = w.designations.iter().find(|d| d.id == id).unwrap();
+        match case {
+            "planned crossing" | "stairs" => {
+                assert!(order.done && w.grid.get(p).is_solid(), "{case}");
+                assert_eq!((a.from, a.pos), (p, exit), "{case}");
+                assert_eq!(a.move_ticks, 1);
+                assert!(a.move_total > 1);
+                assert!(hf_sim::nav::Nav::build(&w.grid).reach(a.pos, exit));
+            }
+            _ => {
+                assert!(!order.done && w.grid.walkable(p), "{case}");
+                assert_eq!(a.pos, p, "{case}");
+                assert_eq!(order.requirements, materials);
+                assert!(a.work_cooldowns.contains_key(&id.0));
+                if case == "second occupant" {
+                    assert_eq!(w.agents[j].pos, p);
+                }
+            }
+        }
+    }
+}

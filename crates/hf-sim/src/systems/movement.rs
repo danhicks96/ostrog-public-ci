@@ -140,49 +140,78 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
             continue;
         }
         a.path.pop();
-        let diagonal = next.x != a.pos.x && next.y != a.pos.y;
-        let mut cost = if next.z != a.pos.z {
-            crate::time::LEVEL_CHANGE_TICKS
-        } else {
-            step_cost(grid, next, diagonal)
-        };
-        if a.injured_until > tick_now {
-            cost *= 2;
+        if begin_stride(a, grid, next, tick_now, seed) {
+            falls.push((ai, 1, false, "slipped going down and fell"));
         }
-        // #324: going down a level, now and then someone slips; more often when hurt.
-        if next.z < a.pos.z && a.species == crate::agents::Species::Person {
-            use rand::Rng;
-            let mut r = crate::rng::stream(
-                seed,
-                &[
-                    crate::rng::purpose::AGENT_WORK,
-                    a.id.0 as u64,
-                    tick_now,
-                    0xFA11,
-                ],
-            );
-            let p = if a.injured_until > tick_now {
-                1e-4
-            } else {
-                3e-5
-            };
-            if r.gen_bool(p) {
-                falls.push((ai, 1, false, "slipped going down and fell"));
-            }
-        }
-        a.facing = Agent::facing_toward(a.pos, next);
-        a.from = a.pos;
-        a.pos = next;
         if a.species == crate::agents::Species::Person
             && next.z == grid.ground_z(next.x, next.y) + 1
         {
             trodden.push((next.x, next.y));
         }
-        a.move_total = cost.max(1);
-        a.move_ticks = 1;
     }
     for (i, levels, water, cause) in falls {
         fall(w, i, levels, water, cause);
+    }
+}
+
+/// Start a legal stride with the same travel time and injury risk for a path or a builder stepping aside.
+fn begin_stride(
+    a: &mut Agent,
+    grid: &crate::world::WorldGrid,
+    next: crate::ids::TilePos,
+    tick_now: u64,
+    seed: u64,
+) -> bool {
+    let diagonal = next.x != a.pos.x && next.y != a.pos.y;
+    let mut cost = if next.z != a.pos.z {
+        crate::time::LEVEL_CHANGE_TICKS
+    } else {
+        step_cost(grid, next, diagonal)
+    };
+    if a.injured_until > tick_now {
+        cost *= 2;
+    }
+    // #324: going down a level, now and then someone slips; more often when hurt.
+    let mut slipped = false;
+    if next.z < a.pos.z && a.species == crate::agents::Species::Person {
+        use rand::Rng;
+        let mut r = crate::rng::stream(
+            seed,
+            &[
+                crate::rng::purpose::AGENT_WORK,
+                a.id.0 as u64,
+                tick_now,
+                0xFA11,
+            ],
+        );
+        let p = if a.injured_until > tick_now {
+            1e-4
+        } else {
+            3e-5
+        };
+        if r.gen_bool(p) {
+            slipped = true;
+        }
+    }
+    a.facing = Agent::facing_toward(a.pos, next);
+    a.from = a.pos;
+    a.pos = next;
+    a.move_total = cost.max(1);
+    a.move_ticks = 1;
+    slipped
+}
+
+pub(super) fn step_aside(w: &mut World, i: usize, next: crate::ids::TilePos) {
+    let a = &mut w.agents[i];
+    a.path.clear();
+    let slipped = begin_stride(a, &w.grid, next, w.meta.tick, w.meta.seed);
+    if a.species == crate::agents::Species::Person && next.z == w.grid.ground_z(next.x, next.y) + 1
+    {
+        let wear = w.wear.entry((next.x, next.y)).or_default();
+        *wear = wear.saturating_add(1);
+    }
+    if slipped {
+        fall(w, i, 1, false, "slipped going down and fell");
     }
 }
 

@@ -476,6 +476,24 @@ pub fn run(w: &mut World, i: usize) -> bool {
                 w.agents[i].needs.hunger = (w.agents[i].needs.hunger - 0.004).max(0.0);
             }
             if done_now {
+                if let DesignationKind::BuildWall(material) = w.designations[dix].kind {
+                    if !clear_wall_site(w, dpos, material) {
+                        w.agents[i]
+                            .work_cooldowns
+                            .insert(designation.0, tick + crate::time::TICKS_PER_HOUR);
+                        w.events.push(
+                            tick,
+                            Some(dpos),
+                            Severity::Trace,
+                            EventKind::PlanFailed {
+                                agent: who,
+                                goal: "building a wall".into(),
+                                reason: "waiting for a safe step away from the wall".into(),
+                            },
+                        );
+                        return finish(w, i);
+                    }
+                }
                 apply_effect(w, i, designation, station);
                 let label = match &w.agents[i].activity {
                     Activity::Working { plan } => plan.label.clone(),
@@ -2143,6 +2161,50 @@ fn discover(
     }
 }
 
+/// Check everyone's footing before moving anyone or spending the wall's materials.
+fn clear_wall_site(w: &mut World, pos: crate::ids::TilePos, material: Material) -> bool {
+    let occupants: Vec<_> = w
+        .agents
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.alive && a.pos == pos)
+        .map(|(i, _)| i)
+        .collect();
+    if occupants.is_empty() {
+        return true;
+    }
+    let mut steps = Vec::new();
+    crate::nav::neighbours(&w.grid, pos, &mut steps);
+    let mut after = w.grid.clone();
+    after.set(pos, crate::world::Tile::solid(material));
+    steps.retain(|s| after.walkable(s.to) && (!w.grid.over_head(s.to) || w.grid.over_head(pos)));
+    steps.sort_by_key(|s| {
+        w.designations
+            .iter()
+            .any(|d| !d.done && d.pos == s.to && matches!(d.kind, DesignationKind::BuildWall(_)))
+    });
+    let mut moves = Vec::new();
+    for i in occupants {
+        let a = &w.agents[i];
+        if a.is_moving() {
+            return false;
+        }
+        let home = a
+            .community
+            .and_then(|c| w.communities.iter().find(|x| x.id == c))
+            .map(|c| c.home)
+            .unwrap_or(w.meta.founding_site);
+        let Some(step) = steps.iter().find(|s| joined_home(&after, s.to, pos, home)) else {
+            return false;
+        };
+        moves.push((i, step.to));
+    }
+    for (i, next) in moves {
+        super::movement::step_aside(w, i, next);
+    }
+    true
+}
+
 /// Move any agent standing on `pos` to the nearest walkable neighbour (not into walls): one
 /// from which they can still walk home with `pos` closed, where there is one (#447, FIXLOG
 /// 2026-10-28: a builder finishing a wall from its own tile was put off on the far side, on a
@@ -2191,7 +2253,7 @@ pub fn displace_from(w: &mut World, pos: crate::ids::TilePos) {
         let q = open
             .iter()
             .copied()
-            .find(|q| joined_home(w, *q, pos, home))
+            .find(|q| joined_home(&w.grid, *q, pos, home))
             .unwrap_or(first);
         let a = &mut w.agents[i];
         a.pos = q;
@@ -2242,7 +2304,7 @@ const JOINED_SEARCH: usize = 3000;
 /// ground as it will be, which finds home, or walks out over more than `JOINED_SEARCH` tiles
 /// (open country, not a ledge or a pocket).
 fn joined_home(
-    w: &World,
+    grid: &crate::world::WorldGrid,
     from: crate::ids::TilePos,
     closed: crate::ids::TilePos,
     home: crate::ids::TilePos,
@@ -2256,7 +2318,7 @@ fn joined_home(
         if p == home || seen.len() > JOINED_SEARCH {
             return true;
         }
-        crate::nav::step::neighbours(&w.grid, p, &mut nb);
+        crate::nav::step::neighbours(grid, p, &mut nb);
         for s in &nb {
             if s.to != closed && seen.insert(s.to) {
                 queue.push_back(s.to);
