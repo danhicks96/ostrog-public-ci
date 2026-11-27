@@ -3408,16 +3408,16 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:714 | the water was rising |
 | systems/hazards.rs:716 | responded to dangerous water by moving to safety |
 | systems/hazards.rs:717 | they noticed dangerous water |
-| systems/hazards.rs:856 | drowned in the flood |
-| systems/hazards.rs:858 | drowned in the flooded workings |
-| systems/hazards.rs:1140 | from the cold |
-| systems/hazards.rs:1148 | froze |
-| systems/hazards.rs:1167 | below ground |
-| systems/hazards.rs:1172 | hearth |
-| systems/hazards.rs:1174 | roofed, no hearth |
-| systems/hazards.rs:1178 | roofed, open side |
-| systems/hazards.rs:1184 | tent/nest |
-| systems/hazards.rs:1186 | open |
+| systems/hazards.rs:862 | drowned in the flood |
+| systems/hazards.rs:864 | drowned in the flooded workings |
+| systems/hazards.rs:1150 | from the cold |
+| systems/hazards.rs:1158 | froze |
+| systems/hazards.rs:1177 | below ground |
+| systems/hazards.rs:1182 | hearth |
+| systems/hazards.rs:1184 | roofed, no hearth |
+| systems/hazards.rs:1188 | roofed, open side |
+| systems/hazards.rs:1194 | tent/nest |
+| systems/hazards.rs:1196 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
@@ -3448,9 +3448,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moods.rs:95 | remembering {name}, who died of {cause} |
 | systems/moods.rs:285 | made in a fey mood, {} |
 | systems/moods.rs:287 | a figure of {}, made in a fey mood, {} |
-| systems/movement.rs:128 | fell through the floor |
-| systems/movement.rs:215 | slipped going down and fell |
-| systems/movement.rs:309 | fell |
+| systems/movement.rs:133 | fell through the floor |
+| systems/movement.rs:220 | slipped going down and fell |
+| systems/movement.rs:314 | fell |
 | systems/moving.rs:31 | old age |
 | systems/moving.rs:45 | strangers from {} took from the store |
 | systems/moving.rs:50 | the rock came down |
