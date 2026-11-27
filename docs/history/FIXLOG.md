@@ -1,5 +1,21 @@
 # Fix log
 
+## 2026-11-27: a night cut short left no thought at all (OST-242)
+
+- Symptom: a sleep under six hours gave neither SleptInBed nor SleptRough, and one sleep in five
+  (10% to 20% by seed) is that short, so a night broken by cold, hunger or a raid was not felt the
+  next day.
+- Fix: a new `SleptBadly` thought ("a broken night", -0.15 for one day), appended to the thought
+  kinds, is added when a sleep ends under six hours and the person's previous sleep ended at least
+  eight hours earlier. A short nap soon after a full night is not a broken night. It is added where
+  the sleep ends in `systems/act.rs`, because the previous sleep's time is overwritten before the
+  `Slept` event reaches `strain::observe`.
+- Guard: `tests/slept.rs::a_broken_night_is_felt` (a three-hour sleep after fourteen hours awake
+  leaves the thought; the same sleep three hours after the last one leaves none; fails without the
+  thought).
+- Measured, seeds 1-4, 12 game days, breaks (this branch / main): 28, 13, 18, 21 / 27, 12, 14, 21,
+  80 against 74 in total (+8%).
+
 ## 2026-11-27: what a person feels leans how they break (OST-549)
 
 - Symptom: two people at the end of their rope broke by a trait-weighted bag and a fixed personal
