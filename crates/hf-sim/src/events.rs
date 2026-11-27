@@ -1343,7 +1343,7 @@ pub enum EventKind {
         why: String,
     },
     /// Appended (#297): a relic of `community` was lost: "it is gone", "it was carried out of
-    /// the valley" (by `by`), "it was taken by those who split away" (by their leader).
+    /// the colony" (by `by`), "it was taken by those who split away" (by their leader).
     RelicLost {
         community: CommunityId,
         what: String,
