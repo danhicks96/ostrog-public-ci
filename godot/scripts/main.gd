@@ -2736,7 +2736,8 @@ func _build_settings() -> void:
 func _build_audio() -> void:
 	sound = preload("res://scripts/audio/sound.gd").new()
 	view.add_child(sound)
-	var quiet := shot_path != "" or footage_dir != ""
+	# A headless run has no audible output; explicit audio logging still opts in.
+	var quiet := shot_path != "" or footage_dir != "" or DisplayServer.get_name() == "headless"
 	sound.init(view, persist.settings, quiet and audio_log == "")
 	sound.log_path = audio_log
 	music = preload("res://scripts/audio/music_director.gd").new()

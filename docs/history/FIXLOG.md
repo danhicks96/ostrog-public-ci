@@ -1,5 +1,17 @@
 # Fix log
 
+## 2026-11-27: ordinary headless runs started inaudible audio
+
+- Symptom: a saved scene launched headlessly started ambient loops even though the headless
+  display has no audible output; on the integrated Windows client this reproduced retained
+  audio resources on exit in three out of three observed runs.
+- Fix: ordinary headless runs use the same quiet audio mode as screenshots. An explicit
+  `--audio-log` still opts in, and graphical launches keep their existing audio behavior.
+- Observation: on integrated source dd2a25d, five candidate headless launches loaded the
+  same save without shutdown warnings, and two graphical launches each started seven
+  ambient loops. In two explicit headless audio-log runs, one still retained resources;
+  the underlying active-audio teardown is not claimed fixed.
+
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
 - Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
