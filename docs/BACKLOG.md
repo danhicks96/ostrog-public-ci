@@ -18,7 +18,7 @@ The milestone labels group related work; they do not promise a release date. Eac
 
 ### OST-323 · A break daze lasts hours, not a day
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#748](https://github.com/danhicks96/ostrog-public-ci/pull/748)
 
 A daze stood the person where they were for a whole game-day and night. It now lasts two to about six and a half game-hours by stress, and an hour when it starts at night.
 
