@@ -7,6 +7,7 @@
 //! a hearth, where snow and ice are melted to drink.
 
 use crate::ids::TilePos;
+use crate::mind::{knowledge::Knowledge, Known};
 use crate::structures::StructureKind;
 use crate::World;
 use rand::Rng;
@@ -28,11 +29,14 @@ const FLUX_CHANCE: f32 = 0.2;
 
 /// A community's water barrel: a finished barrel within four tiles of home.
 pub fn barrel(w: &World, home: TilePos) -> Option<TilePos> {
+    store_barrel(w, home).map(|s| s.pos)
+}
+
+fn store_barrel(w: &World, home: TilePos) -> Option<&crate::structures::Structure> {
     w.structures
         .iter()
         .filter(|s| s.kind == StructureKind::Barrel && s.progress >= 1.0 && s.pos.dist(home) <= 4)
         .min_by_key(|s| (s.pos.dist(home), s.pos))
-        .map(|s| s.pos)
 }
 
 /// Whether someone standing at `at` can drink from `source` (#608, FIXLOG 2026-11-03): on it or
@@ -125,6 +129,16 @@ fn stand_by(w: &World, p: TilePos) -> Option<TilePos> {
 /// Every place to drink within `radius` of `near`, nearest first by the straight line: the
 /// shores of the valley's waters where they serve, and finished wells.
 pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
+    spots_for(w, near, radius, true, |_, _| true)
+}
+
+fn spots_for(
+    w: &World,
+    near: TilePos,
+    radius: i32,
+    include_stores: bool,
+    located: impl Fn(Known, TilePos) -> bool,
+) -> Vec<Spot> {
     let mut out: Vec<(i32, Spot)> = Vec::new();
     for s in w
         .structures
@@ -132,7 +146,7 @@ pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
         .filter(|s| s.kind == StructureKind::Well && s.progress >= 1.0)
     {
         let d = s.pos.dist(near);
-        if d <= radius {
+        if d <= radius && located(Known::Structure(s.id), s.pos) {
             if let Some(stand) = stand_by(w, s.pos).or(Some(s.pos)) {
                 out.push((d, spot(stand, s.pos, true)));
             }
@@ -146,7 +160,7 @@ pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
             .filter(|s| s.kind == StructureKind::Hearth && s.progress >= 1.0)
         {
             let d = s.pos.dist(near);
-            if d <= radius {
+            if d <= radius && located(Known::Structure(s.id), s.pos) {
                 if let Some(stand) = stand_by(w, s.pos) {
                     out.push((d, spot(stand, s.pos, false)));
                 }
@@ -175,6 +189,9 @@ pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
                     }
                 });
                 if let Some((stand, p)) = found {
+                    if !located(Known::Water(p), p) {
+                        continue;
+                    }
                     // A river in spate is drunk from only where the bank stands above any
                     // flood yet seen: nobody goes down into a flood to drink.
                     if b.high && w.waters.flooded_once(stand.x, stand.y) {
@@ -191,9 +208,13 @@ pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
     let water_near = out
         .iter()
         .any(|(d, s)| *d <= 12 && !crate::systems::hazards::in_floods_way(w, s.stand));
-    if !water_near {
+    if include_stores && !water_near {
         for c in w.communities.iter().filter(|c| !c.dissolved && c.water > 0) {
-            if let Some(b) = barrel(w, c.home) {
+            if let Some(container) = store_barrel(w, c.home) {
+                let b = container.pos;
+                if !located(Known::Structure(container.id), b) {
+                    continue;
+                }
                 let d = b.dist(near);
                 if d <= radius {
                     if let Some(stand) = stand_by(w, b) {
@@ -212,16 +233,16 @@ pub fn nearest(w: &World, from: TilePos, radius: i32) -> Option<Spot> {
     let nav = w.nav.as_ref()?;
     // The nearest few by the straight line, then on: a lake beyond a cliff is near and
     // unreachable, and the next shore that can be walked to may be a little farther.
-    candidates(w, from, radius)
+    candidates(w, spots(w, from, radius))
         .into_iter()
         .find(|s| s.stand == from || nav.reach(from, s.stand))
 }
 
 /// The places to drink within `radius` of `from`, nearest first by the straight line, the
 /// nearest 48 of them with each stand tile once, none in a flood's way (#418).
-fn candidates(w: &World, from: TilePos, radius: i32) -> Vec<Spot> {
+fn candidates(w: &World, sites: Vec<Spot>) -> Vec<Spot> {
     let mut tried = std::collections::BTreeSet::new();
-    spots(w, from, radius)
+    sites
         .into_iter()
         .filter(|s| tried.insert(s.stand))
         // Not into a flood's way (#418): the next bank clear of it serves.
@@ -262,11 +283,60 @@ fn believed_tag(w: &World, knowledge: &crate::mind::knowledge::Knowledge, s: &Sp
     tag
 }
 
+/// Water location and quality are separate. An unfamiliar shore in sight can be tried
+/// before the next striped perception pass. A known source can be visited out of sight.
+fn located_spots(
+    w: &World,
+    a: &crate::agents::Agent,
+    knowledge: &Knowledge,
+    near: TilePos,
+    radius: i32,
+    stores: bool,
+) -> Vec<Spot> {
+    let sight = crate::systems::perceive::sight_radius(w, a, w.meta.tick);
+    spots_for(w, near, radius, stores, |key, p| {
+        if knowledge.get(key).is_some_and(|b| b.pos == p) {
+            return true;
+        }
+        let dx = (p.x - a.pos.x).abs();
+        let dy = (p.y - a.pos.y).abs();
+        if p.z == a.pos.z {
+            return dx.max(dy) <= sight
+                && crate::mind::perception::line_of_sight(&w.grid, a.pos, p);
+        }
+        // A surface immediately below their own bank is within physical reach. A solid
+        // floor over water conceals it, even if the horizontal sight ray is clear.
+        if matches!(key, Known::Water(_)) && p.z + 1 == a.pos.z && dx + dy == 1 {
+            let rim = w.grid.get(p.offset(0, 0, 1));
+            return rim.is_water()
+                || matches!(
+                    rim.shape,
+                    crate::world::Shape::Open | crate::world::Shape::RampTop
+                )
+                || rim.shape.connects_down();
+        }
+        false
+    })
+}
+
+/// A worker can fill a vessel at a source they can locate and carry it to the store.
+pub(crate) fn collection_source(
+    w: &World,
+    a: &crate::agents::Agent,
+    store: TilePos,
+    radius: i32,
+) -> Option<Spot> {
+    let nav = w.nav.as_ref()?;
+    candidates(w, located_spots(w, a, &a.knowledge, store, radius, false))
+        .into_iter()
+        .find(|s| nav.reach(a.pos, s.stand))
+}
+
 /// The nearest place to drink within `radius` of `from`, chosen by what `knowledge`
 /// believes of each water (#453, epic #477 part 4, FIXLOG 2026-10-30): a spot whose water is
 /// known salt is never worth the walk; one known foul is shunned unless `desperate` — thirst
 /// past the parched mark (decide.rs), or nothing they could believe fresh within reach.
-/// Water never perceived is assumed fresh: they can be wrong, and part 3's flux roll, ground
+/// A source they can locate but have not assessed is assumed fresh: they can be wrong, and ground
 /// truth at drink time, is the punishment.
 ///
 /// A stand where agent `i` lately failed to drink (`dry_key`, #608) is passed over: they go to
@@ -283,7 +353,10 @@ pub fn nearest_knowing(
     let now = w.meta.tick;
     let cooldowns = &w.agents[i].work_cooldowns;
     let mut foul_fallback = None;
-    for s in candidates(w, from, radius) {
+    for s in candidates(
+        w,
+        located_spots(w, &w.agents[i], knowledge, from, radius, true),
+    ) {
         if cooldowns.get(&dry_key(s.stand)).is_some_and(|t| *t > now) {
             continue;
         }
@@ -338,33 +411,15 @@ pub(crate) enum DrinkResult {
 /// Reconsider a committed drink once, at the last sip, and only for a place the person
 /// remembers. A remembered shore that froze, dried or became unreachable cannot help.
 fn known_alternative(w: &World, i: usize, at: TilePos) -> bool {
-    use crate::mind::Known;
     let a = &w.agents[i];
     let Some(nav) = &w.nav else { return false };
-    let known_facilities: std::collections::BTreeSet<_> = w
-        .structures
-        .iter()
-        .filter(|s| {
-            matches!(
-                s.kind,
-                StructureKind::Well | StructureKind::Barrel | StructureKind::Hearth
-            ) && a
-                .knowledge
-                .get(Known::Structure(s.id))
-                .is_some_and(|b| b.pos == s.pos)
-        })
-        .map(|s| s.pos)
-        .collect();
-    candidates(w, at, 60).into_iter().any(|s| {
-        let known = if fresh(w, s.source) && !s.well {
-            a.knowledge.get(Known::Water(s.source)).is_some()
-        } else {
-            known_facilities.contains(&s.source)
-        };
-        known
-            && a.work_cooldowns
-                .get(&dry_key(s.stand))
-                .is_none_or(|t| *t <= w.meta.tick)
+    let sites = spots_for(w, at, 60, true, |key, p| {
+        a.knowledge.get(key).is_some_and(|b| b.pos == p)
+    });
+    candidates(w, sites).into_iter().any(|s| {
+        a.work_cooldowns
+            .get(&dry_key(s.stand))
+            .is_none_or(|t| *t <= w.meta.tick)
             && (s.well
                 || !matches!(
                     believed_tag(w, &a.knowledge, &s),

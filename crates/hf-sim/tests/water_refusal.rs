@@ -126,6 +126,11 @@ fn knows_foul(w: &World, i: usize) -> bool {
 fn knowing_a_pond_is_foul_they_walk_past_it_to_fresh_water() {
     let (mut w, fouled) = two_ponds(4551, true);
     let i = founder_at(&mut w, TilePos::new(26, 22, 2));
+    // This alternative is beyond the agent's sight at pond A. See it before returning.
+    let original = w.agents[i].pos;
+    w.agents[i].pos = TilePos::new(45, 42, 2);
+    look(&mut w);
+    w.agents[i].pos = original;
     look(&mut w);
     // The fouled shore was noted, tagged foul — that is the knowledge the choice turns on.
     assert!(knows_foul(&w, i), "the foul pond remembered foul");
@@ -249,6 +254,11 @@ fn a_known_salt_pond_is_never_chosen_even_when_nearer() {
         .expect("pond A surveyed");
     b.quality = WaterQuality::Salt;
     let i = founder_at(&mut w, TilePos::new(26, 22, 2));
+    // This alternative is beyond the agent's sight at pond A. See it before returning.
+    let original = w.agents[i].pos;
+    w.agents[i].pos = TilePos::new(45, 42, 2);
+    look(&mut w);
+    w.agents[i].pos = original;
     look(&mut w);
     // What the eye took of it, tagged salt.
     assert!(
@@ -267,4 +277,43 @@ fn a_known_salt_pond_is_never_chosen_even_when_nearer() {
         to.dist(FRESH_MIDDLE) <= 4,
         "the farther fresh pond chosen: {to:?}"
     );
+}
+
+#[test]
+fn a_thirsty_person_can_search_then_recall_an_obscured_pond() {
+    let (mut w, _) = two_ponds(4563, false);
+    let from = TilePos::new(30, 22, 2);
+    let i = founder_at(&mut w, from);
+    w.meta.tick = 9 * TICKS_PER_HOUR;
+    for y in 15..=29 {
+        w.grid
+            .set(TilePos::new(26, y, 2), Tile::solid(Material::GRANITE));
+    }
+    w.rebuild_caches();
+    w.ensure_nav();
+    let source = TilePos::new(24, 22, 2);
+    assert!(!hf_sim::mind::perception::line_of_sight(
+        &w.grid, from, source
+    ));
+    thirsty(&mut w, i, 0.15);
+    hf_sim::systems::decide::step(&mut w);
+    assert!(
+        matches!(&w.agents[i].activity,
+        Activity::Going {to, then} if *to != from && matches!(**then, Activity::Loitering { .. })
+            && hf_sim::mind::perception::line_of_sight(&w.grid, from, *to)),
+        "a parched person without a source should set off to search: {:?}",
+        w.agents[i].activity
+    );
+    let now = w.meta.tick;
+    w.agents[i].knowledge.note(
+        Known::Water(source),
+        source,
+        now,
+        hf_sim::floods::TAG_WATER_FRESH,
+    );
+    thirsty(&mut w, i, 0.15);
+    hf_sim::systems::decide::step(&mut w);
+    let bank = drink_target(&w, i).expect("a remembered source merits a directed journey");
+    assert!(hf_sim::water::reaches(bank, source));
+    assert!(w.nav.as_ref().unwrap().reach(from, bank));
 }

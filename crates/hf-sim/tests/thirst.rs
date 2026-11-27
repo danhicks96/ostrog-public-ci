@@ -424,6 +424,14 @@ fn a_worker_who_leaves_to_drink_comes_back_and_finishes() {
     let (mut w, p) = by_a_pond(4345, 1);
     mild(&mut w, 15.0);
     let i = p[0];
+    // They have visited the pond before starting this job out of sight of it.
+    let water = TilePos::new(24, 24, 2);
+    w.agents[i].knowledge.note(
+        hf_sim::mind::Known::Water(water),
+        water,
+        w.meta.tick,
+        hf_sim::floods::TAG_WATER_FRESH,
+    );
     let tree = TilePos::new(46, 45, 2);
     w.plants.push(hf_sim::plants::Plant::new(
         tree,
@@ -482,6 +490,14 @@ fn after_a_walk_to_drink_they_come_back() {
     let (mut w, p) = by_a_pond(4346, 1);
     mild(&mut w, 15.0);
     let i = p[0];
+    // They have visited the pond before starting this job out of sight of it.
+    let water = TilePos::new(24, 24, 2);
+    w.agents[i].knowledge.note(
+        hf_sim::mind::Known::Water(water),
+        water,
+        w.meta.tick,
+        hf_sim::floods::TAG_WATER_FRESH,
+    );
     let start = TilePos::new(45, 45, 2);
     w.agents[i].pos = start;
     w.agents[i].path.clear();
@@ -771,4 +787,82 @@ fn one_empty_thirst_or_warmth_is_miserable_on_the_needs_term() {
             "thirst {thirst}, warmth {warmth}: needs term {needs}"
         );
     }
+}
+
+#[test]
+fn a_hidden_pond_does_not_conceal_a_known_household_water_store() {
+    use hf_sim::mind::Known;
+    let (mut w, people) = by_a_pond(4564, 1);
+    let i = people[0];
+    let at = TilePos::new(30, 22, 2);
+    let barrel = at.offset(4, 0, 0);
+    w.agents[i].pos = at;
+    w.meta.tick = 9 * TICKS_PER_HOUR;
+    mild(&mut w, 15.0);
+    let cid = w.agents[i].community.unwrap();
+    let c = w.communities.iter_mut().find(|c| c.id == cid).unwrap();
+    c.home = barrel;
+    c.water = 3;
+    w.place_structure(StructureKind::Barrel, barrel, Material::WOOD, true);
+    for y in 15..=29 {
+        w.grid
+            .set(TilePos::new(26, y, 2), Tile::solid(Material::GRANITE));
+    }
+    w.ensure_nav();
+    let choose =
+        |w: &World| hf_sim::water::nearest_knowing(w, i, at, 60, &w.agents[i].knowledge, false);
+    assert_eq!(choose(&w).unwrap().source, barrel);
+    w.grid
+        .set(at.offset(1, 0, 0), Tile::solid(Material::GRANITE));
+    w.ensure_nav();
+    assert!(
+        choose(&w).is_none(),
+        "neither hidden pond nor hidden barrel was learned"
+    );
+    let id = w.structures.iter().find(|s| s.pos == barrel).unwrap().id;
+    w.agents[i].knowledge.note(
+        Known::Structure(id),
+        barrel,
+        w.meta.tick,
+        StructureKind::Barrel as u16,
+    );
+    assert_eq!(choose(&w).unwrap().source, barrel);
+
+    // A fetch job has the barrel's location, not the location of its water supply.
+    let fetch = hf_sim::work::Designation {
+        id: w.alloc_designation_id(),
+        kind: hf_sim::work::DesignationKind::FetchWater,
+        pos: barrel,
+        requirements: vec![],
+        work_left: 10,
+        work_total: 10,
+        max_workers: 1,
+        priority: 5,
+        created: w.meta.tick,
+        failures: 0,
+        done: false,
+        community: Some(cid),
+        owner: None,
+    };
+    let actor = w.agents[i].id;
+    assert!(
+        hf_sim::work::planner::plan_for(&w, actor, &fetch).is_none(),
+        "cannot refill the barrel from itself or from the unlocated pond"
+    );
+    let well = at.offset(-6, 8, 0);
+    w.place_structure(StructureKind::Well, well, Material::STONE_BLOCK, true);
+    assert!(hf_sim::work::planner::plan_for(&w, actor, &fetch).is_none());
+    let id = w.structures.iter().find(|s| s.pos == well).unwrap().id;
+    w.agents[i].knowledge.note(
+        Known::Structure(id),
+        well,
+        w.meta.tick,
+        StructureKind::Well as u16,
+    );
+    let plan = hf_sim::work::planner::plan_for(&w, actor, &fetch)
+        .unwrap()
+        .plan;
+    assert!(
+        matches!(plan.steps.first(),Some(hf_sim::work::Step::GoTo{to,..}) if hf_sim::water::reaches(*to,well))
+    );
 }

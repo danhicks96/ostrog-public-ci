@@ -43,3 +43,37 @@ fn a_steep_sided_river_is_a_place_to_drink() {
         first.source
     );
 }
+
+#[test]
+fn water_just_below_a_bank_is_visible_through_an_opening() {
+    let mut w = World::generate(7252, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    let from = TilePos::new(30, 30, 2);
+    let source = from.offset(1, 0, -1);
+    let cover = source.offset(0, 0, 1);
+    w.flatten(source.x, source.y, 1, 1, 0);
+    w.grid.set(source, water_floor());
+    w.grid.set(
+        cover,
+        Tile {
+            material: Material::STONE_BLOCK,
+            shape: Shape::Floor,
+            flags: TileFlags::NONE,
+        },
+    );
+    w.rebuild_caches();
+    hf_sim::floods::survey(&mut w);
+    let id = w.spawn_agent(hf_sim::agents::Species::Person, from);
+    let i = w.agents.iter().position(|a| a.id == id).unwrap();
+    w.ensure_nav();
+    assert_eq!(
+        hf_sim::floods::top_water(&w.grid, source.x, source.y),
+        Some(source)
+    );
+    let find =
+        |w: &World| hf_sim::water::nearest_knowing(w, i, from, 8, &w.agents[i].knowledge, true);
+    assert!(find(&w).is_none(), "the floor covers this water");
+    w.grid.set(cover, Tile::default());
+    w.ensure_nav();
+    assert_eq!(find(&w).unwrap().source, source);
+}

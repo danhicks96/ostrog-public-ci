@@ -54,6 +54,14 @@ fn one_below(seed: u64) -> (World, usize, usize) {
 fn their_people_dig_down_to_someone_cut_off_below_and_tend_them() {
     let (mut w, sick, _) = one_below(4391);
     let home = w.communities[0].home;
+    // The flattened test map leaves no drinking water near the rescue crew. Give the
+    // surface workers water while the patient remains isolated below with no access.
+    w.place_structure(
+        hf_sim::structures::StructureKind::Well,
+        home.offset(1, 0, 0),
+        hf_sim::world::Material::STONE_BLOCK,
+        true,
+    );
     assert!(
         !w.nav.as_ref().unwrap().reach(w.agents[sick].pos, home),
         "the cave is closed"

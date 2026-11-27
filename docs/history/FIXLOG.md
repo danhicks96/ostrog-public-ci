@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - People walk to water they can locate
+
+Wynvane refused a shore she remembered as foul, then walked directly to a different pond hidden behind terrain. Neither the pond nor its banks were in sight or in her water beliefs. Drinkers and water carriers can now head for a remembered source or one they can see. A thirsty person without a water destination searches nearby ground. An unfamiliar pond can still look safe until someone drinks from it.
+
 ## 2026-11-26: a clean pond beyond a closed wall cannot supply a drink
 
 - A non-parched person could lose their only reachable water when the clean shore they preferred was cut off. Water selection now keeps the nearest reachable foul source as a fallback while searching for a reachable better one. Known salt and recently dry stands still drop out.
@@ -9,6 +13,7 @@
 
 - Recheck the water the person remembers before the final drinking action. A reachable known alternative lets them leave without consuming water or marking their stand dry. If the alternative is gone, unknown, or unreachable, or thirst has passed desperation, they can still drink. A nearby finished well can supply its own water.
 - Guard: `foul_water::committed_drinker_rechecks_a_foul_shore_before_the_last_sip` changes knowledge between the two final activity ticks and checks the resulting need, refusal and bank cooldown.
+
 ## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
 
 - Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7

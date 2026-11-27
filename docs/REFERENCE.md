@@ -2709,8 +2709,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | underground.rs:257 | buried under the fallen rock |
 | underground.rs:559 | since they touched the underworld's rock in {} |
 | underground.rs:608 | deep_caverns |
-| water.rs:74 | a stand at {stand} does not reach {source} (#608) |
-| water.rs:477 | the flux from foul water |
+| water.rs:78 | a stand at {stand} does not reach {source} (#608) |
+| water.rs:532 | the flux from foul water |
 | wells.rs:96 | found no place by home to dig it |
 | wells.rs:134 | dug {MAX_DEPTH} levels down and found no water |
 | wells.rs:150 | dug {depth} levels down to the hard rock and found it dry |
@@ -3339,22 +3339,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:832 | gave up on {} for now; back to it {when} |
 | systems/decide.rs:914 | no path |
 | systems/decide.rs:972 | the stores are ours |
-| systems/decide.rs:1209 | no path |
-| systems/decide.rs:1474 | no way there they know of |
-| systems/decide.rs:1476 | in the flood's way |
-| systems/decide.rs:1482 | found no way there lately |
-| systems/decide.rs:1622 | the ground there is under water |
-| systems/decide.rs:1623 | someone else is already at it |
-| systems/decide.rs:1626 | off work since they broke down |
-| systems/decide.rs:1628 | weighs nothing now |
-| systems/decide.rs:2606 | hunger |
-| systems/decide.rs:2611 | thirst |
-| systems/decide.rs:2616 | tiredness |
-| systems/decide.rs:2621 | days of food in store |
-| systems/decide.rs:2626 | night near with no bed or roof |
-| systems/decide.rs:2631 | arrival urge |
-| systems/decide.rs:2636 | leisure weight |
-| systems/decide.rs:2645 | nothing |
+| systems/decide.rs:1235 | no path |
+| systems/decide.rs:1500 | no way there they know of |
+| systems/decide.rs:1502 | in the flood's way |
+| systems/decide.rs:1508 | found no way there lately |
+| systems/decide.rs:1648 | the ground there is under water |
+| systems/decide.rs:1649 | someone else is already at it |
+| systems/decide.rs:1652 | off work since they broke down |
+| systems/decide.rs:1654 | weighs nothing now |
+| systems/decide.rs:2636 | hunger |
+| systems/decide.rs:2641 | thirst |
+| systems/decide.rs:2646 | tiredness |
+| systems/decide.rs:2651 | days of food in store |
+| systems/decide.rs:2656 | night near with no bed or roof |
+| systems/decide.rs:2661 | arrival urge |
+| systems/decide.rs:2666 | leisure weight |
+| systems/decide.rs:2675 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |

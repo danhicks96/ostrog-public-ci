@@ -973,6 +973,27 @@ fn confront_reason(a: &crate::agents::Agent) -> String {
     }
 }
 
+/// Without a water destination, go look. Sample the visible ground around the person
+/// without consulting the water map; a later look can reveal a source.
+fn search_for_water(w: &World, i: usize, r: &mut rand_chacha::ChaCha8Rng) -> Option<TilePos> {
+    let a = &w.agents[i];
+    let nav = w.nav.as_ref()?;
+    let radius = super::perceive::sight_radius(w, a, w.meta.tick);
+    (0..8).find_map(|_| {
+        let p = a.pos.offset(
+            r.gen_range(-radius..=radius),
+            r.gen_range(-radius..=radius),
+            0,
+        );
+        (p != a.pos
+            && w.grid.in_bounds(p)
+            && w.grid.walkable(p)
+            && crate::mind::perception::line_of_sight(&w.grid, a.pos, p)
+            && nav.reach(a.pos, p))
+        .then_some(p)
+    })
+}
+
 /// One of a band (threat.rs): they keep to their camp, eat what they carry when they must, and
 /// sleep there. Raiding and leaving are given to them by the band, not chosen here.
 fn choose_band(w: &World, i: usize, r: &mut rand_chacha::ChaCha8Rng) -> Option<Goal> {
@@ -991,6 +1012,11 @@ fn choose_band(w: &World, i: usize, r: &mut rand_chacha::ChaCha8Rng) -> Option<G
         let desperate = 1.0 - a.needs.thirst > 0.7;
         if let Some(s) = crate::water::nearest_knowing(w, i, me, 60, &a.knowledge, desperate) {
             return Some(Goal::Drink(s.stand));
+        }
+        if matches!(band.state, crate::threat::BandState::Camped(_)) {
+            if let Some(p) = search_for_water(w, i, r) {
+                return Some(Goal::Seek(p));
+            }
         }
     }
     // Hungry with food in hand: eat it. (Foraging again while carrying food piled up stacks a
@@ -1760,6 +1786,10 @@ fn choose(
             crate::water::nearest_knowing(w, i, me, reach, &a.knowledge, thirst_p > 0.7)
         {
             consider(urgency * dist_discount(s.stand), Goal::Drink(s.stand));
+        } else if thirst_p > 0.4 {
+            if let Some(p) = search_for_water(w, i, r) {
+                consider(urgency * dist_discount(p), Goal::Seek(p));
+            }
         }
     }
     // Tomorrow's food (#415): with the stores under two days, those who know where food grows
