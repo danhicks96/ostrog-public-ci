@@ -300,6 +300,16 @@ fn answer(
     scope: Scope,
     r: &mut rand_chacha::ChaCha8Rng,
 ) {
+    // Once Hask notices hardship, let go of existing pressure even if it is too
+    // soon to grant another reprieve from sickness.
+    if d.motive == Motive::Test && trigger == Trigger::Hardship {
+        let now = w.meta.tick;
+        for a in &mut w.deity_answers {
+            if a.trigger == Trigger::Plenty && a.until > now {
+                a.until = now;
+            }
+        }
+    }
     if answering(w, trigger, scope) {
         return;
     }
@@ -331,12 +341,6 @@ fn answer(
             }
         }
         (Motive::Test, Trigger::Hardship) => {
-            let now = w.meta.tick;
-            for a in w.deity_answers.iter_mut() {
-                if a.trigger == Trigger::Plenty && a.until > now {
-                    a.until = now;
-                }
-            }
             acts.push((Lever::Sickness, Scope::Valley, 0.7, 5));
         }
         (Motive::Test, Trigger::Killing) => {
