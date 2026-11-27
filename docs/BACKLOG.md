@@ -16,6 +16,14 @@ This is the public backlog for developers working on Ostrog. `OST-` IDs are stab
 
 The milestone labels group related work; they do not promise a release date. Each entry names its own acceptance checks. Pending ports and dependent entries are not open for duplicate work.
 
+### OST-323 · A break daze lasts hours, not a day
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#748](https://github.com/danhicks96/ostrog-public-ci/pull/748)
+
+A daze stood the person where they were for a whole game-day and night. It now lasts two to about six and a half game-hours by stress, and an hour when it starts at night.
+
+**Acceptance:** A daze at ten in the morning lasts two to six and a half hours; one at 23:00 ends within an hour and the person is asleep by 01:00; a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-001 · Give major personal events more weight in camera selection
 
 **Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
