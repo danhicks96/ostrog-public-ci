@@ -1,5 +1,24 @@
 # Fix log
 
+## 2026-11-27 Pond walkers took dry steps in the air above natural water
+
+On a saved mature pond, two walkers crossed above a shallow ford at the dry walking cost.
+A third entered the air above three water voxels. Natural water uses the floor shape,
+so the route planner treated the liquid as a deck supporting the air above it.
+
+Walkers now use the actual ford level and pay its wading cost. Built decks, flooded
+timber floors, slopes and stairs retain their physical support. A stale stride above
+water settles one level with the usual elapsed time. Someone at the exposed deep
+surface can reach an adjacent dry foothold or a one-layer ford over a real bed. A
+diagonal reach requires two open flanks. The existing water-hazard reaction records
+their decision and its outcome. Loose stacks above the water settle onto the wet side
+of the first solid bed or deck without losing their identity or history.
+
+The saved deep crossing took eight ticks to descend and eleven to reach a one-level
+ford diagonally northwest. The original walker stayed alive. The integration tests in
+`tests/liquid_footing.rs` cover old paths, wet and frozen terrain, stacked water,
+sleep, captivity, injury, bank geometry and new stacks across save and restore.
+
 ## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
 
 - Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten

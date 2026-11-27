@@ -57,8 +57,43 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
     let grid = &w.grid;
     // (#324) Falls this tick: (agent index, levels fallen, into water, cause).
     let mut falls: Vec<(usize, i32, bool, &'static str)> = Vec::new();
+    let mut footholds = Vec::new();
     for (ai, a) in w.agents.iter_mut().enumerate() {
         if !a.alive {
+            continue;
+        }
+        // Terrain may change mid-stride. Replace the obsolete interpolation and pay
+        // for the descent to the actual surface even if the person is asleep or hurt.
+        if grid.air_over_liquid(a.pos) {
+            a.from = a.pos;
+            a.pos = a.pos.offset(0, 0, -1);
+            a.move_total = crate::time::LEVEL_CHANGE_TICKS;
+            a.move_ticks = 1;
+            a.path.clear();
+            a.path_blocked = true;
+            continue;
+        }
+        let tile = grid.get(a.pos);
+        if tile.liquid_floor()
+            && tile.flags.has(crate::world::TileFlags::DEEP)
+            && !grid.get(a.pos.offset(0, 0, 1)).is_water()
+        {
+            if a.is_moving() {
+                a.move_ticks += 1;
+            } else if !a.activity.is_asleep() && a.held.is_none() {
+                // Only an immediately reachable foothold. The ordinary unwalkable-tile
+                // recovery below would sink them another storey or move through a wall.
+                if let Some(q) = adjacent_foothold(grid, a.pos) {
+                    let diagonal = q.x != a.pos.x && q.y != a.pos.y;
+                    let cost = step_cost(grid, a.pos, diagonal).max(step_cost(grid, q, diagonal));
+                    let cost = if a.injured_until > tick_now {
+                        cost * 2
+                    } else {
+                        cost
+                    };
+                    footholds.push((ai, q, cost));
+                }
+            }
             continue;
         }
         // Safety net: if the ground was built or dug away under someone, step to the nearest
@@ -132,7 +167,14 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
             && (next.z - a.pos.z).abs() <= 1;
         // Water risen over the head on the way ahead stops someone still on dry ground (#418).
         let into_flood = grid.over_head(next) && !grid.over_head(a.pos);
-        if !grid.walkable(next) || !adjacent || into_flood {
+        let diagonal = next.x != a.pos.x && next.y != a.pos.y;
+        // A queued diagonal from an old save may still have legal endpoints after
+        // losing the flanking tile above a pond. Match the pathfinder's corner rule.
+        let cuts_water_corner = diagonal
+            && next.z == a.pos.z
+            && (grid.air_over_liquid(crate::ids::TilePos::new(next.x, a.pos.y, next.z))
+                || grid.air_over_liquid(crate::ids::TilePos::new(a.pos.x, next.y, next.z)));
+        if !grid.walkable(next) || !adjacent || into_flood || cuts_water_corner {
             a.path.clear();
             a.path_blocked = true;
             a.move_total = 0;
@@ -140,7 +182,6 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
             continue;
         }
         a.path.pop();
-        let diagonal = next.x != a.pos.x && next.y != a.pos.y;
         let mut cost = if next.z != a.pos.z {
             crate::time::LEVEL_CHANGE_TICKS
         } else {
@@ -181,9 +222,50 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
         a.move_total = cost.max(1);
         a.move_ticks = 1;
     }
+    for (i, q, cost) in footholds {
+        crate::systems::hazards::attempt_foothold(w, i, q);
+        let a = &mut w.agents[i];
+        a.move_total = cost;
+        a.move_ticks = 1;
+        a.facing = Agent::facing_toward(a.pos, q);
+        a.from = a.pos;
+        a.pos = q;
+        a.path.clear();
+        a.path_blocked = false;
+    }
     for (i, levels, water, cause) in falls {
         fall(w, i, levels, water, cause);
     }
+}
+
+/// Emergency placement spans at most one edge. A two-layer water column with no
+/// DEEP flag is open to reach across, but is not a bed-supported place to stand.
+fn adjacent_foothold(
+    grid: &crate::world::WorldGrid,
+    p: crate::ids::TilePos,
+) -> Option<crate::ids::TilePos> {
+    use crate::world::Shape;
+    let side_open = |q| {
+        let tile = grid.get(q);
+        (tile.liquid_floor() || tile.shape == Shape::Open)
+            && !tile.flags.has(crate::world::TileFlags::DOOR)
+            && grid.walkable(q)
+            && !grid.over_head(q)
+    };
+    let cardinal = [(0, -1), (1, 0), (0, 1), (-1, 0)];
+    let diagonal = [(-1, -1), (1, -1), (1, 1), (-1, 1)];
+    cardinal
+        .into_iter()
+        .map(|(dx, dy)| p.offset(dx, dy, 0))
+        .filter(|&q| grid.water_foothold(q))
+        .min_by_key(|&q| grid.get(q).is_water())
+        .or_else(|| {
+            diagonal
+                .into_iter()
+                .filter(|&(dx, dy)| side_open(p.offset(dx, 0, 0)) && side_open(p.offset(0, dy, 0)))
+                .map(|(dx, dy)| p.offset(dx, dy, 0))
+                .find(|&q| grid.water_foothold(q))
+        })
 }
 
 /// #324, #444: a fall of `levels` storeys, hurting steeply by the height: one level bruises or

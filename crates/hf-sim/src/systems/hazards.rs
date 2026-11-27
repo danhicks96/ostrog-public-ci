@@ -727,6 +727,28 @@ fn announcement(
 }
 
 fn attempt_escape(w: &mut World, i: usize, to: Option<TilePos>, kind: crate::mind::ProblemKind) {
+    attempt_escape_using(w, i, to, kind, crate::systems::decide::commit);
+}
+
+/// The movement system has already validated a single edge to a bed-supported bank.
+/// A normal land route cannot start on the deep cell. Keep the actual danger, goal,
+/// announcement and observed outcome on the same personal reaction as other escapes.
+pub(super) fn attempt_foothold(w: &mut World, i: usize, to: TilePos) {
+    let Some((kind, _, _)) = water_problem(w, w.agents[i].pos) else {
+        return;
+    };
+    attempt_escape_using(w, i, Some(to), kind, |w, i, activity| {
+        w.agents[i].set_activity(activity)
+    });
+}
+
+fn attempt_escape_using(
+    w: &mut World,
+    i: usize,
+    to: Option<TilePos>,
+    kind: crate::mind::ProblemKind,
+    commit: fn(&mut World, usize, crate::mind::Activity),
+) {
     if w.agents[i].problems.pending_any().is_some() {
         finish_reaction(w, i, crate::mind::OutcomeKind::NoChange, false, true);
     }
@@ -740,7 +762,7 @@ fn attempt_escape(w: &mut World, i: usize, to: Option<TilePos>, kind: crate::min
         } else {
             120
         };
-        crate::systems::decide::commit(
+        commit(
             w,
             i,
             crate::mind::Activity::Going {

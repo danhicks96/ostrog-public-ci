@@ -5,15 +5,15 @@ use crate::world_state::World;
 pub fn step(w: &mut World) {
     w.ensure_nav();
     let grid = &w.grid;
-    let changed = match w.nav.as_mut() {
-        Some(nav) => nav.update(grid) > 0,
-        None => false,
-    };
+    let Some(nav) = w.nav.as_mut() else { return };
+    let changed = nav.update(grid) > 0;
+    // Ground stacks can be placed between terrain edits, including immediately before
+    // saving. Use the same physical check on a warm nav as after loading a cold one.
+    drop_unsupported(w);
     if changed {
         if let Some(astar) = w.astar.as_mut() {
             astar.clear_failed_paths();
         }
-        drop_unsupported(w);
         // A carving goes with its wall (dug out, burned, fallen): none is left on bare ground.
         let grid = &w.grid;
         w.engravings
@@ -31,13 +31,32 @@ fn drop_unsupported(w: &mut World) {
         let crate::items::ItemPlace::Ground(p) = w.items[k].place else {
             continue;
         };
-        // Only where the tile itself or the one under it changed.
+        // A single dense region lookup skips supported stacks without reading terrain.
+        if nav.region_of(p) != crate::nav::regions::NO_REGION {
+            continue;
+        }
+        let grid = &w.grid;
+        if grid.air_over_liquid(p) {
+            let mut q = p.offset(0, 0, -1);
+            while q.z > grid.z_min && grid.get(q.offset(0, 0, -1)).liquid_floor() {
+                q = q.offset(0, 0, -1);
+            }
+            // Stop on the water side of the first actual bed or deck.
+            let bed = q.offset(0, 0, -1);
+            if grid.in_bounds(bed) && grid.get(bed).supports_above() {
+                w.items[k].place = crate::items::ItemPlace::Ground(q);
+            }
+            continue;
+        }
+        if dirty.is_empty() {
+            continue;
+        }
         let here = (p.x.div_euclid(cs), p.y.div_euclid(cs), p.z);
         let below = (here.0, here.1, p.z - 1);
         if !dirty.contains(&here) && !dirty.contains(&below) {
             continue;
         }
-        if w.grid.walkable(p) {
+        if grid.get(p).liquid_floor() {
             continue;
         }
         if let Some(q) = (1..=6)

@@ -122,6 +122,14 @@ impl Tile {
     pub fn is_water(self) -> bool {
         self.flags.has(TileFlags::WATER | TileFlags::DEEP)
     }
+    /// Natural liquid stored as a floor-shaped voxel by the terrain generator.
+    pub(crate) fn liquid_floor(self) -> bool {
+        self.material == Material::WATER && self.shape == Shape::Floor && self.is_water()
+    }
+    /// A plain open voxel can be stood in immediately above this surface.
+    pub(crate) fn supports_above(self) -> bool {
+        self.shape == Shape::Wall || (self.shape == Shape::Floor && !self.liquid_floor())
+    }
     pub fn blocks_sight(self) -> bool {
         self.shape.is_solid()
     }

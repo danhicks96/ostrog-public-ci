@@ -287,7 +287,26 @@ impl WorldGrid {
             return true;
         }
         let below = self.get(p.offset(0, 0, -1));
-        below.shape == Shape::Wall || below.shape == Shape::Floor
+        below.supports_above()
+    }
+
+    /// Old paths and saves can put a walker in the air over a natural water surface.
+    pub(crate) fn air_over_liquid(&self, p: TilePos) -> bool {
+        let t = self.get(p);
+        t.shape == Shape::Open
+            && !t.is_water()
+            && !t.flags.has(TileFlags::DOOR)
+            && self.get(p.offset(0, 0, -1)).liquid_floor()
+    }
+
+    /// A nearby dry standing place, or a ford with an actual bed under the water.
+    /// The generator can mark two stacked liquid voxels as shallow.
+    pub(crate) fn water_foothold(&self, p: TilePos) -> bool {
+        if !self.walkable(p) || self.over_head(p) {
+            return false;
+        }
+        let below = p.offset(0, 0, -1);
+        !self.get(p).liquid_floor() || (self.in_bounds(below) && self.get(below).supports_above())
     }
 
     /// Water over a person's head here (#390): the tile is full to its roof, or there is water
