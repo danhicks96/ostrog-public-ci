@@ -33,9 +33,8 @@ enum Cmd {
         /// Game-days to run instead of --ticks (#130: 28,800 ticks read as a month).
         #[arg(long)]
         days: Option<u64>,
-        /// The game as it is played: the arrival through the portal into a valley of its
-        /// world, with the world's history before it (--agents and --small are then ignored).
-        /// Without it, the old twelve-person test valley with no portal and no past.
+        /// Generate the world's history, then follow the founders through the portal to their landing site.
+        /// This ignores --agents and --small. The default test map has no portal or prior history.
         #[arg(long)]
         opening: bool,
         #[arg(long)]
@@ -75,8 +74,8 @@ enum Cmd {
         ring: Option<PathBuf>,
         #[arg(long, default_value_t = 5)]
         save_days: u64,
-        /// Soak the game as it is played: the arrival through the portal into a valley of its
-        /// world, with the world's history before it (--agents is then ignored).
+        /// Generate the world's history and start the soak when the founders reach their landing site
+        /// through the portal. This ignores --agents.
         #[arg(long)]
         opening: bool,
         /// With --opening: draw this many peoples of the land (the wizard's count; the MP
@@ -219,7 +218,7 @@ enum Cmd {
         stoniness: Option<f32>,
     },
     /// Make an opening world from new-game choices and print its past: the old hamlets, each
-    /// time the deity leaned on one, and the patterns the valley's people noticed.
+    /// time the deity leaned on one, and the patterns people noticed.
     Past {
         #[arg(long, default_value_t = 1)]
         seed: u64,

@@ -2,7 +2,7 @@
 
 ## 2026-11-26 - Landing site and egress point
 
-Setup names the selected local area the landing site and identifies the founding portal tile as the egress point. History and the home follow action use the generated place name. Terrain descriptions reserve valley for the landform. Arrival history now reads the landform used for the selected region instead of drawing it again from the world seed.
+Setup names the selected local area the landing site and identifies the founding portal tile as the egress point. History and the home follow action use the generated place name. Terrain descriptions reserve valley for the landform. The run and soak commands describe the portal arrival at the landing site, and past describes the patterns people noticed. Arrival history now reads the landform used for the selected region instead of drawing it again from the world seed.
 
 ## 2026-11-27: what a person feels leans how they break (OST-549)
 
