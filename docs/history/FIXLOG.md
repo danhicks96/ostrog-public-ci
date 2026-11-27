@@ -1,5 +1,10 @@
 # Fix log
 
+## 2026-11-27: personal food fell to the ground when a walk ended near home
+
+- Ordinary walks near camp emptied every carried food stack. Two people left freshly foraged berries by a pond after walking there. The fruit rotted and fouled the water below.
+- A whole-community move now gives each carrier an order for the exact stack packed from the stores. They carry the remaining provisions to the new camp and can eat along the way. Personal rations stay with their owner when a walk ends. An old save with a walk already underway keeps its carried food.
+
 ## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
 
 - Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten

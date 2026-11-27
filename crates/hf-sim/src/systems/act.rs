@@ -59,24 +59,9 @@ pub fn step(w: &mut World) {
                     }
                 }
             }
-            Activity::Wandering { to } => {
+            Activity::Wandering { .. } => {
                 let a = &w.agents[i];
                 if a.path_blocked || (a.path.is_empty() && !a.is_moving()) {
-                    let _ = to;
-                    // What they carried to the new camp is set down there (C72).
-                    let id = a.id;
-                    let here = a.pos;
-                    let at_home = a
-                        .community
-                        .and_then(|c| w.communities.iter().find(|x| x.id == c))
-                        .is_some_and(|c| c.home.dist(here) <= 8);
-                    if at_home {
-                        for it in w.items.iter_mut() {
-                            if it.place == ItemPlace::Carried(id) && it.kind.is_food() {
-                                it.place = ItemPlace::Ground(here);
-                            }
-                        }
-                    }
                     finish(w, i, 20);
                 }
             }

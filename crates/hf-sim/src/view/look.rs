@@ -155,7 +155,7 @@ pub fn look(w: &World, a: &Agent) -> Look {
                 Some(DesignationKind::Chop) | Some(DesignationKind::Hunt(_)) => 1,
                 Some(DesignationKind::Sow) | Some(DesignationKind::Harvest) => 3,
                 Some(DesignationKind::Cook) => 5,
-                Some(DesignationKind::Haul) => -1, // the carried stack is drawn instead
+                Some(DesignationKind::Haul | DesignationKind::DeliverProvisions(_)) => -1, // the carried stack is drawn instead
                 // Hands on the patient (#485): nothing is carried that the tending does not use;
                 // before this a healer was drawn with the builder's bundle of materials.
                 Some(DesignationKind::Tend(_)) => -1,

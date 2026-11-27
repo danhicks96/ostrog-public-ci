@@ -72,6 +72,8 @@ pub enum DesignationKind {
     DigChannel,
     /// Appended (#286): pull the weed on this tile out by the root; nothing of it is kept.
     Uproot,
+    /// Carry the stores packed for a whole-community move to its new camp.
+    DeliverProvisions(crate::ids::ItemId),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
@@ -177,6 +179,7 @@ impl Designation {
             DesignationKind::DigEarth => "clay pit".into(),
             DesignationKind::DigChannel => "channel".into(),
             DesignationKind::Engrave => "carving".into(),
+            DesignationKind::DeliverProvisions(_) => "bringing provisions to the new camp".into(),
             DesignationKind::Haul => "hauling".into(),
             DesignationKind::Cook => "cooking".into(),
             DesignationKind::Hunt(_) => "hunting".into(),

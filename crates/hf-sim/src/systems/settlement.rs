@@ -49,7 +49,14 @@ pub fn step(w: &mut World) {
     let gone = crate::work::split_off(&mut ds, |d| {
         let stale_haul = d.kind == DesignationKind::Haul && !ground.contains(&d.pos);
         let stale_hunt = matches!(d.kind, DesignationKind::Hunt(prey) if !living.contains(&prey));
-        !d.done && (d.failures <= 12 || fey_works.contains(&d.id)) && !stale_haul && !stale_hunt
+        let stale_provisions = matches!(d.kind, DesignationKind::DeliverProvisions(item) if crate::work::planner::provision_stack(w, d, item).is_none());
+        !stale_provisions
+            && !d.done
+            && (d.failures <= 12
+                || matches!(d.kind, DesignationKind::DeliverProvisions(_))
+                || fey_works.contains(&d.id))
+            && !stale_haul
+            && !stale_hunt
     });
     w.designations = ds;
     w.give_back(gone);
@@ -3402,7 +3409,7 @@ fn site_tile(w: &World, p: TilePos) -> bool {
         d.pos == p
             && !matches!(
                 d.kind,
-                DesignationKind::Haul
+                DesignationKind::Haul | DesignationKind::DeliverProvisions(_)
                     | DesignationKind::Chop
                     | DesignationKind::Mine
                     | DesignationKind::Sow
@@ -3602,7 +3609,7 @@ pub fn make(w: &mut World, kind: DesignationKind, pos: TilePos, priority: u8) ->
         DesignationKind::DigEarth => (times::DIG_EARTH, vec![]),
         DesignationKind::DigChannel => (times::DIG_CHANNEL, vec![]),
         DesignationKind::Engrave => (times::ENGRAVE, vec![]),
-        DesignationKind::Haul => (0, vec![]),
+        DesignationKind::Haul | DesignationKind::DeliverProvisions(_) => (0, vec![]),
         DesignationKind::Cook => (times::COOK, vec![]),
     };
     Designation {

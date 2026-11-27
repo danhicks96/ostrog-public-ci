@@ -61,7 +61,9 @@ pub fn act_of(w: &World, a: &Agent, secured: bool) -> Option<ActKind> {
                 .find(|d| d.id == plan.designation)
                 .map(|d| &d.kind);
             return match kind {
-                Some(DesignationKind::Haul) => Some(ActKind::CarryingForStore),
+                Some(DesignationKind::Haul | DesignationKind::DeliverProvisions(_)) => {
+                    Some(ActKind::CarryingForStore)
+                }
                 Some(DesignationKind::Tend(_)) => Some(ActKind::Tending),
                 Some(
                     DesignationKind::BuildWall(_)

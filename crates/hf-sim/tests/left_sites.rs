@@ -405,3 +405,302 @@ fn the_tools_left_at_the_old_camp_teach_their_craft() {
         "a curious member of another community studies the smith's tool and learns smithing"
     );
 }
+
+/// A real whole-community move packs one split and one whole stack. Each mover already
+/// has food of the same kind, which must stay theirs throughout the trip.
+fn packed_move() -> (World, Vec<hf_sim::ids::ItemId>, hf_sim::ids::ItemId) {
+    let (mut w, cid) = big_valley(7204);
+    let home = ready_to_move(&mut w, cid);
+    w.items.retain(|it| !it.kind.is_food());
+    let members: Vec<_> = w
+        .agents
+        .iter()
+        .filter(|a| a.community == Some(cid))
+        .map(|a| a.id)
+        .collect();
+    for id in &members {
+        w.create_item(
+            ItemKind::Berries,
+            1,
+            ItemPlace::Carried(*id),
+            0.5,
+            "personal forage",
+        );
+    }
+    let personal = members
+        .iter()
+        .map(|id| {
+            w.create_item(
+                ItemKind::GrainSheaf,
+                1,
+                ItemPlace::Carried(*id),
+                0.2,
+                "ration",
+            )
+        })
+        .collect();
+    let source = w.create_item(
+        ItemKind::GrainSheaf,
+        7,
+        ItemPlace::Ground(home),
+        0.8,
+        "stores",
+    );
+    hf_sim::systems::moving::consider(&mut w, cid);
+    assert_ne!(
+        w.communities.iter().find(|c| c.id == cid).unwrap().home,
+        home
+    );
+    (w, personal, source)
+}
+
+#[test]
+fn packed_food_survives_a_journey_reload_and_only_the_remaining_parcels_are_delivered() {
+    use hf_sim::work::DesignationKind::DeliverProvisions;
+    let (mut w, personal, source) = packed_move();
+    let cargo: Vec<_> = w
+        .designations
+        .iter()
+        .filter_map(|d| match d.kind {
+            DeliverProvisions(id) => Some((id, d.owner.unwrap(), d.pos)),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(cargo.len(), 2);
+    let packing_events = w.events.drain();
+    for (_, who, _) in &cargo {
+        assert!(packing_events.iter().any(|e| matches!(&e.kind, EventKind::Chose {agent, what, ..} if agent == who && what.contains("grain for the road"))));
+    }
+    let &(split, _, dest) = cargo.iter().find(|(id, _, _)| *id != source).unwrap();
+    assert!(cargo.iter().any(|(id, _, _)| *id == source));
+    for (id, who, _) in &cargo {
+        assert_eq!(
+            w.items.iter().find(|it| it.id == *id).unwrap().place,
+            ItemPlace::Carried(*who)
+        );
+        let carrier = w.agents.iter().find(|a| a.id == *who).unwrap();
+        assert!(matches!(
+            carrier.activity,
+            hf_sim::mind::Activity::Working { .. }
+        ));
+        assert_eq!(
+            hf_sim::mind::acts::act_of(&w, carrier, false),
+            Some(hf_sim::mind::acts::ActKind::CarryingForStore)
+        );
+        assert_eq!(hf_sim::view::look::look(&w, carrier).equipment, -1);
+    }
+    w.consume_item(split, 1, "ate on the road");
+    let stored = w.create_item(
+        ItemKind::GrainSheaf,
+        1,
+        ItemPlace::Ground(dest),
+        0.5,
+        "camp store",
+    );
+    for _ in 0..5 {
+        w.meta.tick += 1;
+        hf_sim::systems::movement::step(&mut w);
+        hf_sim::systems::act::step(&mut w);
+    }
+    let bytes = hf_sim::save::encode(&hf_sim::save::snapshot::Snapshot::capture(&w)).unwrap();
+    let mut loaded = hf_sim::save::decode(&bytes).unwrap().restore();
+    assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&loaded));
+    loaded.ensure_nav();
+    for _ in 0..4000 {
+        loaded.meta.tick += 1;
+        hf_sim::systems::movement::step(&mut loaded);
+        hf_sim::systems::act::step(&mut loaded);
+        if loaded
+            .designations
+            .iter()
+            .filter(|d| matches!(d.kind, DeliverProvisions(_)))
+            .all(|d| d.done)
+        {
+            break;
+        }
+    }
+    let events = loaded.events.drain();
+    for (id, who, _) in cargo {
+        assert_eq!(events.iter().filter(|e| matches!(e.kind,EventKind::Hauled {agent,item,to} if agent==who && item==id && to==dest)).count(),1);
+    }
+    assert_eq!(
+        loaded
+            .items
+            .iter()
+            .find(|it| it.id == stored)
+            .unwrap()
+            .count,
+        7
+    );
+    for id in personal {
+        let it = loaded.items.iter().find(|it| it.id == id).unwrap();
+        assert!(matches!(it.place, ItemPlace::Carried(_)));
+        assert_eq!(it.count, 1);
+    }
+}
+
+#[test]
+fn expired_provision_orders_leave_food_with_its_actual_holder() {
+    use hf_sim::work::DesignationKind::DeliverProvisions;
+    let (w, _, _) = packed_move();
+    let order = w
+        .designations
+        .iter()
+        .find(|d| matches!(d.kind, DeliverProvisions(_)))
+        .unwrap();
+    let DeliverProvisions(item) = order.kind else {
+        unreachable!()
+    };
+    let (did, owner, cid) = (order.id, order.owner.unwrap(), order.community.unwrap());
+    let bytes = hf_sim::save::encode(&hf_sim::save::snapshot::Snapshot::capture(&w)).unwrap();
+    for failure in ["eaten", "transferred", "death", "departed", "moved again"] {
+        let mut w = hf_sim::save::decode(&bytes).unwrap().restore();
+        let i = w.agents.iter().position(|a| a.id == owner).unwrap();
+        match failure {
+            "eaten" => {
+                w.consume_item(item, u32::MAX, "eaten");
+            }
+            "transferred" => {
+                let other = w.agents.iter().find(|a| a.id != owner).unwrap().id;
+                w.items.iter_mut().find(|it| it.id == item).unwrap().place =
+                    ItemPlace::Carried(other);
+            }
+            "death" => w.agents[i].alive = false,
+            "departed" => {
+                let a = w.agents.remove(i);
+                w.overworld.away.push(a);
+            }
+            "moved again" => {
+                let c = w.communities.iter_mut().find(|c| c.id == cid).unwrap();
+                c.home = c.home.offset(12, 3, 0);
+            }
+            _ => unreachable!(),
+        }
+        let before = w
+            .items
+            .iter()
+            .find(|it| it.id == item)
+            .map(|it| (it.place, it.count));
+        w.meta.tick = TICKS_PER_HOUR * (w.tick() / TICKS_PER_HOUR + 1);
+        w.ensure_nav();
+        hf_sim::systems::settlement::step(&mut w);
+        assert!(!w.designations.iter().any(|d| d.id == did), "{failure}");
+        assert_eq!(
+            before,
+            w.items
+                .iter()
+                .find(|it| it.id == item)
+                .map(|it| (it.place, it.count)),
+            "{failure}"
+        );
+    }
+}
+
+#[test]
+fn finishing_an_ordinary_walk_keeps_personal_food() {
+    let (mut w, cid) = big_valley(7224);
+    let i = w
+        .agents
+        .iter()
+        .position(|a| a.community == Some(cid))
+        .unwrap();
+    let (who, here) = (w.agents[i].id, w.agents[i].pos);
+    let id = w.create_item(ItemKind::Berries, 2, ItemPlace::Carried(who), 0.5, "forage");
+    w.agents[i].set_activity(hf_sim::mind::Activity::Wandering { to: here });
+    hf_sim::systems::act::step(&mut w);
+    assert!(matches!(w.agents[i].activity, hf_sim::mind::Activity::Idle));
+    assert_eq!(
+        w.items.iter().find(|it| it.id == id).unwrap().place,
+        ItemPlace::Carried(who)
+    );
+}
+
+#[test]
+fn a_blocked_camp_can_receive_the_same_parcel_after_the_route_reopens() {
+    use hf_sim::work::DesignationKind::DeliverProvisions;
+    let (mut w, _, _) = packed_move();
+    let d = w
+        .designations
+        .iter()
+        .find(|d| matches!(d.kind, DeliverProvisions(_)))
+        .unwrap()
+        .clone();
+    let owner = d.owner.unwrap();
+    let DeliverProvisions(item) = d.kind else {
+        unreachable!()
+    };
+    let tile = w.grid.get(d.pos);
+    w.grid
+        .set(d.pos, hf_sim::world::Tile::solid(Material::LIMESTONE));
+    w.rebuild_caches();
+    w.ensure_nav();
+    assert!(hf_sim::work::planner::plan_for(&w, owner, &d).is_none());
+    // Let the admitted worker encounter the obstacle and return to ordinary work selection.
+    let i = w.agents.iter().position(|a| a.id == owner).unwrap();
+    w.agents[i].path.clear();
+    w.agents[i].path_blocked = true;
+    hf_sim::systems::act::step(&mut w);
+    assert!(!matches!(
+        w.agents[i].activity,
+        hf_sim::mind::Activity::Working { .. }
+    ));
+    assert_eq!(
+        w.items.iter().find(|it| it.id == item).unwrap().place,
+        ItemPlace::Carried(owner)
+    );
+    assert!(w.designations.iter().any(|x| x.id == d.id && !x.done));
+    assert!(w.agents[i].work_cooldowns[&d.id.0] > w.tick());
+    // Repeated path failures must not discard a parcel that its owner still carries.
+    w.designations
+        .iter_mut()
+        .find(|x| x.id == d.id)
+        .unwrap()
+        .failures = 14;
+    w.meta.tick += TICKS_PER_HOUR - w.meta.tick % TICKS_PER_HOUR;
+    hf_sim::systems::settlement::step(&mut w);
+    assert!(w
+        .designations
+        .iter()
+        .any(|x| x.id == d.id && x.failures > 12));
+    w.grid.set(d.pos, tile);
+    w.rebuild_caches();
+    w.ensure_nav();
+    assert!(hf_sim::work::planner::plan_for(&w, owner, &d).is_some());
+    for _ in 0..TICKS_PER_DAY {
+        w.meta.tick += 1;
+        hf_sim::systems::decide::step(&mut w);
+        hf_sim::systems::movement::step(&mut w);
+        hf_sim::systems::act::step(&mut w);
+        if w.designations
+            .iter()
+            .any(|order| order.id == d.id && order.done)
+        {
+            break;
+        }
+    }
+    assert!(w.events.drain().iter().any(|e| matches!(e.kind, EventKind::Hauled{agent, item: moved,to} if agent==owner && moved==item && to==d.pos)));
+}
+
+#[test]
+fn adding_provision_orders_preserves_the_old_saved_order_indices() {
+    use hf_sim::work::DesignationKind::{DeliverProvisions, Uproot};
+    // Uproot was the last variant in the pre-delivery world digest format.
+    let old = 27_u32.to_le_bytes();
+    assert_eq!(
+        bincode::deserialize::<hf_sim::work::DesignationKind>(&old).unwrap(),
+        Uproot
+    );
+    assert_eq!(bincode::serialize(&Uproot).unwrap(), old);
+    let delivery = DeliverProvisions(hf_sim::ids::ItemId(412));
+    assert_eq!(
+        &bincode::serialize(&delivery).unwrap()[..4],
+        &28_u32.to_le_bytes()
+    );
+    assert_eq!(
+        rmp_serde::from_slice::<hf_sim::work::DesignationKind>(
+            &rmp_serde::to_vec_named(&delivery).unwrap()
+        )
+        .unwrap(),
+        delivery
+    );
+}

@@ -341,8 +341,13 @@ pub fn wonder(w: &mut World) {
 }
 
 /// What a moving community carries (C72): each who goes takes a stack of food from the old
-/// stores, up to four, for the road and the new camp; set down there on arrival (act.rs).
-pub fn carry(w: &mut World, going: &[crate::ids::AgentId], home: TilePos) {
+/// stores, up to four, for the road. The move gives the carrier a delivery order for this stack.
+pub fn carry(
+    w: &mut World,
+    going: &[crate::ids::AgentId],
+    home: TilePos,
+) -> Vec<(crate::ids::AgentId, crate::ids::ItemId)> {
+    let mut packed = Vec::new();
     let tick = w.meta.tick;
     let mut stacks: Vec<usize> = (0..w.items.len())
         .filter(|&k| {
@@ -357,10 +362,11 @@ pub fn carry(w: &mut World, going: &[crate::ids::AgentId], home: TilePos) {
     stacks.sort_by_key(|&k| w.items[k].id);
     for m in going {
         let Some(k) = stacks.pop() else { break };
-        let (id, count) = (w.items[k].id, w.items[k].count);
+        let (kind, count) = (w.items[k].kind, w.items[k].count);
         let take = count.min(4);
-        if take == count {
+        let id = if take == count {
             w.items[k].place = crate::items::ItemPlace::Carried(*m);
+            w.items[k].id
         } else {
             w.items[k].count -= take;
             let mut part = w.items[k].clone();
@@ -368,16 +374,13 @@ pub fn carry(w: &mut World, going: &[crate::ids::AgentId], home: TilePos) {
             part.count = take;
             part.place = crate::items::ItemPlace::Carried(*m);
             part.story = None;
+            let id = part.id;
             w.items.push(part);
             stacks.push(k);
-        }
-        let _ = id;
-        let label = w
-            .items
-            .iter()
-            .find(|it| it.place == crate::items::ItemPlace::Carried(*m))
-            .map(|it| it.kind.label())
-            .unwrap_or("food");
+            id
+        };
+        packed.push((*m, id));
+        let label = kind.label();
         if let Some(a) = w.agents.iter().find(|a| a.id == *m) {
             let pos = a.pos;
             w.events.push(
@@ -392,6 +395,7 @@ pub fn carry(w: &mut World, going: &[crate::ids::AgentId], home: TilePos) {
             );
         }
     }
+    packed
 }
 
 pub fn step(w: &mut World) {

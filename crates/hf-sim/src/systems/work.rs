@@ -241,11 +241,25 @@ pub fn run(w: &mut World, i: usize) -> bool {
             if !near3(here, to) {
                 return abort(w, i, "not at the drop point");
             }
-            let Some(ix) = w
-                .items
-                .iter()
-                .position(|it| it.place == ItemPlace::Carried(who) && it.kind == kind)
-            else {
+            let delivery = match w.designations[dix].kind {
+                DesignationKind::DeliverProvisions(id) => {
+                    if here != to || !w.grid.walkable(to) {
+                        return abort(w, i, "the camp drop point is blocked");
+                    }
+                    if crate::work::planner::provision_stack(w, &w.designations[dix], id).is_none()
+                    {
+                        w.designations[dix].done = true;
+                        return abort(w, i, "provisions no longer bound for this camp");
+                    }
+                    Some(id)
+                }
+                _ => None,
+            };
+            let Some(ix) = w.items.iter().position(|it| {
+                it.place == ItemPlace::Carried(who)
+                    && it.kind == kind
+                    && delivery.is_none_or(|id| it.id == id)
+            }) else {
                 return abort(w, i, "nothing carried");
             };
             match for_site {
@@ -304,7 +318,7 @@ pub fn run(w: &mut World, i: usize) -> bool {
                 None => {
                     // Into a same-kind stack on the tile, else beside it (`put_down`).
                     let id = w.items[ix].id;
-                    put_down(w, ix, to);
+                    let survivor = put_down(w, ix, to);
                     w.events.push(
                         tick,
                         Some(to),
@@ -316,11 +330,19 @@ pub fn run(w: &mut World, i: usize) -> bool {
                         },
                     );
                     w.agents[i].knowledge.note(
-                        crate::mind::knowledge::Known::Item(id),
+                        crate::mind::knowledge::Known::Item(if delivery.is_some() {
+                            survivor
+                        } else {
+                            id
+                        }),
                         to,
                         tick,
                         kind as u16,
                     );
+                    if delivery.is_some() {
+                        w.designations[dix].done = true;
+                        return finish(w, i);
+                    }
                 }
             }
             advance(w, i);
@@ -722,7 +744,7 @@ pub fn skill_for(kind: DesignationKind) -> Skill {
         DesignationKind::Douse | DesignationKind::BeatOut | DesignationKind::FetchWater => {
             Skill::Hauling
         }
-        DesignationKind::Haul => Skill::Hauling,
+        DesignationKind::Haul | DesignationKind::DeliverProvisions(_) => Skill::Hauling,
         _ => Skill::Construction,
     }
 }
@@ -765,6 +787,11 @@ fn abort(w: &mut World, i: usize, reason: &str) -> bool {
     if let Some(did) = did {
         if let Some(d) = w.designations.iter_mut().find(|d| d.id == did) {
             d.failures += 1;
+            if matches!(d.kind, DesignationKind::DeliverProvisions(_)) {
+                w.agents[i]
+                    .work_cooldowns
+                    .insert(did.0, w.meta.tick + crate::time::TICKS_PER_HOUR / 4);
+            }
         }
     }
     w.reservations.release_all(who);
@@ -2005,7 +2032,7 @@ fn apply_effect(
                 }
             }
         }
-        DesignationKind::Haul => {}
+        DesignationKind::Haul | DesignationKind::DeliverProvisions(_) => {}
     }
     if uses_tool(d.kind) && w.agents[i].tool.is_some() {
         crate::legend::used(w, i, d.kind);
@@ -2022,7 +2049,7 @@ fn apply_effect(
 /// both fit the kind's stack, averaging its quality and rot, else beside it. A thing with a
 /// story is put down beside a stack, never into one, nor a stack into it: either way one story
 /// would be lost or stand for many things (legend.rs).
-pub fn put_down(w: &mut World, ix: usize, to: crate::ids::TilePos) {
+pub fn put_down(w: &mut World, ix: usize, to: crate::ids::TilePos) -> crate::ids::ItemId {
     let id = w.items[ix].id;
     let n = w.items[ix].count;
     let kind = w.items[ix].kind;
@@ -2045,9 +2072,12 @@ pub fn put_down(w: &mut World, ix: usize, to: crate::ids::TilePos) {
         // target's quality, so ten fine meals on ten crude made twenty crude).
         w.items[tx].quality = (w.items[tx].quality * a + w.items[ix].quality * b) / (a + b);
         w.items[tx].count += n;
+        let target = w.items[tx].id;
         w.items.remove(ix);
+        target
     } else {
         w.items[ix].place = ItemPlace::Ground(to);
+        id
     }
 }
 

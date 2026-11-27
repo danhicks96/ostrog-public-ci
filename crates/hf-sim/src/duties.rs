@@ -77,7 +77,7 @@ pub fn kind_of(k: DesignationKind) -> Option<Role> {
         K::Sow | K::Harvest => Role::Farmer,
         K::Cook => Role::Cook,
         K::Mine | K::DigStairs | K::DigEarth | K::DigChannel => Role::Miner,
-        K::Haul | K::FetchWater => Role::Hauler,
+        K::Haul | K::DeliverProvisions(_) | K::FetchWater => Role::Hauler,
         K::Tend(_) => Role::Healer,
         _ => return None,
     })
@@ -106,7 +106,7 @@ pub fn fit(held: &[Role], k: DesignationKind) -> f32 {
         K::Sow | K::Harvest if own(Role::Farmer) => 1.5,
         K::Cook if own(Role::Cook) => 1.6,
         K::Mine | K::DigStairs if own(Role::Miner) => 1.5,
-        K::Haul if own(Role::Hauler) => 1.5,
+        K::Haul | K::DeliverProvisions(_) if own(Role::Hauler) => 1.5,
         K::Tend(_) if own(Role::Healer) => 1.5,
         _ if specialised => 0.8,
         _ => 1.0,

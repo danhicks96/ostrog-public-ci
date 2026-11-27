@@ -978,6 +978,7 @@ Shown as the activity of someone working. `{label}` is the designation label (ne
 | Haul | hauling to the stockpile |
 | Cook | cooking |
 | any, while only fetching materials | fetching materials for the {label} |
+| DeliverProvisions | carrying provisions to the new camp |
 | Chop | felling a tree |
 | ClearRoof | clearing snow off the roof |
 | Uproot | pulling a weed |
@@ -1019,6 +1020,7 @@ Designation labels (`work/designation.rs` `label`):
 | DigEarth | clay pit |
 | DigChannel | channel |
 | Engrave | carving |
+| DeliverProvisions | bringing provisions to the new camp |
 | Haul | hauling |
 | Cook | cooking |
 | Hunt | hunting |
@@ -1397,7 +1399,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3258 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1925,9 +1927,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | left_sites.rs:283 | the {dir} |
 | left_sites.rs:284 | a worn path leading out |
 | left_sites.rs:287 | nothing left to read |
-| left_sites.rs:380 | food |
-| left_sites.rs:389 | took {take} {label} for the road |
-| left_sites.rs:390 | the stores were theirs to carry |
+| left_sites.rs:392 | took {take} {label} for the road |
+| left_sites.rs:393 | the stores were theirs to carry |
 | legend.rs:100 | {:?} of year {} |
 | legend.rs:110 | iron tool |
 | legend.rs:111 | copper tool |
@@ -3148,15 +3149,15 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | save/mod.rs:197 | {}.{i}.hfsave |
 | systems/act.rs:50 | path blocked |
 | systems/act.rs:58 | did not arrive |
-| systems/act.rs:109 | no water here |
-| systems/act.rs:126 | food gone |
-| systems/act.rs:136 | food moved |
-| systems/act.rs:142 | eat |
-| systems/act.rs:186 | nothing to gather |
-| systems/act.rs:221 | forage |
-| systems/act.rs:284 | the bed was taken |
-| systems/act.rs:370 | they left |
-| systems/act.rs:543 | a poisoning from {} |
+| systems/act.rs:94 | no water here |
+| systems/act.rs:111 | food gone |
+| systems/act.rs:121 | food moved |
+| systems/act.rs:127 | eat |
+| systems/act.rs:171 | nothing to gather |
+| systems/act.rs:206 | forage |
+| systems/act.rs:269 | the bed was taken |
+| systems/act.rs:355 | they left |
+| systems/act.rs:528 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |
@@ -3338,22 +3339,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:832 | gave up on {} for now; back to it {when} |
 | systems/decide.rs:914 | no path |
 | systems/decide.rs:972 | the stores are ours |
-| systems/decide.rs:1209 | no path |
-| systems/decide.rs:1474 | no way there they know of |
-| systems/decide.rs:1476 | in the flood's way |
-| systems/decide.rs:1482 | found no way there lately |
-| systems/decide.rs:1622 | the ground there is under water |
-| systems/decide.rs:1623 | someone else is already at it |
-| systems/decide.rs:1626 | off work since they broke down |
-| systems/decide.rs:1628 | weighs nothing now |
-| systems/decide.rs:2606 | hunger |
-| systems/decide.rs:2611 | thirst |
-| systems/decide.rs:2616 | tiredness |
-| systems/decide.rs:2621 | days of food in store |
-| systems/decide.rs:2626 | night near with no bed or roof |
-| systems/decide.rs:2631 | arrival urge |
-| systems/decide.rs:2636 | leisure weight |
-| systems/decide.rs:2645 | nothing |
+| systems/decide.rs:1217 | no path |
+| systems/decide.rs:1482 | no way there they know of |
+| systems/decide.rs:1484 | in the flood's way |
+| systems/decide.rs:1490 | found no way there lately |
+| systems/decide.rs:1632 | the ground there is under water |
+| systems/decide.rs:1633 | someone else is already at it |
+| systems/decide.rs:1636 | off work since they broke down |
+| systems/decide.rs:1638 | weighs nothing now |
+| systems/decide.rs:2623 | hunger |
+| systems/decide.rs:2628 | thirst |
+| systems/decide.rs:2633 | tiredness |
+| systems/decide.rs:2638 | days of food in store |
+| systems/decide.rs:2643 | night near with no bed or roof |
+| systems/decide.rs:2648 | arrival urge |
+| systems/decide.rs:2653 | leisure weight |
+| systems/decide.rs:2662 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |
@@ -3472,20 +3473,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moving.rs:339 | does not trust {leader_name} |
 | systems/moving.rs:341 | this is home |
 | systems/moving.rs:343 | saw no reason to go |
-| systems/moving.rs:500 | the world beyond |
-| systems/moving.rs:548 | four |
-| systems/moving.rs:549 | five |
-| systems/moving.rs:550 | six |
-| systems/moving.rs:551 | seven |
-| systems/moving.rs:552 | eight |
-| systems/moving.rs:553 | nine |
-| systems/moving.rs:554 | ten |
-| systems/moving.rs:584 | left the valley for {to} |
-| systems/moving.rs:595 | #last |
-| systems/moving.rs:602 | died out |
-| systems/moving.rs:604 | died out ({d}) |
-| systems/moving.rs:636 | {}: they {how}. |
-| systems/moving.rs:639 |  /  |
+| systems/moving.rs:512 | the world beyond |
+| systems/moving.rs:560 | four |
+| systems/moving.rs:561 | five |
+| systems/moving.rs:562 | six |
+| systems/moving.rs:563 | seven |
+| systems/moving.rs:564 | eight |
+| systems/moving.rs:565 | nine |
+| systems/moving.rs:566 | ten |
+| systems/moving.rs:596 | left the valley for {to} |
+| systems/moving.rs:607 | #last |
+| systems/moving.rs:614 | died out |
+| systems/moving.rs:616 | died out ({d}) |
+| systems/moving.rs:648 | {}: they {how}. |
+| systems/moving.rs:651 |  /  |
 | systems/projects.rs:28 | a carpenter's bench |
 | systems/projects.rs:29 | a loom |
 | systems/projects.rs:30 | a smelter |
@@ -3564,25 +3565,25 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/rites.rs:336 | {} stood with them |
 | systems/rites.rs:338 | plain |
 | systems/rites.rs:340 | plain |
-| systems/settlement.rs:421 | , dug down into the ground for want of a rock face |
-| systems/settlement.rs:444 | , and no rock face near to dig into nor ground to dig down |
-| systems/settlement.rs:568 | added to |
-| systems/settlement.rs:580 | marked out |
-| systems/settlement.rs:1583 | gave up on the {} |
-| systems/settlement.rs:1586 | found no place for it on their own ground |
-| systems/settlement.rs:2256 | upper room for {} |
-| systems/settlement.rs:2616 | walls up |
-| systems/settlement.rs:2617 | mended |
-| systems/settlement.rs:2618 | roofed |
-| systems/settlement.rs:2633 | roofed |
-| systems/settlement.rs:2656 | upper room roofed; a way of building upward was learned |
-| systems/settlement.rs:2942 | east |
-| systems/settlement.rs:2943 | west |
-| systems/settlement.rs:2944 | south |
-| systems/settlement.rs:2945 | north |
-| systems/settlement.rs:4262 | a need for another room |
-| systems/settlement.rs:4264 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
-| systems/settlement.rs:4329 | We {label}, as our first house was built. |
+| systems/settlement.rs:428 | , dug down into the ground for want of a rock face |
+| systems/settlement.rs:451 | , and no rock face near to dig into nor ground to dig down |
+| systems/settlement.rs:575 | added to |
+| systems/settlement.rs:587 | marked out |
+| systems/settlement.rs:1590 | gave up on the {} |
+| systems/settlement.rs:1593 | found no place for it on their own ground |
+| systems/settlement.rs:2263 | upper room for {} |
+| systems/settlement.rs:2623 | walls up |
+| systems/settlement.rs:2624 | mended |
+| systems/settlement.rs:2625 | roofed |
+| systems/settlement.rs:2640 | roofed |
+| systems/settlement.rs:2663 | upper room roofed; a way of building upward was learned |
+| systems/settlement.rs:2949 | east |
+| systems/settlement.rs:2950 | west |
+| systems/settlement.rs:2951 | south |
+| systems/settlement.rs:2952 | north |
+| systems/settlement.rs:4269 | a need for another room |
+| systems/settlement.rs:4271 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
+| systems/settlement.rs:4336 | We {label}, as our first house was built. |
 | systems/society.rs:265 | carried off |
 | systems/society.rs:385 | they hold that other kinds are best kept apart, and most here are {plural} |
 | systems/society.rs:397 | strangers are not taken in |
@@ -3642,55 +3643,57 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:203 | item gone |
 | systems/work.rs:211 | item moved |
 | systems/work.rs:242 | not at the drop point |
-| systems/work.rs:249 | nothing carried |
-| systems/work.rs:258 | site gone |
-| systems/work.rs:288 | delivered |
-| systems/work.rs:342 | the prey is gone |
-| systems/work.rs:358 | not at the site |
-| systems/work.rs:361 | materials missing |
-| systems/work.rs:418 | from a slipped axe |
-| systems/work.rs:423 | from falling stone |
-| systems/work.rs:428 | at the building site |
-| systems/work.rs:484 | building |
-| systems/work.rs:484 | digging |
-| systems/work.rs:560 | the old valley |
-| systems/work.rs:586 | studying the {what} left at {site} |
-| systems/work.rs:1085 | chop |
-| systems/work.rs:1167 | mine |
-| systems/work.rs:1169 | iron ore |
-| systems/work.rs:1178 | mine |
-| systems/work.rs:1180 | copper ore |
-| systems/work.rs:1183 | mine |
-| systems/work.rs:1193 | mine |
-| systems/work.rs:1195 | coal |
-| systems/work.rs:1215 | mine |
-| systems/work.rs:1223 | mine |
-| systems/work.rs:1225 | rough gems |
-| systems/work.rs:1236 | mine |
-| systems/work.rs:1265 | {f} here |
-| systems/work.rs:1284 | {}, a cavern grown with pale fungus{} |
-| systems/work.rs:1286 |  around a still pool |
-| systems/work.rs:1289 | a cave |
-| systems/work.rs:1364 | dig |
-| systems/work.rs:1380 | a way down |
-| systems/work.rs:1416 | dig |
-| systems/work.rs:1473 | harvest |
-| systems/work.rs:1575 | beating at a fire |
-| systems/work.rs:1587 | poultice |
-| systems/work.rs:1691 | {n} {} |
-| systems/work.rs:1693 |  and  |
-| systems/work.rs:1763 | craft |
-| systems/work.rs:1772 | craft |
-| systems/work.rs:1799 | set with a {gem_name} |
-| systems/work.rs:1853 | cook |
-| systems/work.rs:1866 | cook |
-| systems/work.rs:1929 | from a boar's tusk |
-| systems/work.rs:1931 | from a wolf's bite |
-| systems/work.rs:1947 | hunted |
-| systems/work.rs:1971 | hunt |
-| systems/work.rs:1979 | hunt |
-| systems/work.rs:2112 | set about putting a lamp where they work below |
-| systems/work.rs:2113 | because it is too dark down there to see the rock |
+| systems/work.rs:247 | the camp drop point is blocked |
+| systems/work.rs:252 | provisions no longer bound for this camp |
+| systems/work.rs:263 | nothing carried |
+| systems/work.rs:272 | site gone |
+| systems/work.rs:302 | delivered |
+| systems/work.rs:364 | the prey is gone |
+| systems/work.rs:380 | not at the site |
+| systems/work.rs:383 | materials missing |
+| systems/work.rs:440 | from a slipped axe |
+| systems/work.rs:445 | from falling stone |
+| systems/work.rs:450 | at the building site |
+| systems/work.rs:506 | building |
+| systems/work.rs:506 | digging |
+| systems/work.rs:582 | the old valley |
+| systems/work.rs:608 | studying the {what} left at {site} |
+| systems/work.rs:1112 | chop |
+| systems/work.rs:1194 | mine |
+| systems/work.rs:1196 | iron ore |
+| systems/work.rs:1205 | mine |
+| systems/work.rs:1207 | copper ore |
+| systems/work.rs:1210 | mine |
+| systems/work.rs:1220 | mine |
+| systems/work.rs:1222 | coal |
+| systems/work.rs:1242 | mine |
+| systems/work.rs:1250 | mine |
+| systems/work.rs:1252 | rough gems |
+| systems/work.rs:1263 | mine |
+| systems/work.rs:1292 | {f} here |
+| systems/work.rs:1311 | {}, a cavern grown with pale fungus{} |
+| systems/work.rs:1313 |  around a still pool |
+| systems/work.rs:1316 | a cave |
+| systems/work.rs:1391 | dig |
+| systems/work.rs:1407 | a way down |
+| systems/work.rs:1443 | dig |
+| systems/work.rs:1500 | harvest |
+| systems/work.rs:1602 | beating at a fire |
+| systems/work.rs:1614 | poultice |
+| systems/work.rs:1718 | {n} {} |
+| systems/work.rs:1720 |  and  |
+| systems/work.rs:1790 | craft |
+| systems/work.rs:1799 | craft |
+| systems/work.rs:1826 | set with a {gem_name} |
+| systems/work.rs:1880 | cook |
+| systems/work.rs:1893 | cook |
+| systems/work.rs:1956 | from a boar's tusk |
+| systems/work.rs:1958 | from a wolf's bite |
+| systems/work.rs:1974 | hunted |
+| systems/work.rs:1998 | hunt |
+| systems/work.rs:2006 | hunt |
+| systems/work.rs:2142 | set about putting a lamp where they work below |
+| systems/work.rs:2143 | because it is too dark down there to see the rock |
 | view/alive.rs:46 | died |
 | view/alive.rs:46 | captured |
 | view/alive.rs:46 | broke |
@@ -3753,49 +3756,49 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/alive.rs:247 | weapon |
 | view/alive.rs:248 | stoop |
 | view/alive.rs:248 | record |
-| view/alive.rs:256 | stoop |
-| view/alive.rs:256 | none |
-| view/alive.rs:936 | mood_median |
-| view/alive.rs:937 | mood_p10 |
-| view/alive.rs:938 | mood_hi |
-| view/alive.rs:939 | mood_lo |
-| view/alive.rs:940 | mood_clamped |
-| view/alive.rs:941 | mood_spread |
-| view/alive.rs:942 | mood_p25 |
-| view/alive.rs:943 | mood_p75 |
-| view/alive.rs:944 | mood_below_m03 |
-| view/alive.rs:945 | mood_term_needs |
-| view/alive.rs:946 | mood_term_recent |
-| view/alive.rs:947 | mood_term_long |
-| view/alive.rs:948 | mood_term_thoughts |
-| view/alive.rs:949 | standing_share |
-| view/alive.rs:950 | unreadable_share |
-| view/alive.rs:951 | work_share |
-| view/alive.rs:952 | talk_share |
-| view/alive.rs:953 | day_distance |
-| view/alive.rs:954 | act_entropy_sd |
-| view/alive.rs:956 | ties_saturated |
-| view/alive.rs:960 | ties_hostile |
-| view/alive.rs:963 | ties_frozen |
-| view/alive.rs:964 | ties_frozen_max_days |
-| view/alive.rs:966 | ties_to_dead_share |
-| view/alive.rs:969 | grief_drop_2d |
-| view/alive.rs:970 | grief_drop_10d |
-| view/alive.rs:971 | grief_days |
-| view/alive.rs:972 | grief_n |
-| view/alive.rs:973 | cause_repeat |
-| view/alive.rs:974 | lesson_ignored |
-| view/alive.rs:975 | glance_major_n |
-| view/alive.rs:976 | glance_missed_major |
-| view/alive.rs:977 | feed_lines_day |
-| view/alive.rs:978 | feed_folded_day |
-| view/alive.rs:981 | glance_missed_major_died |
-| view/alive.rs:982 | glance_missed_major_captured |
-| view/alive.rs:983 | glance_missed_major_broke |
-| view/alive.rs:984 | glance_missed_major_exiled |
-| view/alive.rs:985 | glance_missed_major_born |
-| view/alive.rs:986 | glance_missed_major_paired |
-| view/alive.rs:987 | glance_missed_major_returned |
+| view/alive.rs:257 | stoop |
+| view/alive.rs:257 | none |
+| view/alive.rs:937 | mood_median |
+| view/alive.rs:938 | mood_p10 |
+| view/alive.rs:939 | mood_hi |
+| view/alive.rs:940 | mood_lo |
+| view/alive.rs:941 | mood_clamped |
+| view/alive.rs:942 | mood_spread |
+| view/alive.rs:943 | mood_p25 |
+| view/alive.rs:944 | mood_p75 |
+| view/alive.rs:945 | mood_below_m03 |
+| view/alive.rs:946 | mood_term_needs |
+| view/alive.rs:947 | mood_term_recent |
+| view/alive.rs:948 | mood_term_long |
+| view/alive.rs:949 | mood_term_thoughts |
+| view/alive.rs:950 | standing_share |
+| view/alive.rs:951 | unreadable_share |
+| view/alive.rs:952 | work_share |
+| view/alive.rs:953 | talk_share |
+| view/alive.rs:954 | day_distance |
+| view/alive.rs:955 | act_entropy_sd |
+| view/alive.rs:957 | ties_saturated |
+| view/alive.rs:961 | ties_hostile |
+| view/alive.rs:964 | ties_frozen |
+| view/alive.rs:965 | ties_frozen_max_days |
+| view/alive.rs:967 | ties_to_dead_share |
+| view/alive.rs:970 | grief_drop_2d |
+| view/alive.rs:971 | grief_drop_10d |
+| view/alive.rs:972 | grief_days |
+| view/alive.rs:973 | grief_n |
+| view/alive.rs:974 | cause_repeat |
+| view/alive.rs:975 | lesson_ignored |
+| view/alive.rs:976 | glance_major_n |
+| view/alive.rs:977 | glance_missed_major |
+| view/alive.rs:978 | feed_lines_day |
+| view/alive.rs:979 | feed_folded_day |
+| view/alive.rs:982 | glance_missed_major_died |
+| view/alive.rs:983 | glance_missed_major_captured |
+| view/alive.rs:984 | glance_missed_major_broke |
+| view/alive.rs:985 | glance_missed_major_exiled |
+| view/alive.rs:986 | glance_missed_major_born |
+| view/alive.rs:987 | glance_missed_major_paired |
+| view/alive.rs:988 | glance_missed_major_returned |
 | view/away.rs:36 | welcomed |
 | view/away.rs:37 | threatened |
 | view/away.rs:38 | working |

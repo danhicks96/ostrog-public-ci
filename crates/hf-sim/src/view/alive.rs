@@ -247,6 +247,7 @@ pub fn work_drawn(kind: &crate::work::DesignationKind) -> (&'static str, &'stati
         K::Hunt(_) => ("stoop", "weapon"),
         K::Study(_) => ("stoop", "record"),
         K::ClearRoof
+        | K::DeliverProvisions(_)
         | K::Haul
         | K::Engrave
         | K::Fish

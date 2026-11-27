@@ -1150,7 +1150,12 @@ fn knows_food(w: &World, a: &crate::agents::Agent) -> bool {
 }
 
 /// Plan and lease a designation for agent `i`, or leave it for a while if that fails.
-fn start_work(w: &mut World, i: usize, did: crate::work::DesignationId, tick: u64) -> Activity {
+pub(super) fn start_work(
+    w: &mut World,
+    i: usize,
+    did: crate::work::DesignationId,
+    tick: u64,
+) -> Activity {
     let a_id = w.agents[i].id;
     let planned = w
         .designations
@@ -1188,8 +1193,11 @@ fn start_work(w: &mut World, i: usize, did: crate::work::DesignationId, tick: u6
             // An undertaking of their own that they cannot reach is given up, not left; a work
             // in a fey mood is the mood's to end (systems/moods.rs).
             if !busy && !crate::systems::moods::is_fey_work(w, did) {
-                w.designations
-                    .retain(|d| !(d.id == did && d.owner == Some(a_id)));
+                w.designations.retain(|d| {
+                    !(d.id == did
+                        && d.owner == Some(a_id)
+                        && !matches!(d.kind, crate::work::DesignationKind::DeliverProvisions(_)))
+                });
             }
             Activity::Loitering { ticks_left: 40 }
         }
@@ -1589,7 +1597,9 @@ fn choose(
                     Some(d)
                         if matches!(
                             d.kind,
-                            crate::work::DesignationKind::Haul | crate::work::DesignationKind::Cook
+                            crate::work::DesignationKind::Haul
+                                | crate::work::DesignationKind::DeliverProvisions(_)
+                                | crate::work::DesignationKind::Cook
                         ) =>
                     {
                         a.order_weight()
@@ -2381,8 +2391,14 @@ fn choose(
     // its person wandering four hours without once starting it.
     if !child && !rest_day && pressing < 0.75 && hunger_p < 0.55 && !night {
         for d in &w.designations {
+            // Packed food stays the carrier’s responsibility while a route is blocked.
+            let failures = if matches!(d.kind, crate::work::DesignationKind::DeliverProvisions(_)) {
+                0
+            } else {
+                d.failures
+            };
             if d.done
-                || d.failures > 12
+                || failures > 12
                 || !w
                     .reservations
                     .is_free_for(crate::work::ResKey::Designation(d.id), a.id)
@@ -2452,7 +2468,8 @@ fn choose(
                 crate::work::DesignationKind::Sow | crate::work::DesignationKind::Harvest => {
                     0.6 + a.skills.level(crate::mind::Skill::Farming) / 20.0
                 }
-                crate::work::DesignationKind::Haul => {
+                crate::work::DesignationKind::Haul
+                | crate::work::DesignationKind::DeliverProvisions(_) => {
                     0.5 + a.skills.level(crate::mind::Skill::Hauling) / 20.0 + a.haul_fit()
                 }
                 _ => 0.6 + a.skills.level(crate::mind::Skill::Construction) / 20.0,
@@ -2493,7 +2510,7 @@ fn choose(
                 * dist_discount(d.pos)
                 * a.place_multiplier(d.pos, now)
                 * belief
-                * (1.0 - d.failures as f32 * 0.1);
+                * (1.0 - failures as f32 * 0.1);
             consider(score, Goal::Work(d.id));
         }
     }

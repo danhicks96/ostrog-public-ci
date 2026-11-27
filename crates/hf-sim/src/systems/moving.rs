@@ -413,7 +413,7 @@ pub fn consider(w: &mut World, cid: CommunityId) {
             // those who come on them later wonder; and what the stores hold goes with them,
             // a stack a head.
             crate::left_sites::record_move(w, cid, home, dest);
-            crate::left_sites::carry(w, &going, home);
+            let packed = crate::left_sites::carry(w, &going, home);
             let (mut kept, mut dropped) = (Vec::new(), Vec::new());
             for d in std::mem::take(&mut w.designations) {
                 if !d.done && d.community == Some(cid) && d.pos.dist(home) <= 45 {
@@ -455,6 +455,18 @@ pub fn consider(w: &mut World, cid: CommunityId) {
                 c.palisade = None;
             }
             walk(w, &going, dest);
+            for (owner, item) in packed {
+                let kind = crate::work::DesignationKind::DeliverProvisions(item);
+                let mut order = super::settlement::make(w, kind, dest, 6);
+                order.owner = Some(owner);
+                order.community = Some(cid);
+                let id = order.id;
+                w.designations.push(order);
+                if let Some(i) = w.agents.iter().position(|a| a.id == owner) {
+                    let activity = super::decide::start_work(w, i, id, tick);
+                    super::decide::commit(w, i, activity);
+                }
+            }
             w.events.push(
                 tick,
                 Some(home),

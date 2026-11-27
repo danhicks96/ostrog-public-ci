@@ -3530,7 +3530,7 @@ impl SimHost {
                     K::Mine => 5,
                     K::Sow => 6,
                     K::Harvest => 7,
-                    K::Haul => 8,
+                    K::Haul | K::DeliverProvisions(_) => 8,
                     K::Cook => 9,
                     K::DigStairs => 10,
                     K::Hunt(_) => 11,

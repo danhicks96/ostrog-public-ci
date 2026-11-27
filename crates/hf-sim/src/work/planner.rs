@@ -86,6 +86,7 @@ fn find_known_item(
                     && !matches!(
                         d.kind,
                         DesignationKind::Haul
+                            | DesignationKind::DeliverProvisions(_)
                             | DesignationKind::BuildRoof(_)
                             | DesignationKind::ClearRoof
                             | DesignationKind::Craft(_)
@@ -103,6 +104,30 @@ fn find_known_item(
         }
     }
     best.map(|b| (b.1, b.2, b.3))
+}
+
+/// Check whether the original carrier still has provisions for the current camp.
+pub(crate) fn provision_stack<'a>(
+    w: &'a World,
+    d: &Designation,
+    item: crate::ids::ItemId,
+) -> Option<&'a crate::items::Item> {
+    let owner = d.owner?;
+    let community = d.community?;
+    if !w
+        .communities
+        .iter()
+        .any(|c| c.id == community && !c.dissolved && c.home == d.pos)
+        || !w
+            .agents
+            .iter()
+            .any(|a| a.id == owner && a.alive && a.community == Some(community))
+    {
+        return None;
+    }
+    w.items
+        .iter()
+        .find(|it| it.id == item && it.place == ItemPlace::Carried(owner) && it.count > 0)
 }
 
 pub fn plan_for(w: &World, who: AgentId, d: &Designation) -> Option<Planned> {
@@ -132,6 +157,22 @@ pub fn plan_for(w: &World, who: AgentId, d: &Designation) -> Option<Planned> {
     let mut steps = Vec::new();
     let estimate: u32;
     match d.kind {
+        DesignationKind::DeliverProvisions(item) => {
+            let it = provision_stack(w, d, item)?;
+            if d.owner != Some(who) || !nav.reach(from, d.pos) {
+                return None;
+            }
+            steps.push(Step::GoTo {
+                to: d.pos,
+                adjacent: false,
+            });
+            steps.push(Step::DropAt {
+                to: d.pos,
+                kind: it.kind,
+                for_site: None,
+            });
+            estimate = from.dist(d.pos) as u32 * 6 + 200;
+        }
         DesignationKind::Haul => {
             // The stack at d.pos goes to the nearest stockpile tile with room.
             let it = w
@@ -493,6 +534,7 @@ pub fn plan_for(w: &World, who: AgentId, d: &Designation) -> Option<Planned> {
         (DesignationKind::Cook, _, _) => "cooking".to_string(),
         (_, true, false) => format!("fetching materials for the {}", d.label()),
         (k, _, _) => match k {
+            DesignationKind::DeliverProvisions(_) => "carrying provisions to the new camp".into(),
             DesignationKind::Chop => "felling a tree".into(),
             DesignationKind::ClearRoof => "clearing snow off the roof".into(),
             DesignationKind::Uproot => "pulling a weed".into(),
