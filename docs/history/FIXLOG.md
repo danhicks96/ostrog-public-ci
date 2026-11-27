@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 - Inherited hairstyles on adult human rigs
+
+All ten inherited hairstyles now follow the slim, average and broad adult human rigs at double source resolution. The three builds retain their clothing, equipment, skin and hair colours, injury layers and held-load geometry. Children and other peoples keep their fitted appearances.
+
 ## 2026-11-26 - Broad adults with long hair
 
 Broad adult humans with long hair now have a detailed face and shoulder-length waves fitted to their existing rig. Clothes, hand-held loads and wound overlays keep their original placement. Rosun's walking, limestone-hauling and recovery saves show the appearance in both renderers. Children and other body sets retain their own sheets.

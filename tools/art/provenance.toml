@@ -10799,6 +10799,209 @@ generator = "tools/art/people.py"
 licence = "project-original"
 
 [[asset]]
+path = "godot/assets/people/expressive_adult_average_balding.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_braids.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_bun.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_crest.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_crop.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_curly.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_fringe.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_long.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_ponytail.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_balding.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_bowl.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_braids.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_bun.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_crest.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_crop.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_curly.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_fringe.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_ponytail.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_balding.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_body.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_bowl.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_braids.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_bun.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_crest.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_crop.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_curly.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_fringe.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_long.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_ponytail.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
 path = "godot/assets/people/expressive_bowl_body.png"
 kind = "people"
 source = "generated"

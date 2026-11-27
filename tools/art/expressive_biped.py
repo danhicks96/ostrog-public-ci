@@ -42,7 +42,92 @@ def draw_long_hair(pen, direction, ink, colours):
         pen.line([(21, 4), (15, 8), (11, 15), (12, 21), (9, 27), (10, 33)], fill=light)
 
 
-def make_frame(art, kind, direction, frame, build='average'):
+def draw_fitted_hair(pen, direction, style, ink, colours):
+    shadow, mid, light, glint = colours
+    front = direction == 'S'
+    back = direction == 'N'
+    # Draw the tied length behind the crown. The face layer is below the hair,
+    # so the lock on the far side belongs outside the visible cheek.
+    if style == 'ponytail':
+        x = 13 if back else 1
+        pen.polygon([(x+5,12),(x+11,15),(x+9,22),(x+10,28),(x+6,36),
+                     (x+2,40),(x+3,32),(x,33),(x+3,24),(x+1,18)], fill=mid, outline=ink)
+        pen.line([(x+5,18),(x+7,22),(x+6,29),(x+4,34)], fill=light, width=2)
+    elif style == 'bun':
+        x, y = (10, 0) if front else ((10, 4) if back else (0, 5))
+        pen.ellipse((x,y,x+14,y+13),fill=mid,outline=ink,width=2)
+        pen.arc((x+2,y+2,x+11,y+10),115,325,fill=light,width=2)
+    elif style == 'braids':
+        for x in ([1,26] if front or back else [2]):
+            for y in (18,24,30):
+                pen.ellipse((x,y,x+7,y+8),fill=mid,outline=ink)
+                pen.line([(x+2,y+1),(x+4,y+3),(x+2,y+6)],fill=light)
+            pen.polygon([(x+2,37),(x+5,36),(x+6,41),(x+1,40)],fill=shadow,outline=ink)
+    if style == 'balding':
+        # The open crown is skin. A low horseshoe frames the back of the head.
+        if back:
+            pen.polygon([(2,10),(6,12),(8,18),(15,21),(23,20),(28,15),(31,9),
+                         (33,17),(30,25),(24,29),(13,29),(6,24)],fill=mid,outline=ink)
+            pen.arc((5,5,30,25),24,147,fill=light,width=2)
+        else:
+            for x in ([2,27] if front else [3]):
+                pen.polygon([(x,12),(x+3,10),(x+5,14),(x+4,21),(x+2,23),(x,18)],fill=mid,outline=ink)
+                pen.line([(x+2,13),(x+3,17)],fill=light)
+            pen.arc((10,3,24,13),197,293,fill=shadow)
+        return
+    if style == 'crest':
+        if front or back:
+            outline=[(12,16),(11,8),(14,9),(13,3),(16,5),(18,0),(19,3),(22,1),
+                     (21,5),(24,4),(22,13),(19,18 if front else 29),(16,20 if front else 30)]
+        else:
+            outline=[(2,20),(3,11),(6,13),(5,6),(9,8),(9,2),(13,5),(16,0),
+                     (19,4),(24,1),(23,5),(29,3),(27,8),(31,7),(27,11),(17,10),(9,14)]
+        pen.polygon(outline,fill=mid,outline=ink)
+        pen.line([(16,13),(17,8),(19,4)] if front or back else [(6,13),(13,8),(21,6)],fill=light,width=2)
+        return
+    crown_y = 4 if style == 'bun' and front else 1
+    crown=[(1,17),(2,10),(5,6),(11,crown_y+1),(18,crown_y),(26,crown_y+2),(31,7),(33,13)]
+    if back:
+        edge=[(32,21),(28,26),(21,29),(13,29),(6,25),(3,22)]
+    elif front:
+        edge=[(32,18),(29,16),(27,11),(22,9),(16,7),(11,10),(6,12),(4,18)]
+    else:
+        edge=[(29,12),(24,9),(18,10),(14,15),(11,16),(9,23),(5,25),(2,20)]
+    if style == 'fringe' and not back:
+        edge=([(32,18),(28,14),(24,14),(22,11),(19,14),(13,14),(14,11),
+               (8,14),(5,13),(3,20)] if front else
+              [(32,14),(29,13),(25,15),(26,12),(20,14),(16,13),(13,18),(9,21),(6,25),(1,20)])
+    pen.polygon(crown+edge,fill=mid,outline=ink)
+    if style == 'curly':
+        curls = [(2,10),(5,5),(11,2),(18,1),(25,3),(29,7)]
+        if back:curls += [(1,16),(3,22),(9,25),(16,26),(23,24),(28,19)]
+        elif front:curls += [(1,16),(27,13)]
+        else:curls += [(1,16),(4,20)]
+        for x,y in curls:
+            pen.ellipse((x-1,y-1,x+5,y+5),fill=mid,outline=shadow)
+            pen.arc((x,y,x+4,y+3),170,300,fill=light)
+    else:
+        pen.line([(4,12),(8,7),(14,4),(18,crown_y+1)],fill=light,width=2)
+        pen.line([(10,6),(14,4)],fill=glint)
+        if style == 'crop':
+            for x,y in [(9,9),(15,7),(21,6),(24,9)]:pen.line((x,y,x+2,y-1),fill=shadow)
+        elif style == 'fringe':
+            pen.line([(24,5),(20,8),(18,12)],fill=light)
+            pen.line([(17,5),(14,8),(10,11)],fill=shadow)
+        else:
+            pen.arc((5,3,29,21),195,286,fill=shadow)
+            if back:pen.line([(8,17),(15,20),(24,19)],fill=light)
+    if style == 'bun' and back:
+        pen.ellipse((10,11,25,25),fill=mid,outline=ink,width=2)
+        pen.arc((13,14,23,22),90,333,fill=light,width=2)
+    elif style == 'ponytail' and back:
+        pen.polygon([(12,14),(17,12),(22,16),(22,23),(20,28),(21,33),
+                     (18,39),(13,42),(14,36),(11,37),(13,29),(12,22)],fill=mid,outline=ink)
+        pen.line([(15,17),(18,19),(18,25),(16,29),(17,34),(15,37)],fill=light,width=2)
+        pen.line([(13,17),(18,16),(21,18)],fill=shadow,width=2)
+
+
+def make_frame(art, kind, direction, frame, build='average', style='bowl'):
     d = 'E' if direction == 'W' else direction
     pose = (
         art.SLEEP_DRAW[frame]
@@ -175,10 +260,11 @@ def make_frame(art, kind, direction, frame, build='average'):
                 pen.ellipse((iris, ey, iris + 3, ey + 4), fill=ink)
                 pen.point((iris + 1, ey + 1), fill=art.pal.neutral('white'))
                 pen.line([(ex, ey + 1), (ex + 2, ey - 1), (ex + 5, ey)], fill=ink)
-        image.alpha_composite(face, (ox, oy))
     elif kind == 'hair':
-        if build == 'broad':
+        if style == 'long':
             draw_long_hair(pen, d, ink, art.SWAP_SOURCES['hair'])
+        elif style != 'bowl':
+            draw_fitted_hair(pen, d, style, ink, art.SWAP_SOURCES['hair'])
         elif d == 'N':
             pen.polygon(
                 [
@@ -252,7 +338,6 @@ def make_frame(art, kind, direction, frame, build='average'):
             pen.line([(8, 6), (12, 3), (16, 2)], fill=hair_glint)
             pen.line([(18, 2), (23, 3), (26, 5)], fill=hair_light)
             pen.line([(20, 5), (16, 6), (11, 10)], fill=hair_shadow)
-        image.alpha_composite(face, (ox, oy))
     elif kind == 'clothing':
         # Stitched lapels and belt follow the torso while sleeves follow the original hands.
         tx, ty, rx, by = [2 * v for v in s.torso]
@@ -279,6 +364,22 @@ def make_frame(art, kind, direction, frame, build='average'):
         pen.line((tx + 3, by - 4, rx - 3, by - 4), fill=trim_mid)
         if d != 'N':
             pen.rectangle((rx - 9, by - 5, rx - 6, by - 2), outline=trim_light)
+    if kind in ('body', 'hair'):
+        if kind == 'hair' and style == 'bun':
+            # Leave space outside the head silhouette for the gathered knot.
+            knot = Image.new('RGBA', (46, 52))
+            brush = ImageDraw.Draw(knot)
+            left = 15 if d in ('S', 'N') else 0
+            top = 1 if d in ('S', 'N') else 7
+            brush.ellipse((left, top, left+14, top+13), fill=hair_mid, outline=ink, width=2)
+            brush.arc((left+2, top+2, left+11, top+9), 160, 316, fill=hair_light, width=2)
+            knot.alpha_composite(face, (5, 8))
+            face, ox, oy = knot, ox-5, oy-8
+        if build == 'slim':
+            # Fit the face and hair together to the narrower head on this rig.
+            face = face.resize((face.width - 4, face.height), Image.Resampling.NEAREST)
+            ox += 2
+        image.alpha_composite(face, (ox, oy))
     shifts = art.lean_shifts(s)
     if shifts:
         moved = Image.new('RGBA', image.size)
@@ -294,9 +395,9 @@ def make_frame(art, kind, direction, frame, build='average'):
     return image
 
 
-def make_sheet(art, kind, build='average'):
+def make_sheet(art, kind, build='average', style='bowl'):
     image = Image.new('RGBA', (96 * len(art.FRAMES), 96 * len(art.DIRS)))
     for row, d in enumerate(art.DIRS):
         for column, frame in enumerate(art.FRAMES):
-            image.paste(make_frame(art, kind, d, frame, build), (column * 96, row * 96))
+            image.paste(make_frame(art, kind, d, frame, build, style), (column * 96, row * 96))
     return image

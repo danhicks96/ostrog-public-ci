@@ -12604,6 +12604,296 @@ sha256_16 = "19084693ef17ead1"
 description = "equipment layer, fixed palette ramps, 48 frames x 4 dirs"
 
 [[asset]]
+path = "godot/assets/people/expressive_adult_average_balding.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "8da33d5c34da2a49"
+description = "adult human, fitted average balding, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_braids.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "8e4fbb64f3d80a8f"
+description = "adult human, fitted average braids, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_bun.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "74580bd28853a712"
+description = "adult human, fitted average bun, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_crest.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "0475213dbd732d82"
+description = "adult human, fitted average crest, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_crop.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "b8e2bccb1ca0cf73"
+description = "adult human, fitted average crop, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_curly.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "04554c73cd702f3b"
+description = "adult human, fitted average curly, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_fringe.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "c21e061e533d7a30"
+description = "adult human, fitted average fringe, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_long.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "9f8d603e967e4401"
+description = "adult human, fitted average long, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_average_ponytail.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "6c22e83ad052e461"
+description = "adult human, fitted average ponytail, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_balding.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "957f61ded6df328c"
+description = "adult human, fitted broad balding, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_bowl.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "78604f947a880cd5"
+description = "adult human, fitted broad bowl, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_braids.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "cc6de34c9d0ecef5"
+description = "adult human, fitted broad braids, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_bun.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "ce4fb292d6af638b"
+description = "adult human, fitted broad bun, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_crest.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "3fa8c1453f56fa4b"
+description = "adult human, fitted broad crest, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_crop.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "327e9d373fe4fba6"
+description = "adult human, fitted broad crop, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_curly.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "0ecb0b02f2295e32"
+description = "adult human, fitted broad curly, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_fringe.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "b9c07f234f6f2541"
+description = "adult human, fitted broad fringe, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_broad_ponytail.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "cc9d51aea5bcb041"
+description = "adult human, fitted broad ponytail, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_balding.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "cd4b8221b47ce3a8"
+description = "adult human, fitted slim balding, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_body.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "9647550cea62bd23"
+description = "adult human, fitted slim body, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_bowl.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "588ddaf179d4c219"
+description = "adult human, fitted slim bowl, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_braids.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "263f63ed1c7d3048"
+description = "adult human, fitted slim braids, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_bun.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "bf34ab0b81b8539b"
+description = "adult human, fitted slim bun, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_crest.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "69d530734e376c47"
+description = "adult human, fitted slim crest, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_crop.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "3e024c3525934f02"
+description = "adult human, fitted slim crop, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_curly.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "ac19a3e8570ad5e9"
+description = "adult human, fitted slim curly, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_fringe.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "19211deb60318954"
+description = "adult human, fitted slim fringe, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_long.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "22d6cab5786087ff"
+description = "adult human, fitted slim long, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/expressive_adult_slim_ponytail.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "ae285269faf37436"
+description = "adult human, fitted slim ponytail, 48 frames x 4 dirs"
+
+[[asset]]
 path = "godot/assets/people/expressive_bowl_body.png"
 generator = "tools/art/people.py"
 command = "python3 tools/art/people.py"

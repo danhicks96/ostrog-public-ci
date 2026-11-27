@@ -2753,6 +2753,8 @@ def sheet_list():
 def describe(fn):
     """Provenance description for one sheet file."""
     n = '%d frames x 4 dirs' % len(FRAMES)
+    if fn.startswith('expressive_adult_'):
+        return 'adult human, fitted ' + fn.removeprefix('expressive_adult_').removesuffix('.png').replace('_', ' ') + ', ' + n
     if fn.startswith('expressive_long_'):
         return 'broad adult human, long parted hair, ' + n
     if fn.startswith('expressive_bowl_'):
@@ -2847,8 +2849,18 @@ def main():
     for layer in ('body', 'hair'):
         fn = 'expressive_long_%s.png' % layer
         if fn.startswith(only):
-            expressive_biped.make_sheet(sys.modules[__name__], layer, 'broad').save(os.path.join(OUT, fn))
+            expressive_biped.make_sheet(sys.modules[__name__], layer, 'broad', 'long').save(os.path.join(OUT, fn))
         keep.add(fn)
+    for build in ('slim', 'average', 'broad'):
+        layers = [('hair', style) for style in HAIR_STYLES
+                  if (build, style) not in [('average', 'bowl'), ('broad', 'long')]]
+        if build == 'slim':
+            layers.append(('body', ''))
+        for layer, style in layers:
+            fn = 'expressive_adult_%s_%s.png' % (build, style or layer)
+            if fn.startswith(only):
+                expressive_biped.make_sheet(sys.modules[__name__], layer, build, style).save(os.path.join(OUT, fn))
+            keep.add(fn)
     print('wrote %d sheets (%d frames x 4 dirs each)' % (len(keep), len(FRAMES)))
     with open(os.path.join(OUT, 'swaps.json'), 'w') as f:
         json.dump(swaps_doc(), f, indent=1)

@@ -927,7 +927,8 @@ func test_expressive_biped_layers_follow_the_same_cell_and_reuse() -> void:
 			var cell := 48 if layer_name == "band" else 96
 			check(layer.visible and layer.region_rect == Rect2(entities.P_CARRY * cell, facing * cell, cell, cell), "correct source cell: " + layer_name)
 			check(layer.offset * layer.scale == Vector2(-8, -48), "same foot anchor: " + layer_name)
-	appearance[8] = 0 # same pooled node, next person wears the crop
+	appearance[8] = 0 # same pooled node, next person is a child with cropped hair
+	appearance[16] = 1
 	entities.dress_person(person, appearance, 0, -1)
 	entities.set_person_frame(person, plan, entities.P_IDLE, 0)
 	var body: Sprite2D = person.get_node("body")
@@ -953,7 +954,7 @@ func test_long_hair_on_the_broad_rig_keeps_the_load_at_the_hands() -> void:
 		appearance[22] = 1 if variant == "hollin" else 0
 		var plan := entities.dress_person(person, appearance, 0, 7)
 		entities.set_person_frame(person, plan, entities.P_CARRY, 0)
-		var expected := 96 if variant == "long hair" else 48
+		var expected := 48 if variant in ["child", "hollin"] else 96
 		for layer_name in ["body", "hair"]:
 			var layer: Sprite2D = person.get_node(layer_name)
 			check(layer.visible and layer.region_rect.size == Vector2(expected, expected),
@@ -968,10 +969,47 @@ func test_long_hair_on_the_broad_rig_keeps_the_load_at_the_hands() -> void:
 			var anchor := Vector2i(entities._carry_at(0, plan) - body.offset * body.scale)
 			var hands := skin.get_region(Rect2i(anchor + Vector2i(-6, 2), Vector2i(26, 8)))
 			if variant == "short hair":
-				ordinary_hands = hands
-				check(hands.get_used_rect().has_area(), "the load anchor includes skin")
+				var original := world._swapped("people/body_broad_adult.png", "skin", appearance[7]).get_image()
+				var cell := original.get_region(Rect2i(entities.P_CARRY * 48, 0, 48, 48))
+				ordinary_hands = cell.get_region(Rect2i(anchor + Vector2i(-6, 2), Vector2i(26, 8)))
+				check(ordinary_hands.get_used_rect().has_area() and hands.get_data() == ordinary_hands.get_data(),
+						"the short-haired broad hands meet the original load")
 			else:
 				check(hands.get_data() == ordinary_hands.get_data(), "the broad hands still meet the load")
+	entities.free()
+	world.free()
+
+func test_inherited_adult_hair_covers_every_build_and_direction() -> void:
+	var world := WorldView.new()
+	world.assets = preload("res://scripts/assets.gd").new()
+	world.species_art[0] = {"body": "human", "plan": "biped"}
+	var entities := preload("res://scripts/render/entity_layer.gd").new()
+	entities.v = world
+	var person := entities._new_person(entities)
+	var appearance := PackedInt32Array()
+	appearance.resize(world.AGENT_STRIDE)
+	appearance[19] = -1
+	var hair: Sprite2D = person.get_node("hair")
+	var body: Sprite2D = person.get_node("body")
+	for build in 3:
+		appearance[6] = build
+		var silhouettes := {}
+		for style in 10:
+			appearance[8] = style
+			var plan := entities.dress_person(person, appearance, 0, 7)
+			var sizes_ok := true
+			var facing_shapes := []
+			for facing in 4:
+				entities.set_person_frame(person, plan, entities.P_CARRY, facing)
+				for layer: Sprite2D in [hair, body]:
+					sizes_ok = sizes_ok and layer.visible and layer.region_rect.size == Vector2(96, 96)
+					sizes_ok = sizes_ok and layer.scale * layer.offset == Vector2(-8, -48)
+				if hair.texture != null:
+					var image := hair.texture.get_image().get_region(Rect2i(hair.region_rect))
+					facing_shapes.append(hash(image.get_data()))
+			check(sizes_ok, "adult body and hair fit all four carry poses: %d/%d" % [build, style])
+			silhouettes[hash(facing_shapes)] = true
+		check(silhouettes.size() == 10, "each inherited hairstyle draws differently on build %d" % build)
 	entities.free()
 	world.free()
 

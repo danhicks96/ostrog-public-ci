@@ -8,6 +8,8 @@ extends Node2D
 ## immediate renderer did.
 
 const TILE := 32
+const ADULT_HAIR := ["crop", "bowl", "long", "ponytail", "bun", "balding", "braids", "crest", "curly", "fringe"]
+const ADULT_BODY := {"slim": "people/expressive_adult_slim_body.png", "average": "people/expressive_bowl_body.png", "broad": "people/expressive_long_body.png"}
 const PERSON_LAYERS := ["body", "bruise_left", "bruise_right", "cloth", "hair", "band", "equip"]
 const Rules := preload("res://scripts/rules.gd")
 const TREE_SPECIES := ["oak", "birch", "pine"]
@@ -661,16 +663,17 @@ func dress_person(p: Node2D, A: PackedInt32Array, i: int, carry_kind: int) -> St
 		["cloth", "people/clothing_%s%s.png" % [v.OUTFIT[A[i + 10] % 8], sfx], "cloth", A[i + 11]],
 		["hair", "people/hair_%02d%s.png" % [A[i + 8] % 10 + 1, sfx], "hair", A[i + 9]],
 	]
-	# A detailed bowl cut uses the same inherited colours and pose grid. Clothing still
-	# follows the wearer's outfit, and other body plans keep their own proportions.
-	if body_set == "human" and ba == "average_adult" and A[i + 8] % 10 == 1:
-		layers[0][1] = "people/expressive_bowl_body.png"
-		layers[2][1] = "people/expressive_bowl_hair.png"
-		if v.OUTFIT[A[i + 10] % 8] == "vest":
-			layers[1][1] = "people/expressive_bowl_clothing.png"
-	elif body_set == "human" and ba == "broad_adult" and A[i + 8] % 10 == 2:
-		layers[0][1] = "people/expressive_long_body.png"
-		layers[2][1] = "people/expressive_long_hair.png"
+	# Inherited hair selects its fitted sheet. All densities share the same logical rig.
+	if body_set == "human" and age == "adult":
+		var style: String = ADULT_HAIR[A[i + 8] % ADULT_HAIR.size()]
+		layers[0][1] = ADULT_BODY[build]
+		layers[2][1] = "people/expressive_adult_%s_%s.png" % [build, style]
+		if build == "average" and style == "bowl":
+			layers[2][1] = "people/expressive_bowl_hair.png"
+			if v.OUTFIT[A[i + 10] % 8] == "vest":
+				layers[1][1] = "people/expressive_bowl_clothing.png"
+		elif build == "broad" and style == "long":
+			layers[2][1] = "people/expressive_long_hair.png"
 	for l in layers:
 		var s: Sprite2D = p.get_node(l[0])
 		s.texture = v._swapped(l[1], l[2], l[3])

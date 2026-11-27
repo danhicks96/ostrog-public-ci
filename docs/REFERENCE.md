@@ -5737,7 +5737,7 @@ row. Policy and counts: ASSETS.md.
 
 #### godot/assets/people/
 
-<details><summary>2160 files (click to open)</summary>
+<details><summary>2189 files (click to open)</summary>
 
 | file | pixels | layout | generator |
 |---|---|---|---|
@@ -7001,6 +7001,35 @@ row. Policy and counts: ASSETS.md.
 | equipment_spear_winged_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | equipment_spear_winged_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | equipment_spear_winged_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| expressive_adult_average_balding.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_braids.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_bun.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_crest.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_crop.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_curly.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_fringe.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_long.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_average_ponytail.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_balding.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_bowl.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_braids.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_bun.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_crest.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_crop.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_curly.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_fringe.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_broad_ponytail.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_balding.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_body.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_bowl.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_braids.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_bun.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_crest.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_crop.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_curly.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_fringe.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_long.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_adult_slim_ponytail.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
 | expressive_bowl_body.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
 | expressive_bowl_clothing.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
 | expressive_bowl_hair.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |

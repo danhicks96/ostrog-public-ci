@@ -5912,6 +5912,122 @@
     "sha256": "19084693ef17ead169268d094f1b2239d698e14c4fa8e1bebabc24573ec65b72"
   },
   {
+    "path": "godot/assets/people/expressive_adult_average_balding.png",
+    "sha256": "8da33d5c34da2a49d1203575212a543756b5a76dd09adea658c46339313604b3"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_braids.png",
+    "sha256": "8e4fbb64f3d80a8f9e6ae194c07502182d8a03c1b0ffc2b3c4913a02a13ba741"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_bun.png",
+    "sha256": "74580bd28853a712e247ea0a73dc937bce03106491338350e29db5bf87a63cd4"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_crest.png",
+    "sha256": "0475213dbd732d82af0af1d50ed52862fdf1d44066efb64181f6928d6d554b9f"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_crop.png",
+    "sha256": "b8e2bccb1ca0cf73e9ac0845e4471232bfd0a563cb28758a962e58084b830df1"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_curly.png",
+    "sha256": "04554c73cd702f3be5f2635fc3a00e4886b811569d9a0ec232ad62da0f9746fb"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_fringe.png",
+    "sha256": "c21e061e533d7a308528a7e071d6df1d95fac6bdc5d64b6e4a085e3dec1f3ed6"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_long.png",
+    "sha256": "9f8d603e967e4401e7c79dbe8f289ec23d2eca525cc981bf51669dd338f6e8d4"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_average_ponytail.png",
+    "sha256": "6c22e83ad052e4618c18bb224def21e8ae8160b8559c1f19a7cb8fe59639dbcd"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_balding.png",
+    "sha256": "957f61ded6df328c7342691b7fd38fcc0e35acc16c238f1d536b8a112ac3e3aa"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_bowl.png",
+    "sha256": "78604f947a880cd5578039d473f29c83514f696f8aebd9f0dafd99c0c3144e20"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_braids.png",
+    "sha256": "cc6de34c9d0ecef5ae16e0ed7270c08db5e442e6a4a77b1768ce8146170bef00"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_bun.png",
+    "sha256": "ce4fb292d6af638bca90eec69a93311d0b543706f53ef9f53550b93a00bfc975"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_crest.png",
+    "sha256": "3fa8c1453f56fa4b0312aea5528eddbd17ddba79c801a6899cd6846f234a3c0b"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_crop.png",
+    "sha256": "327e9d373fe4fba62cfa36e5fb7f4bd7197d2b8ce5e851f06a0d5bbdf8d53f70"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_curly.png",
+    "sha256": "0ecb0b02f2295e32a4c50c05b337400c556f0186893bd6103373ec54b00a568e"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_fringe.png",
+    "sha256": "b9c07f234f6f25415565c16aad5d76fecb1fb9d6681e36eb1eb55fa8f8f12195"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_broad_ponytail.png",
+    "sha256": "cc9d51aea5bcb041f151b0c256d1b519e8ebbe8d8e65b0539bf380c694afaece"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_balding.png",
+    "sha256": "cd4b8221b47ce3a8f0b7896cf99a8b04cce29352e32893ba851d7fcad48a6466"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_body.png",
+    "sha256": "9647550cea62bd23729580a59a9052c675a7b3ced8eff8de4d35620ebc9cca54"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_bowl.png",
+    "sha256": "588ddaf179d4c219cd59b47ce4cffc03b6a7d7e2f2d163c2812257245c5ab041"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_braids.png",
+    "sha256": "263f63ed1c7d3048590238b876b22fd25f0a9e29206a11909403fc56d3707c70"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_bun.png",
+    "sha256": "bf34ab0b81b8539b2df2939acb4e50f39373011376fb62a53b4e6d1d64e5268c"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_crest.png",
+    "sha256": "69d530734e376c4731460ed90127393cd601ffc79205d4e9c3dfd994a683d36a"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_crop.png",
+    "sha256": "3e024c3525934f02ec18fb7321fe3e4e3ae6f44a657c3a72f59fac50511ecac8"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_curly.png",
+    "sha256": "ac19a3e8570ad5e9076d0cb1bfc2601c4904f5272dbb9f40f10a253a57400859"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_fringe.png",
+    "sha256": "19211deb60318954ac32e86d58c1ffcf9e7cecc0486c89a3f7b32ef22ab65ac6"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_long.png",
+    "sha256": "22d6cab5786087ff63c13effee881add09eb28c00038cde91c1048c0afdf5166"
+  },
+  {
+    "path": "godot/assets/people/expressive_adult_slim_ponytail.png",
+    "sha256": "ae285269faf374367a8d201a6cf5f7100fc5acbdcc15637818a582be81c94ba2"
+  },
+  {
     "path": "godot/assets/people/expressive_bowl_body.png",
     "sha256": "3cb9b43f9f5447d68c0fd7d81b404451b23826ea6b44d208538db60b3992fff3"
   },
