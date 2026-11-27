@@ -206,7 +206,8 @@ fn an_explanation_preserves_event_ids_and_observer_state() {
         w.structures.clear();
         w.items.clear();
         let pos = w.agents[0].pos;
-        w.agents[1].pos = pos.offset(1, 0, 0);
+        // Out of reach of a fight, which anger at someone close now brings (OST-549).
+        w.agents[1].pos = pos.offset(9, 0, 0);
         w.agents[1].activity = hf_sim::mind::Activity::Idle;
         w.agents[1].techniques = Default::default();
         let tick = w.meta.tick;
@@ -520,4 +521,43 @@ fn the_cost_of_a_break_lasts_beyond_a_minute() {
         without - with >= 0.15,
         "an hour after a break mood {with} vs {without} without it"
     );
+}
+
+/// The kind of break one forced breakdown picks, for a person carrying `feel` (OST-549).
+fn kind_with(seed: u64, feel: Option<(hf_sim::mind::feelings::FeelingKind, f32)>) -> String {
+    let mut w = pair_at_the_end_of_a_rope(seed);
+    // The other person is far away, so a fight is not on offer.
+    w.agents[1].pos = TilePos::new(55, 55, 2);
+    let (a, b) = (w.agents[0].id, w.agents[1].id);
+    let tick = w.meta.tick;
+    if let Some((k, s)) = feel {
+        w.agents[0].feelings.feel(k, Some(b), s, tick, None);
+    }
+    hf_sim::systems::strain::step(&mut w);
+    match &only_break(&w, a).kind {
+        EventKind::Broke { kind, .. } => kind.clone(),
+        _ => unreachable!(),
+    }
+}
+
+#[test]
+fn grief_breaks_into_a_daze() {
+    use hf_sim::mind::feelings::FeelingKind::Grief;
+    let kinds: Vec<String> = (0..20)
+        .map(|s| kind_with(9000 + s, Some((Grief, 0.8))))
+        .collect();
+    let daze = kinds.iter().filter(|k| k.as_str() == "a daze").count();
+    assert!(
+        daze * 2 >= kinds.len(),
+        "daze {daze} of {}: {kinds:?}",
+        kinds.len()
+    );
+}
+
+#[test]
+fn without_a_cause_the_trait_bag_still_picks() {
+    // No feeling: the kinds are spread as the bag leaves them, not mostly one.
+    let kinds: Vec<String> = (0..20).map(|s| kind_with(9000 + s, None)).collect();
+    let daze = kinds.iter().filter(|k| k.as_str() == "a daze").count();
+    assert!(daze * 2 < kinds.len(), "{kinds:?}");
 }
