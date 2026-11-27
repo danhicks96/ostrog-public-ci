@@ -168,22 +168,33 @@ fn caravan_lost_leaves_history() {
         s.world.overworld.caravans[0].cargo.clear();
         s.world.overworld.caravans[0].rations = 0;
         let party = s.world.overworld.caravans[0].members.clone();
-        let mut lost = false;
+        let mut deaths = std::collections::BTreeMap::new();
+        let mut loss = None;
         for _ in 0..TICKS_PER_DAY * 40 {
             s.step().unwrap();
-            if s.world.last_events.iter().any(
-                |e| matches!(&e.kind, EventKind::CaravanLost { caravan, .. } if *caravan == id),
-            ) {
-                lost = true;
-                break;
+            for e in &s.world.last_events {
+                match &e.kind {
+                    EventKind::Died { agent, .. } if party.contains(agent) => {
+                        assert!(e.severity >= Severity::Major);
+                        deaths.insert(*agent, e.id);
+                    }
+                    EventKind::CaravanLost { caravan, .. } if *caravan == id => {
+                        assert!(e.severity >= Severity::Major);
+                        loss = Some(e.id);
+                    }
+                    _ => {}
+                }
             }
-            if matches!(s.world.overworld.caravans[0].state, CaravanState::Done) {
+            if loss.is_some() || matches!(s.world.overworld.caravans[0].state, CaravanState::Done) {
                 break;
             }
         }
-        if !lost {
-            continue;
-        }
+        let Some(loss) = loss else { continue };
+        let recorded = |event| {
+            let (_, _, detail) = s.chronicle.row(event).unwrap().expect("event persisted");
+            serde_json::from_str::<EventKind>(&detail).unwrap()
+        };
+        assert!(matches!(recorded(loss), EventKind::CaravanLost { caravan, .. } if caravan == id));
         lost_seen = true;
         // Every member is dead on the record with the cause, none is still "away".
         for m in &party {
@@ -195,16 +206,17 @@ fn caravan_lost_leaves_history() {
                 .expect("member recorded");
             assert!(!a.alive);
             assert_eq!(a.death.as_deref(), Some("lost on the road"));
+            // Other travellers and captives may still be away.
+            assert!(!s.world.overworld.away.iter().any(|away| away.id == *m));
+            let event = deaths.get(m).expect("the member's death was reported");
+            assert_eq!(
+                recorded(*event),
+                EventKind::Died {
+                    agent: *m,
+                    cause: "lost on the road".into()
+                }
+            );
         }
-        assert!(s.world.overworld.away.is_empty());
-        let rows = s.chronicle.recent(Severity::Major, 400).unwrap();
-        assert!(rows.iter().any(|r| r.2 == "caravan_lost"));
-        let died = rows.iter().filter(|r| r.2 == "died").count();
-        assert!(
-            died >= party.len(),
-            "deaths recorded: {died} of {}",
-            party.len()
-        );
         break;
     }
     assert!(lost_seen, "no caravan was lost under eleven seeds");
