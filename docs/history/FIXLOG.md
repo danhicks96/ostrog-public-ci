@@ -17,6 +17,18 @@ Rosun wore a forehead bandage in Ashcross while his only wound was an untreated 
 Orsin's hands showed a single log as he carried three to a carpenter's bench in Ashcross. Another inhabitant held a root in front of their face during a walking pose. The client now reads the stack count and anchors the load to the holding or walking arms. A hand stack of logs, planks or stone blocks shows up to three pieces, using the carried material's existing icon. The ground plank icon depicts two boards. A held plank uses one lighter board face so Toriwick's pair remains visible against the loom and clothing. One average adult human appearance uses higher-resolution face, hair and vest sheets within its usual footprint. Equipment and bandages stay independent.
 
 The optional batch renderer skipped the person sprites and assigned a generic body atlas to a batch without a mesh. It now draws people with the same layered sprites as the default renderer, keeping the other batches in place. Client guards check directional pose alignment, sprite reuse, carried quantity and one visible sprite per person.
+## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
+
+- Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten
+  records, so ten good meals gave +2.0, past the whole scale.
+- Cause: a sum over up to ten records, with each bite recording a Meal.
+- Fix: the term is now `0.3 * sum(valence * salience) / max(sum(salience), 1)`, a salience-weighted
+  mean scaled to +-0.3.
+- Guard: `tests/mood.rs::recent_records_are_averaged_not_summed` (ten meals at +1, salience 0.8, move
+  mood by at most +0.3, the old sum gave +2.0; one hardship at -0.9 among nine neutral records
+  still moves it by at least -0.05).
+- Measured, seeds 1-4, 12 game days, days 3-12, after OST-203: breaks 27, 12, 14, 21; mean mood
+  +0.03, +0.03, +0.05, +0.04. The stress, breaks, health and qa_1026 tests pass locally.
 
 ## 2026-11-26: mood added every long memory together, with no bound (OST-203)
 
