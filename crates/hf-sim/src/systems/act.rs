@@ -342,6 +342,12 @@ pub fn step(w: &mut World) {
                             a.name, tick, until, a.activity_ticks, a.needs.rest, a.needs.hunger
                         );
                     }
+                    // OST-242: a night cut short, after a day awake, is felt the next day. A nap soon
+                    // after a full night is not a broken night.
+                    if hours < 6.0 && tick.saturating_sub(a.last_sleep) >= 8 * TICKS_PER_HOUR {
+                        a.thoughts
+                            .add(crate::mind::thoughts::ThoughtKind::SleptBadly, tick, None);
+                    }
                     a.last_sleep = tick;
                     let id = a.id;
                     let here = a.pos;
