@@ -7,6 +7,163 @@
 - Fix: add a root route map, owner-adjacent guides and fork verification instructions.
 - Guard: the generated save-format line fails its check on a source version change until
   regenerated; unrelated source comments do not make it stale.
+## 2026-11-27: a night cut short left no thought at all (OST-242)
+
+- Symptom: a sleep under six hours gave neither SleptInBed nor SleptRough, and one sleep in five
+  (10% to 20% by seed) is that short, so a night broken by cold, hunger or a raid was not felt the
+  next day.
+- Fix: a new `SleptBadly` thought ("a broken night", -0.15 for one day), appended to the thought
+  kinds, is added when a sleep ends under six hours and the person's previous sleep ended at least
+  eight hours earlier. A short nap soon after a full night is not a broken night. It is added where
+  the sleep ends in `systems/act.rs`, because the previous sleep's time is overwritten before the
+  `Slept` event reaches `strain::observe`.
+- Guard: `tests/slept.rs::a_broken_night_is_felt` (a three-hour sleep after fourteen hours awake
+  leaves the thought; the same sleep three hours after the last one leaves none; fails without the
+  thought).
+- Measured, seeds 1-4, 12 game days, breaks (this branch / main): 28, 13, 18, 21 / 27, 12, 14, 21,
+  80 against 74 in total (+8%).
+
+## 2026-11-27: what a person feels leans how they break (OST-549)
+
+- Symptom: two people at the end of their rope broke by a trait-weighted bag and a fixed personal
+  lean; grief, anger and shame never entered it, so a widow was as likely to throw a tantrum as to
+  sit in a daze.
+- Cause: `strain::step` chose the kind of break before it read the cause of the break.
+- Fix: the cause is read first (and reused for the explanation). Anger at someone awake within 8
+  tiles makes a fight three times as likely (capped at 1, still barred by a firm belief against
+  violence); anger with no one near weights a tantrum x2; grief about a person gives a daze at
+  least 1.5 times the rest of the bag; shame weights withdrawing and walking out x2; hunger
+  weights a binge x3, only when food lies within the six tiles a binge reaches (it would otherwise
+  fill them for free). With no cause the bag and its rolls are untouched. No save change.
+- Guard: `tests/breaks.rs::grief_breaks_into_a_daze` (fails without the fix: 2 of 20 broke into a
+  daze); `without_a_cause_the_trait_bag_still_picks` covers the unchanged bag. The explanation
+  test now keeps the other person out of fight range, the arrival-fade gate reads the arrival
+  thought alone, and the Hask pacing gate runs 5 days not 3 so two hard days are seen whichever
+  way the valley's breaks fell. Breaks with a feeling behind them pick
+  different kinds, so seeded digests move. The kind-by-feeling table on seeds 1-4 is not run, so
+  #558 stays open.
+## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
+
+- Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten
+  records, so ten good meals gave +2.0, past the whole scale.
+- Cause: a sum over up to ten records, with each bite recording a Meal.
+- Fix: the term is now `0.3 * sum(valence * salience) / max(sum(salience), 1)`, a salience-weighted
+  mean scaled to +-0.3.
+- Guard: `tests/mood.rs::recent_records_are_averaged_not_summed` (ten meals at +1, salience 0.8, move
+  mood by at most +0.3, the old sum gave +2.0; one hardship at -0.9 among nine neutral records
+  still moves it by at least -0.05).
+- Measured, seeds 1-4, 12 game days, days 3-12, after OST-203: breaks 27, 12, 14, 21; mean mood
+  +0.03, +0.03, +0.05, +0.04. The stress, breaks, health and qa_1026 tests pass locally.
+
+## 2026-11-26: mood added every long memory together, with no bound (OST-203)
+
+- Symptom: the long-memory part of mood was a plain sum of up to 48 memories divided by 8, so a
+  person with many routine meals sat at the top of the scale whatever else happened.
+- Cause: `mood_terms` summed `valence * strength / 8` over the whole long store; nothing bounded,
+  faded or tired it.
+- Fix: the long term now calls `Memories::mood_term` (OST-202), which is bounded at 0.35, fades with
+  age and tires of routine memories.
+- Guard: `tests/mood.rs::routine_meals_do_not_raise_mood_without_limit` (48 routine meals renewed
+  200 times lift the long term by at most 0.2; the old sum gave 5.4, so it fails without the fix).
+- Test follow-up: `tests/health.rs::illness_spreads_then_fades` counted a person who had walked out of
+  the valley as lost to the fever. With the old sum cushioning mood, nobody in the sick house fell
+  low enough to break and walk out; now four of ten sat at mood -1.00 and left (no death recorded),
+  leaving six. The survival count now includes people with no recorded death, as in
+  `infection_can_kill` (OST-205); the floor of eight and the recovery check are unchanged. That a
+  fever house loses four people to walk-outs is a mood-calibration question left to OST-204 and
+  OST-207, not something this test should hide or decide.
+- Measured, seeds 1-4, 12 game days, days 3-12 (this branch / main): breaks 23, 2, 27, 18 / 22, 2,
+  26, 20; people at mood 0.99 or more: 0% / 0%. The short run does not fill the memory stores, so
+  the issue's long-run clamp census (59-72% before) is not reproduced here; a longer census is left
+  to the soak.
+
+## 2026-11-26: Gourmet and Tidy were never drawn from a genome (OST-1102)
+
+- Symptom: no one was born Gourmet or Tidy, so their effects (binge strain, hauling weight) never
+  showed in a founded or born colony.
+- Cause: `Genome::traits` covered eight traits and had no locus-driven rule for these two.
+- Fix: `genetics.rs` draws Gourmet from a derived locus and Tidy from the `order` disposition, both
+  above 0.8, using the keyed mix that `dispositions` already uses so no random stream is consumed.
+  The three-trait cap still applies; traits are sorted before it truncates, so in a genome that
+  would carry more than three, Gourmet can now displace LightSleeper, which sorts after it.
+  Existing trait order and saves are unchanged.
+- Guard: `tests/gourmet_tidy.rs` (over 500 genomes each trait appears on at least ten people, none
+  exceeds the cap, the same genome draws the same traits).
+## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
+
+- Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7
+  were hearth tellers 40 to 295 times on the audit's seeds.
+- Cause: every awake person within two tiles of the hearth sat, and any sitter could be the
+  teller; `hearth_evening` read no age.
+- Fix: children stay in the circle as listeners, but a sitter is a teller of a realm story or an
+  old-valley tale only from the older childhood stage (`old_enough_for(Childhood::Older)`), and
+  of what they came to hold, or the line about the other side of the portal, only once of age.
+- Guard: `tests/stories.rs::a_small_child_at_the_hearth_listens_and_does_not_tell` (a three-year-old
+  holding the only copy of a story tells nothing; a ten-year-old tells it; it fails without the
+  fix). Worlds with small children at the hearth tell fewer tales, so their digest changes. The
+  700-day tellers-under-7 measurement was not run.
+
+## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
+
+- Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;
+  only the need bar moved the mood.
+- Cause: `systems::strain` added thoughts for hunger and thirst but none for the social need.
+- Fix: `ThoughtKind::Lonely` is appended to the enum (old saves load unchanged), weight -0.15 for
+  half a day. It is added each hour while an awake person's social need is below 0.2 and lapses
+  once the need recovers. Sleepers never get it. Mood and strain for lonely people now read lower,
+  so seeded digests move.
+- Seeded pacing tests moved with it: `hask_presses_plenty` now keeps the village socially content
+  (plenty is about food, not company), and `troubles_overlap_and_then_ease` uses seeds 3, 7, 11 and
+  29 (one turn each, four in all) because 13 and 17 no longer turn within the run.
+- Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
+  sleeper does not; a content person does not).
+## 2026-11-24: the cost of a breakdown or a quarrel lasted one game-minute (OST-241)
+
+- Symptom: a breakdown took 0.2 off mood and a quarrel 0.15, and a game-minute later both were
+  gone, so the day after a break looked like any other.
+- Cause: both were direct writes to `mood`, which the needs pass rebuilds from its terms every
+  stripe.
+- Fix: a break now adds a new `Broke` thought ("broke down", weight -0.25, two days), appended to
+  the thought kinds; the break's direct write is gone. The quarrel's direct write is removed too:
+  the `Quarrel` thought, already added from the recorded event, is its lasting cost.
+- The `Broke` thought is left out of stress (like the arrival's), or one break would feed the next;
+  `tests/stress.rs::a_contented_person_with_one_trouble_does_not_break` guards it.
+- Guard: `tests/breaks.rs::the_cost_of_a_break_lasts_beyond_a_minute` (an hour after a break the
+  person is at least 0.15 below the same person who did not break; fails without the thought).
+- Test follow-up: `tests/building.rs::roofs_are_laid_from_the_walls_and_do_not_fall_in_ordinary_building`
+  now runs 12 days, not 10. The break cost shifts who is calm enough to build; on seed 3 roofs come
+  in batches (0, 6, 10, 16, 16, 16, 22 over days 5-9 on main, a batch later here), so the same
+  build finished a day or two later and stood at 16 on day 10. The floor of 20 is unchanged; at
+  12 days both seeds pass, and the check that no roof falls still runs the whole time.
+- Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
+  mood after a break, which can bring a second break sooner.
+## 2026-11-26: a lived belief is told once a year to each listener (OST-507)
+
+- Symptom: with no fresh tale, the hearth teller told "how they came to hold that ..." most
+  evenings to the same circle (one teller 412 evenings, one listener 380 times), and each
+  hearing raised the listener's confidence in the belief.
+- Cause: `hearth_evening` scored a lived belief 1.0 whenever the teller had one, with no test
+  that anyone lacked it, and called `beliefs::share` on every listener each time.
+- Fix: each person keeps `hearth_heard` (teller, topic or none for the line about the other
+  side of the portal, tick), at most 32. A lived belief (or the portal line) scores only while
+  some other sitter has not heard it from this teller within a year (`HEARTH_RETELL`); a
+  teller with nothing wanted is not chosen. On a telling every listener records it, and only
+  those who had not heard it have the belief passed to them. Tales and realm stories are
+  unchanged.
+- Guard: `tests/culture.rs::a_lived_belief_is_told_once_a_year_to_each_listener` (one telling
+  in ten evenings, once more for a newcomer, again after a year; it fails with the record
+  ignored) and `an_old_save_loads_without_the_hearth_record`. Old saves load; worlds with
+  hearth evenings write fewer tellings, so digests change. The 700-day seeds 1-4 measurement
+  in the issue was not run.
+## 2026-11-26: a guard for mood's needs term reading thirst and warmth (OST-551)
+
+- Symptom: the issue said the needs term ignored thirst and warmth. It no longer does: it
+  averages all six needs and takes the lowest (the #879 fix, tuned by OST-205). No behaviour
+  changes here.
+- Guard: `tests/thirst.rs::one_empty_thirst_or_warmth_is_miserable_on_the_needs_term` sets one
+  need empty with the rest full and requires the needs term at or below -0.3; it fails if the
+  term goes back to four needs.
+
 ## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
 
 - Symptom: a suspicion that spread through a camp read the same as one person's grudge, with

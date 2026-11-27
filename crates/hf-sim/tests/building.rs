@@ -95,7 +95,7 @@ fn roofs_are_laid_from_the_walls_and_do_not_fall_in_ordinary_building() {
     for seed in [3u64, 7] {
         let mut w = World::opening_world(seed);
         w.meta.autoplan = true;
-        for _ in 0..10 * TICKS_PER_DAY {
+        for _ in 0..12 * TICKS_PER_DAY {
             w.step();
             for e in &w.last_events {
                 assert!(

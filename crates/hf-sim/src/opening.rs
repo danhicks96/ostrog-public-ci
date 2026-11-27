@@ -478,6 +478,7 @@ impl Identity {
             graves_read: Vec::new(),
             suspicions: Vec::new(),
             whispered: None,
+            hearth_heard: Vec::new(),
             resonance: None,
             denned: false,
             fed: 0,

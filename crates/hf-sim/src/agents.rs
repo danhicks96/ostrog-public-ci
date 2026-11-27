@@ -243,6 +243,12 @@ pub struct Agent {
     /// suspicion is said once per twenty days and not on every further one (OST-174).
     #[serde(default)]
     pub whispered: Option<u64>,
+    /// The lived-belief tellings they have heard at the hearth, as (teller, topic or `None`
+    /// for the line about the other side of the portal, tick), newest last, at most
+    /// `culture::HEARTH_HEARD_KEPT`: the same teller does not tell them the same thing again
+    /// within a year (systems/culture.rs, OST-507).
+    #[serde(default)]
+    pub hearth_heard: Vec<(crate::ids::AgentId, Option<crate::past::Topic>, u64)>,
     /// A hidden potential carried through the portal, if any (resonance.rs, #308): shown
     /// nowhere until it shows itself.
     #[serde(default)]
