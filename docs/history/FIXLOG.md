@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Looking for water while hungry
+
+A thirsty settler could pass a meal in hand and go hungry because walking somewhere to look for water scored as highly as a drink. Looking now uses the same urgency as searching for food. Someone on high ground can also follow an open, dry step downhill and discover drinking water from the next level.
+
 ## 2026-11-26 - People walk to water they can locate
 
 Wynvane refused a shore she remembered as foul, then walked directly to a different pond hidden behind terrain. Neither the pond nor its banks were in sight or in her water beliefs. Drinkers and water carriers can now head for a remembered source or one they can see. A thirsty person without a water destination searches nearby ground. An unfamiliar pond can still look safe until someone drinks from it.

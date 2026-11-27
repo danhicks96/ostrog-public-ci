@@ -3341,22 +3341,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:835 | gave up on {} for now; back to it {when} |
 | systems/decide.rs:917 | no path |
 | systems/decide.rs:975 | the stores are ours |
-| systems/decide.rs:1238 | no path |
-| systems/decide.rs:1504 | no way there they know of |
-| systems/decide.rs:1506 | in the flood's way |
-| systems/decide.rs:1512 | found no way there lately |
-| systems/decide.rs:1654 | the ground there is under water |
-| systems/decide.rs:1655 | someone else is already at it |
-| systems/decide.rs:1658 | off work since they broke down |
-| systems/decide.rs:1660 | weighs nothing now |
-| systems/decide.rs:2642 | hunger |
-| systems/decide.rs:2647 | thirst |
-| systems/decide.rs:2652 | tiredness |
-| systems/decide.rs:2657 | days of food in store |
-| systems/decide.rs:2662 | night near with no bed or roof |
-| systems/decide.rs:2667 | arrival urge |
-| systems/decide.rs:2672 | leisure weight |
-| systems/decide.rs:2681 | nothing |
+| systems/decide.rs:1264 | no path |
+| systems/decide.rs:1530 | no way there they know of |
+| systems/decide.rs:1532 | in the flood's way |
+| systems/decide.rs:1538 | found no way there lately |
+| systems/decide.rs:1680 | the ground there is under water |
+| systems/decide.rs:1681 | someone else is already at it |
+| systems/decide.rs:1684 | off work since they broke down |
+| systems/decide.rs:1686 | weighs nothing now |
+| systems/decide.rs:2668 | hunger |
+| systems/decide.rs:2673 | thirst |
+| systems/decide.rs:2678 | tiredness |
+| systems/decide.rs:2683 | days of food in store |
+| systems/decide.rs:2688 | night near with no bed or roof |
+| systems/decide.rs:2693 | arrival urge |
+| systems/decide.rs:2698 | leisure weight |
+| systems/decide.rs:2707 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |

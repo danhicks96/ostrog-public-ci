@@ -976,12 +976,38 @@ fn confront_reason(a: &crate::agents::Agent) -> String {
     }
 }
 
+/// Looking for a necessity can reveal it. Only a known destination offers relief on arrival.
+fn search_urge(pressure: f32) -> f32 {
+    0.4 + pressure * 2.0
+}
+
 /// Without a water destination, go look. Sample the visible ground around the person
 /// without consulting the water map; a later look can reveal a source.
 fn search_for_water(w: &World, i: usize, r: &mut rand_chacha::ChaCha8Rng) -> Option<TilePos> {
     let a = &w.agents[i];
     let nav = w.nav.as_ref()?;
     let radius = super::perceive::sight_radius(w, a, w.meta.tick);
+    // Water often collects lower down. Follow a descent at their feet before
+    // looking farther along this floor. Only step through an open lip or a
+    // stair they are standing on, never through a ceiling to a hidden tile.
+    let mut steps = Vec::new();
+    crate::nav::neighbours(&w.grid, a.pos, &mut steps);
+    if let Some(step) = steps.iter().find(|step| {
+        let to = step.to;
+        if to.z >= a.pos.z {
+            return false;
+        }
+        let cover = w.grid.get(to.offset(0, 0, 1));
+        (cover.shape.connects_down()
+            || (matches!(
+                cover.shape,
+                crate::world::Shape::Open | crate::world::Shape::RampTop
+            ) && !cover.is_water()
+                && !crate::building::roofed(w, to)))
+            && !unsafe_ground(w, to)
+    }) {
+        return Some(step.to);
+    }
     (0..8).find_map(|_| {
         let p = a.pos.offset(
             r.gen_range(-radius..=radius),
@@ -1794,7 +1820,7 @@ fn choose(
             consider(urgency * dist_discount(s.stand), Goal::Drink(s.stand));
         } else if thirst_p > 0.4 {
             if let Some(p) = search_for_water(w, i, r) {
-                consider(urgency * dist_discount(p), Goal::SeekWater(p));
+                consider(search_urge(thirst_p) * dist_discount(p), Goal::SeekWater(p));
             }
         }
     }
@@ -2566,7 +2592,7 @@ fn choose(
         // Hungry with no food known: a search with a direction, not a stroll (#415). Back to
         // the camp first, where the stores and the others are; else out to where they ate
         // before; else round the camp, not wherever their feet last stopped.
-        let urge = 0.4 + hunger_p * 2.0;
+        let urge = search_urge(hunger_p);
         let back = home
             .or(camp)
             .filter(|h| me.dist(*h) > 12 && w.grid.walkable(*h));

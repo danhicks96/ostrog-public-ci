@@ -321,3 +321,73 @@ fn a_thirsty_person_can_search_then_recall_an_obscured_pond() {
     assert!(hf_sim::water::reaches(bank, source));
     assert!(w.nav.as_ref().unwrap().reach(from, bank));
 }
+
+#[test]
+fn eat_a_carried_meal_before_searching_for_an_unknown_drink() {
+    let (mut w, _) = two_ponds(4563, false);
+    let from = TilePos::new(21, 42, 2);
+    let i = founder_at(&mut w, from);
+    w.meta.tick = 9 * TICKS_PER_HOUR;
+    thirsty(&mut w, i, 0.0);
+    w.agents[i].needs.hunger = 0.14;
+    let meal = w.create_item(
+        ItemKind::Meal,
+        1,
+        ItemPlace::Carried(w.agents[i].id),
+        0.6,
+        "test",
+    );
+    assert!(
+        hf_sim::water::nearest_knowing(&w, i, from, 120, &w.agents[i].knowledge, true).is_none()
+    );
+    hf_sim::systems::decide::step(&mut w);
+    assert!(matches!(&w.agents[i].activity, Activity::Going {to, then}
+        if *to == from && matches!(**then, Activity::Eating { item, .. } if item == meal)));
+    for _ in 0..TICKS_PER_HOUR {
+        w.step();
+        if w.agents[i].needs.hunger > 0.5 {
+            break;
+        }
+    }
+    assert!(w.agents[i].needs.hunger > 0.5, "they actually ate");
+}
+
+#[test]
+fn searching_can_descend_a_dry_ramp_then_discover_a_pond() {
+    let (mut w, _) = two_ponds(4563, false);
+    w.flatten(28, 28, 5, 5, 2);
+    let from = TilePos::new(32, 30, 3);
+    let ramp = TilePos::new(33, 30, 2);
+    w.grid.set(
+        ramp,
+        Tile {
+            shape: Shape::RampUp,
+            material: Material::GRASS,
+            flags: TileFlags::NONE,
+        },
+    );
+    w.rebuild_caches();
+    w.ensure_nav();
+    let i = founder_at(&mut w, from);
+    w.meta.tick = 9 * TICKS_PER_HOUR;
+    thirsty(&mut w, i, 0.1);
+    assert!(
+        hf_sim::water::nearest_knowing(&w, i, from, 120, &w.agents[i].knowledge, true).is_none()
+    );
+    hf_sim::systems::decide::step(&mut w);
+    assert!(matches!(&w.agents[i].activity, Activity::Going {to, then}
+        if *to == ramp && matches!(**then, Activity::Loitering { .. })));
+    let mut crossed = false;
+    for _ in 0..2 * TICKS_PER_HOUR {
+        w.step();
+        crossed |= w.agents[i].pos == ramp;
+        if w.agents[i].needs.thirst > 0.5 {
+            break;
+        }
+    }
+    assert!(crossed, "they used the ramp");
+    assert!(
+        w.agents[i].needs.thirst > 0.5,
+        "they located and drank water below"
+    );
+}
