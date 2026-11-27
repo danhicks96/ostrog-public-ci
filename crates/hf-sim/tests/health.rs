@@ -271,7 +271,9 @@ fn illness_spreads_then_fades() {
     let alive = w
         .agents
         .iter()
-        .filter(|a| a.alive && a.species == hf_sim::agents::Species::Person)
+        // OST-203: a person who walked out of the valley (no death recorded) was not lost to the
+        // fever; the test is about what the illness kills, as in infection_can_kill (OST-205).
+        .filter(|a| (a.alive || a.death.is_none()) && a.species == hf_sim::agents::Species::Person)
         .count();
     assert!(
         alive >= 8,
