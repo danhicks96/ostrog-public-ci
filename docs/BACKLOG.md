@@ -545,6 +545,14 @@ A house has no succession when its householder dies or leaves. Pass it to a livi
 
 **Acceptance:** Test `crates/hf-sim/tests/ownership.rs::a_dead_householders_house_passes_to_the_partner`: the householder dies with a living partner: after the claim step `house_owners[ix][0]` is the partner and exactly one `Inherited` with `what == "the house"` is pushed. With no partner and a child of age, the child heads it; with neither, the entry is empty and no event is pushed. Measured: count of `inherited` rows whose `what` is "the house" on seeds 1-4 at 300 days, printed in the PR. development-history entry.
 
+### OST-242 · Give a broken or short night its own thought
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#747](https://github.com/danhicks96/ostrog-public-ci/pull/747)
+
+A sleep under six hours gave no thought, so a night cut short by cold, hunger or a raid was not felt. It now leaves a small "a broken night" thought, unless it is a nap soon after a full night.
+
+**Acceptance:** A three-hour sleep after a day awake leaves the thought and a nap soon after a night leaves none; a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-241 · Make a break's cost last
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** Pending
