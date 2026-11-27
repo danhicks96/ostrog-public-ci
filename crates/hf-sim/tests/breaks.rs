@@ -88,6 +88,14 @@ fn a_binge_eats_what_lies_near() {
             .pending
             .iter()
             .any(|e| matches!(&e.kind, EventKind::Broke { kind, .. } if kind == "a binge"));
+        if binged {
+            for _ in 0..=15 * hf_sim::time::TICKS_PER_MINUTE {
+                w.meta.tick += 1;
+                hf_sim::systems::movement::step(&mut w);
+                hf_sim::systems::act::step(&mut w);
+            }
+            break;
+        }
     }
     assert!(binged);
     assert!(food(&w) < before, "the food went");

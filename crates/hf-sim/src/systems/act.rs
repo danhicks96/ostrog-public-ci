@@ -3,6 +3,7 @@
 
 use crate::events::{EventKind, Severity};
 use crate::items::{ItemKind, ItemPlace};
+use crate::mind::activity::BingePortions;
 use crate::mind::knowledge::Known;
 use crate::mind::{Activity, MemKind, Skill, Subject};
 use crate::time::TICKS_PER_HOUR;
@@ -16,6 +17,82 @@ pub const BLOWS_AT: f32 = -0.15;
 /// Above this fullness a forager was gathering for the store, not for their own hunger (#415):
 /// decide.rs sends people out to eat below 0.75, or 0.83 on the day of the arrival.
 pub const STORE_GATHER_HUNGER: f32 = 0.85;
+
+pub(super) fn start_binge(w: &mut World, i: usize) {
+    let who = w.agents[i].id;
+    let origin = w.agents[i].pos;
+    w.reservations.release_all(who);
+    finish(w, i, 0);
+    w.agents[i].path_blocked = false;
+    let portions = BingePortions {
+        origin,
+        servings_left: BingePortions::MAX,
+    };
+    if !next_serving(w, i, portions) {
+        w.agents[i].set_activity(Activity::Loitering {
+            ticks_left: TICKS_PER_HOUR as u32,
+        });
+    }
+}
+
+/// Select food the person holds, sees or remembers. A stale memory leads to its
+/// last reported position; actual possession and a serving are checked on arrival.
+fn next_serving(w: &mut World, i: usize, portions: BingePortions) -> bool {
+    w.ensure_nav();
+    let a = &w.agents[i];
+    let here = a.pos;
+    let sight = super::perceive::sight_radius(w, a, w.meta.tick);
+    let nav = w.nav.as_ref().expect("navigation initialized");
+    let target = w
+        .items
+        .iter()
+        .filter(|it| it.kind.is_food() && it.count > 0)
+        .filter_map(|it| {
+            let (owned, at) = match it.place {
+                ItemPlace::Carried(id) | ItemPlace::Held(id) if id == a.id => (true, here),
+                ItemPlace::Ground(pos) => {
+                    let at = if pos.dist(portions.origin) <= 6
+                        && pos.dist(here) <= sight
+                        && crate::mind::perception::line_of_sight(&w.grid, here, pos)
+                    {
+                        pos
+                    } else {
+                        a.knowledge.get(Known::Item(it.id))?.pos
+                    };
+                    if at.dist(portions.origin) > 6
+                        || super::hazards::under_water(w, at)
+                        || !nav.reach(here, at)
+                    {
+                        return None;
+                    }
+                    (false, at)
+                }
+                _ => return None,
+            };
+            Some((!owned, at.dist(here), it.id, at))
+        })
+        .min_by_key(|&(ground, dist, id, _)| (ground, dist, id));
+    let Some((_, _, item, at)) = target else {
+        return false;
+    };
+    let eat = Activity::Eating {
+        item,
+        ticks_left: MEAL_TICKS,
+        binge: Some(portions),
+    };
+    let next = if at == here {
+        eat
+    } else {
+        Activity::Going {
+            to: at,
+            then: Box::new(eat),
+        }
+    };
+    super::decide::commit(w, i, next);
+    true
+}
+
+pub(super) const MEAL_TICKS: u32 = 15 * crate::time::TICKS_PER_MINUTE as u32;
 
 pub fn step(w: &mut World) {
     let tick = w.meta.tick;
@@ -119,7 +196,15 @@ pub fn step(w: &mut World) {
                     *ticks_left -= 1;
                 }
             }
-            Activity::Eating { item, ticks_left } => {
+            Activity::Eating {
+                item,
+                ticks_left,
+                binge,
+            } => {
+                if binge.is_some_and(|p| !(1..=BingePortions::MAX).contains(&p.servings_left)) {
+                    fail(w, i, "invalid serving count");
+                    continue;
+                }
                 let Some(ix) = w.items.iter().position(|it| it.id == item) else {
                     let a = &mut w.agents[i];
                     a.knowledge.forget(Known::Item(item));
@@ -128,7 +213,9 @@ pub fn step(w: &mut World) {
                 };
                 let here = w.agents[i].pos;
                 let near = match w.items[ix].place {
-                    ItemPlace::Ground(p) => p.dist(here) <= 1,
+                    ItemPlace::Ground(p) => {
+                        p.dist(here) <= 1 && binge.is_none_or(|b| p.dist(b.origin) <= 6)
+                    }
                     ItemPlace::Carried(id) | ItemPlace::Held(id) => id == w.agents[i].id,
                 };
                 if !near {
@@ -139,7 +226,15 @@ pub fn step(w: &mut World) {
                 if ticks_left <= 1 {
                     let kind = w.items[ix].kind;
                     let quality = w.items[ix].quality;
-                    w.consume_item(item, 1, "eat");
+                    let cause = if binge.is_some() {
+                        "eaten in a binge"
+                    } else {
+                        "eat"
+                    };
+                    if !kind.is_food() || !w.consume_item(item, 1, cause) {
+                        fail(w, i, "no serving available");
+                        continue;
+                    }
                     if !w.items.iter().any(|it| it.id == item) {
                         w.agents[i].knowledge.forget(Known::Item(item));
                     }
@@ -172,6 +267,10 @@ pub fn step(w: &mut World) {
                         Some(eid),
                     );
                     finish(w, i, 10);
+                    if let Some(mut portions) = binge.filter(|p| p.servings_left > 1) {
+                        portions.servings_left -= 1;
+                        next_serving(w, i, portions);
+                    }
                 } else if let Activity::Eating { ticks_left, .. } = &mut w.agents[i].activity {
                     *ticks_left -= 1;
                 }
@@ -264,6 +363,7 @@ pub fn step(w: &mut World) {
                         a.activity = Activity::Eating {
                             item: id,
                             ticks_left: 10 * 20,
+                            binge: None,
                         };
                         a.activity_ticks = 0;
                     }
@@ -626,5 +726,262 @@ mod tests {
         remove_sleeping_bed(&mut counts, bed);
         assert_eq!(counts.get(&bed), Some(&1));
         assert!(counts.get(&bed).is_none_or(|sleepers| *sleepers <= 1));
+    }
+}
+
+#[cfg(test)]
+mod serving_tests {
+    use super::{start_binge, step, BingePortions, MEAL_TICKS};
+    use crate::agents::Species;
+    use crate::events::EventKind;
+    use crate::ids::{ItemId, TilePos};
+    use crate::items::{ItemKind, ItemPlace};
+    use crate::mind::{Activity, Known};
+    use crate::save::{decode, encode, snapshot::Snapshot};
+    use crate::world::gen::GenParams;
+    use crate::world::{Material, Shape, Tile, TileFlags};
+    use crate::World;
+
+    const HERE: TilePos = TilePos::new(30, 30, 2);
+
+    fn scene() -> World {
+        let mut w = World::generate(3322, GenParams::small());
+        w.flatten(2, 2, 60, 60, 1);
+        w.plants.clear();
+        w.items.clear();
+        w.agents.clear();
+        w.meta.founding_site = HERE;
+        w.rebuild_caches();
+        w.spawn_agent(Species::Person, HERE);
+        w.agents[0].needs.hunger = 0.0;
+        w.agents[0].needs.comfort = 0.1;
+        w
+    }
+
+    fn advance(w: &mut World, ticks: u32) {
+        for _ in 0..ticks {
+            w.meta.tick += 1;
+            crate::systems::movement::step(w);
+            step(w);
+        }
+    }
+
+    fn meals(w: &World) -> usize {
+        w.events
+            .pending
+            .iter()
+            .filter(|e| matches!(e.kind, EventKind::Ate { .. }))
+            .count()
+    }
+
+    fn food(w: &mut World, n: u32, place: ItemPlace) -> ItemId {
+        w.create_item(ItemKind::Berries, n, place, 0.8, "fixture")
+    }
+
+    #[test]
+    fn one_meal_engine_pays_for_every_serving_and_stops_at_four() {
+        for (stock, expected) in [(0, 0), (1, 1), (2, 2), (4, 4), (6, 4)] {
+            let mut w = scene();
+            let id = w.agents[0].id;
+            if stock > 0 {
+                let place = if stock == 2 {
+                    ItemPlace::Held(id)
+                } else {
+                    ItemPlace::Carried(id)
+                };
+                food(&mut w, stock, place);
+            }
+            let start = w.meta.tick;
+            start_binge(&mut w, 0);
+            advance(&mut w, MEAL_TICKS - 1);
+            assert_eq!(meals(&w), 0);
+            assert_eq!(w.agents[0].needs.hunger, 0.0);
+            assert_eq!(w.agents[0].last_meal, None);
+            advance(&mut w, MEAL_TICKS * 4 + 1);
+            assert_eq!(meals(&w), expected);
+            assert_eq!(
+                w.items.iter().map(|it| it.count).sum::<u32>(),
+                stock - expected as u32
+            );
+            assert_eq!(
+                w.ledger
+                    .by_cause
+                    .get("-eaten in a binge")
+                    .copied()
+                    .unwrap_or(0),
+                expected as i64
+            );
+            let one = ItemKind::Berries.nutrition_hours() / crate::mind::needs::HUNGER_HOURS
+                * w.agents[0].species_def().diet_factor(ItemKind::Berries);
+            assert!((w.agents[0].needs.hunger - (one * expected as f32).min(1.0)).abs() < 1e-6);
+            assert!((w.agents[0].needs.comfort - (0.1 + 0.08 * expected as f32)).abs() < 1e-6);
+            assert_eq!(
+                w.agents[0].last_meal,
+                (expected > 0).then_some(start + expected as u64 * MEAL_TICKS as u64)
+            );
+        }
+    }
+
+    #[test]
+    fn unseen_food_wrong_owner_and_out_of_range_cannot_feed_a_break() {
+        let mut w = scene();
+        let behind = HERE.offset(4, 0, 0);
+        w.grid.set(
+            HERE.offset(2, 0, 0),
+            Tile {
+                material: Material::STONE_BLOCK,
+                shape: Shape::Wall,
+                flags: TileFlags::NONE,
+            },
+        );
+        w.rebuild_caches();
+        let hidden = food(&mut w, 1, ItemPlace::Ground(behind));
+        let blocked = HERE.offset(2, 0, 0);
+        let inaccessible = food(&mut w, 1, ItemPlace::Ground(blocked));
+        w.agents[0].knowledge.note(
+            Known::Item(inaccessible),
+            blocked,
+            w.meta.tick,
+            ItemKind::Berries as u16,
+        );
+        let far = HERE.offset(0, 7, 0);
+        let distant = food(&mut w, 1, ItemPlace::Ground(far));
+        w.agents[0].knowledge.note(
+            Known::Item(distant),
+            far,
+            w.meta.tick,
+            ItemKind::Berries as u16,
+        );
+        let other = w.spawn_agent(Species::Person, HERE);
+        food(&mut w, 1, ItemPlace::Held(other));
+        start_binge(&mut w, 0);
+        assert!(matches!(w.agents[0].activity, Activity::Loitering { .. }));
+        // An existing memory may be used, but its location must not be updated from unseen reality.
+        let old = HERE.offset(0, 3, 0);
+        w.agents[0].knowledge.note(
+            Known::Item(hidden),
+            old,
+            w.meta.tick,
+            ItemKind::Berries as u16,
+        );
+        start_binge(&mut w, 0);
+        assert!(matches!(w.agents[0].activity,Activity::Going{to,..} if to==old));
+        advance(&mut w, MEAL_TICKS * 2);
+        assert_eq!(meals(&w), 0);
+        assert_eq!(w.agents[0].last_meal, None);
+        assert_eq!(w.items.len(), 4);
+    }
+
+    #[test]
+    fn ordinary_and_binge_meals_recheck_ownership_and_nonzero_food() {
+        for portions in [None, Some(1), Some(0), Some(5)] {
+            for change in ["unchanged", "gone", "moved", "stolen", "empty", "nonfood"] {
+                let mut w = scene();
+                let other = w.spawn_agent(Species::Person, HERE);
+                let item = food(&mut w, 1, ItemPlace::Ground(HERE));
+                w.agents[0].activity = Activity::Eating {
+                    item,
+                    ticks_left: 1,
+                    binge: portions.map(|servings_left| BingePortions {
+                        origin: HERE,
+                        servings_left,
+                    }),
+                };
+                match change {
+                    "gone" => w.items.clear(),
+                    "moved" => w.items[0].place = ItemPlace::Ground(HERE.offset(3, 0, 0)),
+                    "stolen" => w.items[0].place = ItemPlace::Held(other),
+                    "empty" => w.items[0].count = 0,
+                    "nonfood" => w.items[0].kind = ItemKind::Log,
+                    _ => {}
+                }
+                advance(&mut w, 1);
+                let success = change == "unchanged" && matches!(portions, None | Some(1));
+                assert_eq!(meals(&w), usize::from(success), "{portions:?} {change}");
+                assert_eq!(w.agents[0].last_meal.is_some(), success);
+                assert_eq!(w.agents[0].needs.hunger > 0.0, success);
+                assert_eq!(w.agents[0].needs.comfort > 0.1, success);
+                if success {
+                    let cause = if portions.is_some() {
+                        "-eaten in a binge"
+                    } else {
+                        "-eat"
+                    };
+                    assert_eq!(w.ledger.by_cause[cause], 1);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn only_one_person_can_finish_the_last_shared_serving() {
+        let mut w = scene();
+        w.spawn_agent(Species::Person, HERE);
+        food(&mut w, 1, ItemPlace::Ground(HERE));
+        for i in 0..2 {
+            start_binge(&mut w, i);
+        }
+        advance(&mut w, MEAL_TICKS);
+        assert_eq!(meals(&w), 1);
+        assert_eq!(w.agents[0].last_meal, Some(w.meta.tick));
+        assert_eq!(w.agents[1].last_meal, None);
+    }
+
+    fn bytes(w: &World) -> Vec<u8> {
+        encode(&Snapshot::capture(w)).unwrap()
+    }
+
+    #[test]
+    fn walking_and_eating_resume_with_the_same_remaining_servings() {
+        let mut w = scene();
+        food(&mut w, 6, ItemPlace::Ground(HERE.offset(5, 0, 0)));
+        start_binge(&mut w, 0);
+        advance(&mut w, 1);
+        assert!(matches!(w.agents[0].activity, Activity::Going { .. }));
+        let mut walking = decode(&bytes(&w)).unwrap().restore();
+        for colony in [&mut w, &mut walking] {
+            advance(colony, MEAL_TICKS * 2);
+        }
+        assert_eq!(bytes(&w), bytes(&walking));
+        assert!(matches!(
+            w.agents[0].activity,
+            Activity::Eating {
+                binge: Some(BingePortions {
+                    servings_left: 3,
+                    ..
+                }),
+                ..
+            }
+        ));
+        let mut eating = decode(&bytes(&w)).unwrap().restore();
+        for colony in [&mut w, &mut eating] {
+            advance(colony, MEAL_TICKS * 4);
+        }
+        assert_eq!(bytes(&w), bytes(&eating));
+        assert_eq!(w.items[0].count, 2);
+        assert_eq!(w.ledger.by_cause["-eaten in a binge"], 4);
+    }
+
+    #[test]
+    fn old_ordinary_eating_keeps_its_named_messagepack_bytes() {
+        #[derive(serde::Serialize)]
+        enum OldAction {
+            Eating { item: ItemId, ticks_left: u32 },
+        }
+        let old = rmp_serde::to_vec_named(&OldAction::Eating {
+            item: ItemId(19),
+            ticks_left: 73,
+        })
+        .unwrap();
+        let action: Activity = rmp_serde::from_slice(&old).unwrap();
+        assert!(matches!(
+            action,
+            Activity::Eating {
+                item: ItemId(19),
+                ticks_left: 73,
+                binge: None
+            }
+        ));
+        assert_eq!(rmp_serde::to_vec_named(&action).unwrap(), old);
     }
 }

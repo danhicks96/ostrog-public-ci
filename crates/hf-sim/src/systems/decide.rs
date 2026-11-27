@@ -582,7 +582,8 @@ pub fn step(w: &mut World) {
                 to: at,
                 then: Box::new(Activity::Eating {
                     item: id,
-                    ticks_left: 15 * TICKS_PER_MINUTE as u32,
+                    ticks_left: super::act::MEAL_TICKS,
+                    binge: None,
                 }),
             },
             Some(Goal::Drink(at)) => Activity::Going {

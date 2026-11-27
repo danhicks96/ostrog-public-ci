@@ -1,5 +1,21 @@
 # Fix log
 
+## 2026-11-27 Binge breaks require food and time for each serving
+
+A hungry person could become full during a break even with no food anywhere in the world.
+The break also consumed up to four portions from the surrounding six tiles immediately,
+including food beyond the person's sight. The person now seeks food they hold, see or
+remember, walks to it when necessary and spends the usual 15 game minutes per serving.
+Every successful portion uses the ordinary eating action, checks position and ownership,
+records the meal and accounts for one consumed unit. An interrupted or failed attempt
+can end before the four-serving limit. Saves retain the remaining servings and the
+original search area during a break. Existing ordinary meals keep their saved encoding.
+
+The regression cases in `systems::act::serving_tests` cover elapsed time, contested and
+moved food, depleted stock, visibility, ownership and interrupted saves. In a replay of
+two previously foodless breaks the actor's hunger stayed at zero. A stocked actor ate
+four portions from the same stack at 300-tick intervals.
+
 ## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
 
 - Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten

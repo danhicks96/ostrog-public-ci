@@ -244,6 +244,7 @@ fn an_eater_does_not_hold_a_spear_to_their_face() {
     w.agents[0].activity = hf_sim::mind::Activity::Eating {
         item: hf_sim::ids::ItemId(2),
         ticks_left: 20,
+        binge: None,
     };
     assert_eq!(look(&w, &w.agents[0]).equipment, -1);
 }

@@ -5,6 +5,17 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::{AgentId, ItemId, StructureId, TilePos};
 
+/// The remaining servings of a single break, including the one being eaten.
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
+pub struct BingePortions {
+    pub origin: TilePos,
+    pub servings_left: u8,
+}
+
+impl BingePortions {
+    pub const MAX: u8 = 4;
+}
+
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize, Default)]
 pub enum Activity {
     #[default]
@@ -18,6 +29,8 @@ pub enum Activity {
     Eating {
         item: ItemId,
         ticks_left: u32,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        binge: Option<BingePortions>,
     },
     /// Picking food from a plant at its tile.
     Foraging {

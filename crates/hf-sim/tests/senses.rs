@@ -205,6 +205,7 @@ fn each_feeds_by_its_diet() {
         w.agents[i].activity = hf_sim::mind::Activity::Eating {
             item,
             ticks_left: 1,
+            binge: None,
         };
         hf_sim::systems::act::step(&mut w);
         gain.push(w.agents[i].needs.hunger - 0.2);

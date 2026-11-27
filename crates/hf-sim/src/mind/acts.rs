@@ -130,6 +130,7 @@ mod tests {
         w.agents[i].activity = Activity::Eating {
             item: ItemId(1),
             ticks_left: 5,
+            binge: None,
         };
         assert_eq!(
             act_of(&w, &w.agents[i], true),

@@ -4166,6 +4166,7 @@ mod tests {
         w.agents[0].activity = Activity::Eating {
             item: ItemId(1),
             ticks_left: 20,
+            binge: None,
         };
         assert_eq!(person_pose(&w, &w.agents[0], false, None), POSE_EAT);
         assert_ne!(person_pose(&w, &w.agents[0], false, None), 5);
@@ -4273,6 +4274,7 @@ mod tests {
             a.activity = Activity::Eating {
                 item: ItemId(2),
                 ticks_left: 20,
+                binge: None,
             };
         }
         let person = agent_row(&w, &w.agents[0], None);

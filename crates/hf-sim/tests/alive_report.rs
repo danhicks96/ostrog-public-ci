@@ -320,6 +320,7 @@ fn activity_shares_count_every_waking_activity() {
         Activity::Eating {
             item: ItemId(0),
             ticks_left: 10,
+            binge: None,
         },
         Activity::Foraging {
             plant: TilePos::new(32, 30, 2),
@@ -2241,6 +2242,7 @@ fn the_readable_table_names_every_activity_and_marks_plain_standing() {
         Activity::Eating {
             item: ItemId(1),
             ticks_left: 1,
+            binge: None,
         },
         Activity::Foraging {
             plant: pos,

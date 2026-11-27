@@ -1397,7 +1397,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3259 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3146,17 +3146,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | save/mod.rs:173 | chronicle.sqlite |
 | save/mod.rs:185 | chronicle is ahead of the world ({} > {}) |
 | save/mod.rs:197 | {}.{i}.hfsave |
-| systems/act.rs:50 | path blocked |
-| systems/act.rs:58 | did not arrive |
-| systems/act.rs:109 | no water here |
-| systems/act.rs:126 | food gone |
-| systems/act.rs:136 | food moved |
-| systems/act.rs:142 | eat |
-| systems/act.rs:186 | nothing to gather |
-| systems/act.rs:221 | forage |
-| systems/act.rs:284 | the bed was taken |
-| systems/act.rs:370 | they left |
-| systems/act.rs:543 | a poisoning from {} |
+| systems/act.rs:127 | path blocked |
+| systems/act.rs:135 | did not arrive |
+| systems/act.rs:186 | no water here |
+| systems/act.rs:205 | invalid serving count |
+| systems/act.rs:211 | food gone |
+| systems/act.rs:223 | food moved |
+| systems/act.rs:230 | eaten in a binge |
+| systems/act.rs:232 | eat |
+| systems/act.rs:235 | no serving available |
+| systems/act.rs:285 | nothing to gather |
+| systems/act.rs:320 | forage |
+| systems/act.rs:384 | the bed was taken |
+| systems/act.rs:470 | they left |
+| systems/act.rs:643 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |
@@ -3320,40 +3323,40 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/decide.rs:559 | someone |
 | systems/decide.rs:566 | set out to look for {name} |
 | systems/decide.rs:567 | word came they were seen that way |
-| systems/decide.rs:671 | nobody else was doing anything |
-| systems/decide.rs:673 | they knew how, and believe {} |
-| systems/decide.rs:676 | they knew how |
-| systems/decide.rs:693 | went to fight the fire by {} |
-| systems/decide.rs:730 | went after {bname} |
-| systems/decide.rs:731 | it has hurt {hurt} people |
-| systems/decide.rs:790 | starving |
-| systems/decide.rs:792 | parched |
-| systems/decide.rs:794 | exhausted |
-| systems/decide.rs:796 | cold in their sleep |
-| systems/decide.rs:798 | freezing |
-| systems/decide.rs:800 | a pressing need |
-| systems/decide.rs:815 | {}h {:02}m from now |
-| systems/decide.rs:822 | found no way to ({x},{y},{z}); not trying it again for {when} |
-| systems/decide.rs:827 | found no drink standing at ({x},{y},{z}); not going there for water for {when} |
-| systems/decide.rs:832 | gave up on {} for now; back to it {when} |
-| systems/decide.rs:914 | no path |
-| systems/decide.rs:972 | the stores are ours |
-| systems/decide.rs:1209 | no path |
-| systems/decide.rs:1474 | no way there they know of |
-| systems/decide.rs:1476 | in the flood's way |
-| systems/decide.rs:1482 | found no way there lately |
-| systems/decide.rs:1622 | the ground there is under water |
-| systems/decide.rs:1623 | someone else is already at it |
-| systems/decide.rs:1626 | off work since they broke down |
-| systems/decide.rs:1628 | weighs nothing now |
-| systems/decide.rs:2606 | hunger |
-| systems/decide.rs:2611 | thirst |
-| systems/decide.rs:2616 | tiredness |
-| systems/decide.rs:2621 | days of food in store |
-| systems/decide.rs:2626 | night near with no bed or roof |
-| systems/decide.rs:2631 | arrival urge |
-| systems/decide.rs:2636 | leisure weight |
-| systems/decide.rs:2645 | nothing |
+| systems/decide.rs:672 | nobody else was doing anything |
+| systems/decide.rs:674 | they knew how, and believe {} |
+| systems/decide.rs:677 | they knew how |
+| systems/decide.rs:694 | went to fight the fire by {} |
+| systems/decide.rs:731 | went after {bname} |
+| systems/decide.rs:732 | it has hurt {hurt} people |
+| systems/decide.rs:791 | starving |
+| systems/decide.rs:793 | parched |
+| systems/decide.rs:795 | exhausted |
+| systems/decide.rs:797 | cold in their sleep |
+| systems/decide.rs:799 | freezing |
+| systems/decide.rs:801 | a pressing need |
+| systems/decide.rs:816 | {}h {:02}m from now |
+| systems/decide.rs:823 | found no way to ({x},{y},{z}); not trying it again for {when} |
+| systems/decide.rs:828 | found no drink standing at ({x},{y},{z}); not going there for water for {when} |
+| systems/decide.rs:833 | gave up on {} for now; back to it {when} |
+| systems/decide.rs:915 | no path |
+| systems/decide.rs:973 | the stores are ours |
+| systems/decide.rs:1210 | no path |
+| systems/decide.rs:1475 | no way there they know of |
+| systems/decide.rs:1477 | in the flood's way |
+| systems/decide.rs:1483 | found no way there lately |
+| systems/decide.rs:1623 | the ground there is under water |
+| systems/decide.rs:1624 | someone else is already at it |
+| systems/decide.rs:1627 | off work since they broke down |
+| systems/decide.rs:1629 | weighs nothing now |
+| systems/decide.rs:2607 | hunger |
+| systems/decide.rs:2612 | thirst |
+| systems/decide.rs:2617 | tiredness |
+| systems/decide.rs:2622 | days of food in store |
+| systems/decide.rs:2627 | night near with no bed or roof |
+| systems/decide.rs:2632 | arrival urge |
+| systems/decide.rs:2637 | leisure weight |
+| systems/decide.rs:2646 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |
@@ -3609,13 +3612,12 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:550 | from {n} |
 | systems/strain.rs:606 | {}'s {} |
 | systems/strain.rs:639 | breaking the {label} |
-| systems/strain.rs:667 | eaten in a binge |
-| systems/strain.rs:701 | set by {name} in a rage |
-| systems/strain.rs:781 | wondered where {who} is |
-| systems/strain.rs:782 | the rest of the party is not here |
-| systems/strain.rs:805 | starting a fight |
+| systems/strain.rs:676 | set by {name} in a rage |
+| systems/strain.rs:756 | wondered where {who} is |
+| systems/strain.rs:757 | the rest of the party is not here |
+| systems/strain.rs:780 | starting a fight |
+| systems/strain.rs:828 | in a fight |
 | systems/strain.rs:853 | in a fight |
-| systems/strain.rs:878 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |

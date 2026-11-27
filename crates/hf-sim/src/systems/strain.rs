@@ -648,32 +648,7 @@ pub fn step(w: &mut World) {
                 w.agents[i].path.clear();
             }
             Break::Binge => {
-                // Everything to eat within six tiles, up to four helpings.
-                let mut left = 4u32;
-                let near: Vec<(crate::ids::ItemId, u32)> = w
-                    .items
-                    .iter()
-                    .filter(|it| {
-                        it.kind.is_food()
-                            && matches!(it.place, crate::items::ItemPlace::Ground(p) if p.dist(here) <= 6)
-                    })
-                    .map(|it| (it.id, it.count))
-                    .collect();
-                for (id, n) in near {
-                    if left == 0 {
-                        break;
-                    }
-                    let k = n.min(left);
-                    w.consume_item(id, k, "eaten in a binge");
-                    left -= k;
-                }
-                w.agents[i].needs.hunger = 1.0;
-                w.reservations.release_all(who);
-                w.agents[i].activity = Activity::Loitering {
-                    ticks_left: TICKS_PER_HOUR as u32,
-                };
-                w.agents[i].activity_ticks = 0;
-                w.agents[i].path.clear();
+                super::act::start_binge(w, i);
             }
             Break::Daze => {
                 w.reservations.release_all(who);
