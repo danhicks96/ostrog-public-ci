@@ -7,7 +7,7 @@
 //! (pilgrimage.rs).
 //!
 //! A community that moves camp takes its relics with it to the new home. A relic that is gone
-//! (broken, burned) or carried out of the valley by someone is lost, on record (`RelicLost`);
+//! (broken, burned) or carried out of the colony by someone is lost, on record (`RelicLost`);
 //! those who heed the signs take it hard, and think the less of whoever carried it off. FIXLOG 2026-10-28 "nothing was kept
 //! in memory of the revered dead".
 
@@ -33,7 +33,7 @@ pub struct Relic {
     /// What it is called: its name, else what it is.
     pub what: String,
     pub since: u64,
-    /// Who carries or holds it now, if anyone; so a relic carried out of the valley is known to
+    /// Who carries or holds it now, if anyone; so a relic carried out of the colony is known to
     /// have been carried off, and by whom.
     #[serde(default)]
     pub held_by: Option<AgentId>,
