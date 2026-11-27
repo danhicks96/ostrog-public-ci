@@ -2132,6 +2132,48 @@ func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
 	check(since.has("has_news"), "since-look says whether there is news")
 	sim.free()
 
+func test_looking_down_uses_only_observed_material_and_lower_reports() -> void:
+	var v := WorldView.new()
+	v.w = 3
+	v.h = 1
+	v.view_z = 3
+	var wet := 13 | (2 << 24)
+	var wood := 14 | (1 << 16)
+	var upper := {Vector2i(0, 0): Vector4i(1, 0, 13, -1), Vector2i(1, 0): Vector4i(1, 0, 14, -1)}
+	# No lower survey. The upper report identifies water and wood, but carries no depth or flow.
+	v.lower_records[2] = v._project_level(2, upper, PackedInt32Array([3, 1]))
+	check(v.projected_levels[2] == PackedInt32Array([13 | (1 << 24), wood, 0]), "only observed surface materials project through the upper slice")
+	check(not v._lower_in_sight(0, 0, 2), "water seen only as supporting material has no live state")
+	# A stale report says the second cell used to be water. The current upper observer now sees wood.
+	var lower := PackedInt32Array([3,1, 0,0,1,wet,0,-1, 1,0,0,wet,0,-1, 2,0,0,wet,0,-1])
+	v.lower_records[2] = v._project_level(2, upper, lower)
+	check(v.projected_levels[2] == PackedInt32Array([wet, wood, wet]), "direct depth, newly observed wood and remembered water retain their surveyed values")
+	check(v._lower_in_sight(0, 0, 2) and not v._lower_in_sight(2, 0, 2), "only directly witnessed water can animate or show its present freeze state")
+	v.surveyed_floor = true
+	v.ground = PackedInt32Array([0, 0, 0])
+	v.remembered = upper
+	v.zmin = 2
+	v.levels = v.projected_levels
+	var hidden := Vector3i(1,0,3)
+	var dry := v.projected_block(hidden, {"title":"Drained", "water":"Dry"})
+	var flooded := v.projected_block(hidden, {"title":"Flooded", "water":"Foul", "minerals":["Iron"]})
+	check(dry == flooded and dry.ground == "Wood Floor recorded at z2", "inspecting the upper floor cannot expose mutable details of the unobserved lower tile")
+	v.free()
+
+func test_projected_material_invalidates_only_touching_chunks() -> void:
+	var v := WorldView.new()
+	v.w = v.CH * 3
+	v.h = 1
+	var old := PackedInt32Array()
+	old.resize(v.w)
+	var updated := old.duplicate()
+	updated[v.CH] = 14 | (1 << 16)
+	v.chunk_seen = {Vector2i(0,0): "shown", Vector2i(1,0): "shown", Vector2i(2,0): "shown"}
+	v.projected_levels[2] = updated
+	v._invalidate_projected_chunks({2: old})
+	check(v.chunk_seen.keys() == [Vector2i(2,0)], "a newly witnessed material refreshes its chunk and adjacent blend without redrawing the far chunk")
+	v.free()
+
 func test_surface_ice_requires_witnessed_water_on_the_inspected_floor() -> void:
 	var v := WorldView.new()
 	v.w = 1

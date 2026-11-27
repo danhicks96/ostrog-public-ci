@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Looking down respects the lower-floor survey
+
+Watching from above shows the material last seen beneath an opening. A lower floor reveals its water depth and live surface conditions when someone witnesses it. Unseen drainage and construction stay hidden in the image and block inspector. Deeper slopes with no recorded surface material show their relief in a neutral shade.
+
 ## 2026-11-26 - Watch a river drop from a clear bank
 
 A sworn observer on a clear outdoor bank can see the exposed face of a one-level drop from above. The pool floor stays hidden until someone surveys it. Walls, roofs and frozen water interrupt the sight of falling water. When exposed water freezes, its ripples stop and its surface turns pale blue in sight. Remembered water keeps its recorded appearance.

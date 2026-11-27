@@ -133,7 +133,9 @@ var _built_z := -99999
 var _variety := {}             # Vector2i -> family override (client-only surface variety)
 var _variety_key := ""
 var scorched := {}             # Vector2i -> hours since it burned
-const CH := 32
+## A small newly surveyed patch only redraws its nearby terrain. The bridge still versions 32-tile simulation chunks.
+const CH := 16
+const SIM_CHUNK := 32
 var _ci: CanvasItem = self      # where the ground routines draw (self, a chunk, or the animated layer)
 var _chunk_mode := false
 var _dyn_rec: Array = []
@@ -262,6 +264,9 @@ func reset_world() -> void:
 
 var observer := ColonyAtlas.new()
 var remembered := {}
+var projected_levels := {} # Lower slices reconstructed from surveyed cells and their recorded support.
+var projection_reports := {} # Exact survey buffers that produced each projection.
+var lower_records := {}
 var visible_spills: Array[Vector3i] = [] # upper and lower endpoints, in pairs
 var spill_corners := {} # shared crest positions and downstream normals
 var surveyed_floor := false
@@ -278,6 +283,118 @@ func _read_observed_floor() -> void:
 	surveyed_floor = cells.size() >= 2
 	for i in range(2,cells.size(),6):
 		remembered[Vector2i(cells[i],cells[i+1])] = Vector4i(cells[i+2],cells[i+3],cells[i+4],cells[i+5])
+
+	_read_projected_levels(cells)
+
+func _read_projected_levels(upper_rows: PackedInt32Array) -> void:
+	var previous := projected_levels
+	var prior_reports := projection_reports
+	var prior_records := lower_records
+	projected_levels = {}
+	projection_reports = {}
+	lower_records = {}
+	if not surveyed_floor:
+		return
+	# The upper report includes the material immediately below, but not its depth,
+	# fittings, mutable flags or animation. Only a direct lower report supplies these.
+	projection_reports[view_z] = upper_rows
+	var above := remembered
+	for z in range(view_z - 1, maxi(zmin - 1, view_z - 7), -1):
+		var rows := observer.remembered_floor(sim, z)
+		projection_reports[z] = rows
+		if previous.has(z) and prior_reports[z] == rows and prior_reports[z + 1] == projection_reports[z + 1]:
+			projected_levels[z] = previous[z]
+			above = prior_records[z]
+		else:
+			above = _project_level(z, above, rows)
+		lower_records[z] = above
+	if previous != projected_levels:
+		_variety.clear()
+		_invalidate_projected_chunks(previous)
+
+func _invalidate_projected_chunks(previous: Dictionary) -> void:
+	# A changed support affects terrain blending through a one-tile border. Keep
+	# every already drawn chunk whose recorded footprint is identical.
+	for z in projected_levels:
+		var current: PackedInt32Array = projected_levels[z]
+		var old: PackedInt32Array = previous.get(z, PackedInt32Array())
+		if old.size() != current.size():
+			chunk_seen.clear()
+			return
+		if old == current:
+			continue
+		for k: Vector2i in chunk_seen.keys():
+			var left := maxi(0, k.x * CH - 1)
+			var right := mini(w, (k.x + 1) * CH + 1)
+			for y in range(maxi(0, k.y * CH - 1), mini(h, (k.y + 1) * CH + 1)):
+				var start := y * w + left
+				var end := y * w + right
+				if old.slice(start, end) != current.slice(start, end):
+					chunk_seen.erase(k)
+					break
+
+func _project_level(z: int, above: Dictionary, rows: PackedInt32Array) -> Dictionary:
+	var tiles := PackedInt32Array()
+	tiles.resize(w * h)
+	var direct := {}
+	for i in range(2, rows.size(), 6):
+		var at := Vector2i(rows[i], rows[i + 1])
+		var record := Vector4i(rows[i + 2], rows[i + 3], rows[i + 4], rows[i + 5])
+		direct[at] = record
+		tiles[at.y * w + at.x] = record.y
+	for at: Vector2i in above:
+		var upper: Vector4i = above[at]
+		var lower: Vector4i = direct.get(at, Vector4i.ZERO)
+		if direct.has(at) and (lower.x == 1 or upper.x != 1 or mat_of(lower.y) == upper.z):
+			continue
+		tiles[at.y * w + at.x] = _reported_support(upper.z)
+	projected_levels[z] = tiles
+	return direct
+
+func _lower_in_sight(x: int, y: int, z: int) -> bool:
+	var records: Dictionary = lower_records.get(z, {})
+	return records.get(Vector2i(x, y), Vector4i.ZERO).x == 1
+
+static func _reported_support(material: int) -> int:
+	if material == 0:
+		return 0
+	if material == 13:
+		return material | (1 << 24)
+	return material | (1 << 16)
+
+## Block inspection normally describes the live column, including its lower water and
+## minerals. Looking through a gap can only describe a surface known to the colony.
+func projected_block(p: Vector3i, info: Dictionary) -> Dictionary:
+	var at := Vector2i(p.x, p.y)
+	if not surveyed_floor or p.z != view_z or not remembered.has(at):
+		return info
+	var upper: Vector4i = remembered[at]
+	if upper.x != 1 or shape_of(upper.y) != 0 or (flags_of(upper.y) & 3):
+		return info
+	if upper.z != 13 and p.z <= ground[p.y * w + p.x] + 1:
+		return info # Inspecting the standing surface, not looking down through a gap.
+	var surface := "No surveyed surface below"
+	var water := "Unknown below this level"
+	for z in range(p.z - 1, maxi(zmin - 1, p.z - 7), -1):
+		var tile := tile_at(z, p.x, p.y)
+		if (flags_of(tile) & 3) == 0 and shape_of(tile) == 0:
+			continue
+		if _lower_in_sight(p.x, p.y, z):
+			return info
+		var material: String = FAMILY.get(mat_of(tile), "surface")
+		surface = "%s recorded at z%d" % [material.capitalize(), z]
+		if flags_of(tile) & 3:
+			water = "Previously observed. Current depth and quality unknown."
+		break
+	# Items, fittings and weather at the inspected level can still be observed.
+	var report := {}
+	for key in ["biome", "surface_z", "temperature", "items", "structures", "plants"]:
+		if info.has(key):
+			report[key] = info[key]
+	report["title"] = "Looking below (%d, %d, z%d)" % [p.x, p.y, p.z]
+	report["ground"] = surface
+	report["water"] = water
+	return report
 
 func _refresh_spills() -> void:
 	visible_spills.clear()
@@ -321,7 +438,7 @@ func refresh() -> void:
 			explored[Vector2i(ex[i], ex[i + 1])] = true
 	for z in range(view_z - 6, view_z + 1):
 		if z >= zmin and z <= zmax:
-			levels[z] = sim.level_tiles(z)
+			levels[z] = projected_levels[z] if surveyed_floor and z < view_z else sim.level_tiles(z)
 	# The levels just above the view, so a hill rising above it can show its own top. They
 	# change rarely; fetched when the view level changes or every two seconds.
 	if view_z != _above_z or Time.get_ticks_msec() - _above_ms > 2000:
@@ -496,6 +613,11 @@ func snowing() -> bool:
 
 func draw_family(fam: String, x: int, y: int, dim: float = 0.0, frame_anim: bool = false, alpha: float = 1.0) -> void:
 	var r := Rect2(x * TILE, y * TILE, TILE, TILE)
+	if fam == "unseen_slope":
+		# The terrain height is available, but no observed surface material reaches
+		# this far down. Keep its relief without supplying live water or construction.
+		_ci.draw_rect(r, Color("#555b59").darkened(dim))
+		return
 	var t := fam_tex(fam)
 	var tint := season_tint(fam)
 	var at := autumn_tex("terrain/%s" % fam)
@@ -626,6 +748,7 @@ func _sync_chunks() -> void:
 	var cw := (w + CH - 1) / CH
 	var chh := (h + CH - 1) / CH
 	var vers: PackedInt64Array = sim.chunk_versions(view_z - 6, view_z + 4)
+	var versions_w := (w + SIM_CHUNK - 1) / SIM_CHUNK
 	var c := cull_rect()
 	var key := "%d|%s|%d|%d" % [view_z, _variety_key, int(snowing()), int(under_sky_at_centre())]
 	for cy in chh:
@@ -647,7 +770,8 @@ func _sync_chunks() -> void:
 			nodes[1].visible = vis
 			if not vis:
 				continue
-			var ver := "%s|%d" % [key, vers[cy * cw + cx] if cy * cw + cx < vers.size() else 0]
+			var index := (cy * CH / SIM_CHUNK) * versions_w + cx * CH / SIM_CHUNK
+			var ver := "%s|%d" % [key, vers[index] if index < vers.size() else 0]
 			if chunk_seen.get(k, "") != ver:
 				chunk_seen[k] = ver
 				nodes[0].queue_redraw()
@@ -785,12 +909,17 @@ func _ground_family(x: int, y: int) -> Array:
 			if ground[y * w + x] >= view_z and fam in CAVE_FLOORED:
 				fam = "cave_floor"
 			return [fam, dim, false, z + 1]
+	if surveyed_floor:
+		var terrain_z: int = ground[y * w + x]
+		var shade := clampf(0.07 * (view_z - terrain_z), 0.1, 0.5)
+		return ["unseen_slope", shade, false, terrain_z + 1]
 	return ["black_stone", 0.9, false, -99999]
 
 ## The water sheets carry depth and local texture. Frost glazes them only on a
 ## witnessed, exposed water surface. A remembered floor has no ice observation.
 func _draw_water(family: String, x: int, y: int, dim: float, z: int) -> void:
-	var flowing := z < water_freeze_level
+	var live := z == view_z or not surveyed_floor or _lower_in_sight(x, y, z)
+	var flowing := live and z < water_freeze_level
 	draw_family(family, x, y, dim, flowing)
 	if family == "deep_water" and _deep_rim(x, y, z):
 		draw_family("water", x, y, dim, flowing, 0.5)
@@ -807,10 +936,11 @@ func _draw_water(family: String, x: int, y: int, dim: float, z: int) -> void:
 		_ci.draw_line(origin + offset, origin + offset + Vector2(8 + mark, -2), Color(0.85, 0.94, 0.96, 0.47), 1.2, true)
 
 func _observed_water_surface(x: int, y: int, z: int) -> bool:
-	if z != view_z:
-		return false
-	var record: Vector4i = remembered.get(Vector2i(x, y), Vector4i.ZERO)
-	if record.x != 1 or not (flags_of(record.y) & 3):
+	if z == view_z:
+		var record: Vector4i = remembered.get(Vector2i(x, y), Vector4i.ZERO)
+		if record.x != 1 or not (flags_of(record.y) & 3):
+			return false
+	elif not _lower_in_sight(x, y, z) or not (flags_of(tile_at(z, x, y)) & 3):
 		return false
 	if z == zmax:
 		return true

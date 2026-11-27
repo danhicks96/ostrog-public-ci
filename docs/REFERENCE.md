@@ -4676,7 +4676,7 @@ Generated from `godot/scripts/` by the same script.
 
 HUD, feed, inspect panel, History, away summary, settings and the arrival screen. `%s`, `%d` and `%.2f` are filled at run time; `[b]` and `[color=...]` are BBCode.
 
-<details><summary>272 strings (click to open)</summary>
+<details><summary>277 strings (click to open)</summary>
 
 | file:line | function | string |
 |---|---|---|
@@ -4949,7 +4949,12 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:738 | _summary_page | nothing beyond what each has lived |
 | godot/scripts/setup.gd:739 | _summary_page | Making the world runs the valley's past first; it takes a moment. |
 | godot/scripts/setup.gd:770 | refused | Could not begin: %s. |
-| godot/scripts/world_view.gd:186 | setup | ostrog/render/world_renderer |
+| godot/scripts/world_view.gd:188 | setup | ostrog/render/world_renderer |
+| godot/scripts/world_view.gd:376 | projected_block | No surveyed surface below |
+| godot/scripts/world_view.gd:377 | projected_block | Unknown below this level |
+| godot/scripts/world_view.gd:385 | projected_block | %s recorded at z%d |
+| godot/scripts/world_view.gd:387 | projected_block | Previously observed. Current depth and quality unknown. |
+| godot/scripts/world_view.gd:394 | projected_block | Looking below (%d, %d, z%d) |
 | godot/scripts/audio/sound.gd:96 | _buses | Master |
 | godot/scripts/audio/sound.gd:173 | ui | %.2f %s ui ui |
 
