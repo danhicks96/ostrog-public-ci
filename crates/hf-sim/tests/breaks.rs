@@ -553,3 +553,61 @@ fn without_a_cause_the_trait_bag_still_picks() {
     let daze = kinds.iter().filter(|k| k.as_str() == "a daze").count();
     assert!(daze * 2 < kinds.len(), "{kinds:?}");
 }
+
+/// A world where one forced breakdown, at `hour`, is a daze: the first seed whose break is one
+/// (a grieving person at the end of their rope breaks into a daze most of the time).
+fn forced_daze(hour: u64) -> (World, usize) {
+    use hf_sim::mind::feelings::FeelingKind::Grief;
+    for seed in 9000..9040 {
+        let mut w = pair_at_the_end_of_a_rope(seed);
+        w.agents[1].pos = TilePos::new(55, 55, 2);
+        w.meta.tick = 3 * TICKS_PER_DAY + hour * TICKS_PER_HOUR + 900;
+        let (b, tick) = (w.agents[1].id, w.meta.tick);
+        w.agents[0].feelings.feel(Grief, Some(b), 0.8, tick, None);
+        hf_sim::systems::strain::step(&mut w);
+        let a = w.agents[0].id;
+        if let EventKind::Broke { kind, .. } = &only_break(&w, a).kind {
+            if kind == "a daze" {
+                return (w, 0);
+            }
+        }
+    }
+    panic!("no seed gave a daze");
+}
+
+/// OST-323: a daze is hours, not a whole day and night awake on one spot.
+#[test]
+fn a_daze_lasts_hours_not_a_day() {
+    let (w, i) = forced_daze(10);
+    match w.agents[i].activity {
+        hf_sim::mind::Activity::Loitering { ticks_left } => {
+            let hours = ticks_left as f32 / TICKS_PER_HOUR as f32;
+            assert!(
+                (2.0..=6.5).contains(&hours),
+                "a daze at ten in the morning lasts {hours} hours"
+            );
+        }
+        ref other => panic!("not dazed: {other:?}"),
+    }
+}
+
+#[test]
+fn a_night_daze_ends_into_sleep() {
+    let (mut w, i) = forced_daze(23);
+    match w.agents[i].activity {
+        hf_sim::mind::Activity::Loitering { ticks_left } => {
+            assert!(
+                ticks_left as u64 <= TICKS_PER_HOUR,
+                "a daze at eleven at night lasts {ticks_left} ticks"
+            );
+        }
+        ref other => panic!("not dazed: {other:?}"),
+    }
+    w.agents[i].needs.rest = 0.3;
+    w.run(TICKS_PER_HOUR * 2);
+    assert!(
+        w.agents[i].activity.is_asleep(),
+        "still up at one in the morning: {:?}",
+        w.agents[i].activity
+    );
+}

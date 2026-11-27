@@ -603,6 +603,8 @@ pub fn step(w: &mut World) {
             },
             Cause::Unknown => BreakExplanation::Unknown,
         };
+        // OST-323: the stress the break came at sets how long a daze lasts.
+        let stress_at_break = w.agents[i].stress;
         {
             let a = &mut w.agents[i];
             a.stress = 0.15;
@@ -730,8 +732,17 @@ pub fn step(w: &mut World) {
             Break::Daze => {
                 w.reservations.release_all(who);
                 w.agents[i].withdrawn_until = tick + 2 * TICKS_PER_DAY;
+                // OST-323: two to six game-hours (more for more stress), not a whole day and night
+                // awake on one spot; a daze that starts at night lasts an hour, then they sleep.
+                // See docs/history/FIXLOG.md.
+                let jitter: i64 = r.gen_range(-600..=600);
+                let mut left = 2_400 + (stress_at_break.clamp(0.0, 1.0) * 4_800.0) as i64 + jitter;
+                let nocturnal = w.agents[i].species_def().nocturnal();
+                if crate::time::Calendar::rest_time(tick, nocturnal) {
+                    left = left.min(TICKS_PER_HOUR as i64);
+                }
                 w.agents[i].activity = Activity::Loitering {
-                    ticks_left: TICKS_PER_DAY as u32,
+                    ticks_left: left.max(TICKS_PER_HOUR as i64) as u32,
                 };
                 w.agents[i].activity_ticks = 0;
                 w.agents[i].path.clear();

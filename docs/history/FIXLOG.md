@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
+
+- Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
+  for a critical need, so a dazed person stood where the daze took them, awake all night, for 14 to
+  17 hours; the other breaks last 1,200 to 2,400 ticks.
+- Fix: a daze now lasts `2,400 + stress * 4,800 +- 600` ticks (two to about six and a half game-hours,
+  more for a more stressed person), the stress read before the break resets it; one that starts in the
+  rest hours lasts an hour, after which the person is free to sleep. They still do no work for two days.
+- Guard: `tests/breaks.rs::a_daze_lasts_hours_not_a_day` (a daze at ten in the morning lasts two to
+  six and a half hours; it was 24) and `a_night_daze_ends_into_sleep` (a daze at 23:00 lasts at most an
+  hour and the person is asleep by 01:00).
+- Measured, seeds 1-4, 12 game days (this branch / main): breaks 21, 10, 18, 22 / 17, 13, 18, 22
+  (71 against 70); dazes 3, 3, 0, 2 / 1, 3, 0, 2. The 12-day window holds too few dazes to show the
+  long-run loitering census (14-17 hours in 600 days); that is left to the soak.
+
 ## 2026-11-27: a night cut short left no thought at all (OST-242)
 
 - Symptom: a sleep under six hours gave neither SleptInBed nor SleptRough, and one sleep in five
