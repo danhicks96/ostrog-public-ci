@@ -212,3 +212,35 @@ fn old_memories_fade_from_mood() {
         "fresh {fresh} older {older}"
     );
 }
+
+/// OST-203: mood reads the bounded memory term, so a long run of routine meals no longer pins it.
+#[test]
+fn routine_meals_do_not_raise_mood_without_limit() {
+    use hf_sim::ids::TilePos;
+    use hf_sim::world::gen::GenParams;
+    use hf_sim::World;
+    let long_term = |meals: bool| {
+        let mut w = World::generate(5103, GenParams::small());
+        w.flatten(2, 2, 60, 60, 1);
+        w.meta.founding_site = TilePos::new(30, 30, 2);
+        w.rebuild_caches();
+        let ids = w.found_party(1);
+        let now = w.meta.tick;
+        let a = w.agents.iter_mut().find(|a| a.id == ids[0]).unwrap();
+        a.memories.long.clear();
+        if meals {
+            for _ in 0..48 {
+                a.memories
+                    .long
+                    .push(memory(MemKind::Meal, 0.9, 1.0, 200, now));
+            }
+        }
+        hf_sim::systems::needs::mood_terms(a, now)[2]
+    };
+    let (none, many) = (long_term(false), long_term(true));
+    assert!(
+        many - none <= 0.2,
+        "48 routine meals lifted the long term by {} (none {none}, many {many})",
+        many - none
+    );
+}
