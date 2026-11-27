@@ -45,6 +45,15 @@ fn inspect_activity(w: &World, a: &hf_sim::agents::Agent) -> (String, String) {
         return (activity.describe(), String::new());
     }
     match activity {
+        Activity::Going { to, then }
+            if matches!(then.as_ref(), Activity::Loitering { .. })
+                && current_water_escape(w, a, *to) =>
+        {
+            (
+                "moving to safety".into(),
+                "Goal: escape dangerous water".into(),
+            )
+        }
         Activity::Going { then, .. } if matches!(then.as_ref(), Activity::Idle) => {
             // Water trips and funeral rites both use this walk.
             ("walking".into(), String::new())
@@ -69,6 +78,34 @@ fn inspect_activity(w: &World, a: &hf_sim::agents::Agent) -> (String, String) {
         }
         _ => (activity.describe(), String::new()),
     }
+}
+
+/// The safety outcome can be recorded on the first safe tile while the paid stride is still visible.
+fn current_water_escape(w: &World, a: &hf_sim::agents::Agent, to: TilePos) -> bool {
+    use hf_sim::mind::{OutcomeKind, ProblemKind, ReactionKind};
+    let Some(start) = w.meta.tick.checked_sub(u64::from(a.activity_ticks)) else {
+        return false;
+    };
+    // Hazards can commit before act counts the first tick. For that case the paid
+    // step must itself connect this problem location to the recorded escape target.
+    let stride_start = a
+        .move_ticks
+        .checked_sub(1)
+        .filter(|_| a.move_ticks <= a.move_total && a.activity_ticks == a.move_ticks && a.pos == to)
+        .and_then(|elapsed| w.meta.tick.checked_sub(u64::from(elapsed)));
+    a.problems.records.iter().any(|p| {
+        matches!(p.kind, ProblemKind::WaterHazard | ProblemKind::Flooding)
+            && p.attempts.iter().any(|attempt| {
+                (match stride_start {
+                    Some(stride) => p.pos == a.from && attempt.tick == stride,
+                    None => attempt.tick == start,
+                }) && attempt.target == Some(to)
+                    && attempt.reaction == ReactionKind::MoveToSafety
+                    && attempt.expected == Some(OutcomeKind::Safety)
+                    && (attempt.actual.is_none()
+                        || (attempt.success && attempt.actual == Some(OutcomeKind::Safety)))
+            })
+    })
 }
 
 fn person_pose(w: &World, a: &hf_sim::agents::Agent, carrying: bool, body: Option<i32>) -> i32 {
@@ -3989,6 +4026,167 @@ mod tests {
     use super::*;
     use hf_sim::ids::ItemId;
     use hf_sim::mind::Activity;
+
+    #[test]
+    fn inspect_real_water_escape_during_and_after_the_stride() {
+        use hf_sim::agents::Species;
+        use hf_sim::world::gen::GenParams;
+        use hf_sim::world::TileFlags;
+
+        let mut w = World::generate(476, GenParams::small());
+        w.flatten(2, 2, 60, 60, 1);
+        w.plants.clear();
+        w.flooded.clear();
+        w.waters = Default::default();
+        w.meta.autoplan = false;
+        w.meta.tick = 0;
+        w.rebuild_caches();
+        let here = TilePos::new(30, 30, 2);
+        for (pos, flags) in [(here.offset(-1, -1, 0), 0), (here, TileFlags::FULL)] {
+            let mut tile = w.grid.get(pos);
+            tile.flags = TileFlags(tile.flags.0 | TileFlags::WATER | flags);
+            w.grid.set(pos, tile);
+        }
+        let id = w.spawn_agent(Species::Person, here);
+        let a = w.agents.iter_mut().find(|a| a.id == id).unwrap();
+        a.needs.hunger = 1.0;
+        a.needs.rest = 1.0;
+        a.needs.warmth = 1.0;
+        a.needs.social = 1.0;
+        a.needs.comfort = 1.0;
+        a.needs.thirst = 1.0;
+        w.ensure_nav();
+        let mut saw_escape = false;
+        let mut saw_rest_after = false;
+        for _ in 0..40 {
+            w.step();
+            let a = w.agents.iter().find(|a| a.id == id).unwrap();
+            let label = inspect_activity(&w, a);
+            if matches!(&a.activity, Activity::Going { then, .. } if matches!(then.as_ref(), Activity::Loitering { .. }))
+                && a.problems.records.iter().any(|p| {
+                    p.attempts
+                        .iter()
+                        .any(|r| r.reaction == hf_sim::mind::ReactionKind::MoveToSafety)
+                })
+            {
+                assert_eq!(label.0, "moving to safety");
+                eprintln!(
+                    "tick={} elapsed={} stride={}/{} label={:?}",
+                    w.meta.tick, a.activity_ticks, a.move_ticks, a.move_total, label
+                );
+                saw_escape = true;
+            } else if saw_escape && matches!(a.activity, Activity::Loitering { .. }) {
+                assert_ne!(label.0, "moving to safety");
+                saw_rest_after = true;
+                break;
+            }
+        }
+        assert!(saw_escape, "fixture must produce an actual escape");
+        assert!(saw_rest_after, "fixture must complete the escape");
+    }
+
+    #[test]
+    fn inspect_labels_only_the_current_water_escape() {
+        use hf_sim::mind::{
+            Activity, Evidence, OutcomeKind, ProblemKind, ReactionAttempt, ReactionKind,
+        };
+        let mut w = World::opening_world(3);
+        w.meta.tick = 100;
+        let a = &mut w.agents[0];
+        let to = a.pos.offset(1, 0, 0);
+        let pause = Activity::Loitering { ticks_left: 120 };
+        a.set_activity(Activity::Going {
+            to,
+            then: Box::new(pause.clone()),
+        });
+        let plain = (a.activity.describe(), String::new());
+        let escape = (
+            "moving to safety".to_string(),
+            "Goal: escape dangerous water".to_string(),
+        );
+        assert_eq!(inspect_activity(&w, &w.agents[0]), plain);
+        let a = &mut w.agents[0];
+        let problem = a.problems.observe(
+            ProblemKind::WaterHazard,
+            a.pos,
+            Evidence::Direct,
+            0.9,
+            100,
+            None,
+        );
+        let attempt = ReactionAttempt {
+            tick: 100,
+            reaction: ReactionKind::MoveToSafety,
+            expected: Some(OutcomeKind::Safety),
+            actual: None,
+            success: false,
+            event: None,
+            target: Some(to),
+        };
+        a.problems.record_attempt(problem, attempt);
+        assert_eq!(inspect_activity(&w, &w.agents[0]), escape);
+        w.meta.tick = 105;
+        w.agents[0].activity_ticks = 5;
+        let resolved = ReactionAttempt {
+            actual: Some(OutcomeKind::Safety),
+            success: true,
+            ..attempt
+        };
+        w.agents[0].problems.get_mut(problem).unwrap().attempts[0] = resolved;
+        assert_eq!(inspect_activity(&w, &w.agents[0]), escape);
+        for unrelated in [
+            ReactionAttempt {
+                tick: 99,
+                ..resolved
+            },
+            ReactionAttempt {
+                target: Some(to.offset(1, 0, 0)),
+                ..resolved
+            },
+            ReactionAttempt {
+                actual: Some(OutcomeKind::NoChange),
+                success: false,
+                ..attempt
+            },
+        ] {
+            w.agents[0].problems.get_mut(problem).unwrap().attempts[0] = unrelated;
+            assert_eq!(inspect_activity(&w, &w.agents[0]), plain);
+        }
+        w.agents[0].problems.get_mut(problem).unwrap().attempts[0] = resolved;
+        // In the hazards-before-act schedule the same paid step starts at elapsed one.
+        let a = &mut w.agents[0];
+        a.from = a.pos;
+        a.pos = to;
+        a.activity_ticks = 6;
+        a.move_ticks = 6;
+        a.move_total = 8;
+        assert_eq!(inspect_activity(&w, &w.agents[0]), escape);
+        w.agents[0].from = to.offset(0, 1, 0);
+        assert_eq!(inspect_activity(&w, &w.agents[0]), plain);
+        w.agents[0].from = w.agents[0].problems.get(problem).unwrap().pos;
+        w.agents[0].problems.get_mut(problem).unwrap().attempts[0] = ReactionAttempt {
+            tick: 99,
+            ..resolved
+        };
+        assert_eq!(inspect_activity(&w, &w.agents[0]), plain);
+        w.agents[0].problems.get_mut(problem).unwrap().attempts[0] = resolved;
+        w.agents[0].set_activity(pause);
+        assert_eq!(
+            inspect_activity(&w, &w.agents[0]),
+            (w.agents[0].activity.describe(), String::new())
+        );
+        w.agents[0].set_activity(Activity::Going {
+            to,
+            then: Box::new(Activity::Drinking {
+                ticks_left: 40,
+                back: None,
+            }),
+        });
+        assert_eq!(
+            inspect_activity(&w, &w.agents[0]),
+            ("walking to water".into(), "Goal: quench thirst".into())
+        );
+    }
 
     #[test]
     fn inspect_failure_belongs_to_the_person_and_the_current_pause() {

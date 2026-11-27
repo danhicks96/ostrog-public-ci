@@ -1,5 +1,12 @@
 # Fix log
 
+## 2026-11-27: the inspector shows a person's escape from dangerous water
+
+Daellin reached for a ford while his inspector said he was heading off to loiter. The walk's
+continuation describes his rest after reaching safety. The inspector now uses his own water
+hazard response at the start of that walk to explain why he is moving. It keeps that reason
+through the last paid stride and shows ordinary rest once he arrives.
+
 ## 2026-11-26 - The person inspector attributed a drink to a seasonal observance
 
 In Ferncross the inspector placed the same mood thoughts directly under Wynvane’s activity while she tried to drink and after she stopped. Mood now has its own heading line. A traced choice carries its own time and reasons. A current drink shows its goal. A selected person’s failed plan carries its actual recorded reason through the immediately following idle pause. Wynvane’s record says she remembered foul water and had another source within reach.
