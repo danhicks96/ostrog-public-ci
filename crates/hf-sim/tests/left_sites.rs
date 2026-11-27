@@ -226,38 +226,88 @@ fn a_moving_community_carries_food_and_sets_it_down_at_the_new_camp() {
         );
     }
     hf_sim::systems::moving::consider(&mut w, cid);
-    let members: Vec<_> = w
+    let events = w.events.drain();
+    let new_home = events
+        .iter()
+        .find_map(|e| match e.kind {
+            EventKind::MovedCamp {
+                community,
+                from,
+                to,
+                ..
+            } if community == cid && from == home => Some(to),
+            _ => None,
+        })
+        .expect("the community chose a new camp");
+    assert!(
+        home.dist(new_home) > 16,
+        "the old and new camps are distinct"
+    );
+    let movers: Vec<_> = w
         .agents
         .iter()
-        .filter(|a| a.community == Some(cid))
+        .filter(|a| {
+            a.community == Some(cid)
+                && matches!(a.activity, hf_sim::mind::Activity::Wandering { to } if to == new_home)
+        })
         .map(|a| a.id)
         .collect();
-    let carried: u32 = w
+    let packers: Vec<_> = events
+        .iter()
+        .filter_map(|e| match &e.kind {
+            EventKind::Chose { agent, what, .. }
+                if movers.contains(agent) && what.contains("for the road") =>
+            {
+                Some(*agent)
+            }
+            _ => None,
+        })
+        .collect();
+    assert!(
+        !packers.is_empty(),
+        "the movers took provisions for the road"
+    );
+    let mut on_road: Vec<_> = w
         .items
         .iter()
-        .filter(|it| matches!(it.place, ItemPlace::Carried(m) if members.contains(&m)))
-        .map(|it| it.count)
-        .sum();
+        .filter_map(|it| match it.place {
+            ItemPlace::Carried(who) if it.kind.is_food() && packers.contains(&who) => {
+                Some((it.id, Some(who), it.count))
+            }
+            _ => None,
+        })
+        .collect();
+    let carried: u32 = on_road.iter().map(|(_, _, count)| *count).sum();
     assert!(carried >= 16, "a stack a head goes with them: {carried}");
-    let evs = w.events.drain();
-    assert!(evs.iter().any(
-        |e| matches!(&e.kind, EventKind::Chose { what, .. } if what.contains("for the road"))
-    ));
-    // They walk; at the new camp the food is set down.
-    let new_home = w.communities.iter().find(|c| c.id == cid).unwrap().home;
+
+    // Follow the original provisions across handoffs and stops. Count each stack
+    // once, when a mover sets it down at camp, even if the food is later eaten.
+    let mut arrived = 0;
     for _ in 0..TICKS_PER_DAY {
         w.step();
+        on_road.retain_mut(|(id, carrier, quantity)| {
+            let Some(it) = w.items.iter().find(|it| it.id == *id) else {
+                return false;
+            };
+            *quantity = (*quantity).min(it.count);
+            let previous = carrier.take();
+            match it.place {
+                ItemPlace::Carried(who) if movers.contains(&who) => *carrier = Some(who),
+                ItemPlace::Ground(p)
+                    if p.dist(new_home) <= 8
+                        && w.agents
+                            .iter()
+                            .any(|a| Some(a.id) == previous && a.pos == p) =>
+                {
+                    arrived += *quantity;
+                    return false;
+                }
+                _ => {}
+            }
+            true
+        });
     }
-    let down = w
-        .items
-        .iter()
-        .filter(|it| {
-            it.kind.is_food() && matches!(it.place, ItemPlace::Ground(p) if p.dist(new_home) <= 8)
-        })
-        .map(|it| it.count)
-        .sum::<u32>();
-    // Some is eaten on the way and after; what matters is that it arrives (C73).
-    assert!(down >= 4, "food set down at the new camp: {down}");
+    assert!(arrived >= 4, "food set down at the new camp: {arrived}");
 }
 
 #[test]
