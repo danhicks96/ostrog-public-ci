@@ -3403,20 +3403,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/hazards.rs:437 | by lightning |
 | systems/hazards.rs:475 | spread |
 | systems/hazards.rs:505 | in the fire |
-| systems/hazards.rs:711 | made for higher ground |
-| systems/hazards.rs:711 | the water was rising |
-| systems/hazards.rs:713 | responded to dangerous water by moving to safety |
-| systems/hazards.rs:714 | they noticed dangerous water |
-| systems/hazards.rs:853 | drowned in the flood |
-| systems/hazards.rs:855 | drowned in the flooded workings |
-| systems/hazards.rs:1137 | from the cold |
-| systems/hazards.rs:1145 | froze |
-| systems/hazards.rs:1164 | below ground |
-| systems/hazards.rs:1169 | hearth |
-| systems/hazards.rs:1171 | roofed, no hearth |
-| systems/hazards.rs:1175 | roofed, open side |
-| systems/hazards.rs:1181 | tent/nest |
-| systems/hazards.rs:1183 | open |
+| systems/hazards.rs:714 | made for higher ground |
+| systems/hazards.rs:714 | the water was rising |
+| systems/hazards.rs:716 | responded to dangerous water by moving to safety |
+| systems/hazards.rs:717 | they noticed dangerous water |
+| systems/hazards.rs:856 | drowned in the flood |
+| systems/hazards.rs:858 | drowned in the flooded workings |
+| systems/hazards.rs:1140 | from the cold |
+| systems/hazards.rs:1148 | froze |
+| systems/hazards.rs:1167 | below ground |
+| systems/hazards.rs:1172 | hearth |
+| systems/hazards.rs:1174 | roofed, no hearth |
+| systems/hazards.rs:1178 | roofed, open side |
+| systems/hazards.rs:1184 | tent/nest |
+| systems/hazards.rs:1186 | open |
 | systems/health.rs:327 | starving |
 | systems/health.rs:332 | starving |
 | systems/health.rs:336 | starving |
@@ -3448,8 +3448,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/moods.rs:285 | made in a fey mood, {} |
 | systems/moods.rs:287 | a figure of {}, made in a fey mood, {} |
 | systems/movement.rs:128 | fell through the floor |
-| systems/movement.rs:211 | slipped going down and fell |
-| systems/movement.rs:300 | fell |
+| systems/movement.rs:215 | slipped going down and fell |
+| systems/movement.rs:309 | fell |
 | systems/moving.rs:31 | old age |
 | systems/moving.rs:45 | strangers from {} took from the store |
 | systems/moving.rs:50 | the rock came down |

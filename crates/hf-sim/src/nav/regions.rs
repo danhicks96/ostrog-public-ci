@@ -139,6 +139,17 @@ impl Nav {
         // "reachable" for days and people chose it over the hearth until they froze).
         let mut comps: Vec<ChunkKey> = Vec::new();
         for k in &dirty {
+            // Revealing or covering natural water can also change an escape route on
+            // the level below. Such liquid floors exist only in allocated chunks.
+            let below = (k.0, k.1, k.2 - 1);
+            if grid.chunks.get(&below).is_some_and(|c| {
+                c.tiles
+                    .iter()
+                    .any(|t| t.liquid_floor() && !t.flags.has(crate::world::TileFlags::DEEP))
+            }) && !comps.contains(&below)
+            {
+                comps.push(below);
+            }
             for up in [*k, (k.0, k.1, k.2 + 1)] {
                 if up.2 < self.zmin + self.zc && !comps.contains(&up) {
                     comps.push(up);

@@ -570,8 +570,11 @@ pub fn water_problem(
             0.9,
         ));
     }
-    let flags = w.grid.get(p).flags;
-    if under_water(w, p) || flags.has(TileFlags::DEEP) {
+    let tile = w.grid.get(p);
+    if under_water(w, p)
+        || tile.flags.has(TileFlags::DEEP)
+        || w.grid.unsupported_water_surface(p, tile)
+    {
         return Some((
             crate::mind::ProblemKind::WaterHazard,
             crate::mind::ObservationKind::WaterDepth,

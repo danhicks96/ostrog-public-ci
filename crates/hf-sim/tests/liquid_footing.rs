@@ -51,7 +51,14 @@ fn ford_deck_and_diagonal_use_real_support_through_thaw_and_drying() {
         assert_eq!(hf_sim::water::frozen_at(&w, p), temperature < 0.);
         for deep in [false, true] {
             w.grid.set(p, liquid(deep));
-            assert_eq!(w.grid.walkable(p), !deep);
+            assert!(
+                !w.grid.walkable(p),
+                "a water voxel below cannot hold a walker"
+            );
+            w.grid
+                .set(p.offset(0, 0, -1), Tile::solid(Material::GRANITE));
+            assert_eq!(w.grid.walkable(p), !deep, "one layer over a real bed");
+            w.grid.set(p.offset(0, 0, -1), liquid(true));
             assert!(!w.grid.walkable(air));
             hf_sim::nav::neighbours(&w.grid, start, &mut steps);
             assert!(steps.iter().all(|edge| edge.to != air && edge.to != across));
@@ -105,9 +112,14 @@ fn ford_deck_and_diagonal_use_real_support_through_thaw_and_drying() {
 #[test]
 fn legacy_stride_settles_at_elapsed_cost_and_only_mobile_people_can_take_a_foothold() {
     let (w, p) = pond();
-    for scenario in ["awake", "sleeping", "hurt", "held", "enclosed", "stacked"] {
+    let cases = ["awake", "sleeping", "hurt", "held", "enclosed", "stacked"];
+    for (surface_deep, scenario) in [false, true]
+        .into_iter()
+        .flat_map(|deep| cases.map(|case| (deep, case)))
+    {
         let mut w = w.clone();
         let i = w.agents.iter().position(|a| a.community.is_some()).unwrap();
+        w.grid.set(p, liquid(surface_deep));
         let above = p.offset(0, 0, 1);
         let north = p.offset(0, -1, 0);
         for (x, y) in [(0, -1), (1, 0), (-1, 0), (0, 1)] {
@@ -119,7 +131,7 @@ fn legacy_stride_settles_at_elapsed_cost_and_only_mobile_people_can_take_a_footh
         }
         if scenario == "stacked" {
             w.grid.set(north.offset(0, 0, -1), liquid(false));
-            assert!(w.grid.walkable(north));
+            assert!(!w.grid.walkable(north));
         }
         let a = &mut w.agents[i];
         a.from = above.offset(1, 0, 0);
@@ -205,8 +217,13 @@ fn diagonal_bank_requires_two_open_flanks_and_an_actual_bed() {
     let north = p.offset(0, -1, 0);
     let west = p.offset(-1, 0, 0);
     let bank = p.offset(-1, -1, 0);
-    for barrier in ["none", "wall", "flooded deck", "unsupported bank"] {
+    let cases = ["none", "wall", "flooded deck", "unsupported bank"];
+    for (surface_deep, barrier) in [false, true]
+        .into_iter()
+        .flat_map(|deep| cases.map(|case| (deep, case)))
+    {
         let mut w = w.clone();
+        w.grid.set(p, liquid(surface_deep));
         for dx in -1..=1 {
             for dy in -1..=1 {
                 if dx != 0 || dy != 0 {
@@ -285,14 +302,8 @@ fn loose_stack_preserves_its_story_and_stops_above_a_sealed_deck() {
 fn a_new_stack_between_grid_edits_settles_identically_after_reopening() {
     let (mut w, p) = pond();
     nav::step(&mut w);
-    let above = p.offset(0, 0, 1);
-    let id = w.create_item(
-        ItemKind::Berries,
-        3,
-        ItemPlace::Ground(above),
-        0.5,
-        "harvest",
-    );
+    w.grid.set(p, liquid(false));
+    let id = w.create_item(ItemKind::Berries, 3, ItemPlace::Ground(p), 0.5, "harvest");
     let bytes = hf_sim::save::encode(&hf_sim::save::snapshot::Snapshot::capture(&w)).unwrap();
     let mut cold = hf_sim::save::decode(&bytes).unwrap().restore();
     assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&cold));
@@ -303,4 +314,108 @@ fn a_new_stack_between_grid_edits_settles_identically_after_reopening() {
         assert_eq!(it.count, 3);
     }
     assert_eq!(hf_sim::digest::digest(&w), hf_sim::digest::digest(&cold));
+}
+
+#[test]
+fn overhead_water_refreshes_submerged_escape_across_a_chunk_boundary() {
+    let (mut w, _) = pond();
+    let x = hf_sim::world::CHUNK_SIZE as i32;
+    let q = TilePos::new(x, 24, 2);
+    let p = q.offset(-1, 0, 0);
+    let bank = q.offset(1, 0, 0);
+    for cell in [p, q] {
+        w.grid.set(cell, liquid(false));
+        w.grid.set(cell.offset(0, 0, -1), liquid(false));
+        w.grid.set(cell.offset(0, 0, 1), liquid(false));
+    }
+    nav::step(&mut w);
+    let i = w.agents.iter().position(|a| a.community.is_some()).unwrap();
+    let id = w.agents[i].id;
+    w.agents[i].pos = p;
+    w.agents[i].from = p;
+    w.agents[i].path = vec![bank, q];
+    w.agents[i].activity = Activity::Going {
+        to: bank,
+        then: Box::new(Activity::Idle),
+    };
+    w.meta.tick = 4;
+    let bytes = hf_sim::save::encode(&hf_sim::save::snapshot::Snapshot::capture(&w)).unwrap();
+    let mut reopened = hf_sim::save::decode(&bytes).unwrap().restore();
+    for world in [&mut w, &mut reopened] {
+        nav::step(world);
+        assert!(world.nav.as_ref().unwrap().reach(p, bank));
+        assert!(world.grid.over_head(q));
+        movement::step(world);
+        let cost = hf_sim::nav::step_cost(&world.grid, q, false);
+        let mut edges = Vec::new();
+        hf_sim::nav::neighbours(&world.grid, p, &mut edges);
+        assert_eq!(
+            edges.iter().find(|e| e.to == q).unwrap().cost,
+            cost + hf_sim::nav::step::OVER_HEAD
+        );
+        assert_eq!(
+            (
+                world.agents[i].from,
+                world.agents[i].pos,
+                world.agents[i].move_total
+            ),
+            (p, q, cost)
+        );
+        world.meta.tick = 5;
+        hf_sim::systems::hazards::step(world);
+        assert_eq!(world.drowning.get(&id), Some(&5));
+        assert_eq!(world.agents[i].path, vec![bank]);
+        for _ in 1..cost {
+            movement::step(world);
+            assert_eq!(world.agents[i].pos, q);
+        }
+        movement::step(world);
+        assert_eq!((world.agents[i].from, world.agents[i].pos), (q, bank));
+        world.meta.tick = 15;
+        hf_sim::systems::hazards::step(world);
+        assert!(world.agents[i].alive && !world.drowning.contains_key(&id));
+        world.agents[i].move_total = 0;
+        world.agents[i].path = vec![q];
+        movement::step(world);
+        assert_eq!(world.agents[i].pos, bank);
+        assert!(world.agents[i].path_blocked);
+        for cover in [Tile::AIR, liquid(false), Tile::AIR] {
+            world.grid.set(q.offset(0, 0, 1), cover);
+            nav::step(world);
+            let expected = cover.is_water();
+            assert_eq!(world.grid.walkable(q), expected);
+            assert_eq!(world.nav.as_ref().unwrap().reach(p, q), expected);
+            assert_eq!(hf_sim::nav::Nav::build(&world.grid).reach(p, q), expected);
+            let mut copy = hf_sim::save::snapshot::Snapshot::capture(world).restore();
+            copy.ensure_nav();
+            assert_eq!(copy.nav.as_ref().unwrap().reach(p, q), expected);
+        }
+    }
+    assert_eq!(
+        hf_sim::digest::digest(&w),
+        hf_sim::digest::digest(&reopened)
+    );
+}
+
+#[test]
+fn a_queued_diagonal_cannot_cross_an_exposed_unsupported_flank() {
+    let (mut w, p) = pond();
+    let start = p.offset(-1, 0, 0);
+    let dest = p.offset(0, 1, 0);
+    w.grid.set(p, liquid(false));
+    assert!(w.grid.walkable(start) && w.grid.walkable(dest));
+    let i = w.agents.iter().position(|a| a.community.is_some()).unwrap();
+    w.agents[i].pos = start;
+    w.agents[i].from = start;
+    w.agents[i].path = vec![dest];
+    movement::step(&mut w);
+    assert_eq!(w.agents[i].pos, start);
+    assert!(w.agents[i].path_blocked && w.agents[i].path.is_empty());
+    let mut edges = Vec::new();
+    hf_sim::nav::neighbours(&w.grid, start, &mut edges);
+    assert!(!edges.iter().any(|e| e.to == dest));
+    w.grid
+        .set(p.offset(0, 0, -1), Tile::solid(Material::GRANITE));
+    hf_sim::nav::neighbours(&w.grid, start, &mut edges);
+    assert!(edges.iter().any(|e| e.to == dest));
 }

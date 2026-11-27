@@ -1,5 +1,16 @@
 # Fix log
 
+## 2026-11-27 Two levels of pond water counted as an ordinary ford
+
+On a mature colony's saved pond, 27 people made 65 ordinary strides onto exposed
+water with another liquid level beneath their feet. The terrain stored both levels
+as natural water floors without the deep flag. Walking now checks that stack at the
+surface. A one-level ford still takes the usual wading time. A walker already on an
+unsupported surface can take a paid step to a real neighboring foothold. Someone
+already under water keeps the existing escape route and breath timer. Loose stacks
+settle down the water column to its bed. Navigation rechecks affected wet shelves
+when the water above them changes.
+
 ## 2026-11-27 Pond walkers took dry steps in the air above natural water
 
 On a saved mature pond, two walkers crossed above a shallow ford at the dry walking cost.

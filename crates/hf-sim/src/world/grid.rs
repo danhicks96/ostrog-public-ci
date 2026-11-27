@@ -283,11 +283,23 @@ impl WorldGrid {
         if t.is_solid() || t.flags.has(TileFlags::DEEP) || t.flags.has(TileFlags::FIRE) {
             return false;
         }
+        if self.unsupported_water_surface(p, t) {
+            return false;
+        }
         if t.shape.self_supporting() || t.flags.has(TileFlags::DOOR) {
             return true;
         }
         let below = self.get(p.offset(0, 0, -1));
         below.supports_above()
+    }
+
+    /// An exposed natural shelf can look shallow in the tile flags while the next voxel
+    /// down is also liquid. Already submerged paths keep their existing escape and breath rules.
+    pub(crate) fn unsupported_water_surface(&self, p: TilePos, t: Tile) -> bool {
+        t.liquid_floor()
+            && self.get(p.offset(0, 0, -1)).liquid_floor()
+            && !t.flags.has(TileFlags::FULL)
+            && !self.get(p.offset(0, 0, 1)).is_water()
     }
 
     /// Old paths and saves can put a walker in the air over a natural water surface.

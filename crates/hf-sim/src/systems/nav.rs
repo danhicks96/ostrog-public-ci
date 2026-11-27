@@ -36,7 +36,9 @@ fn drop_unsupported(w: &mut World) {
             continue;
         }
         let grid = &w.grid;
-        if grid.air_over_liquid(p) {
+        // Both air above natural water and the surface of a stacked liquid column
+        // have the same liquid voxel just below them. Follow it only as far as its bed.
+        if grid.air_over_liquid(p) || grid.unsupported_water_surface(p, grid.get(p)) {
             let mut q = p.offset(0, 0, -1);
             while q.z > grid.z_min && grid.get(q.offset(0, 0, -1)).liquid_floor() {
                 q = q.offset(0, 0, -1);

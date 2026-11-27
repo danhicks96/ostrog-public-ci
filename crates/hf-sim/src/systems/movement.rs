@@ -74,10 +74,10 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
             continue;
         }
         let tile = grid.get(a.pos);
-        if tile.liquid_floor()
+        let exposed_deep = tile.liquid_floor()
             && tile.flags.has(crate::world::TileFlags::DEEP)
-            && !grid.get(a.pos.offset(0, 0, 1)).is_water()
-        {
+            && !grid.get(a.pos.offset(0, 0, 1)).is_water();
+        if exposed_deep || grid.unsupported_water_surface(a.pos, tile) {
             if a.is_moving() {
                 a.move_ticks += 1;
             } else if !a.activity.is_asleep() && a.held.is_none() {
@@ -172,8 +172,12 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
         // losing the flanking tile above a pond. Match the pathfinder's corner rule.
         let cuts_water_corner = diagonal
             && next.z == a.pos.z
-            && (grid.air_over_liquid(crate::ids::TilePos::new(next.x, a.pos.y, next.z))
-                || grid.air_over_liquid(crate::ids::TilePos::new(a.pos.x, next.y, next.z)));
+            && [
+                crate::ids::TilePos::new(next.x, a.pos.y, next.z),
+                crate::ids::TilePos::new(a.pos.x, next.y, next.z),
+            ]
+            .into_iter()
+            .any(|q| grid.air_over_liquid(q) || grid.unsupported_water_surface(q, grid.get(q)));
         if !grid.walkable(next) || !adjacent || into_flood || cuts_water_corner {
             a.path.clear();
             a.path_blocked = true;
@@ -247,10 +251,15 @@ fn adjacent_foothold(
     use crate::world::Shape;
     let side_open = |q| {
         let tile = grid.get(q);
-        (tile.liquid_floor() || tile.shape == Shape::Open)
-            && !tile.flags.has(crate::world::TileFlags::DOOR)
-            && grid.walkable(q)
-            && !grid.over_head(q)
+        // A person can reach past open surface water even where they could not stand.
+        let clear = if tile.liquid_floor() {
+            !tile
+                .flags
+                .has(crate::world::TileFlags::DEEP | crate::world::TileFlags::FIRE)
+        } else {
+            tile.shape == Shape::Open && grid.walkable(q)
+        };
+        clear && !tile.flags.has(crate::world::TileFlags::DOOR) && !grid.over_head(q)
     };
     let cardinal = [(0, -1), (1, 0), (0, 1), (-1, 0)];
     let diagonal = [(-1, -1), (1, -1), (1, 1), (-1, 1)];
