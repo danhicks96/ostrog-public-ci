@@ -67,6 +67,7 @@ fi
 python3 -I tools/tests/release_publish_test.py
 [ ! -d tools/server ] || python3 -I tools/tests/server_host_test.py
 python3 -I tools/tests/frame_time_harness_test.py
+python3 -I tools/tests/frame_time_harness_guard_test.py
 python3 -I tools/tests/world_renderer_guard_test.py
 # FIXLOG 2026-11-19: public structural CI and private offline audit are separate.
 if [ -d tools/publish ]; then

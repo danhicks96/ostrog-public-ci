@@ -26,14 +26,19 @@ def main() -> None:
     )
     for needle in required:
         assert needle in source, f"frame-time harness lost requirement: {needle}"
-    plan = PLAN.read_text(encoding="utf-8")
-    assert (
-        "Status: open (6.1 complete" in plan
-        or "Status: open (6.2 in progress" in plan
-        or "Status: open (6.2 complete" in plan
-        or "Status: open (6.3 complete" in plan
-    )
-    assert "Depends on: no dependency for 6.1-6.4" in plan
+    if PLAN.is_file():
+        plan = PLAN.read_text(encoding="utf-8")
+        assert (
+            "Status: open (6.1 complete" in plan
+            or "Status: open (6.2 in progress" in plan
+            or "Status: open (6.2 complete" in plan
+            or "Status: open (6.3 complete" in plan
+        )
+        assert "Depends on: no dependency for 6.1-6.4" in plan
+    elif (ROOT / "tools" / "publish").is_dir():
+        raise FileNotFoundError(f"private renderer plan missing: {PLAN}")
+    else:
+        print("private renderer plan absent from public snapshot; harness checked")
     print("frame-time harness guard OK")
 
 
