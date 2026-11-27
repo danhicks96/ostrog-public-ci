@@ -131,6 +131,13 @@ fn hearth_evening(w: &mut World) {
                     && a.community == Some(cid)
                     && a.band.is_none()
                     && !a.activity.is_asleep()
+                    // Passing the hearth on the way somewhere is not joining its circle.
+                    // Work plans can walk too, so also wait for any current stride to end.
+                    && !matches!(
+                        a.activity,
+                        crate::mind::Activity::Going { .. } | crate::mind::Activity::Wandering { .. }
+                    )
+                    && a.move_total == 0
                     && a.pos.z == h.z
                     && a.pos.dist(h) <= 2
             })

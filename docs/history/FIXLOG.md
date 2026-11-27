@@ -1,5 +1,11 @@
 # Fix log
 
+## 2026-11-27: passersby were counted in hearth stories
+
+- Symptom: someone walking past a hearth could become a teller or listener even while committed to another destination. In one observed opening, a forager continued to a plant while being recorded as the only listener.
+- Fix: a hearth circle waits for a person to finish moving and excludes those still going or wandering elsewhere. People who are stationary, including those eating, can still participate.
+- Guard: `tests/hearth_passers.rs` exercises travel, wandering, a stride and a stationary meal; existing culture and identity checks retain the normal gathering behavior.
+
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
 - Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
