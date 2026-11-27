@@ -1092,6 +1092,7 @@ Thoughts feed mood and stress. The bridge sends the strongest six as `{label} {w
 | Missing | the missing | -0.2 | 4.0 |
 | Thirsty | parched | -0.3 | 0.5 |
 | Broke | broke down | -0.25 | 2.0 |
+| Lonely | lonely | -0.15 | 0.5 |
 
 #### Breaks (`systems/strain.rs`)
 
@@ -1128,10 +1129,10 @@ Narratives:
 
 | where | narrative |
 |---|---|
-| systems/culture.rs:593 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
-| systems/culture.rs:614 | We sow and cook more than we need, because {who} starved. |
-| systems/culture.rs:633 | We take in no strangers, since {who} led people away: {cause}. |
-| systems/culture.rs:678 | We do not eat {k}, because {who} fell ill of it and went hungry. |
+| systems/culture.rs:608 | On the {ordinal} day of each season we rest, because {who} died that day, {cause}. |
+| systems/culture.rs:629 | We sow and cook more than we need, because {who} starved. |
+| systems/culture.rs:648 | We take in no strangers, since {who} led people away: {cause}. |
+| systems/culture.rs:693 | We do not eat {k}, because {who} fell ill of it and went hungry. |
 
 #### The Engine (`engine.rs`)
 
@@ -3244,23 +3245,23 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/crafts.rs:242 | gone |
 | systems/crafts.rs:337 | refused to learn {} from {} |
 | systems/crafts.rs:345 | taught by {} |
-| systems/culture.rs:203 | how their people tell it: {telling} |
-| systems/culture.rs:271 | told by {tname} at the hearth |
-| systems/culture.rs:279 | the tale that {} |
-| systems/culture.rs:301 | how they came to hold that {} |
-| systems/culture.rs:304 | what they remember of the other side of the portal |
-| systems/culture.rs:349 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
-| systems/culture.rs:380 | hold that {} |
-| systems/culture.rs:586 | first |
-| systems/culture.rs:587 | second |
-| systems/culture.rs:588 | third |
-| systems/culture.rs:589 | fourth |
-| systems/culture.rs:590 | fifth |
-| systems/culture.rs:591 | {n}th |
-| systems/culture.rs:609 | starvation |
-| systems/culture.rs:889 | ale |
-| systems/culture.rs:891 | berry wine |
-| systems/culture.rs:894 | drunk |
+| systems/culture.rs:206 | how their people tell it: {telling} |
+| systems/culture.rs:286 | told by {tname} at the hearth |
+| systems/culture.rs:294 | the tale that {} |
+| systems/culture.rs:316 | how they came to hold that {} |
+| systems/culture.rs:319 | what they remember of the other side of the portal |
+| systems/culture.rs:364 | Since the night {tname} told {what} by the hearth, we gather there at dusk. |
+| systems/culture.rs:395 | hold that {} |
+| systems/culture.rs:601 | first |
+| systems/culture.rs:602 | second |
+| systems/culture.rs:603 | third |
+| systems/culture.rs:604 | fourth |
+| systems/culture.rs:605 | fifth |
+| systems/culture.rs:606 | {n}th |
+| systems/culture.rs:624 | starvation |
+| systems/culture.rs:904 | ale |
+| systems/culture.rs:906 | berry wine |
+| systems/culture.rs:909 | drunk |
 | systems/decide.rs:99 | someone |
 | systems/decide.rs:103 | search_for_the_lost |
 | systems/decide.rs:104 | go looking for one of the lost near {at} |
@@ -3603,18 +3604,18 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:344 | cold |
 | systems/strain.rs:345 | loneliness |
 | systems/strain.rs:346 | discomfort |
-| systems/strain.rs:538 | from {} |
-| systems/strain.rs:542 | because they were {} |
-| systems/strain.rs:546 | from {n} |
-| systems/strain.rs:602 | {}'s {} |
-| systems/strain.rs:635 | breaking the {label} |
-| systems/strain.rs:663 | eaten in a binge |
-| systems/strain.rs:697 | set by {name} in a rage |
-| systems/strain.rs:777 | wondered where {who} is |
-| systems/strain.rs:778 | the rest of the party is not here |
-| systems/strain.rs:801 | starting a fight |
-| systems/strain.rs:849 | in a fight |
-| systems/strain.rs:874 | in a fight |
+| systems/strain.rs:542 | from {} |
+| systems/strain.rs:546 | because they were {} |
+| systems/strain.rs:550 | from {n} |
+| systems/strain.rs:606 | {}'s {} |
+| systems/strain.rs:639 | breaking the {label} |
+| systems/strain.rs:667 | eaten in a binge |
+| systems/strain.rs:701 | set by {name} in a rage |
+| systems/strain.rs:781 | wondered where {who} is |
+| systems/strain.rs:782 | the rest of the party is not here |
+| systems/strain.rs:805 | starting a fight |
+| systems/strain.rs:853 | in a fight |
+| systems/strain.rs:878 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
