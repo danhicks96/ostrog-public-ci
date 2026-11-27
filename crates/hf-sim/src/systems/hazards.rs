@@ -817,6 +817,12 @@ fn drown_step(w: &mut World) {
             .parts
             .iter()
             .any(|d| d.roles.contains(&crate::plan::Role::Swim));
+        // Immersion soaks a person before the existing escape can move them out.
+        // Use the same physical predicate as drowning; shallow wading alone does not
+        // claim that the whole body and clothes are soaked.
+        if a.species == Species::Person {
+            w.agents[i].wet = 1.0;
+        }
         let breath = if swims {
             BREATH_TICKS * 3
         } else {
@@ -1026,6 +1032,7 @@ pub fn cold_step(w: &mut World) {
             continue;
         }
         let p = w.agents[i].pos;
+        let submerged = under_water(w, p);
         let warm_near = hearths.iter().any(|h| h.dist(p) <= 4 && h.z == p.z)
             || fires.iter().any(|f| f.dist(p) <= 3);
         // Below ground the air keeps the same through the year (#346): no frost reaches it.
@@ -1046,7 +1053,10 @@ pub fn cold_step(w: &mut World) {
         let a = &mut w.agents[i];
         // Wetness (OST-903): rain soaks whoever is out in it; a roof dries, a hearth dries faster, the open air does not.
         // No rng.
-        if raining && !inside {
+        if submerged {
+            // A roof or fire cannot dry someone whose head is still under water.
+            a.wet = 1.0;
+        } else if raining && !inside {
             a.wet = (a.wet + 0.35 * rainfall).min(1.0);
         } else if inside || warm_near {
             // Drying needs shelter or a fire; out in the open without rain, clothes stay damp.

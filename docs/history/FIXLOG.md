@@ -1,5 +1,13 @@
 # Fix log
 
+## 2026-11-27 — Immersion reaches the existing wetness state
+
+A person fully underwater could leave the water with dry clothing because only rain changed
+the saved wetness state. The existing underwater predicate now records full wetness during
+movement and before a drowning escape. An hourly shelter or fire cannot dry someone who is
+still submerged; ordinary drying resumes after they emerge. Tests cover brief immersion,
+shallow and dry controls, a flooded shelter, a save round-trip and the existing cold penalty.
+
 ## 2026-11-27 Two levels of pond water counted as an ordinary ford
 
 On a mature colony's saved pond, 27 people made 65 ordinary strides onto exposed

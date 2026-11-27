@@ -324,7 +324,11 @@ impl WorldGrid {
     /// Water over a person's head here (#390): the tile is full to its roof, or there is water
     /// on it and on the one above. Water standing shallow in a working (#272) is not.
     pub fn over_head(&self, p: TilePos) -> bool {
-        let t = self.get(p);
+        self.over_head_with_tile(p, self.get(p))
+    }
+
+    /// The same check when a caller already read this position's tile.
+    pub(crate) fn over_head_with_tile(&self, p: TilePos, t: Tile) -> bool {
         t.flags.has(TileFlags::FULL) || (t.is_water() && self.get(p.offset(0, 0, 1)).is_water())
     }
 

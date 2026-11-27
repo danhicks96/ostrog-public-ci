@@ -62,6 +62,12 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
         if !a.alive {
             continue;
         }
+        // Record brief immersion even between the less frequent drowning checks.
+        // This loop already visits every moving or stationary agent each tick.
+        let tile = grid.get(a.pos);
+        if a.species == crate::agents::Species::Person && grid.over_head_with_tile(a.pos, tile) {
+            a.wet = 1.0;
+        }
         // Terrain may change mid-stride. Replace the obsolete interpolation and pay
         // for the descent to the actual surface even if the person is asleep or hurt.
         if grid.air_over_liquid(a.pos) {
@@ -73,7 +79,6 @@ fn step_inner(w: &mut World, trodden: &mut Vec<(i32, i32)>) {
             a.path_blocked = true;
             continue;
         }
-        let tile = grid.get(a.pos);
         let exposed_deep = tile.liquid_floor()
             && tile.flags.has(crate::world::TileFlags::DEEP)
             && !grid.get(a.pos.offset(0, 0, 1)).is_water();
