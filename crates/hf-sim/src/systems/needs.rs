@@ -189,13 +189,9 @@ pub fn mood_terms(a: &crate::agents::Agent, now: u64) -> [f32; 4] {
         .map(|r| r.valence * r.salience)
         .sum::<f32>()
         / 4.0;
-    let long: f32 = a
-        .memories
-        .long
-        .iter()
-        .map(|m| m.valence * m.strength)
-        .sum::<f32>()
-        / 8.0;
+    // OST-203: the bounded, fading, habituating term (OST-202), not a plain sum of up to 48
+    // memories that pinned mood at the clamp. See docs/history/FIXLOG.md.
+    let long = a.memories.mood_term(now);
     let thoughts = a.thoughts.sum(now) * 0.8;
     [needs, recent, long, thoughts]
 }
