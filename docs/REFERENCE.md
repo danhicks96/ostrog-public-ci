@@ -3151,16 +3151,16 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/act.rs:197 | no water here |
 | systems/act.rs:216 | invalid serving count |
 | systems/act.rs:222 | food gone |
-| systems/act.rs:234 | food moved |
-| systems/act.rs:246 | food out of reach |
-| systems/act.rs:254 | eaten in a binge |
-| systems/act.rs:256 | eat |
-| systems/act.rs:259 | no serving available |
-| systems/act.rs:309 | nothing to gather |
-| systems/act.rs:344 | forage |
-| systems/act.rs:408 | the bed was taken |
-| systems/act.rs:494 | they left |
-| systems/act.rs:667 | a poisoning from {} |
+| systems/act.rs:236 | food moved |
+| systems/act.rs:248 | food out of reach |
+| systems/act.rs:256 | eaten in a binge |
+| systems/act.rs:258 | eat |
+| systems/act.rs:261 | no serving available |
+| systems/act.rs:311 | nothing to gather |
+| systems/act.rs:346 | forage |
+| systems/act.rs:410 | the bed was taken |
+| systems/act.rs:496 | they left |
+| systems/act.rs:669 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |

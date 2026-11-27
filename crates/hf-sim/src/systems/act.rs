@@ -225,7 +225,9 @@ pub fn step(w: &mut World) {
                 let here = w.agents[i].pos;
                 let near = match w.items[ix].place {
                     ItemPlace::Ground(p) => {
-                        p.dist(here) <= 1 && binge.is_none_or(|b| p.dist(b.origin) <= 6)
+                        p.z == here.z
+                            && p.dist(here) <= 1
+                            && binge.is_none_or(|b| p.dist(b.origin) <= 6)
                     }
                     ItemPlace::Carried(id) | ItemPlace::Held(id) => id == w.agents[i].id,
                 };
@@ -970,7 +972,14 @@ mod serving_tests {
                 servings_left: 1,
             }),
         ] {
-            for mode in ["open", "corner", "embedded", "downstairs"] {
+            for mode in [
+                "open",
+                "corner",
+                "embedded",
+                "solid_below",
+                "up_stairs",
+                "down_stairs",
+            ] {
                 let mut w = base.clone();
                 let item = food(&mut w, 1, ItemPlace::Ground(HERE));
                 w.agents[0].activity = Activity::Eating {
@@ -994,7 +1003,20 @@ mod serving_tests {
                         w.grid.set(diag, wall);
                         diag
                     }
-                    "downstairs" => HERE.offset(0, 0, -1),
+                    "solid_below" => HERE.offset(0, 0, -1),
+                    "up_stairs" | "down_stairs" => {
+                        let landing = HERE.offset(0, 0, if mode == "up_stairs" { 1 } else { -1 });
+                        let stairs = Tile {
+                            shape: Shape::StairsBoth,
+                            ..wall
+                        };
+                        w.grid.set(HERE, stairs);
+                        w.grid.set(landing, stairs);
+                        let mut edges = Vec::new();
+                        crate::nav::neighbours(&w.grid, HERE, &mut edges);
+                        assert!(edges.iter().any(|s| s.to == landing));
+                        landing
+                    }
                     _ => diag,
                 };
                 w.items[0].place = ItemPlace::Ground(to);
