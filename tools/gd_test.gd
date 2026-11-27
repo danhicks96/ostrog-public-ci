@@ -2190,6 +2190,11 @@ func test_surface_ice_requires_witnessed_water_on_the_inspected_floor() -> void:
 	check(not v._observed_water_surface(0, 0, 1), "view through the floor has no independent water observation")
 	v.levels[3] = PackedInt32Array([water])
 	check(not v._observed_water_surface(0, 0, 2), "a submerged layer does not show a second frozen surface")
+	v.levels[3] = PackedInt32Array([14 | (1 << 16)])
+	check(not v._observed_water_surface(0,0,2), "a reported upper deck occludes the water face")
+	v.levels[3] = PackedInt32Array([0])
+	v.remembered[Vector2i.ZERO] = Vector4i(1, water | (128 << 24), 0, -1)
+	check(not v._observed_water_surface(0,0,2), "water recorded full to the roof shows no floating ice")
 	v.free()
 
 func test_empty_watcher_has_no_visible_river_drops() -> void:

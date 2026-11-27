@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Looking uphill respects the colony's survey
+
+Hilltops, frozen pools and the block inspector use the height and materials the colony has seen. A scout who reaches higher ground can reveal the material underfoot. A partially observed water column reports its known depth and leaves the remaining depth uncertain.
+
 ## 2026-11-26 - Looking down respects the lower-floor survey
 
 Watching from above shows the material last seen beneath an opening. A lower floor reveals its water depth and live surface conditions when someone witnesses it. Unseen drainage and construction stay hidden in the image and block inspector. Deeper slopes with no recorded surface material show their relief in a neutral shade.

@@ -1464,7 +1464,8 @@ func _inspect_block(p: Vector3i) -> void:
 	if p.z == view.view_z and not view.tile_in_sight(Vector2i(p.x, p.y)):
 		block_box.text = "Last observed terrain. Nobody can see this tile now." if view.remembered.has(Vector2i(p.x, p.y)) else "Unobserved terrain."
 	else:
-		block_box.text = Rules.format_block(view.projected_block(p, sim.inspect_block(p.x, p.y, p.z)))
+		var info := sim.inspect_observed_block(p.x,p.y,p.z) if view.surveyed_floor else sim.inspect_block(p.x,p.y,p.z)
+		block_box.text = Rules.format_block(view.projected_block(p, info))
 	panels.open(&"block")
 
 func _show_favourites() -> void:

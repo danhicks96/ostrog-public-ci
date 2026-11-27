@@ -134,7 +134,7 @@ var _variety := {}             # Vector2i -> family override (client-only surfac
 var _variety_key := ""
 var scorched := {}             # Vector2i -> hours since it burned
 ## A small newly surveyed patch only redraws its nearby terrain. The bridge still versions 32-tile simulation chunks.
-const CH := 16
+const CH := 8
 const SIM_CHUNK := 32
 var _ci: CanvasItem = self      # where the ground routines draw (self, a chunk, or the animated layer)
 var _chunk_mode := false
@@ -264,7 +264,7 @@ func reset_world() -> void:
 
 var observer := ColonyAtlas.new()
 var remembered := {}
-var projected_levels := {} # Lower slices reconstructed from surveyed cells and their recorded support.
+var projected_levels := {} # Terrain reconstructed from surveyed cells and their recorded support.
 var projection_reports := {} # Exact survey buffers that produced each projection.
 var lower_records := {}
 var visible_spills: Array[Vector3i] = [] # upper and lower endpoints, in pairs
@@ -284,6 +284,11 @@ func _read_observed_floor() -> void:
 	for i in range(2,cells.size(),6):
 		remembered[Vector2i(cells[i],cells[i+1])] = Vector4i(cells[i+2],cells[i+3],cells[i+4],cells[i+5])
 
+	if surveyed_floor:
+		var mapped := observer.reported_ground(sim, view_z)
+		if ground != mapped:
+			_invalidate_terrain_columns(ground, mapped)
+			ground = mapped
 	_read_projected_levels(cells)
 
 func _read_projected_levels(upper_rows: PackedInt32Array) -> void:
@@ -298,11 +303,16 @@ func _read_projected_levels(upper_rows: PackedInt32Array) -> void:
 	# The upper report includes the material immediately below, but not its depth,
 	# fittings, mutable flags or animation. Only a direct lower report supplies these.
 	projection_reports[view_z] = upper_rows
-	var above := remembered
-	for z in range(view_z - 1, maxi(zmin - 1, view_z - 7), -1):
+	# Read one extra report for the support underneath a scout standing on the summit.
+	var highest := mini(zmax, view_z + 5)
+	var above := {}
+	for z in range(highest, maxi(zmin - 1, view_z - 7), -1):
+		if z == view_z:
+			above = remembered
+			continue
 		var rows := observer.remembered_floor(sim, z)
 		projection_reports[z] = rows
-		if previous.has(z) and prior_reports[z] == rows and prior_reports[z + 1] == projection_reports[z + 1]:
+		if previous.has(z) and prior_reports[z] == rows and prior_reports.get(z + 1) == projection_reports.get(z + 1):
 			projected_levels[z] = previous[z]
 			above = prior_records[z]
 		else:
@@ -318,20 +328,23 @@ func _invalidate_projected_chunks(previous: Dictionary) -> void:
 	for z in projected_levels:
 		var current: PackedInt32Array = projected_levels[z]
 		var old: PackedInt32Array = previous.get(z, PackedInt32Array())
-		if old.size() != current.size():
-			chunk_seen.clear()
-			return
-		if old == current:
-			continue
-		for k: Vector2i in chunk_seen.keys():
-			var left := maxi(0, k.x * CH - 1)
-			var right := mini(w, (k.x + 1) * CH + 1)
-			for y in range(maxi(0, k.y * CH - 1), mini(h, (k.y + 1) * CH + 1)):
-				var start := y * w + left
-				var end := y * w + right
-				if old.slice(start, end) != current.slice(start, end):
-					chunk_seen.erase(k)
-					break
+		_invalidate_terrain_columns(old, current)
+
+func _invalidate_terrain_columns(old: PackedInt32Array, current: PackedInt32Array) -> void:
+	if old.size() != current.size():
+		chunk_seen.clear()
+		return
+	if old == current:
+		return
+	for k: Vector2i in chunk_seen.keys():
+		var left := maxi(0, k.x * CH - 1)
+		var right := mini(w, (k.x + 1) * CH + 1)
+		for y in range(maxi(0, k.y * CH - 1), mini(h, (k.y + 1) * CH + 1)):
+			var start := y * w + left
+			var end := y * w + right
+			if old.slice(start, end) != current.slice(start, end):
+				chunk_seen.erase(k)
+				break
 
 func _project_level(z: int, above: Dictionary, rows: PackedInt32Array) -> Dictionary:
 	var tiles := PackedInt32Array()
@@ -388,7 +401,7 @@ func projected_block(p: Vector3i, info: Dictionary) -> Dictionary:
 		break
 	# Items, fittings and weather at the inspected level can still be observed.
 	var report := {}
-	for key in ["biome", "surface_z", "temperature", "items", "structures", "plants"]:
+	for key in ["biome", "surface_z", "height_observed", "temperature", "items", "structures", "plants"]:
 		if info.has(key):
 			report[key] = info[key]
 	report["title"] = "Looking below (%d, %d, z%d)" % [p.x, p.y, p.z]
@@ -441,16 +454,20 @@ func refresh() -> void:
 			levels[z] = projected_levels[z] if surveyed_floor and z < view_z else sim.level_tiles(z)
 	# The levels just above the view, so a hill rising above it can show its own top. They
 	# change rarely; fetched when the view level changes or every two seconds.
-	if view_z != _above_z or Time.get_ticks_msec() - _above_ms > 2000:
+	if not surveyed_floor and (view_z != _above_z or Time.get_ticks_msec() - _above_ms > 2000):
 		levels_above.clear()
 		for z in range(view_z + 1, view_z + 5):
 			if z >= zmin and z <= zmax:
 				levels_above[z] = sim.level_tiles(z)
 		_above_z = view_z
 		_above_ms = Time.get_ticks_msec()
-	for z in levels_above:
-		levels[z] = levels_above[z]
-	ground = sim.ground()
+	if surveyed_floor:
+		for z in range(view_z + 1, mini(zmax + 1, view_z + 5)):
+			levels[z] = projected_levels[z]
+	else:
+		for z in levels_above:
+			levels[z] = levels_above[z]
+		ground = sim.ground()
 	plants = sim.plants()
 	agents = sim.agents()
 	bands = sim.bands()
@@ -938,14 +955,15 @@ func _draw_water(family: String, x: int, y: int, dim: float, z: int) -> void:
 func _observed_water_surface(x: int, y: int, z: int) -> bool:
 	if z == view_z:
 		var record: Vector4i = remembered.get(Vector2i(x, y), Vector4i.ZERO)
-		if record.x != 1 or not (flags_of(record.y) & 3):
+		if record.x != 1 or not (flags_of(record.y) & 3) or flags_of(record.y) & 128:
 			return false
-	elif not _lower_in_sight(x, y, z) or not (flags_of(tile_at(z, x, y)) & 3):
+	elif not _lower_in_sight(x, y, z) or not (flags_of(tile_at(z, x, y)) & 3) or flags_of(tile_at(z,x,y)) & 128:
 		return false
 	if z == zmax:
 		return true
 	var above := tile_at(z + 1, x, y)
-	return shape_of(above) != 2 and (flags_of(above) & 3) == 0
+	var shape := shape_of(above)
+	return shape != 1 and shape != 2 and (flags_of(above) & 3) == 0
 
 func _deep_rim(x: int, y: int, z: int) -> bool:
 	for dy in range(-1, 2):
@@ -1034,7 +1052,7 @@ func _draw_ground(x: int, y: int) -> void:
 		var top: int = ground[y * w + x]
 		if top - view_z <= 4 and levels.has(top) and under_sky_at_centre():
 			var tt := tile_at(top, x, y)
-			if ruins.get(Vector3i(x, y, top), -1) == 1:
+			if (not surveyed_floor or _lower_in_sight(x, y, top)) and ruins.get(Vector3i(x, y, top), -1) == 1:
 				# An old house on ground a level up: its walls drawn as walls, weathered (#202),
 				# not as a rise of block-paved ground.
 				draw_wall(top, x, y, mat_of(tt))
@@ -1076,7 +1094,8 @@ func _draw_ground(x: int, y: int) -> void:
 	if sh != 3 and g[1] < 0.5:
 		_draw_relief(x, y)
 	# Keyed by the level people walk on here, which is the view's or, on a rise, one above it.
-	if ruins.get(Vector3i(x, y, ground[y * w + x] + 1), -1) == 0:
+	var rubble_z: int = ground[y * w + x] + 1
+	if (not surveyed_floor or rubble_z == view_z or _lower_in_sight(x, y, rubble_z)) and ruins.get(Vector3i(x, y, rubble_z), -1) == 0:
 		# Where an old wall fell, its stones lie (#202).
 		var rb := _tex("overlays/rubble.png")
 		if rb:

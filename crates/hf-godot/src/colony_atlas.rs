@@ -210,14 +210,45 @@ impl ColonyAtlas {
             return Default::default();
         };
         let mut rows = PackedInt32Array::new();
-        for edge in w
-            .active_river_spills()
-            .filter(|&edge| memory.sees_spill(edge, z))
-        {
+        // A witnessed face retains its last observation until the next survey. Checking
+        // top_water here would reveal changes in a hidden storey between observations.
+        for &edge in &memory.bank_spills {
+            if !memory.sees_spill(edge, z)
+                || hf_sim::water::frozen_at(w, edge.upper)
+                || hf_sim::water::frozen_at(w, edge.lower)
+            {
+                continue;
+            }
             let (a, b) = (edge.upper, edge.lower);
             rows.extend([a.x, a.y, a.z, b.x, b.y, b.z]);
         }
         rows
+    }
+
+    #[func]
+    fn reported_ground(&self, host: Gd<SimHost>, view_z: i32) -> PackedInt32Array {
+        let host = host.bind();
+        let Some(w) = host.world() else {
+            return Default::default();
+        };
+        let (width, height) = (w.grid.width as usize, w.grid.height as usize);
+        let unknown = w.grid.z_min - 1;
+        let mut heights = if let Some(chart) = w
+            .communities
+            .first()
+            .and_then(|c| w.overworld.surveys.get(&c.id))
+        {
+            chart.reported_heights(width, height, unknown)
+        } else {
+            vec![unknown; width * height]
+        };
+        // Unknown neighbours contribute a level edge, rather than an invented deep cliff.
+        for h in &mut heights {
+            if *h == unknown {
+                *h = view_z - 1;
+            }
+        }
+        PackedInt32Array::from(heights.as_slice())
     }
 
     #[func]

@@ -1398,7 +1398,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3258 strings (click to open)</summary>
+<details><summary>3270 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1803,7 +1803,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | expedition.rs:428 | gathered |
 | expedition.rs:429 | found the road again |
 | expedition.rs:430 | nothing more was heard |
-| expedition_survey.rs:247 | Ruins of {} |
+| expedition_survey.rs:327 | Ruins of {} |
 | faith.rs:117 | has seen our hard days and is easing them |
 | faith.rs:118 | thinks we have more than our share |
 | faith.rs:119 | has turned cold to us for the killing |
@@ -3831,134 +3831,146 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/away.rs:199 | ; back in {back} days |
 | view/away.rs:202 | away at {there} |
 | view/away.rs:208 | , {f} |
-| view/block.rs:45 | Outside the valley ({}, {}, z{}) |
-| view/block.rs:99 | surface |
-| view/block.rs:101 | {} above ground |
-| view/block.rs:104 | depth {d} below ground |
-| view/block.rs:109 | Water at ({}, {}, z{}) |
-| view/block.rs:110 | Water over {floor_name} bed ({rel_z}) |
-| view/block.rs:116 | Door of {mname} ({}, {}, z{}) |
-| view/block.rs:117 | Built {mname} doorway ({rel_z}) |
-| view/block.rs:125 | Built {mname} wall |
-| view/block.rs:126 | Solid {mname} seam |
-| view/block.rs:127 | Solid {mname} bank |
-| view/block.rs:128 | Built {mname} wall |
-| view/block.rs:129 | Solid {mname} rock |
-| view/block.rs:131 | {what} ({}, {}, z{}) |
-| view/block.rs:132 | {what} ({rel_z}) |
-| view/block.rs:134 | ; water-bearing seam |
-| view/block.rs:136 | ; damp rock (water behind it) |
-| view/block.rs:142 | Built {mname} floor ({}, {}, z{}) |
-| view/block.rs:143 | Built floor of {mname} ({rel_z}) |
-| view/block.rs:149 | Slope of {mname} ({}, {}, z{}) |
-| view/block.rs:150 | Walkable slope of {mname} ({rel_z}) |
-| view/block.rs:155 | Stairs up |
-| view/block.rs:156 | Stairs down |
-| view/block.rs:157 | Stairs up and down |
-| view/block.rs:159 | {kind_str} in {mname} ({}, {}, z{}) |
-| view/block.rs:160 | {kind_str}, cut in {mname} ({rel_z}) |
-| view/block.rs:164 | Ladder of {mname} ({}, {}, z{}) |
-| view/block.rs:165 | Wooden ladder of {mname} ({rel_z}) |
-| view/block.rs:172 | worn path (trodden from {from_name}) |
-| view/block.rs:180 | floor of {} |
-| view/block.rs:182 | dug gallery floor |
-| view/block.rs:184 | natural cave floor |
-| view/block.rs:186 | open ground |
-| view/block.rs:189 | {cap} ({}, {}, z{}) |
-| view/block.rs:190 | {cap} — {where_kind} ({rel_z}) |
-| view/block.rs:199 | ; snow lying |
-| view/block.rs:202 | ; frozen hard |
-| view/block.rs:203 | ; wet with rain |
-| view/block.rs:221 | Water at ({}, {}, z{}, {peel} below z{}) |
-| view/block.rs:225 | Water over {floor_name} bed at z{bz} ({peel} level{} below view z{}) |
-| view/block.rs:226 | s |
-| view/block.rs:236 | {cap} ({}, {}, z{}, {drop_levels} below z{}) |
-| view/block.rs:240 | {cap}: ground at z{} ({drop_levels} level{} below view z{}) |
-| view/block.rs:242 | s |
-| view/block.rs:249 | Open air ({}, {}, z{}) |
-| view/block.rs:250 | Open air ({rel_z}) |
-| view/block.rs:258 | ; scorched by fire |
-| view/block.rs:261 | ; seeping underground water |
-| view/block.rs:264 | ; unpropped roof above |
-| view/block.rs:295 | Fresh water seeping from the rock wall (ankle-deep) |
-| view/block.rs:296 | fresh |
-| view/block.rs:298 | fresh |
-| view/block.rs:303 | Water-bearing rock seam (cuts here will seep) |
-| view/block.rs:304 | fresh |
-| view/block.rs:306 | fresh |
-| view/block.rs:311 | Damp rock (water stands behind an adjacent face) |
-| view/block.rs:312 | fresh |
-| view/block.rs:314 | fresh |
-| view/block.rs:318 | Dry (no standing water) |
-| view/block.rs:319 | none |
-| view/block.rs:321 | none |
-| view/block.rs:367 | foul |
-| view/block.rs:367 | foul water |
-| view/block.rs:369 | swamp |
-| view/block.rs:369 | peaty swamp water |
-| view/block.rs:371 | fresh |
-| view/block.rs:371 | standing floodwater |
-| view/block.rs:373 | fresh |
-| view/block.rs:373 | fresh underground cavern water |
-| view/block.rs:375 | fresh |
-| view/block.rs:375 | clear fresh water |
-| view/block.rs:380 | running stream |
-| view/block.rs:381 | lake |
-| view/block.rs:382 | pond |
-| view/block.rs:385 | , in spate |
-| view/block.rs:387 | , running high |
-| view/block.rs:389 | , low in drought |
-| view/block.rs:393 |  ({bkind}{stage}) |
-| view/block.rs:399 | chilled in frost, {depth} level(s) deep |
-| view/block.rs:401 | deep ({depth} level(s), unfordable) |
-| view/block.rs:403 | shallow ({depth} level, fordable) |
-| view/block.rs:412 | ; holds fish |
-| view/block.rs:414 | ; a few fish |
-| view/block.rs:420 | {}{body_note} — {depth_words}{fish_note} |
-| view/block.rs:426 | fresh |
-| view/block.rs:444 | In this block |
-| view/block.rs:446 | Underfoot |
-| view/block.rs:453 | {where_tag}: gem-bearing rock (holds rough {gem_name}s) |
-| view/block.rs:458 | {where_tag}: {} (smelts to {metal_name}) |
-| view/block.rs:463 | {where_tag}: coal seam (fuel for smelter and forge) |
-| view/block.rs:466 | {where_tag}: {} |
-| view/block.rs:484 | rough {}s |
-| view/block.rs:501 | In column at z{z_lo}: {ore_label} |
-| view/block.rs:503 | In column z{z_lo}..z{z_hi}: {ore_label} |
-| view/block.rs:519 | {upper_name} above z{split_z} |
-| view/block.rs:525 | {lower_name} above z{shallow_top} |
-| view/block.rs:529 | {name} down to z{deep_z} |
-| view/block.rs:531 | {name} above z{} |
-| view/block.rs:535 | {lower_name} down to z{deep_z} |
-| view/block.rs:537 | {deep_name} in the deep |
-| view/block.rs:538 | Strata here: {} |
-| view/block.rs:540 | Bedrock here: {upper_name} |
-| view/block.rs:582 | lit |
-| view/block.rs:584 | dimly lit |
-| view/block.rs:586 | dark |
-| view/block.rs:588 | underground ({light_str}) |
-| view/block.rs:591 | roofed indoors (snow {:.0}h) |
-| view/block.rs:593 | roofed indoors |
-| view/block.rs:596 | open to the sky |
-| view/block.rs:600 | , warmed by a fire |
-| view/block.rs:604 | {temp_c:.0} °C — {shelter}{warmth} |
-| view/block.rs:614 | {} tree |
-| view/block.rs:618 | {} stump |
-| view/block.rs:622 | fallen {} log |
-| view/block.rs:628 | deadwood |
-| view/block.rs:630 | {pct}% grown, ready to harvest |
-| view/block.rs:632 | {pct}% grown |
-| view/block.rs:634 | {} ({status}) |
-| view/block.rs:658 | , going bad |
-| view/block.rs:660 | , ageing |
-| view/block.rs:664 | {} {name}{qual}{spoil} |
-| view/block.rs:676 | building ({:.0}%) |
-| view/block.rs:678 | active |
-| view/block.rs:680 | complete |
-| view/block.rs:683 | {} of {mat} ({state}) |
-| view/block.rs:688 | Snare set here |
-| view/block.rs:722 | died here |
-| view/block.rs:723 | Body of {} ({how}) |
+| view/block.rs:50 | Outside the valley ({}, {}, z{}) |
+| view/block.rs:108 | ground height unknown |
+| view/block.rs:110 | observed at z{} |
+| view/block.rs:113 | surface |
+| view/block.rs:115 | {} above ground |
+| view/block.rs:118 | depth {d} below ground |
+| view/block.rs:123 | Water at ({}, {}, z{}) |
+| view/block.rs:124 | Water over {floor_name} bed ({rel_z}) |
+| view/block.rs:130 | Door of {mname} ({}, {}, z{}) |
+| view/block.rs:131 | Built {mname} doorway ({rel_z}) |
+| view/block.rs:139 | Built {mname} wall |
+| view/block.rs:140 | Solid {mname} seam |
+| view/block.rs:141 | Solid {mname} bank |
+| view/block.rs:142 | Built {mname} wall |
+| view/block.rs:143 | Solid {mname} rock |
+| view/block.rs:145 | {what} ({}, {}, z{}) |
+| view/block.rs:146 | {what} ({rel_z}) |
+| view/block.rs:148 | ; water-bearing seam |
+| view/block.rs:150 | ; damp rock (water behind it) |
+| view/block.rs:156 | Built {mname} floor ({}, {}, z{}) |
+| view/block.rs:157 | Built floor of {mname} ({rel_z}) |
+| view/block.rs:163 | Slope of {mname} ({}, {}, z{}) |
+| view/block.rs:164 | Walkable slope of {mname} ({rel_z}) |
+| view/block.rs:169 | Stairs up |
+| view/block.rs:170 | Stairs down |
+| view/block.rs:171 | Stairs up and down |
+| view/block.rs:173 | {kind_str} in {mname} ({}, {}, z{}) |
+| view/block.rs:174 | {kind_str}, cut in {mname} ({rel_z}) |
+| view/block.rs:178 | Ladder of {mname} ({}, {}, z{}) |
+| view/block.rs:179 | Wooden ladder of {mname} ({rel_z}) |
+| view/block.rs:186 | worn path (trodden from {from_name}) |
+| view/block.rs:194 | floor of {} |
+| view/block.rs:196 | dug gallery floor |
+| view/block.rs:198 | natural cave floor |
+| view/block.rs:200 | open ground |
+| view/block.rs:203 | {cap} ({}, {}, z{}) |
+| view/block.rs:204 | {cap} — {where_kind} ({rel_z}) |
+| view/block.rs:213 | ; snow lying |
+| view/block.rs:216 | ; frozen hard |
+| view/block.rs:217 | ; wet with rain |
+| view/block.rs:235 | Water at ({}, {}, z{}, {peel} below z{}) |
+| view/block.rs:239 | Water over {floor_name} bed at z{bz} ({peel} level{} below view z{}) |
+| view/block.rs:240 | s |
+| view/block.rs:250 | {cap} ({}, {}, z{}, {drop_levels} below z{}) |
+| view/block.rs:254 | {cap}: ground at z{} ({drop_levels} level{} below view z{}) |
+| view/block.rs:256 | s |
+| view/block.rs:263 | Open air ({}, {}, z{}) |
+| view/block.rs:264 | Open air ({rel_z}) |
+| view/block.rs:272 | ; scorched by fire |
+| view/block.rs:275 | ; seeping underground water |
+| view/block.rs:278 | ; unpropped roof above |
+| view/block.rs:325 | Fresh water seeping from the rock wall (ankle-deep) |
+| view/block.rs:326 | fresh |
+| view/block.rs:328 | fresh |
+| view/block.rs:333 | Water-bearing rock seam (cuts here will seep) |
+| view/block.rs:334 | fresh |
+| view/block.rs:336 | fresh |
+| view/block.rs:341 | Damp rock (water stands behind an adjacent face) |
+| view/block.rs:342 | fresh |
+| view/block.rs:344 | fresh |
+| view/block.rs:348 | Dry (no standing water) |
+| view/block.rs:349 | none |
+| view/block.rs:351 | none |
+| view/block.rs:395 | foul |
+| view/block.rs:395 | foul water |
+| view/block.rs:397 | swamp |
+| view/block.rs:397 | peaty swamp water |
+| view/block.rs:399 | fresh |
+| view/block.rs:399 | standing floodwater |
+| view/block.rs:406 | fresh |
+| view/block.rs:406 | fresh underground cavern water |
+| view/block.rs:408 | fresh |
+| view/block.rs:408 | clear fresh water |
+| view/block.rs:413 | running stream |
+| view/block.rs:414 | lake |
+| view/block.rs:415 | pond |
+| view/block.rs:418 | , in spate |
+| view/block.rs:420 | , running high |
+| view/block.rs:422 | , low in drought |
+| view/block.rs:426 |  ({bkind}{stage}) |
+| view/block.rs:435 | level |
+| view/block.rs:435 | levels |
+| view/block.rs:436 | {depth} observed {unit}, full depth unknown |
+| view/block.rs:438 | chilled in frost, {depth} level(s) deep |
+| view/block.rs:440 | deep ({depth} level(s), unfordable) |
+| view/block.rs:442 | shallow ({depth} level, fordable) |
+| view/block.rs:451 | ; holds fish |
+| view/block.rs:453 | ; a few fish |
+| view/block.rs:459 | {}{body_note} — {depth_words}{fish_note} |
+| view/block.rs:465 | fresh |
+| view/block.rs:494 | In this block |
+| view/block.rs:496 | Underfoot |
+| view/block.rs:503 | {where_tag}: gem-bearing rock (holds rough {gem_name}s) |
+| view/block.rs:508 | {where_tag}: {} (smelts to {metal_name}) |
+| view/block.rs:513 | {where_tag}: coal seam (fuel for smelter and forge) |
+| view/block.rs:516 | {where_tag}: {} |
+| view/block.rs:534 | rough {}s |
+| view/block.rs:551 | In column at z{z_lo}: {ore_label} |
+| view/block.rs:553 | In column z{z_lo}..z{z_hi}: {ore_label} |
+| view/block.rs:569 | {upper_name} above z{split_z} |
+| view/block.rs:575 | {lower_name} above z{shallow_top} |
+| view/block.rs:579 | {name} down to z{deep_z} |
+| view/block.rs:581 | {name} above z{} |
+| view/block.rs:585 | {lower_name} down to z{deep_z} |
+| view/block.rs:587 | {deep_name} in the deep |
+| view/block.rs:588 | Strata here: {} |
+| view/block.rs:590 | Bedrock here: {upper_name} |
+| view/block.rs:630 | roofed indoors (snow {:.0}h) |
+| view/block.rs:632 | roofed indoors |
+| view/block.rs:636 | water recorded overhead |
+| view/block.rs:638 | under a reported ceiling |
+| view/block.rs:640 | below observed ground |
+| view/block.rs:642 | clear immediately overhead |
+| view/block.rs:645 | overhead unreported |
+| view/block.rs:650 | lit |
+| view/block.rs:652 | dimly lit |
+| view/block.rs:654 | dark |
+| view/block.rs:656 | underground ({light_str}) |
+| view/block.rs:659 | roofed indoors (snow {:.0}h) |
+| view/block.rs:661 | roofed indoors |
+| view/block.rs:664 | open to the sky |
+| view/block.rs:668 | , warmed by a fire |
+| view/block.rs:672 | {temp_c:.0} °C — {shelter}{warmth} |
+| view/block.rs:691 | {} tree |
+| view/block.rs:695 | {} stump |
+| view/block.rs:699 | fallen {} log |
+| view/block.rs:705 | deadwood |
+| view/block.rs:707 | {pct}% grown, ready to harvest |
+| view/block.rs:709 | {pct}% grown |
+| view/block.rs:711 | {} ({status}) |
+| view/block.rs:735 | , going bad |
+| view/block.rs:737 | , ageing |
+| view/block.rs:741 | {} {name}{qual}{spoil} |
+| view/block.rs:753 | building ({:.0}%) |
+| view/block.rs:755 | active |
+| view/block.rs:757 | complete |
+| view/block.rs:760 | {} of {mat} ({state}) |
+| view/block.rs:765 | Snare set here |
+| view/block.rs:799 | died here |
+| view/block.rs:800 | Body of {} ({how}) |
 | view/built.rs:22 | someone no longer remembered |
 | view/built.rs:24 | Built by {name}, {} |
 | view/causes.rs:98 | [b]Why it happened[/b] / Nothing is recorded here. |
@@ -4785,98 +4797,98 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:1458 | _update_inspect_buttons | ☆ Favourite |
 | godot/scripts/main.gd:1465 | _inspect_block | Last observed terrain. Nobody can see this tile now. |
 | godot/scripts/main.gd:1465 | _inspect_block | Unobserved terrain. |
-| godot/scripts/main.gd:1513 | _fill_people | Inspect |
-| godot/scripts/main.gd:1513 | _fill_people | Open %s's inspect panel |
-| godot/scripts/main.gd:1528 | _fill_people | Following |
-| godot/scripts/main.gd:1528 | _fill_people | Follow |
-| godot/scripts/main.gd:1528 | _fill_people | Keep the camera on %s (dragging stops follow) |
-| godot/scripts/main.gd:1543 | _fill_people | Remove %s from favourites |
-| godot/scripts/main.gd:1555 | _update_hud | director: %s |
-| godot/scripts/main.gd:1555 | _update_hud | on, watching %s |
-| godot/scripts/main.gd:1558 | _update_hud | pop %d |
-| godot/scripts/main.gd:1650 | _push_feed | paused:  |
-| godot/scripts/main.gd:1723 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
-| godot/scripts/main.gd:1735 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
-| godot/scripts/main.gd:1735 | _update_inspect | ; who  |
-| godot/scripts/main.gd:1744 | _update_inspect |  / surface: %s /  |
-| godot/scripts/main.gd:1752 | _update_inspect | skills: %s /  |
-| godot/scripts/main.gd:1753 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
-| godot/scripts/main.gd:1754 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
-| godot/scripts/main.gd:1756 | _update_inspect |  / equipped / wearing: /  |
-| godot/scripts/main.gd:1760 | _update_inspect | inventory: /  |
-| godot/scripts/main.gd:1764 | _update_inspect | knows how: /  |
-| godot/scripts/main.gd:1769 | _update_inspect | has heard: /  |
-| godot/scripts/main.gd:1772 | _update_inspect | partner: %s /  |
-| godot/scripts/main.gd:1773 | _update_inspect | parents: %s /  |
-| godot/scripts/main.gd:1774 | _update_inspect | children: %s /  |
-| godot/scripts/main.gd:1776 | _update_inspect | customs: /  |
-| godot/scripts/main.gd:1779 | _update_inspect | mood: %s |
-| godot/scripts/main.gd:1781 | _update_inspect | , because: %s |
-| godot/scripts/main.gd:1783 | _update_inspect | feels: %s /  |
-| godot/scripts/main.gd:1787 | _update_inspect | people: %s /  |
-| godot/scripts/main.gd:1789 | _update_inspect | believes: /  |
-| godot/scripts/main.gd:1793 | _update_inspect | before the portal, in %s: /  |
-| godot/scripts/main.gd:1793 | _update_inspect | the old village |
-| godot/scripts/main.gd:1797 | _update_inspect | remembers: /  |
-| godot/scripts/main.gd:1802 | _update_inspect | knows %d things /  |
-| godot/scripts/main.gd:1837 | _show_catch_up | Catch Up |
-| godot/scripts/main.gd:1838 | _show_catch_up | [color=#9a9a9a]Nothing to show yet for this span.[/color] |
-| godot/scripts/main.gd:1850 | _open_catch_up | While you were away  (%.1f game-hours) |
-| godot/scripts/main.gd:1853 | _open_catch_up | [color=#9a9a9a]Nothing to tell.[/color] /  |
-| godot/scripts/main.gd:1854 | _open_catch_up |  / [color=#9a9a9a]Esc to close[/color] |
-| godot/scripts/main.gd:1900 | _show_legends | world:0 |
-| godot/scripts/main.gd:1904 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
-| godot/scripts/main.gd:1922 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1931 | _on_legends_year | This world has no map beyond the valley. |
-| godot/scripts/main.gd:1941 | _on_legends_year | the year before the portal |
-| godot/scripts/main.gd:1941 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1944 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
-| godot/scripts/main.gd:1944 | _on_legends_year | , ringed: where those away are |
-| godot/scripts/main.gd:1962 | _show_history | [b]History[/b] /  /  |
-| godot/scripts/main.gd:1965 | _show_history |  / [b]The record[/b] /  |
-| godot/scripts/main.gd:1969 | _show_history |  / [b]Why they do what they do[/b] /  |
-| godot/scripts/main.gd:1973 | _show_history |  / [b]The valley before the portal[/b] /  |
-| godot/scripts/main.gd:1977 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
-| godot/scripts/main.gd:1982 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] shows or hides remembered terrain[/color] |
-| godot/scripts/main.gd:2012 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
-| godot/scripts/main.gd:2120 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
-| godot/scripts/main.gd:2160 | _capture_timelapse | png_sha256 |
-| godot/scripts/main.gd:2193 | _capture_timelapse | timelapse snapshot failed (error %d) |
-| godot/scripts/main.gd:2194 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
-| godot/scripts/main.gd:2237 | _process | saved (%.0f ms capture) |
-| godot/scripts/main.gd:2255 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
-| godot/scripts/main.gd:2359 | _do_load_manual | loaded manual save |
-| godot/scripts/main.gd:2360 | _do_load_manual | load failed:  |
-| godot/scripts/main.gd:2400 | _unhandled_input | pause on major events:  |
-| godot/scripts/main.gd:2403 | _unhandled_input | announce:  |
-| godot/scripts/main.gd:2414 | _unhandled_input | relationship lines:  |
-| godot/scripts/main.gd:2445 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:1514 | _fill_people | Inspect |
+| godot/scripts/main.gd:1514 | _fill_people | Open %s's inspect panel |
+| godot/scripts/main.gd:1529 | _fill_people | Following |
+| godot/scripts/main.gd:1529 | _fill_people | Follow |
+| godot/scripts/main.gd:1529 | _fill_people | Keep the camera on %s (dragging stops follow) |
+| godot/scripts/main.gd:1544 | _fill_people | Remove %s from favourites |
+| godot/scripts/main.gd:1556 | _update_hud | director: %s |
+| godot/scripts/main.gd:1556 | _update_hud | on, watching %s |
+| godot/scripts/main.gd:1559 | _update_hud | pop %d |
+| godot/scripts/main.gd:1651 | _push_feed | paused:  |
+| godot/scripts/main.gd:1724 | _update_inspect | [b]%s[/b]  %s, %d years / %s /  |
+| godot/scripts/main.gd:1736 | _update_inspect | [color=#8fa6c8]a people who %s[/color] /  |
+| godot/scripts/main.gd:1736 | _update_inspect | ; who  |
+| godot/scripts/main.gd:1745 | _update_inspect |  / surface: %s /  |
+| godot/scripts/main.gd:1753 | _update_inspect | skills: %s /  |
+| godot/scripts/main.gd:1754 | _update_inspect | carries [color=#e0c890]%s[/color] /  |
+| godot/scripts/main.gd:1755 | _update_inspect | armed with [color=#e0b0a0]%s[/color] /  |
+| godot/scripts/main.gd:1757 | _update_inspect |  / equipped / wearing: /  |
+| godot/scripts/main.gd:1761 | _update_inspect | inventory: /  |
+| godot/scripts/main.gd:1765 | _update_inspect | knows how: /  |
+| godot/scripts/main.gd:1770 | _update_inspect | has heard: /  |
+| godot/scripts/main.gd:1773 | _update_inspect | partner: %s /  |
+| godot/scripts/main.gd:1774 | _update_inspect | parents: %s /  |
+| godot/scripts/main.gd:1775 | _update_inspect | children: %s /  |
+| godot/scripts/main.gd:1777 | _update_inspect | customs: /  |
+| godot/scripts/main.gd:1780 | _update_inspect | mood: %s |
+| godot/scripts/main.gd:1782 | _update_inspect | , because: %s |
+| godot/scripts/main.gd:1784 | _update_inspect | feels: %s /  |
+| godot/scripts/main.gd:1788 | _update_inspect | people: %s /  |
+| godot/scripts/main.gd:1790 | _update_inspect | believes: /  |
+| godot/scripts/main.gd:1794 | _update_inspect | before the portal, in %s: /  |
+| godot/scripts/main.gd:1794 | _update_inspect | the old village |
+| godot/scripts/main.gd:1798 | _update_inspect | remembers: /  |
+| godot/scripts/main.gd:1803 | _update_inspect | knows %d things /  |
+| godot/scripts/main.gd:1838 | _show_catch_up | Catch Up |
+| godot/scripts/main.gd:1839 | _show_catch_up | [color=#9a9a9a]Nothing to show yet for this span.[/color] |
+| godot/scripts/main.gd:1851 | _open_catch_up | While you were away  (%.1f game-hours) |
+| godot/scripts/main.gd:1854 | _open_catch_up | [color=#9a9a9a]Nothing to tell.[/color] /  |
+| godot/scripts/main.gd:1855 | _open_catch_up |  / [color=#9a9a9a]Esc to close[/color] |
+| godot/scripts/main.gd:1901 | _show_legends | world:0 |
+| godot/scripts/main.gd:1905 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
+| godot/scripts/main.gd:1923 | _on_legends_link | world:0 |
+| godot/scripts/main.gd:1932 | _on_legends_year | This world has no map beyond the valley. |
+| godot/scripts/main.gd:1942 | _on_legends_year | the year before the portal |
+| godot/scripts/main.gd:1942 | _on_legends_year | %d years before the portal |
+| godot/scripts/main.gd:1945 | _on_legends_year | The world %s (the valley in white, ruins dark%s) |
+| godot/scripts/main.gd:1945 | _on_legends_year | , ringed: where those away are |
+| godot/scripts/main.gd:1963 | _show_history | [b]History[/b] /  /  |
+| godot/scripts/main.gd:1966 | _show_history |  / [b]The record[/b] /  |
+| godot/scripts/main.gd:1970 | _show_history |  / [b]Why they do what they do[/b] /  |
+| godot/scripts/main.gd:1974 | _show_history |  / [b]The valley before the portal[/b] /  |
+| godot/scripts/main.gd:1978 | _show_history |  / [b]The wider world[/b]  [color=#9a9a9a][L] Legends has every year[/color] /  |
+| godot/scripts/main.gd:1983 | _show_history |  / [color=#9a9a9a]H or Esc to close   [V] shows or hides remembered terrain[/color] |
+| godot/scripts/main.gd:2013 | _set_timelapse_recording | timelapse needs a renderer; no snapshots were started |
+| godot/scripts/main.gd:2121 | _capture_timelapse | timelapse: this world went differently from the stored samples; samples from here on were removed |
+| godot/scripts/main.gd:2161 | _capture_timelapse | png_sha256 |
+| godot/scripts/main.gd:2194 | _capture_timelapse | timelapse snapshot failed (error %d) |
+| godot/scripts/main.gd:2195 | _capture_timelapse | TIMELAPSE_FAILED tick %d error %d |
+| godot/scripts/main.gd:2238 | _process | saved (%.0f ms capture) |
+| godot/scripts/main.gd:2256 | _process | [b]The valley's story has ended.[/b] /  / %s /  / The valley goes on without them. [Esc] to close. |
+| godot/scripts/main.gd:2360 | _do_load_manual | loaded manual save |
+| godot/scripts/main.gd:2361 | _do_load_manual | load failed:  |
+| godot/scripts/main.gd:2401 | _unhandled_input | pause on major events:  |
+| godot/scripts/main.gd:2404 | _unhandled_input | announce:  |
+| godot/scripts/main.gd:2415 | _unhandled_input | relationship lines:  |
 | godot/scripts/main.gd:2446 | _unhandled_input | world:0 |
-| godot/scripts/main.gd:2456 | _unhandled_input | view: %s |
-| godot/scripts/main.gd:2456 | _unhandled_input | currently in sight |
-| godot/scripts/main.gd:2456 | _unhandled_input | current and remembered terrain |
-| godot/scripts/main.gd:2458 | _unhandled_input | saving… |
-| godot/scripts/main.gd:2471 | _unhandled_input | bookmark %d set |
-| godot/scripts/main.gd:2562 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
-| godot/scripts/main.gd:2621 | _do_shot | SHOT_FAILED %s (error %d) |
-| godot/scripts/main.gd:2694 | _build_settings | Settings |
-| godot/scripts/main.gd:2695 | _build_settings | Close [Esc] |
-| godot/scripts/main.gd:2695 | _build_settings | Close settings [O or Esc] |
-| godot/scripts/main.gd:2699 | _build_settings | Master volume |
-| godot/scripts/main.gd:2700 | _build_settings | Ambient volume |
-| godot/scripts/main.gd:2701 | _build_settings | Effects volume |
-| godot/scripts/main.gd:2702 | _build_settings | Music volume |
-| godot/scripts/main.gd:2703 | _build_settings | Autosave |
-| godot/scripts/main.gd:2704 | _build_settings | Feed rate:  |
-| godot/scripts/main.gd:2704 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
-| godot/scripts/main.gd:2708 | _build_settings | Name tags:  |
-| godot/scripts/main.gd:2708 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
-| godot/scripts/main.gd:2713 | _build_settings | Camera director |
-| godot/scripts/main.gd:2717 | _build_settings | Debug decision log (writes every decision to a file) |
-| godot/scripts/main.gd:2721 | _build_settings | Decision log:  |
-| godot/scripts/main.gd:2723 | _build_settings | Saves:  |
-| godot/scripts/main.gd:2726 | _build_settings | Your files and data |
-| godot/scripts/main.gd:2726 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
+| godot/scripts/main.gd:2447 | _unhandled_input | world:0 |
+| godot/scripts/main.gd:2457 | _unhandled_input | view: %s |
+| godot/scripts/main.gd:2457 | _unhandled_input | currently in sight |
+| godot/scripts/main.gd:2457 | _unhandled_input | current and remembered terrain |
+| godot/scripts/main.gd:2459 | _unhandled_input | saving… |
+| godot/scripts/main.gd:2472 | _unhandled_input | bookmark %d set |
+| godot/scripts/main.gd:2563 | _write_automation_json | AUTOMATION_JSON_FAILED %s |
+| godot/scripts/main.gd:2622 | _do_shot | SHOT_FAILED %s (error %d) |
+| godot/scripts/main.gd:2695 | _build_settings | Settings |
+| godot/scripts/main.gd:2696 | _build_settings | Close [Esc] |
+| godot/scripts/main.gd:2696 | _build_settings | Close settings [O or Esc] |
+| godot/scripts/main.gd:2700 | _build_settings | Master volume |
+| godot/scripts/main.gd:2701 | _build_settings | Ambient volume |
+| godot/scripts/main.gd:2702 | _build_settings | Effects volume |
+| godot/scripts/main.gd:2703 | _build_settings | Music volume |
+| godot/scripts/main.gd:2704 | _build_settings | Autosave |
+| godot/scripts/main.gd:2705 | _build_settings | Feed rate:  |
+| godot/scripts/main.gd:2705 | _build_settings | Cycle feed rate: calm (notable only), normal, or full [G] |
+| godot/scripts/main.gd:2709 | _build_settings | Name tags:  |
+| godot/scripts/main.gd:2709 | _build_settings | Cycle the names over people: off, favourites and the followed person, or everyone when zoomed in |
+| godot/scripts/main.gd:2714 | _build_settings | Camera director |
+| godot/scripts/main.gd:2718 | _build_settings | Debug decision log (writes every decision to a file) |
+| godot/scripts/main.gd:2722 | _build_settings | Decision log:  |
+| godot/scripts/main.gd:2724 | _build_settings | Saves:  |
+| godot/scripts/main.gd:2727 | _build_settings | Your files and data |
+| godot/scripts/main.gd:2727 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
 | godot/scripts/setup.gd:16 |  | The valley |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
@@ -4950,11 +4962,11 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:739 | _summary_page | Making the world runs the valley's past first; it takes a moment. |
 | godot/scripts/setup.gd:770 | refused | Could not begin: %s. |
 | godot/scripts/world_view.gd:188 | setup | ostrog/render/world_renderer |
-| godot/scripts/world_view.gd:376 | projected_block | No surveyed surface below |
-| godot/scripts/world_view.gd:377 | projected_block | Unknown below this level |
-| godot/scripts/world_view.gd:385 | projected_block | %s recorded at z%d |
-| godot/scripts/world_view.gd:387 | projected_block | Previously observed. Current depth and quality unknown. |
-| godot/scripts/world_view.gd:394 | projected_block | Looking below (%d, %d, z%d) |
+| godot/scripts/world_view.gd:389 | projected_block | No surveyed surface below |
+| godot/scripts/world_view.gd:390 | projected_block | Unknown below this level |
+| godot/scripts/world_view.gd:398 | projected_block | %s recorded at z%d |
+| godot/scripts/world_view.gd:400 | projected_block | Previously observed. Current depth and quality unknown. |
+| godot/scripts/world_view.gd:407 | projected_block | Looking below (%d, %d, z%d) |
 | godot/scripts/audio/sound.gd:96 | _buses | Master |
 | godot/scripts/audio/sound.gd:173 | ui | %.2f %s ui ui |
 
@@ -4983,13 +4995,13 @@ What the client prints; scripts and testers grep for these (SHOT_SAVED, SHOT_FAI
 | godot/scripts/main.gd:530 | _world_ready | BANDS %s |
 | godot/scripts/main.gd:567 | _world_ready | world %s view_z %d centre %s founding %s missing_assets %s |
 | godot/scripts/main.gd:671 | _save_and_quit | SAVED ON CLOSE tick %d |
-| godot/scripts/main.gd:2173 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
-| godot/scripts/main.gd:2566 | _write_automation_json | AUTOMATION_JSON %s |
-| godot/scripts/main.gd:2593 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
-| godot/scripts/main.gd:2612 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
-| godot/scripts/main.gd:2624 | _do_shot | SHOT_SAVED %s |
-| godot/scripts/main.gd:2652 | _do_footage | FOOTAGE_FRAME %d %s |
-| godot/scripts/main.gd:2654 | _do_footage | FOOTAGE_DONE |
+| godot/scripts/main.gd:2174 | _capture_timelapse | TIMELAPSE_FRAME tick %d seed %d bytes %d retained %d replay %s |
+| godot/scripts/main.gd:2567 | _write_automation_json | AUTOMATION_JSON %s |
+| godot/scripts/main.gd:2594 | _save_at_end | SAVE %s -> %s (%s, capture %.1f ms) |
+| godot/scripts/main.gd:2613 | _do_shot | SHOT_FAILED %s: --headless draws nothing, so there is no picture to save. Run without --headless (on Linux, under Xvfb as tools/shots/shot.sh does). |
+| godot/scripts/main.gd:2625 | _do_shot | SHOT_SAVED %s |
+| godot/scripts/main.gd:2653 | _do_footage | FOOTAGE_FRAME %d %s |
+| godot/scripts/main.gd:2655 | _do_footage | FOOTAGE_DONE |
 
 <!-- END GENERATED: strings-client -->
 

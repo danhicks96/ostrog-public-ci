@@ -134,6 +134,19 @@ fn one_upper_bank_scout_can_watch_only_the_exposed_water_face() {
     assert!(!w.overworld.surveys[&c].valley.contains_key(&lower_key));
     assert!(!w.overworld.surveys[&c].sees_spill(edge, 1));
 
+    // The last report survives an unseen change above the crest. A fresh look at
+    // the exposed face correctly records that it has stopped moving.
+    let cap = edge.upper.offset(0, 0, 1);
+    let original = w.grid.get(cap);
+    w.grid.set(cap, w.grid.get(edge.upper));
+    assert!(!w.active_river_spills().any(|e| e == edge));
+    assert!(w.overworld.surveys[&c].bank_spills.contains(&edge));
+    observe(&mut w);
+    assert!(!w.overworld.surveys[&c].bank_spills.contains(&edge));
+    w.grid.set(cap, original);
+    observe(&mut w);
+    assert!(w.overworld.surveys[&c].bank_spills.contains(&edge));
+
     // An exposed moving face disappears even between surveys when its lip ices over.
     // The pool, one level lower, is still liquid at this temperature.
     let warm = w.weather.temperature_c;

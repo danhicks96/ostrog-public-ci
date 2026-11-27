@@ -19,7 +19,7 @@ pub struct Survey {
     pub tick: u64,
     #[serde(default)]
     pub valley: BTreeMap<(i32, i32, i32), ObservedTile>,
-    /// Water faces observed from above on this survey. No occupants or lower-floor
+    /// Moving water faces observed on this survey from the bank or both floors. No occupants or lower-floor
     /// contents are exposed when a moving surface can be seen from the bank.
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
     pub bank_spills: BTreeSet<SpillEdge>,
@@ -27,6 +27,80 @@ pub struct Survey {
     pub trails: BTreeMap<(u32, i32, i32), (u64, i32)>,
 }
 impl Survey {
+    /// A surveyed voxel, or the material seen immediately under a reported voxel.
+    /// The newer report wins when a later witness sees the supporting material change.
+    pub fn reported_tile(&self, p: crate::ids::TilePos) -> Option<crate::world::Tile> {
+        use crate::world::{Material, Tile, TileFlags};
+        let direct = self.valley.get(&(p.x, p.y, p.z));
+        let above = self.valley.get(&(p.x, p.y, p.z + 1));
+        if let Some(&(_, packed, _, _)) = direct
+            .filter(|d| above.is_none_or(|u| d.0 >= u.0 || Tile::unpack(d.1).material.0 == u.2))
+        {
+            return Some(Tile::unpack(packed));
+        }
+        above.map(|&(_, _, mat, _)| match Material(mat) {
+            Material::AIR => Tile::AIR,
+            Material::WATER => {
+                let mut tile = Tile::floor(Material::WATER);
+                tile.flags = TileFlags(TileFlags::WATER);
+                tile
+            }
+            material => Tile::floor(material),
+        })
+    }
+
+    /// Relief comes from observed faces and their supports. A wall built on a different
+    /// floor cannot raise the colony's mapped terrain until someone sees that level.
+    pub fn reported_heights(&self, width: usize, height: usize, unknown: i32) -> Vec<i32> {
+        let mut heights = vec![unknown; width * height];
+        for (&(x, y, z), report) in &self.valley {
+            if x < 0 || y < 0 || x as usize >= width || y as usize >= height {
+                continue;
+            }
+            if let Some(level) = self.measured_height(x, y, z, report) {
+                let cell = &mut heights[y as usize * width + x as usize];
+                *cell = (*cell).max(level);
+            }
+        }
+        heights
+    }
+
+    pub fn reported_height(&self, x: i32, y: i32) -> Option<i32> {
+        self.valley
+            .range((x, y, i32::MIN)..=(x, y, i32::MAX))
+            .filter_map(|(&(x, y, z), report)| self.measured_height(x, y, z, report))
+            .max()
+    }
+
+    fn measured_height(
+        &self,
+        x: i32,
+        y: i32,
+        z: i32,
+        &(seen, packed, support, _): &ObservedTile,
+    ) -> Option<i32> {
+        use crate::world::{Material, Shape, Tile};
+        let t = Tile::unpack(packed);
+        if t.shape == Shape::Wall
+            && self
+                .valley
+                .get(&(x, y, z + 1))
+                .is_none_or(|upper| upper.0 <= seen || upper.2 == t.material.0)
+        {
+            return Some(z);
+        }
+        if support != Material::AIR.0
+            && support != Material::WATER.0
+            && self
+                .valley
+                .get(&(x, y, z - 1))
+                .is_none_or(|lower| lower.0 < seen || Tile::unpack(lower.1).shape == Shape::Wall)
+        {
+            return Some(z - 1);
+        }
+        None
+    }
+
     pub fn sees_spill(&self, edge: SpillEdge, view_z: i32) -> bool {
         let current = |p: crate::ids::TilePos| {
             self.valley
@@ -218,6 +292,12 @@ pub fn observe(w: &mut World) {
         }
         let survey = w.overworld.surveys.entry(cid).or_default();
         survey.tick = tick;
+        bank_spills.extend(
+            spills
+                .iter()
+                .copied()
+                .filter(|edge| local.contains(&edge.upper) && local.contains(&edge.lower)),
+        );
         survey.bank_spills = bank_spills;
         for p in local {
             survey.valley.insert(

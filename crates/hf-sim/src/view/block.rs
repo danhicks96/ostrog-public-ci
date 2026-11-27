@@ -4,6 +4,7 @@
 //! column, what grows or lies on it, built structures and historical traces, and local
 //! temperature and shelter. Respects `view::known` so unfound things are not spoiled.
 
+use crate::expedition::survey::Survey;
 use crate::floods::WaterKind;
 use crate::ids::TilePos;
 use crate::items::ItemPlace;
@@ -37,6 +38,10 @@ pub struct BlockInfo {
 }
 
 pub fn inspect(w: &World, p: TilePos) -> BlockInfo {
+    inspect_with_survey(w, p, None)
+}
+
+pub fn inspect_with_survey(w: &World, p: TilePos, survey: Option<&Survey>) -> BlockInfo {
     if !w.grid.in_bounds(p) {
         return BlockInfo {
             x: p.x,
@@ -47,17 +52,20 @@ pub fn inspect(w: &World, p: TilePos) -> BlockInfo {
         };
     }
 
-    let surface_z = w.grid.ground_z(p.x, p.y);
+    let surface_z = survey.map_or_else(
+        || w.grid.ground_z(p.x, p.y),
+        |s| s.reported_height(p.x, p.y).unwrap_or(w.grid.z_min - 1),
+    );
     let biome_enum = w.grid.biome_at(p.x, p.y);
     let biome = biome_enum
         .map(|b| b.label().to_string())
         .unwrap_or_default();
 
-    let (title, ground) = describe_ground(w, p, surface_z);
-    let (water, water_kind, water_depth, water_quality) = describe_water(w, p, biome_enum);
-    let minerals = describe_minerals(w, p, surface_z);
-    let temperature = describe_temperature(w, p, surface_z);
-    let plants = describe_plants(w, p);
+    let (title, ground) = describe_ground(w, p, surface_z, survey.is_some());
+    let (water, water_kind, water_depth, water_quality) = describe_water(w, p, biome_enum, survey);
+    let minerals = describe_minerals(w, p, surface_z, survey);
+    let temperature = describe_temperature(w, p, surface_z, survey);
+    let plants = describe_plants(w, p, survey);
     let items = describe_items(w, p);
     let structures = describe_structures(w, p);
     let notes = describe_notes(w, p);
@@ -90,12 +98,18 @@ fn mat_name(w: &World, p: TilePos, m: Material) -> String {
     w.grid.materials.get(m).name.clone()
 }
 
-fn describe_ground(w: &World, p: TilePos, surface_z: i32) -> (String, String) {
+fn describe_ground(w: &World, p: TilePos, surface_z: i32, observed: bool) -> (String, String) {
     let t = w.grid.get(p);
     let below_p = p.offset(0, 0, -1);
     let below_t = w.grid.get(below_p);
 
-    let rel_z = if p.z == surface_z + 1 {
+    let rel_z = if observed {
+        if surface_z < w.grid.z_min {
+            "ground height unknown".to_string()
+        } else {
+            format!("observed at z{}", p.z)
+        }
+    } else if p.z == surface_z + 1 {
         "surface".to_string()
     } else if p.z > surface_z + 1 {
         format!("{} above ground", p.z - (surface_z + 1))
@@ -265,20 +279,36 @@ fn append_surface_marks(w: &World, p: TilePos, out: &mut String) {
     }
 }
 
-fn describe_water(w: &World, p: TilePos, biome: Option<Biome>) -> (String, String, i32, String) {
+fn describe_water(
+    w: &World,
+    p: TilePos,
+    biome: Option<Biome>,
+    survey: Option<&Survey>,
+) -> (String, String, i32, String) {
+    let known = |at: TilePos| {
+        if at == p {
+            Some(w.grid.get(at))
+        } else {
+            match survey {
+                Some(s) => s.reported_tile(at),
+                None => Some(w.grid.get(at)),
+            }
+        }
+    };
+    let tile_at = |at| known(at).unwrap_or(crate::world::Tile::AIR);
     let mut water_p = None;
-    if w.grid.get(p).is_water() {
+    if tile_at(p).is_water() {
         water_p = Some(p);
-    } else if w.grid.get(p.offset(0, 0, -1)).is_water() {
+    } else if tile_at(p.offset(0, 0, -1)).is_water() {
         water_p = Some(p.offset(0, 0, -1));
-    } else if w.grid.get(p).shape == Shape::Open {
+    } else if tile_at(p).shape == Shape::Open {
         for peel in 2..=6 {
             let bz = p.z - peel;
             if bz < w.grid.z_min {
                 break;
             }
             let bp = TilePos::new(p.x, p.y, bz);
-            let bt = w.grid.get(bp);
+            let bt = tile_at(bp);
             if bt.is_water() {
                 water_p = Some(bp);
                 break;
@@ -323,19 +353,17 @@ fn describe_water(w: &World, p: TilePos, biome: Option<Biome>) -> (String, Strin
     };
 
     let mut z_low = wp.z;
-    while z_low > w.grid.z_min && w.grid.get(TilePos::new(wp.x, wp.y, z_low - 1)).is_water() {
+    while z_low > w.grid.z_min && tile_at(TilePos::new(wp.x, wp.y, z_low - 1)).is_water() {
         z_low -= 1;
     }
     let mut z_high = wp.z;
-    while z_high < w.grid.z_max && w.grid.get(TilePos::new(wp.x, wp.y, z_high + 1)).is_water() {
+    while z_high < w.grid.z_max && tile_at(TilePos::new(wp.x, wp.y, z_high + 1)).is_water() {
         z_high += 1;
     }
     let depth = (z_high - z_low + 1).max(1);
-    let tile = w.grid.get(wp);
+    let tile = tile_at(wp);
     let deep_flag = tile.flags.has(TileFlags::DEEP) || depth >= 2;
-    let frozen = w
-        .grid
-        .get(TilePos::new(wp.x, wp.y, z_high))
+    let frozen = tile_at(TilePos::new(wp.x, wp.y, z_high))
         .flags
         .has(TileFlags::SNOW)
         && w.temp_at(TilePos::new(wp.x, wp.y, z_high)) < -2.0;
@@ -353,7 +381,7 @@ fn describe_water(w: &World, p: TilePos, biome: Option<Biome>) -> (String, Strin
                 .and_then(|&idx| w.waters.bodies.get(idx as usize))
         });
 
-    let below_mat = w.grid.get(TilePos::new(wp.x, wp.y, z_low - 1)).material;
+    let below_mat = tile_at(TilePos::new(wp.x, wp.y, z_low - 1)).material;
     let is_swamp = biome == Some(Biome::Fen)
         || below_mat == Material::PEAT
         || (below_mat == Material::MUD
@@ -369,7 +397,12 @@ fn describe_water(w: &World, p: TilePos, biome: Option<Biome>) -> (String, Strin
         ("swamp", "peaty swamp water")
     } else if w.waters.left.contains_key(&wp) || w.flooded.contains(&wp) {
         ("fresh", "standing floodwater")
-    } else if wp.z <= w.grid.ground_z(wp.x, wp.y) - 2 {
+    } else if wp.z
+        <= survey.map_or_else(
+            || w.grid.ground_z(wp.x, wp.y),
+            |s| s.reported_height(wp.x, wp.y).unwrap_or(w.grid.z_min - 1),
+        ) - 2
+    {
         ("fresh", "fresh underground cavern water")
     } else {
         ("fresh", "clear fresh water")
@@ -395,7 +428,13 @@ fn describe_water(w: &World, p: TilePos, biome: Option<Biome>) -> (String, Strin
         String::new()
     };
 
-    let depth_words = if frozen {
+    let unmeasured = survey.is_some()
+        && ((z_high < w.grid.z_max && known(TilePos::new(wp.x, wp.y, z_high + 1)).is_none())
+            || (z_low > w.grid.z_min && known(TilePos::new(wp.x, wp.y, z_low - 1)).is_none()));
+    let depth_words = if unmeasured {
+        let unit = if depth == 1 { "level" } else { "levels" };
+        format!("{depth} observed {unit}, full depth unknown")
+    } else if frozen {
         format!("chilled in frost, {depth} level(s) deep")
     } else if deep_flag {
         format!("deep ({depth} level(s), unfordable)")
@@ -427,15 +466,26 @@ fn describe_water(w: &World, p: TilePos, biome: Option<Biome>) -> (String, Strin
     (text, kind_word.to_string(), depth, quality_word.to_string())
 }
 
-fn describe_minerals(w: &World, p: TilePos, surface_z: i32) -> Vec<String> {
+fn describe_minerals(
+    w: &World,
+    p: TilePos,
+    surface_z: i32,
+    survey: Option<&Survey>,
+) -> Vec<String> {
+    let tile_at = |at| {
+        survey.map_or_else(
+            || w.grid.get(at),
+            |s| s.reported_tile(at).unwrap_or(crate::world::Tile::AIR),
+        )
+    };
     let mut out = Vec::new();
 
     for check_p in [p, p.offset(0, 0, -1)] {
         if !w.grid.in_bounds(check_p) {
             continue;
         }
-        let t = w.grid.get(check_p);
-        if !t.shape.is_solid() {
+        let t = tile_at(check_p);
+        if survey.is_none() && !t.shape.is_solid() {
             continue;
         }
         let def = w.grid.materials.get(t.material);
@@ -472,8 +522,8 @@ fn describe_minerals(w: &World, p: TilePos, surface_z: i32) -> Vec<String> {
         std::collections::BTreeMap::new();
     for z in w.grid.z_min..=surface_z.min(w.grid.z_max) {
         let cp = TilePos::new(p.x, p.y, z);
-        let ct = w.grid.get(cp);
-        if !ct.shape.is_solid() {
+        let ct = tile_at(cp);
+        if survey.is_none() && !ct.shape.is_solid() {
             continue;
         }
         let def = w.grid.materials.get(ct.material);
@@ -544,9 +594,7 @@ fn describe_minerals(w: &World, p: TilePos, surface_z: i32) -> Vec<String> {
     out
 }
 
-fn describe_temperature(w: &World, p: TilePos, surface_z: i32) -> String {
-    let below = crate::underground::below(w, p);
-    let roofed = crate::building::roofed(w, p);
+fn describe_temperature(w: &World, p: TilePos, surface_z: i32, survey: Option<&Survey>) -> String {
     // The simulation's own reading at this tile (#268): the valley temperature lapsed by
     // height above (or warmth by depth below) the founding site's ground, so a dug cellar
     // reads warmer than a winter surface and a height colder; the thin place's wrong
@@ -576,7 +624,27 @@ fn describe_temperature(w: &World, p: TilePos, surface_z: i32) -> String {
         base_temp
     };
 
-    let shelter = if below && p.z < surface_z {
+    let shelter = if let Some(chart) = survey {
+        if let Some(r) = w.roofs.get(&p) {
+            if r.snow > 0.0 {
+                format!("roofed indoors (snow {:.0}h)", r.snow)
+            } else {
+                "roofed indoors".into()
+            }
+        } else if let Some(tile) = chart.reported_tile(p.offset(0, 0, 1)) {
+            if tile.is_water() {
+                "water recorded overhead".into()
+            } else if matches!(tile.shape, Shape::Wall | Shape::Floor) {
+                "under a reported ceiling".into()
+            } else if p.z < surface_z {
+                "below observed ground".into()
+            } else {
+                "clear immediately overhead".into()
+            }
+        } else {
+            "overhead unreported".into()
+        }
+    } else if crate::underground::below(w, p) && p.z < surface_z {
         let light = crate::underground::light_at(w, p);
         let light_str = if light >= 0.5 {
             "lit"
@@ -586,7 +654,7 @@ fn describe_temperature(w: &World, p: TilePos, surface_z: i32) -> String {
             "dark"
         };
         format!("underground ({light_str})")
-    } else if roofed {
+    } else if crate::building::roofed(w, p) {
         if let Some(r) = w.roofs.get(&p).filter(|r| r.snow > 0.0) {
             format!("roofed indoors (snow {:.0}h)", r.snow)
         } else {
@@ -604,9 +672,18 @@ fn describe_temperature(w: &World, p: TilePos, surface_z: i32) -> String {
     format!("{temp_c:.0} °C — {shelter}{warmth}")
 }
 
-fn describe_plants(w: &World, p: TilePos) -> Vec<String> {
+fn describe_plants(w: &World, p: TilePos, survey: Option<&Survey>) -> Vec<String> {
     let mut out = Vec::new();
     for check_p in [p, p.offset(0, 0, 1)] {
+        if check_p != p
+            && survey.is_some_and(|s| {
+                s.valley
+                    .get(&(check_p.x, check_p.y, check_p.z))
+                    .is_none_or(|r| r.0 != s.tick)
+            })
+        {
+            continue;
+        }
         for pl in w.plants.iter().filter(|pl| pl.alive && pl.pos == check_p) {
             let name = match pl.kind {
                 PlantKind::Tree | PlantKind::FungusTree | PlantKind::BoneTree => {

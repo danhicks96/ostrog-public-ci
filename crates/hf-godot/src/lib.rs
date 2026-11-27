@@ -2445,13 +2445,36 @@ impl SimHost {
     /// metals, temperature & shelter, plants, loose items, built structures, and historical notes.
     #[func]
     fn inspect_block(&mut self, x: i32, y: i32, z: i32) -> VarDictionary {
+        self.block_report(x, y, z, false)
+    }
+
+    #[func]
+    fn inspect_observed_block(&mut self, x: i32, y: i32, z: i32) -> VarDictionary {
+        self.block_report(x, y, z, true)
+    }
+
+    fn block_report(&mut self, x: i32, y: i32, z: i32, observed: bool) -> VarDictionary {
         // Home from the step thread first: who built it is in the chronicle, which travels with
         // the session, so in a running game the note was left off (FIXLOG 2026-11-14). A click,
         // so one wait for the batch in hand.
         self.settle();
         let mut d = VarDictionary::new();
         let Some(w) = self.world() else { return d };
-        let info = hf_sim::view::block::inspect(w, TilePos::new(x, y, z));
+        let survey = if observed {
+            w.communities
+                .first()
+                .and_then(|c| w.overworld.surveys.get(&c.id))
+        } else {
+            None
+        };
+        if observed && survey.is_none_or(|s| s.valley.get(&(x, y, z)).is_none_or(|r| r.0 != s.tick))
+        {
+            return d;
+        }
+        let info = hf_sim::view::block::inspect_with_survey(w, TilePos::new(x, y, z), survey);
+        if observed {
+            d.set("height_observed", info.surface_z >= w.grid.z_min);
+        }
         d.set("x", info.x);
         d.set("y", info.y);
         d.set("z", info.z);

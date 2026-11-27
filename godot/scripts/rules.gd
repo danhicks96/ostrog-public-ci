@@ -575,7 +575,10 @@ static func format_block(d: Dictionary) -> String:
 	var biome: String = d.get("biome", "")
 	var surf: int = int(d.get("surface_z", 0))
 	if biome != "":
-		s += "[color=#a8c4a0]%s[/color]  (surface z%d)\n" % [biome, surf]
+		var elevation := "surface z%d" % surf
+		if d.has("height_observed"):
+			elevation = "highest observed ground z%d" % surf if d.height_observed else "ground height unknown"
+		s += "[color=#a8c4a0]%s[/color]  (%s)\n" % [biome, elevation]
 	s += "\n"
 	s += "[b]Ground & rock:[/b] %s\n" % d.get("ground", "")
 	var wkind: String = d.get("water_kind", "none")
