@@ -1,5 +1,27 @@
 # Fix log
 
+## 2026-11-26: keep flight tracks within one world session (OST-1500)
+
+- Symptom: a desktop save load or fresh world could mix two timelines under one capture header.
+- Fix: settle in-flight ticks and seal the capture when replacing a running session, not at first
+  startup or on a failed load. Leave the legacy decision log unchanged.
+- Guard: a capture closes with one world's decisions when replaced by a new seed or a rewind of
+  the same seed, even when the ID is reused; initial capture and the legacy log stay armed.
+
+## 2026-11-25: detect partially copied flight evidence (OST-1500)
+
+- Symptom: a clean cover survey could mask missing raw events at either edge or every raw segment.
+- Fix: the writer records its retained raw sequence bounds at close; the raw reader checks them before filtering.
+- Guard: intact and empty captures stay distinguishable from copies with missing prefix, suffix, or all raw rows.
+
+## 2026-11-25: retain unattended decision evidence (OST-1500)
+
+- Symptom: the live Why lens is transient; normal decision logging rotates day summaries
+  out with raw data and cannot report which periods are incomplete.
+- Fix: add an opt-in local recorder with separate bounded survey and trace files, actual route
+  attempt outcomes, explicit coverage notices, and a read-only query.
+- Guard: cover repeated rotation, injected flush failure, off/on digest and durable chronicle,
+  and an unattended choice-to-blocked-route-to-retry example.
 ## 2026-11-27: a night cut short left no thought at all (OST-242)
 
 - Symptom: a sleep under six hours gave neither SleptInBed nor SleptRough, and one sleep in five

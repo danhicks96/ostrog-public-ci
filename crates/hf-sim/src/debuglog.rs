@@ -20,6 +20,8 @@ use std::sync::Mutex;
 use serde_json::{json, Value};
 
 use crate::events::EventKind;
+use crate::flight_recorder::Recorder;
+use crate::ids::TilePos;
 use crate::time::TICKS_PER_DAY;
 use crate::World;
 use std::collections::BTreeMap;
@@ -41,6 +43,8 @@ struct Sink {
     out: Option<BufWriter<File>>,
     written: u64,
     day: Counters,
+    recorder: Option<Recorder>,
+    recorder_header: bool,
 }
 
 /// What one game day has counted so far; written as a `day` line and reset.
@@ -84,8 +88,29 @@ pub fn configure_capped(
         out: None,
         written: 0,
         day: Counters::default(),
+        recorder: None,
+        recorder_header: false,
     });
     ENABLED.store(true, Ordering::Relaxed);
+}
+
+/// Opt in to bounded recordings in a new local directory. Existing paths are not changed.
+pub fn configure_recorder(path: PathBuf, settings: Vec<(String, String)>) -> std::io::Result<()> {
+    let recorder = Recorder::create(&path)?;
+    let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
+    *g = Some(Sink {
+        path,
+        settings,
+        max_bytes: 0,
+        command_line: String::new(),
+        out: None,
+        written: 0,
+        day: Counters::default(),
+        recorder: Some(recorder),
+        recorder_header: false,
+    });
+    ENABLED.store(true, Ordering::Relaxed);
+    Ok(())
 }
 
 /// Turn the log off and flush it.
@@ -93,6 +118,9 @@ pub fn disable() {
     ENABLED.store(false, Ordering::Relaxed);
     let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
     if let Some(s) = g.as_mut() {
+        if let Some(r) = s.recorder.as_mut() {
+            r.finish();
+        }
         if let Some(o) = s.out.as_mut() {
             let _ = o.flush();
         }
@@ -100,11 +128,30 @@ pub fn disable() {
     *g = None;
 }
 
+/// Seal a Flight Recorder capture before replacing an existing world, including a
+/// rewind to the same seed. First startup and the legacy decision log are unaffected.
+pub fn finish_recorder_for_world_replacement(replacing_world: bool) {
+    if !replacing_world || !enabled() {
+        return;
+    }
+    let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
+    if let Some(recorder) = g.as_mut().and_then(|sink| sink.recorder.as_mut()) {
+        recorder.finish();
+        ENABLED.store(false, Ordering::Relaxed);
+        *g = None;
+    }
+}
+
 /// Flush what is buffered (call at the end of a run or before reading the file).
 pub fn flush() {
     let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
-    if let Some(o) = g.as_mut().and_then(|s| s.out.as_mut()) {
-        let _ = o.flush();
+    if let Some(s) = g.as_mut() {
+        if let Some(r) = s.recorder.as_mut() {
+            r.flush();
+        }
+        if let Some(o) = s.out.as_mut() {
+            let _ = o.flush();
+        }
     }
 }
 
@@ -145,7 +192,26 @@ fn header(w: &World, s: &Sink) -> Value {
     })
 }
 
-fn write_line(w: &World, s: &mut Sink, line: &str) {
+fn write_record(w: &World, s: &mut Sink, value: Value) {
+    let start = if !s.recorder_header && s.recorder.is_some() {
+        Some(header(w, s))
+    } else {
+        None
+    };
+    if let Some(r) = s.recorder.as_mut() {
+        s.recorder_header = true;
+        if let Some(mut start) = start {
+            start["capture"] = json!(["decision", "path", "plan_failure", "abandonment", "day"]);
+            start["replay_verified"] = json!(false);
+            r.record(w.meta.tick, start);
+        }
+        r.record(w.meta.tick, value);
+    } else {
+        write_legacy_line(w, s, &value.to_string());
+    }
+}
+
+fn write_legacy_line(w: &World, s: &mut Sink, line: &str) {
     if s.out.is_some() && s.written >= s.max_bytes {
         if let Some(mut o) = s.out.take() {
             let _ = o.flush();
@@ -196,7 +262,23 @@ pub fn decision(w: &World, agent: u32, chose: &str, mut options: Vec<(String, f3
     let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
     let Some(s) = g.as_mut() else { return };
     s.day.made += 1;
-    write_line(w, s, &v.to_string());
+    write_record(w, s, v);
+}
+
+/// Record the actual path attempt, not a deduction from a later activity.
+pub fn path_attempt(w: &World, agent: u32, from: TilePos, to: TilePos, outcome: &str) {
+    let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
+    let Some(s) = g.as_mut().filter(|s| s.recorder.is_some()) else {
+        return;
+    };
+    write_record(
+        w,
+        s,
+        json!({
+            "t": "path_attempt", "tick": w.meta.tick, "agent": agent,
+            "from": [from.x, from.y, from.z], "to": [to.x, to.y, to.z], "outcome": outcome,
+        }),
+    );
 }
 
 /// A plan dropped: `activity` is what they were doing or about to do.
@@ -205,7 +287,7 @@ pub fn abandoned(w: &World, agent: u32, activity: &str, reason: &str) {
     let mut g = SINK.lock().unwrap_or_else(|e| e.into_inner());
     let Some(s) = g.as_mut() else { return };
     s.day.abandoned += 1;
-    write_line(w, s, &v.to_string());
+    write_record(w, s, v);
 }
 
 /// Called once at the end of each tick while the log is on: writes the tick's failed plans (from
@@ -226,7 +308,7 @@ pub fn after_tick(w: &World) {
                     .entry(format!("{goal}/{reason}"))
                     .or_default() += 1;
                 let v = json!({"t": "plan_failed", "tick": e.tick, "agent": agent.0, "goal": goal, "reason": reason});
-                write_line(w, s, &v.to_string());
+                write_record(w, s, v);
             }
             EventKind::Starving { .. } => s.day.starving += 1,
             EventKind::Parched { .. } => s.day.parched += 1,
@@ -243,6 +325,6 @@ pub fn after_tick(w: &World) {
             "need_crossings": {"starving": d.starving, "parched": d.parched, "exhausted": d.exhausted},
             "failed_by_reason": d.failed_by_reason,
         });
-        write_line(w, s, &v.to_string());
+        write_record(w, s, v);
     }
 }

@@ -898,7 +898,24 @@ fn finish_walks(w: &mut World, walks: Vec<Walk>) {
         // camp, under a roof or out to gather for the store is not made across water or flooding
         // ground; they stay where they are instead (seed 1: walking back to camp, eight drowned
         // crossing a spate between them and it).
+        let was_found = path.is_some();
         let path = path.filter(|p| !(walk.gate && p.iter().any(|t| wet(w, *t))));
+        if crate::debuglog::enabled() {
+            let outcome = if path.is_some() {
+                "found"
+            } else if was_found {
+                "wet_route_rejected"
+            } else {
+                "no_path"
+            };
+            crate::debuglog::path_attempt(
+                w,
+                w.agents[walk.agent].id.0,
+                walk.from,
+                walk.to,
+                outcome,
+            );
+        }
         let a = &mut w.agents[walk.agent];
         match path {
             Some(p) => {
@@ -1204,7 +1221,14 @@ pub fn commit(w: &mut World, i: usize, next: Activity) {
         _ => None,
     };
     if let Some(to) = target {
-        if w.agents[i].pos != to && !w.path_agent_to(i, to) {
+        let from = w.agents[i].pos;
+        let attempted = from != to;
+        let found = !attempted || w.path_agent_to(i, to);
+        if attempted && crate::debuglog::enabled() {
+            let outcome = if found { "found" } else { "no_path" };
+            crate::debuglog::path_attempt(w, w.agents[i].id.0, from, to, outcome);
+        }
+        if !found {
             if crate::debuglog::enabled() {
                 crate::debuglog::abandoned(w, w.agents[i].id.0, next.name(), "no path");
             }

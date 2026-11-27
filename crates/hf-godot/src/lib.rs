@@ -658,6 +658,7 @@ impl SimHost {
     /// into the chronicle and the feed now, so a world shown before its first tick is whole.
     fn attach(&mut self, world: World) {
         self.settle();
+        hf_sim::debuglog::finish_recorder_for_world_replacement(self.session.is_some());
         self.forget_steps();
         let chron = Chronicle::working()
             .or_else(|_| Chronicle::in_memory())
@@ -1119,6 +1120,18 @@ impl SimHost {
         );
     }
 
+    /// Opt in to a bounded local capture. An existing directory is never reused.
+    #[func]
+    fn flight_recorder_start(&mut self, path: GString) -> GString {
+        match hf_sim::debuglog::configure_recorder(
+            std::path::PathBuf::from(path.to_string()),
+            vec![("command".into(), "client".into())],
+        ) {
+            Ok(()) => GString::new(),
+            Err(err) => GString::from(err.to_string().as_str()),
+        }
+    }
+
     /// Turn the debug decision log off (the settings toggle).
     #[func]
     fn debug_log_stop(&mut self) {
@@ -1218,6 +1231,7 @@ impl SimHost {
         self.settle();
         match hf_sim::save::read(std::path::Path::new(&path.to_string())) {
             Ok((world, chronicle)) => {
+                hf_sim::debuglog::finish_recorder_for_world_replacement(self.session.is_some());
                 self.favourites = chronicle.favourites();
                 self.session = Some(Session::new(world, chronicle));
                 self.forget_steps();

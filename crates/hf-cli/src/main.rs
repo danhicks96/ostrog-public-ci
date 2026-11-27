@@ -17,6 +17,9 @@ struct Cli {
     /// any count; only the time a tick takes changes.
     #[arg(long, global = true)]
     threads: Option<usize>,
+    /// Opt-in bounded simulation diagnostics. The destination must be a new local directory.
+    #[arg(long, global = true)]
+    flight_recorder: Option<PathBuf>,
     #[command(subcommand)]
     cmd: Cmd,
 }
@@ -245,6 +248,49 @@ fn main() -> Result<()> {
     if let Some(n) = cli.threads {
         hf_sim::par::set_threads(n);
     }
+    let capture = if let Some(path) = cli.flight_recorder {
+        let input = match &cli.cmd {
+            Cmd::Run {
+                engine,
+                small,
+                opening,
+                agents,
+                ..
+            } => Some(vec![
+                ("command".into(), "run".into()),
+                ("engine".into(), engine.to_string()),
+                ("small".into(), small.to_string()),
+                ("opening".into(), opening.to_string()),
+                ("agents".into(), agents.to_string()),
+            ]),
+            Cmd::Soak {
+                engine,
+                opening,
+                agents,
+                ..
+            } => Some(vec![
+                ("command".into(), "soak".into()),
+                ("engine".into(), engine.to_string()),
+                ("opening".into(), opening.to_string()),
+                ("agents".into(), agents.to_string()),
+            ]),
+            _ => None,
+        };
+        if let Some(input) = input {
+            match hf_sim::debuglog::configure_recorder(path, input) {
+                Ok(()) => true,
+                Err(err) => {
+                    eprintln!("flight recorder unavailable: {err}");
+                    false
+                }
+            }
+        } else {
+            eprintln!("flight recorder is available for run and soak only");
+            false
+        }
+    } else {
+        false
+    };
     match cli.cmd {
         Cmd::Run {
             seed,
@@ -262,7 +308,7 @@ fn main() -> Result<()> {
                     .filter(|v| !v.is_empty())
                     .map(PathBuf::from)
             });
-            if let Some(path) = debug_log {
+            if let Some(path) = debug_log.filter(|_| !capture) {
                 hf_sim::debuglog::configure(
                     path,
                     vec![
@@ -1369,6 +1415,9 @@ fn main() -> Result<()> {
                 .count();
             println!("food plants within 25: {food_near}, reachable {food_reach}; reachable surface columns {reach_all} of {}", g.width * g.height);
         }
+    }
+    if capture {
+        hf_sim::debuglog::disable();
     }
     Ok(())
 }

@@ -289,6 +289,13 @@ func _parse_args() -> void:
 ## The decision log (#565): off unless --debug-log or OSTROG_DEBUG_LOG. Its header (seed,
 ## commit, settings) is written by the sim at the first decision.
 func _start_debug_log() -> void:
+	var capture := OS.get_environment("OSTROG_FLIGHT_RECORDER")
+	if not capture.is_empty():
+		var error := sim.flight_recorder_start(capture)
+		if error.is_empty():
+			debug_log = capture
+			return
+		push_warning("Flight Recorder could not start: " + error)
 	if debug_log == "":
 		debug_log = OS.get_environment("OSTROG_DEBUG_LOG")
 	if debug_log == "" and persist.settings["debug_log"]:
@@ -669,6 +676,8 @@ func _save_and_quit() -> void:
 			while sim.save_status() == "saving" and Time.get_ticks_msec() < deadline:
 				OS.delay_msec(20)
 			print("SAVED ON CLOSE tick %d" % last_autosave_tick)
+	if sim != null:
+		sim.debug_log_stop()
 	get_tree().quit()
 
 # ---------------------------------------------------------------- UI
