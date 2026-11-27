@@ -124,12 +124,14 @@ pub fn observe(w: &mut World) {
                                 .get(agent)
                                 .map(|r| r.opinion.clamp(0.2, 1.0))
                                 .unwrap_or(0.5);
-                            w.agents[i].bereaved.push(crate::mind::bereavement::Bereavement {
-                                who: *agent,
-                                tie,
-                                bond,
-                                since: tick,
-                            });
+                            w.agents[i]
+                                .bereaved
+                                .push(crate::mind::bereavement::Bereavement {
+                                    who: *agent,
+                                    tie,
+                                    bond,
+                                    since: tick,
+                                });
                             w.agents[i].remember(
                                 tick,
                                 MemKind::Hardship,

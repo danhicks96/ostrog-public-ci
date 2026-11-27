@@ -12,6 +12,12 @@
   dropped. The thought lasts two hours and is refreshed hourly, so it never lapses between passes.
   Friends and siblings, per-subject stacking (OST-209) and the pairing bar (OST-216) are left to
   those issues.
+- Digests: `bereaved` is a new agent field in the digest encoding, so seeded digests move.
+- Measured, seeds 1-4, 12 game days (this branch / main): breaks 21, 10, 18, 22 / 21, 10, 18, 22; mean
+  mood 0.033, 0.030, 0.038, 0.030 on both. The window holds no death of a partner, child or parent, so
+  the new weight is not exercised there; its effect shows only in the long soak. The thought fades
+  between hourly refreshes, so the effective weight is about 0.75 of the stated one (a widow of bond
+  0.9 keeps about -0.28 at day 7, against -0.6 for the old seven-day thought).
 - Guard: `tests/mourning.rs` (a widow of bond 0.9 carries at most -0.1 at day 20 and nothing at day 60;
   the weight eases with age; a partner is mourned longer than a parent).
 

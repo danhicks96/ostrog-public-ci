@@ -3600,25 +3600,25 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/society.rs:853 | trade |
 | systems/spoil.rs:87 | rotted |
 | systems/spoil.rs:99 | {n} {k} |
-| systems/strain.rs:359 | hunger |
-| systems/strain.rs:360 | thirst |
-| systems/strain.rs:361 | weariness |
-| systems/strain.rs:362 | cold |
-| systems/strain.rs:363 | loneliness |
-| systems/strain.rs:364 | discomfort |
-| systems/strain.rs:574 | hunger |
-| systems/strain.rs:612 | from {} |
-| systems/strain.rs:616 | because they were {} |
-| systems/strain.rs:620 | from {n} |
-| systems/strain.rs:678 | {}'s {} |
-| systems/strain.rs:711 | breaking the {label} |
-| systems/strain.rs:739 | eaten in a binge |
-| systems/strain.rs:782 | set by {name} in a rage |
-| systems/strain.rs:862 | wondered where {who} is |
-| systems/strain.rs:863 | the rest of the party is not here |
-| systems/strain.rs:886 | starting a fight |
-| systems/strain.rs:934 | in a fight |
-| systems/strain.rs:959 | in a fight |
+| systems/strain.rs:361 | hunger |
+| systems/strain.rs:362 | thirst |
+| systems/strain.rs:363 | weariness |
+| systems/strain.rs:364 | cold |
+| systems/strain.rs:365 | loneliness |
+| systems/strain.rs:366 | discomfort |
+| systems/strain.rs:576 | hunger |
+| systems/strain.rs:614 | from {} |
+| systems/strain.rs:618 | because they were {} |
+| systems/strain.rs:622 | from {n} |
+| systems/strain.rs:680 | {}'s {} |
+| systems/strain.rs:713 | breaking the {label} |
+| systems/strain.rs:741 | eaten in a binge |
+| systems/strain.rs:784 | set by {name} in a rage |
+| systems/strain.rs:864 | wondered where {who} is |
+| systems/strain.rs:865 | the rest of the party is not here |
+| systems/strain.rs:888 | starting a fight |
+| systems/strain.rs:936 | in a fight |
+| systems/strain.rs:961 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |

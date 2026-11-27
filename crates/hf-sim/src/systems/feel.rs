@@ -216,7 +216,8 @@ pub fn step(w: &mut World) {
                 .retain(|b| b.weight(tick).abs() >= crate::mind::bereavement::FLOOR);
             let m = crate::mind::bereavement::total(&a.bereaved, tick);
             if m < 0.0 {
-                a.thoughts.add_shaped(ThoughtKind::Mourning, m, 1.0 / 12.0, tick);
+                a.thoughts
+                    .add_shaped(ThoughtKind::Mourning, m, 1.0 / 12.0, tick);
             }
         }
         for (k, t) in [

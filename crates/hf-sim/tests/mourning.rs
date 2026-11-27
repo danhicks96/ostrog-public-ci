@@ -30,9 +30,18 @@ fn widowed() -> (World, hf_sim::ids::AgentId) {
         tick,
         None,
         Severity::Major,
-        EventKind::Died { agent: dead, cause: "fever".into() },
+        EventKind::Died {
+            agent: dead,
+            cause: "fever".into(),
+        },
     );
-    let e = w.events.pending.iter().find(|e| e.id == id).unwrap().clone();
+    let e = w
+        .events
+        .pending
+        .iter()
+        .find(|e| e.id == id)
+        .unwrap()
+        .clone();
     w.last_events = vec![e];
     hf_sim::systems::strain::observe(&mut w);
     (w, wid)
@@ -77,6 +86,14 @@ fn a_loss_eases_as_it_ages() {
 fn a_grown_child_mourns_a_parent_more_briefly_than_a_widow_a_partner() {
     use hf_sim::mind::bereavement::{Bereavement, Tie};
     let id = hf_sim::ids::AgentId(1);
-    let at = |tie| Bereavement { who: id, tie, bond: 0.9, since: 0 }.weight(30 * TICKS_PER_DAY);
+    let at = |tie| {
+        Bereavement {
+            who: id,
+            tie,
+            bond: 0.9,
+            since: 0,
+        }
+        .weight(30 * TICKS_PER_DAY)
+    };
     assert!(at(Tie::Partner) < at(Tie::Parent));
 }
