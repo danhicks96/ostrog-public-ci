@@ -244,3 +244,44 @@ fn routine_meals_do_not_raise_mood_without_limit() {
         many - none
     );
 }
+
+/// OST-204: the recent term is a salience-weighted mean, not a sum.
+fn recent_term(records: &[(MemKind, f32, f32)]) -> f32 {
+    use hf_sim::ids::TilePos;
+    use hf_sim::world::gen::GenParams;
+    use hf_sim::World;
+    let mut w = World::generate(5104, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.rebuild_caches();
+    let ids = w.found_party(1);
+    let now = w.meta.tick;
+    let a = w.agents.iter_mut().find(|a| a.id == ids[0]).unwrap();
+    a.memories.short.clear();
+    for (kind, valence, salience) in records {
+        a.memories.short.push(Record {
+            tick: now,
+            kind: *kind,
+            subject: Subject::None,
+            valence: *valence,
+            salience: *salience,
+            event: None,
+        });
+    }
+    hf_sim::systems::needs::mood_terms(a, now)[1]
+}
+
+#[test]
+fn recent_records_are_averaged_not_summed() {
+    let meals = vec![(MemKind::Meal, 1.0, 0.8); 10];
+    let good = recent_term(&meals);
+    assert!(good <= 0.3 + 1e-6, "ten good meals moved mood by {good}");
+
+    let mut mixed = vec![(MemKind::Meal, 0.0, 0.3); 9];
+    mixed.push((MemKind::Hardship, -0.9, 1.0));
+    let bad = recent_term(&mixed);
+    assert!(
+        bad <= -0.05,
+        "one hardship among nine neutral moved mood by {bad}"
+    );
+}

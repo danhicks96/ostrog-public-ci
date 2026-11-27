@@ -401,6 +401,14 @@ Mood still added every long memory together. It now reads the bounded, fading, h
 
 **Acceptance:** A person with 48 routine meals renewed 200 times has a long term at most 0.2 above the same person with none; the stress and break tests still pass; a FIXLOG entry records the break counts on seeds 1-4.
 
+### OST-204 · Average the recent-memory term in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#746](https://github.com/danhicks96/ostrog-public-ci/pull/746)
+
+The recent-memory part of mood summed ten records and could add up to +2.5. It is now a salience-weighted mean scaled to +-0.3.
+
+**Acceptance:** Ten good meals move mood by at most +0.3, one vivid hardship among nine neutral records still moves it by at least -0.05, and a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-205 · Let the worst need bite in mood
 
 **Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#708](https://github.com/danhicks96/ostrog-public-ci/pull/708)
