@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 - Bound the first refresh to the starting camera
+
+The first view uses the final camera position, zoom and floor before preparing terrain and person textures. A distant empty starting view no longer dresses everybody on the initial floor. Opening a saved inspection still finds the person on their own floor.
+
 ## 2026-11-27 - Inherited hairstyles on adult human rigs
 
 All ten inherited hairstyles now follow the slim, average and broad adult human rigs at double source resolution. The three builds retain their clothing, equipment, skin and hair colours, injury layers and held-load geometry. Children and other peoples keep their fitted appearances.

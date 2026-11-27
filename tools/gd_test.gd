@@ -105,7 +105,7 @@ func _process(_d: float) -> bool:
 
 # Tests that need an active viewport run once the scene tree is ready.
 func _scene_tests() -> void:
-	for n in ["wizard_seed_is_random_per_new_game_and_kept_across_pages", "wizard_preview_follows_the_place", "batch_mode_draws_people_once_through_the_layered_renderer"]:
+	for n in ["wizard_seed_is_random_per_new_game_and_kept_across_pages", "wizard_preview_follows_the_place", "batch_mode_draws_people_once_through_the_layered_renderer", "startup_dresses_only_people_at_the_final_focus"]:
 		var before := failed
 		await call(n)
 		if failed == before:
@@ -114,6 +114,29 @@ func _scene_tests() -> void:
 			print("GD_TEST_FAIL %s" % n)
 	print("GD_TEST %d passed, %d failed" % [passed, failed])
 	quit(1 if failed > 0 else 0)
+
+## Read the cache immediately after scene admission, before any frame can correct an
+## unbounded startup pass. Inspection may replace both the requested point and floor.
+func startup_dresses_only_people_at_the_final_focus() -> void:
+	for inspect in [false, true]:
+		var main = preload("res://scenes/main.tscn").instantiate()
+		main.opening_arg = "relentless"
+		main.seed_v = 3
+		main.zoom_arg = 4.0
+		main.focus_arg = Vector2i.ZERO
+		if inspect:
+			main.z_arg = 0
+			main.inspect_arg = 0
+		root.add_child(main)
+		var agents: PackedInt32Array = main.sim.agents()
+		check(agents.size() >= main.view.AGENT_STRIDE, "the opening has a person to see")
+		var area: Rect2i = main.view.cull_rect()
+		if inspect:
+			check(main.view.view_z == agents[3] and area.has_point(Vector2i(agents[1], agents[2])), "the inspected person overrides both the original point and floor")
+			check(not main.view.swapped_cache.is_empty(), "the inspected person is dressed on the first refresh")
+		else:
+			check(main.view.swapped_cache.is_empty(), "an empty distant starting view prepares no person textures")
+		main.free()
 
 func _new_wizard(seed := -1) -> Node:
 	var wz = preload("res://scripts/setup.gd").new()

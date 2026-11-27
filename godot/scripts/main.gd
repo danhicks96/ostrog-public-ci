@@ -521,7 +521,6 @@ func _world_ready() -> void:
 	view.setup(sim, assets)
 	var fs: Vector3i = sim.settlement_centre()
 	view.view_z = fs.z if z_arg == 9999 else z_arg
-	view.refresh()
 	cam = Camera2D.new()
 	add_child(cam)
 	var focus := Vector2(fs.x, fs.y)
@@ -534,7 +533,6 @@ func _world_ready() -> void:
 			# 2026-10-20, C63).
 			if z_arg == 9999:
 				view.view_z = clampi(B[3], view.zmin, view.zmax)
-				view.refresh()
 	if focus_arg.x >= 0:
 		focus = Vector2(focus_arg.x, focus_arg.y)
 	cam.position = focus * TILE + Vector2(16, 16)
@@ -546,12 +544,16 @@ func _world_ready() -> void:
 	why_open = why_arg
 	if inspect_arg >= 0:
 		selected_id = inspect_arg
-		var p := _agent_pos(inspect_arg)
+		var p := _agent_pos(inspect_arg, true)
 		if p.x >= 0: cam.position = p
 	for fid in fav_arg:
 		if not sim.is_favourite(fid):
 			sim.toggle_favourite(fid)
 	director_target = cam.position
+	# The initial floor and final focus are now known, including a cross-floor inspection.
+	# Use the same camera bounds as a pan before dressing people or building ground chunks.
+	_sync_camera_bounds()
+	view.refresh()
 	var headless_run := shot_path != "" or footage_dir != "" or DisplayServer.get_name() == "headless"
 	hints_active = first_run_hints_arg or (not bool(persist.settings.get("hints_seen", false)) and not headless_run)
 	if inspect_arg >= 0:
@@ -2300,6 +2302,9 @@ func _camera(d: float) -> void:
 				director_target = Vector2(sug[0], sug[1]) * TILE + Vector2(16, 16)
 				director_reason = sug[5]
 		cam.position = cam.position.lerp(director_target, 1.0 - pow(0.02, d))
+	_sync_camera_bounds()
+
+func _sync_camera_bounds() -> void:
 	var vp := get_viewport_rect().size / cam.zoom
 	var half := vp / 2
 	# Let the camera run a quarter-frame past the valley edge so a subject at the edge can sit
@@ -2310,13 +2315,14 @@ func _camera(d: float) -> void:
 	var br := (cam.position + vp / 2) / TILE
 	view.show_rect = Rect2i(int(floor(tl.x)) - 2, int(floor(tl.y)) - 3, int(ceil(br.x - tl.x)) + 4, int(ceil(br.y - tl.y)) + 6)
 
-func _agent_pos(id: int) -> Vector2:
-	var a: PackedInt32Array = view.agents
+func _agent_pos(id: int, before_first_refresh := false) -> Vector2:
+	var a: PackedInt32Array = sim.agents() if before_first_refresh else view.agents
 	for i in range(0, a.size(), view.AGENT_STRIDE):
 		if a[i] == id:
 			if a[i + 3] != view.view_z:
 				view.view_z = a[i + 3]
-				view.refresh()
+				if not before_first_refresh:
+					view.refresh()
 			return Rules.drawn_at(a, i)
 	return Vector2(-1, -1)
 
