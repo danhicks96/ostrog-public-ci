@@ -250,6 +250,10 @@ def birch(stage, season=''):
         canopy_blob(c, 20, 26, 8, 7, BIRCH_, r, 3)
         canopy_blob(c, 44, 24, 8, 7, BIRCH_, r, 3)
         canopy_blob(c, 30, 8, 9, 6, BIRCH_, r, 3)
+        if not season:
+            # Keep two sunlit leaf catches on the outer crown after the blobs overlap.
+            c.px(49, 20, BIRCH_[3])
+            c.px(50, 24, BIRCH_[3])
     return c
 
 

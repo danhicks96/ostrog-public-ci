@@ -1,5 +1,16 @@
 # Fix log
 
+## 2026-11-27: the mature birch lost its outer-canopy leaf catches
+
+- Symptom: the source-generated mature summer birch had no brightest foliage pixels in the
+  outer right canopy, and `tools/art/plants_animals_check.py` failed on the pinned asset.
+- Cause: the sparse seeded catches in overlapping canopy blobs did not leave a surviving
+  highlight in that region for this tree's seed.
+- Fix: add two sunlit catches on existing opaque leaves after the mature summer crown is drawn;
+  retain the unchanged guard and refresh the source and generated-image hashes.
+- Guard: `tools/art/plants_animals_check.py` checks the outer canopy; it failed before the
+  generator change and passes with it.
+
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
 - Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
