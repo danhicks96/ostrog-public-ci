@@ -10,7 +10,7 @@ use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::world::gen::GenParams;
 use hf_sim::World;
 
-/// A 9×7 wooden house at (24,24) with six beds, as the planner would build it.
+/// A 9Ã—7 wooden house at (24,24) with six beds, as the planner would build it.
 fn house_with_beds(w: &mut World) {
     w.build_house(
         24,
@@ -231,8 +231,18 @@ fn illness_spreads_then_fades() {
         treated: None,
     });
     let mut caught = std::collections::BTreeSet::new();
+    // Someone can walk out of the valley alive. Their retained row stops updating then.
+    let mut departed = std::collections::BTreeSet::new();
+    let mut note_departures = |w: &World| {
+        for e in &w.last_events {
+            if let EventKind::Left { agent } = e.kind {
+                departed.insert(agent);
+            }
+        }
+    };
     for _ in 0..TICKS_PER_DAY * 5 {
         w.step();
+        note_departures(&w);
         for e in &w.last_events {
             if let EventKind::FellIll { agent, .. } = &e.kind {
                 caught.insert(*agent);
@@ -246,14 +256,20 @@ fn illness_spreads_then_fades() {
     // Leave winter behind and let it run its course.
     w.meta.tick = 21 * TICKS_PER_DAY;
     w.rebuild_caches();
-    w.run(TICKS_PER_DAY * 12);
+    for _ in 0..TICKS_PER_DAY * 12 {
+        w.step();
+        note_departures(&w);
+    }
+    let survived = |a: &hf_sim::agents::Agent| {
+        ids.contains(&a.id) && (a.alive || (departed.contains(&a.id) && a.death.is_none()))
+    };
     let sick = w
         .agents
         .iter()
         // The winter fever, that is. Twelve days of ordinary life can bring a fresh infection
         // from a new wound (a hunt went wrong on one seed once threats and goats arrived);
         // that is a different illness, and infection_can_kill covers it.
-        .filter(|a| a.alive && a.body.illness.is_some())
+        .filter(|a| (a.alive || survived(a)) && a.body.illness.is_some())
         .filter(|a| !a.body.wounds.iter().any(|wd| wd.infected))
         // Fix-site (FIXLOG 2026-11-01 #488 beast fever): a hunter bitten in these twelve days
         // catches beast fever, a separate illness with its own slow course, whose wound has
@@ -268,11 +284,7 @@ fn illness_spreads_then_fades() {
         })
         .count();
     assert_eq!(sick, 0, "everyone recovered from the fever");
-    let alive = w
-        .agents
-        .iter()
-        .filter(|a| a.alive && a.species == hf_sim::agents::Species::Person)
-        .count();
+    let alive = w.agents.iter().filter(|a| survived(a)).count();
     assert!(
         alive >= 8,
         "a winter fever thins, it does not erase: {alive}"
