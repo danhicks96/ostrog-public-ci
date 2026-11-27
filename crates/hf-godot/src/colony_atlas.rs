@@ -13,6 +13,67 @@ struct ColonyAtlas {}
 
 #[godot_api]
 impl ColonyAtlas {
+    /// Called on watcher setup or world replacement, never on a per-frame read.
+    #[func]
+    fn enable_actor_hearing(&self, mut host: Gd<SimHost>) {
+        let mut host = host.bind_mut();
+        if host
+            .world()
+            .is_none_or(|w| w.communities.is_empty() || w.watcher_hearing.is_some())
+        {
+            return;
+        }
+        host.settle();
+        if let Some(s) = &mut host.session {
+            s.world.watcher_hearing = Some(Box::default());
+        }
+        // The old snapshot had no active watcher. Release its world on the worker just as
+        // forget_steps does, without cancelling pending ticks or clearing other view caches.
+        if let Some(old) = host.snapshot.take() {
+            if let Some(worker) = &host.stepper {
+                worker.discard(old);
+            }
+        }
+    }
+
+    #[func]
+    fn local_actor_sounds(&self, host: Gd<SimHost>, z: i32) -> VarDictionary {
+        let host = host.bind();
+        let mut out = VarDictionary::new();
+        let Some(w) = host.world() else {
+            return out;
+        };
+        if w.communities.is_empty() {
+            return out;
+        }
+        let mut own = VarDictionary::new();
+        for a in &w.agents {
+            if a.pos.z == z
+                && matches!(a.activity, hf_sim::mind::Activity::Working { .. })
+                && hf_sim::view::hearing::listener(w, a)
+            {
+                own.set(a.id.0 as i64, true);
+            }
+        }
+        out.set("own", &own);
+        let mut heard = PackedInt64Array::new();
+        if let Some(contacts) = &w.watcher_hearing {
+            for (token, p) in contacts.cues(w, z, |a| {
+                if a.species != Species::Person {
+                    return true;
+                }
+                let row = crate::agent_row(w, a, None);
+                row[15] == 2 && (1..=7).contains(&row[20])
+            }) {
+                heard.push(token as i64);
+                heard.push(i64::from(p.x));
+                heard.push(i64::from(p.y));
+            }
+        }
+        out.set("heard", &heard);
+        out
+    }
+
     #[func]
     fn snapshot(&self, host: Gd<SimHost>, community: i64) -> VarDictionary {
         let host = host.bind();

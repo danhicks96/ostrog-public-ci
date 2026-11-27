@@ -2341,3 +2341,37 @@ func test_uncharted_display_and_empty_colony_report_are_distinct() -> void:
 	sound.free()
 	v.free()
 	host.free()
+
+func test_actor_work_audio_follows_the_displayed_or_witnessed_worker() -> void:
+	var v := WorldView.new()
+	var host := SimHost.new()
+	v.sim = host
+	v.w = 2
+	v.h = 1
+	v.view_z = 2
+	v.surveyed_floor = true
+	var worker := PackedInt32Array()
+	worker.resize(v.AGENT_STRIDE)
+	worker[0] = 11
+	worker[1] = 1
+	worker[3] = 2
+	worker[15] = 2
+	worker[20] = 2
+	v.agents = worker
+	var sound := CentredSound.new()
+	sound.v = v
+	sound._work_and_calls()
+	check(sound.next_hit.is_empty(), "a raw miner on the camera floor cannot authorize a strike")
+	v.remembered[Vector2i(1, 0)] = Vector4i(0, 1, 0, -1)
+	sound._work_and_calls()
+	check(sound.next_hit.is_empty(), "a remembered tile gives no current work sound")
+	v.remembered[Vector2i(1, 0)].x = 1
+	sound._work_and_calls()
+	check(sound.next_hit.has(11), "a currently witnessed worker schedules ordinary work sounds")
+	sound.next_hit.clear()
+	v.surveyed_floor = false
+	sound._work_and_calls()
+	check(sound.next_hit.has(11), "a fully displayed worker in an uncharted world still works audibly")
+	sound.free()
+	v.free()
+	host.free()

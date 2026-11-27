@@ -208,6 +208,8 @@ pub struct World {
     /// The person the viewer's Why? lens traces, and their recent decision cycles (#567).
     /// Never saved and never read by a system, so tracing cannot change the simulation.
     pub why: Option<crate::why::WhyTrace>,
+    /// Optional client observation, excluded from saves and decision-making like the Why trace.
+    pub watcher_hearing: Option<Box<crate::view::hearing::Contacts>>,
     /// The census behind #940: how often a chosen Talk, Tend, Forage or EatItem acted on
     /// someone (or a claim) the chooser could not see. Read-only tallying; never read by a
     /// system, so it cannot change the simulation.
@@ -380,6 +382,7 @@ impl World {
             nav: None,
             astar: None,
             why: None,
+            watcher_hearing: None,
             knowing: Default::default(),
         };
         w.rebuild_caches();

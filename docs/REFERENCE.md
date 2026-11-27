@@ -2742,7 +2742,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | why.rs:230 | over {} at {:.2} |
 | why.rs:241 | {}: put off until food and shelter are secure |
 | why.rs:243 | {}: put off while the arrival is fresh |
-| world_state.rs:644 | returned |
+| world_state.rs:647 | returned |
 | mind/attention.rs:42 | the ground |
 | mind/attention.rs:43 | animal sign |
 | mind/attention.rs:44 | a stuck building |
@@ -4490,10 +4490,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/look.rs:35 | coat |
 | view/look.rs:36 | workshirt |
 | view/look.rs:37 | vest |
-| view/mod.rs:34 | douse |
-| view/mod.rs:35 | by lightning |
-| view/mod.rs:35 | lightning |
-| view/mod.rs:36 | flare |
+| view/mod.rs:35 | douse |
+| view/mod.rs:36 | by lightning |
+| view/mod.rs:36 | lightning |
+| view/mod.rs:37 | flare |
 | view/music.rs:20 | mourn |
 | view/music.rs:22 | welcome |
 | view/narrate.rs:39 | {} and {} |
@@ -4967,8 +4967,8 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/world_view.gd:401 | projected_block | %s recorded at z%d |
 | godot/scripts/world_view.gd:403 | projected_block | Previously observed. Current depth and quality unknown. |
 | godot/scripts/world_view.gd:410 | projected_block | Looking below (%d, %d, z%d) |
-| godot/scripts/audio/sound.gd:103 | _buses | Master |
-| godot/scripts/audio/sound.gd:180 | ui | %.2f %s ui ui |
+| godot/scripts/audio/sound.gd:105 | _buses | Master |
+| godot/scripts/audio/sound.gd:182 | ui | %.2f %s ui ui |
 
 </details>
 

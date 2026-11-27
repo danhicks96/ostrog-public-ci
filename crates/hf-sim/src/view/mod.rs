@@ -13,6 +13,7 @@ pub mod day_shape;
 pub mod director;
 pub mod experience;
 pub mod fold;
+pub mod hearing;
 pub mod history;
 pub mod knowing;
 pub mod known;

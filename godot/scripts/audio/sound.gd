@@ -26,6 +26,7 @@ var fire_voices := []  # AudioStreamPlayer2D looping fire
 var water_voice: AudioStreamPlayer2D
 var pool := []
 var pool_i := 0
+var heard_tokens := {}
 var next_hit := {}     # agent id -> seconds of anim_t when it next strikes
 var last_kind_t := {}  # sound name -> last play time (rate limit)
 var acc := 0.0
@@ -47,6 +48,7 @@ var door_level := 0
 func init(view, s: Dictionary, quiet: bool) -> void:
 	v = view
 	v.world_replaced.connect(_reset_reports)
+	v.observer.enable_actor_hearing(v.sim)
 	settings = s
 	silent = quiet
 	rng.seed = 1
@@ -278,6 +280,9 @@ func _positional_loops() -> void:
 	water_voice.volume_db = lerpf(water_voice.volume_db, target_db, 0.3)
 
 func _reset_reports() -> void:
+	v.observer.enable_actor_hearing(v.sim)
+	heard_tokens.clear()
+	next_hit.clear()
 	water_voice.stop()
 	water_voice.volume_db = -80.0
 	report_stamp = Vector2i(-2, 0)
@@ -355,11 +360,33 @@ func _work_and_calls() -> void:
 	var st: int = v.AGENT_STRIDE
 	var cull: Rect2i = v.cull_rect()
 	var now: float = t
+	var roster: Dictionary = v.observer.local_actor_sounds(v.sim, v.view_z) if v.surveyed_floor else {}
+	var own: Dictionary = roster.get("own", {})
+	var heard: PackedInt64Array = roster.get("heard", PackedInt64Array())
+	var tick: int = v.sim.tick()
+	for token in heard_tokens.keys():
+		if tick - int(heard_tokens[token]) >= 20:
+			heard_tokens.erase(token)
+	for j in range(0, heard.size(), 3):
+		var at := Vector2i(heard[j + 1], heard[j + 2])
+		var token := int(heard[j])
+		if not heard_tokens.has(token) and cull.has_point(at):
+			heard_tokens[token] = tick
+			# This short band-limited noise is the existing paper rustle. Reuse it
+			# as a quiet neutral movement cue on the positional SFX bus.
+			play_at("ui_page", (Vector2(at) + Vector2(0.5, 0.75)) * TILE, -14.0, 2.5)
 	for i in range(0, A.size(), st):
 		if A[i + 3] != v.view_z or not cull.has_point(Vector2i(A[i + 1], A[i + 2])):
 			continue
 		var pos := Vector2(A[i + 1] * TILE + 16, A[i + 2] * TILE + 24)
 		var species: int = A[i + 4]
+		var at := Vector2i(A[i + 1], A[i + 2])
+		var visible: bool = v.tile_in_sight(at)
+		if v.known_only and not v.surveyed_floor:
+			visible = v.explored.has(Vector2i(at.x >> 3, at.y >> 3))
+		if not visible and not (species == 0 and own.has(A[i])):
+			next_hit.erase(A[i])
+			continue
 		if species == 0:
 			var snd: int = A[i + 20]
 			if not WORK.has(snd) or A[i + 15] != 2:

@@ -411,6 +411,7 @@ pub fn sight_radius(w: &World, a: &crate::agents::Agent, tick: u64) -> i32 {
 /// so the thread count changes only how long a look takes, never what it notes (#428, D55;
 /// WP-01 slice 1.2: the per-looker work is ~75 % of the 500-person mean tick).
 struct LookOut {
+    heard: Vec<crate::view::hearing::Contact>,
     /// The community whose map-cells this looker explores.
     community: Option<crate::ids::CommunityId>,
     /// Expert observations, in the order they were noticed.
@@ -444,6 +445,9 @@ pub fn step(w: &mut World) {
                 && w.agents[i].species == crate::agents::Species::Person
         })
         .collect();
+    if let Some(cache) = w.watcher_hearing.as_mut() {
+        cache.begin_tick(tick);
+    }
     if lookers.is_empty() {
         return;
     }
@@ -490,6 +494,7 @@ fn look(
     stuck: &[StuckSite],
 ) -> LookOut {
     let mut out = LookOut {
+        heard: Vec::new(),
         community: None,
         expert: Vec::new(),
         notes: Vec::new(),
@@ -572,11 +577,12 @@ fn look(
             }
         }
     }
-    let mut others: Vec<(Known, TilePos, u16)> = Vec::new();
+    let mut others = Vec::new();
+    let hears = |j: usize, p| near(p, hear) && ix.awake.contains(&j);
     for c in Index::near(me, reach) {
-        for &(j, k, p, tag) in ix.agents.get(&c).into_iter().flatten() {
-            if j != i && (near(p, smell) || (near(p, hear) && ix.awake.contains(&j)) || sees(p)) {
-                others.push((k, p, tag));
+        for &(j, k, p, _) in ix.agents.get(&c).into_iter().flatten() {
+            if j != i && (near(p, smell) || hears(j, p) || sees(p)) {
+                others.push((k, p, j));
             }
         }
     }
@@ -602,7 +608,16 @@ fn look(
             keep[n - 1]
         });
     }
-    seen.extend(others);
+    let listener = &w.agents[i];
+    let collect = w.watcher_hearing.is_some() && crate::view::hearing::listener(w, listener);
+    for (k, p, j) in others {
+        seen.push((k, p, w.agents[j].species as u16));
+        if collect && hears(j, p) {
+            if let Some(row) = crate::view::hearing::Contact::sample(w, i, j) {
+                out.heard.push(row);
+            }
+        }
+    }
     // A look-alike plant is food to whoever does not know it for one (#286): filtered
     // here, reading only this looker's own mind.
     let a = &w.agents[i];
@@ -745,6 +760,9 @@ fn look(
 /// The calling-thread half of a look: `out`, computed in parallel by `look`, applied in
 /// looker order, so every write lands exactly where the serial pass put it.
 fn apply(w: &mut World, i: usize, tick: u64, out: LookOut) {
+    if let Some(cache) = w.watcher_hearing.as_mut() {
+        cache.record(tick, out.heard);
+    }
     let me = w.agents[i].pos;
     // What the community has seen of the map: the cell stood in and its neighbours.
     if let Some(cid) = out.community {

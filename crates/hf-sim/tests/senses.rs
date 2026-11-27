@@ -242,3 +242,62 @@ fn each_feels_heat_and_cold_by_its_comfort() {
     assert!(w.agents[s].needs.warmth < warmth_before[2]);
     assert!(w.agents[h].needs.warmth >= warmth_before[0]);
 }
+
+#[test]
+fn watcher_hearing_uses_direct_contacts_and_stays_out_of_world_snapshots() {
+    use hf_sim::{digest::digest, expedition::survey, save::snapshot::Snapshot};
+
+    let mut w = flat(4202);
+    wall(&mut w, 25, 20, 40);
+    let listener_at = TilePos::new(22, 32, 2);
+    let cid = w.found_community(listener_at);
+    let listener = person(&mut w, sp("grisk"), listener_at);
+    w.agents[listener].community = Some(cid);
+    let source_at = TilePos::new(29, 32, 2);
+    let source = w.spawn_agent(Species::Boar, source_at);
+    survey::observe(&mut w);
+    let mut ordinary = w.clone();
+    w.watcher_hearing = Some(Box::default());
+    let tick = 10 * TICKS_PER_DAY + 12 * TICKS_PER_HOUR;
+    look(&mut w, tick);
+    look(&mut ordinary, tick);
+    assert_eq!(digest(&w), digest(&ordinary));
+
+    let cues = |world: &World| {
+        world
+            .watcher_hearing
+            .as_ref()
+            .unwrap()
+            .cues(world, 2, |_| true)
+    };
+    let heard = cues(&w);
+    assert_eq!(heard.len(), 1);
+    assert_eq!(heard[0].1, listener_at);
+    assert_eq!(cues(&w), heard);
+    assert!(w
+        .watcher_hearing
+        .as_ref()
+        .unwrap()
+        .cues(&w, 1, |_| true)
+        .is_empty());
+    let cloned = w.clone();
+    let restored = Snapshot::capture(&w).restore();
+    assert!(restored.watcher_hearing.is_none());
+    assert_eq!(digest(&w), digest(&restored));
+
+    w.agents.iter_mut().find(|a| a.id == source).unwrap().pos.x += 1;
+    assert!(cues(&w).is_empty());
+    assert_eq!(cues(&cloned), heard);
+    w = cloned;
+    let id = w.agents[listener].id;
+    species::give(&mut w, id, SpeciesId::HUMAN, None);
+    look(&mut w, tick + 20);
+    assert!(w.agents[listener]
+        .knowledge
+        .get(Known::Agent(source))
+        .is_some());
+    assert!(
+        cues(&w).is_empty(),
+        "old actor knowledge does not authorize a sound"
+    );
+}

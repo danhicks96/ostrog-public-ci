@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 - Hearing inhabitants through the colony
+
+A hidden visitor at work or an animal outside the colony's hearing could give away its location as the camera passed. Recognizable sounds now follow a witnessed actor or the colony's own worker. A sworn listener who hears an unseen actor can contribute a quiet rustle at the listener's location. Loading a save starts a fresh listening interval.
+
 ## 2026-11-26 - What the watcher can hear through fog
 
 Panning over unexplored ground could reveal water by sound or make a stationary animal's doorway creak. The watcher now hears currently reported liquid surfaces and a quieter ambience at remembered shores. Witnessed movement through a known doorway still makes a sound. Unreported walls and doors no longer alter the lighting behind fog, and inspecting a reported air gap describes only the surfaces recorded below it.
