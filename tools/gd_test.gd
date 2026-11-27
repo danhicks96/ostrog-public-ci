@@ -309,6 +309,14 @@ func test_underground_stage_contains_gallery_water() -> void:
 	check(((water >> 24) & 3) != 0, "the demo gallery contains its deterministic review water")
 	sim.free()
 
+func test_person_inspection_reports_hydration() -> void:
+	var sim := SimHost.new()
+	sim.stage_demo(7)
+	var person: Dictionary = sim.inspect(0)
+	var hydration := float(person["needs"].get("hydration", -1.0))
+	check(hydration >= 0.0 and hydration <= 1.0, "the selected person reports current hydration")
+	sim.free()
+
 # #459 review guard: person inspection exposes the authoritative held and carried item layers.
 func test_person_inspection_exposes_equipment_and_inventory() -> void:
 	var sim := SimHost.new()

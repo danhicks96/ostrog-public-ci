@@ -1733,8 +1733,8 @@ func _update_inspect() -> void:
 			s += "[color=#8fa6c8]a people who %s[/color]\n" % "; who ".join(people)
 	s += "\n"
 	var needs: Dictionary = d["needs"]
-	for k in ["hunger", "rest", "social", "comfort", "warmth"]:
-		s += "%-8s %s\n" % [k, _bar(needs[k])]
+	for k in ["hunger", "hydration", "rest", "social", "comfort", "warmth"]:
+		s += "%-9s %s\n" % [k, _bar(needs[k])]
 	# Stress (#1418): sent with every inspect and never drawn; a full bar is the breaking point.
 	if d.has("stress"):
 		var st := int(round(clampf(float(d["stress"]), 0.0, 1.0) * 10))

@@ -453,7 +453,7 @@ Grey lines are minor and throttled to one per 0.7 real seconds, and "+N quieter 
 those let pass; yellow are notable; red are major. Click a line to look where it happened.
 
 Inspect panel (right): `{name}  {Species}, {age} years`, activity, community and role, bars
-for hunger, rest, social, comfort, warmth, traits, skills above 0.5, partner, parents,
+for hunger, hydration, rest, social, comfort, warmth, traits, skills above 0.5, partner, parents,
 children, customs, mood (cheerful above 0.3, content above 0, low above -0.3, else
 miserable), people (`friend`, `likes`, `knows`, `dislikes` with opinion), believes, "before the
 portal, in {home}:", remembers, and "knows N things" with up to twelve ("oak logs", "a hearth",
@@ -509,7 +509,7 @@ as they are.
 | role | daily work by skill: forager, builder, farmer, cook, miner, hauler, healer | `Role` |
 | traits | ten temperaments: Industrious, Easygoing, Sociable, Solitary, Curious, Cautious, Hearty, Gourmet, LightSleeper, Tidy | `mind/traits.rs` |
 | skills | nine, 0 to 20 (work speed x0.6 at 0 to x1.8 at 20): Foraging, Farming, Cooking, Construction, Mining, Crafting, Social, Hauling, Animals | `mind/skills.rs` |
-| needs | hunger, rest, warmth, social, comfort (inspect bars) | `mind/needs.rs` |
+| needs | hunger, hydration, rest, warmth, social, comfort (inspect bars) | `mind/needs.rs` |
 | memory | consolidated in sleep; biases food, place and partner choices; fond, sour or plain | `mind/memory.rs` |
 | belief | a stance on a topic (drink, violence, fire, hunger, strangers, death, trust) with a confidence and sources: what happened, who told them, what their people held. Weights a choice between x0.6 and x1.4, never decides it. | `mind/beliefs.rs` |
 | technique | a way of doing something a person knows or does not: beating out flames, carrying water to a fire, a poultice, foraging far afield. Learned from the past, by watching it work, or by trying it. Replaces crisis orders: nobody is sent to a fire. | `mind/techniques.rs`, `systems/learn.rs` |

@@ -1902,6 +1902,7 @@ impl SimHost {
         d.set("activity_ticks", a.activity_ticks as i64);
         let mut needs = VarDictionary::new();
         needs.set("hunger", a.needs.hunger);
+        needs.set("hydration", a.needs.thirst);
         needs.set("rest", a.needs.rest);
         needs.set("warmth", a.needs.warmth);
         needs.set("social", a.needs.social);

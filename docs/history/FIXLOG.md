@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Show hydration when inspecting a person
+
+The inspector showed hunger while omitting hydration, even when a thirsty person left the shore. The needs panel now shows the existing hydration value. A full bar means the person has had enough water.
+
 ## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
 
 - Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7
