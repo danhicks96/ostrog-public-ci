@@ -2283,6 +2283,24 @@ def draw_clothing(c, s, outfit):
                     c.clear(x, y)
                     c.noline[y, x] = True
 
+    # On the human robe the original cuff filled the entire terminal arm stamp,
+    # including the grip. Leave the last part of the hand visible past the cuff.
+    if outfit == 'robe' and s.plan == 'biped' and s.species == 'human':
+        for name in (('A',) if s.side else s.arms):
+            chain = s.arms[name]
+            x0, y0, x1, y1 = chain[-1]
+            prev = next((stamp for stamp in reversed(chain) if stamp != chain[-1]), chain[-1])
+            dx, dy = x0 - prev[0], y0 - prev[1]
+            for y in range(y0, y1 + 1):
+                for x in range(x0, x1 + 1):
+                    if abs(dx) > abs(dy):
+                        distal = x >= (x0 + x1) // 2 if dx > 0 else x <= (x0 + x1 + 1) // 2
+                    else:
+                        distal = y >= (y0 + y1) // 2 if dy >= 0 else y <= (y0 + y1 + 1) // 2
+                    if distal and 0 <= x < c.n and 0 <= y < c.n:
+                        c.clear(x, y)
+                        c.noline[y, x] = True
+
 
 def cloth_folds(c, s, outfit):
     """48 px: the cloth hangs. Below the waist, skirts, robes, cloaks and coat tails get
@@ -2586,7 +2604,21 @@ def frame_canvas(kind, build, age, d, frame, arg=None, plan='biped', species='hu
     draw_frame = SLEEP_DRAW[frame] if asleep(frame) else ('idle' if frame == 'lying' else frame)
     s = skeleton(build, age, src_d, draw_frame, plan, species)
     c = Canvas()
-    draw_layer(c, s, kind, arg, frame)
+    if kind == 'bruise':
+        # The side-view rig faces east before the west row is mirrored. Only
+        # the near forearm is reliably visible in profile.
+        if not s.side or ((d == 'E') == (arg == 'right')):
+            arm = 'A' if s.side or ((d == 'S') == (arg == 'right')) else 'B'
+            x0, y0, x1, y1 = s.arms[arm][-1]
+            cx, cy = (x0 + x1) // 2, (y0 + y1) // 2
+            for y in range(y0, y1 + 1):
+                for x in range(x0, x1 + 1):
+                    dx, dy = x - cx, y - cy
+                    if dx * dx + dy * dy <= 5:
+                        shade = 2 if abs(dx) + abs(dy) <= 1 else 3
+                        c.fixed_px(x, y, pal.ramp('cool', shade))
+    else:
+        draw_layer(c, s, kind, arg, frame)
     shifts = lean_shifts(s)
     if shifts:
         c.shear(shifts)
@@ -2634,7 +2666,7 @@ def make_frame(kind, build, age, d, frame, arg=None, plan='biped', species='huma
             c.noline[:] = True   # a marking lies on the skin: no outline of its own
         return c.render()
     c = frame_canvas(kind, build, age, d, frame, arg, plan, species)
-    if kind == 'marks':
+    if kind in ('marks', 'bruise'):
         c.noline[:] = True
     if plan in SCALED:
         c = c.scaled(SCALED[plan])
@@ -2699,6 +2731,8 @@ def sheet_list():
                 # A biped kind on a rig of its own (RIG) wears every layer drawn on that rig.
                 if plan != 'biped':
                     continue
+                for side in ('left', 'right'):
+                    out.append(('overlay_bruise_%s_%s.png' % (side, ba), 'bruise', b, a, side, plan))
                 for sp in RIG:
                     sx = '_%s_%s_%s' % (sp, b, a)
                     for i, st in enumerate(HAIR_STYLES, 1):
@@ -2731,6 +2765,8 @@ def describe(fn):
         return 'equipment layer, fixed palette ramps, ' + n
     if fn.startswith('marks_'):
         return 'head marking (%s) of a hairless kind, skin swap source colours, %s' % (MARKINGS[int(fn.split('_')[2]) - 1], n)
+    if fn.startswith('overlay_bruise_'):
+        return 'untreated forearm bruise, anatomical side and pose, ' + n
     if fn.startswith('overlay_'):
         return 'bandage overlay, fixed palette ramps, ' + n
     return 'swap scheme: skin(6) hair(8) cloth(12) targets, all palette hex'

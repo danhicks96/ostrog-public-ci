@@ -107,6 +107,7 @@ var roofs: PackedInt32Array
 ## Who the player is following or inspecting (main.gd sets it): their house's roof is cut away.
 var focus_id := -1
 var roof_layer: Node2D
+var arm_bruises := {}
 var carried := {}
 ## What each carried load is made of (an id into mat_slugs), for its icon in hand (#186).
 var carried_mat := {}
@@ -311,6 +312,10 @@ func refresh() -> void:
 	var bo: PackedInt32Array = sim.built_of(view_z)
 	for i in range(0, bo.size(), 3):
 		built[Vector2i(bo[i], bo[i + 1])] = bo[i + 2]
+	arm_bruises.clear()
+	var marks: PackedInt32Array = sim.visible_arm_bruises()
+	for i in range(0, marks.size(), 2):
+		arm_bruises[marks[i]] = marks[i + 1]
 	carried.clear()
 	carried_mat.clear()
 	carried_count.clear()

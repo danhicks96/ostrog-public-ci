@@ -8,6 +8,7 @@ extends Node2D
 ## immediate renderer did.
 
 const TILE := 32
+const PERSON_LAYERS := ["body", "bruise_left", "bruise_right", "cloth", "hair", "band", "equip"]
 const Rules := preload("res://scripts/rules.gd")
 const TREE_SPECIES := ["oak", "birch", "pine"]
 ## The valley's other trees (#286): each its own kind, drawn like the three species by stage,
@@ -204,9 +205,12 @@ func _new_sprite(parent: Node) -> Sprite2D:
 
 func _new_person(parent: Node) -> Node2D:
 	var p := Node2D.new()
-	for n in ["body", "cloth", "hair", "band", "equip"]:
+	for n in PERSON_LAYERS:
 		var s := _new_sprite(p)
 		s.name = n
+		if n in ["bruise_left", "bruise_right"]:
+			# Discolor the person's inherited skin instead of covering it with an opaque patch.
+			s.self_modulate.a = 0.74
 		s.offset = _person_offset()
 	var c := Sprite2D.new()
 	c.name = "carry"
@@ -649,7 +653,7 @@ func dress_person(p: Node2D, A: PackedInt32Array, i: int, carry_kind: int) -> St
 			plan_ba = "%s_%s" % [body_set, ba]
 			sfx = "_" + plan_ba
 	# Each plan's sheets use its own cell (swaps.json "plan_cells"): cut and anchor by it.
-	for n in ["body", "cloth", "hair", "band", "equip"]:
+	for n in PERSON_LAYERS:
 		p.get_node(n).offset = _person_offset(plan)
 	p.get_node("emote").position = Vector2(16, _person_offset(plan).y - 12)
 	var layers := [
@@ -672,8 +676,14 @@ func dress_person(p: Node2D, A: PackedInt32Array, i: int, carry_kind: int) -> St
 			# three chosen by the inherited hair-style gene, in the person's own skin colours.
 			s.texture = v._swapped(Rules.marking_sheet(body_set, A[i + 8], ba), "skin", A[i + 7])
 		s.visible = s.texture != null
+	var marks: int = v.arm_bruises.get(A[i], 0)
+	for side in ["left", "right"]:
+		var bruise: Sprite2D = p.get_node("bruise_" + side)
+		var bit := 1 if side == "left" else 2
+		bruise.texture = v._tex("people/overlay_bruise_%s_%s.png" % [side, ba]) if body_set == "human" and (marks & bit) != 0 else null
+		bruise.visible = bruise.texture != null
 	var band: Sprite2D = p.get_node("band")
-	band.texture = v._tex("people/overlay_bandage_%s.png" % plan_ba) if A[i + 17] == 1 else null
+	band.texture = v._tex("people/overlay_bandage_%s.png" % plan_ba) if A[i + 17] == 1 and (marks == 0 or (marks & 4) != 0) else null
 	band.visible = band.texture != null
 	var equipment: int = A[i + 19]
 	var eq: Sprite2D = p.get_node("equip")
@@ -782,7 +792,7 @@ func animate() -> void:
 ## cell, foot origin and frame index in both local and travelling scenes.
 func set_person_frame(person: Node2D, plan: String, frame: int, facing: int) -> void:
 	var logical_cell := _pcell(plan)
-	for layer_name in ["body", "cloth", "hair", "band", "equip"]:
+	for layer_name in PERSON_LAYERS:
 		var layer: Sprite2D = person.get_node(layer_name)
 		if layer.texture == null or not layer.visible:
 			continue

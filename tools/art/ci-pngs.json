@@ -2457,7 +2457,7 @@
   },
   {
     "path": "godot/assets/people/clothing_robe.png",
-    "sha256": "22753b2cd2ec9892ae740295f3cba7e98519ae32a781f5e0b0cbf1967e667d6d"
+    "sha256": "587c297e9b9563152b654d67de5e28971ecc03588f7ca53549a8ba1b8432f5b1"
   },
   {
     "path": "godot/assets/people/clothing_robe_amphibious_average_adult.png",
@@ -2485,15 +2485,15 @@
   },
   {
     "path": "godot/assets/people/clothing_robe_average_child.png",
-    "sha256": "101f833fe58a1215c52ab359e287bed62685a54d66817c65e332b1221b4a96c3"
+    "sha256": "0d9d1daa736115b788abdfdd5140ed001a1844e53d7eadf356e21e5b36f75b85"
   },
   {
     "path": "godot/assets/people/clothing_robe_broad_adult.png",
-    "sha256": "b483909342f84b029f75b8108633d08ca70ddfa041c726367e822d36fb3ae1bb"
+    "sha256": "7666d9c8716a4853dd8dce060d6462ac19a7d57d991f4e5bb12e4aeab8dd0b06"
   },
   {
     "path": "godot/assets/people/clothing_robe_broad_child.png",
-    "sha256": "3aa111ddc2997dad83e2aa96731d6dae319a799135fa942cfdc200a463ced119"
+    "sha256": "88050731beb4845126947386e289fd9a84f919367cef17b4aeb97cbca3a71b7a"
   },
   {
     "path": "godot/assets/people/clothing_robe_digitigrade_tail_average_adult.png",
@@ -2665,11 +2665,11 @@
   },
   {
     "path": "godot/assets/people/clothing_robe_slim_adult.png",
-    "sha256": "70b22fde908f7d316094746a8878a7a1c2d11de6194c349987dd5be4d2dbcff3"
+    "sha256": "6ae1548c0f3b9db34e609175408be6784c0e1cfdbfe6b894cba48630b1d731a2"
   },
   {
     "path": "godot/assets/people/clothing_robe_slim_child.png",
-    "sha256": "a0c93a297b145455e8f39b777a2d88ae4183777c6b1a2dc1cb7e4fbda89e8cdc"
+    "sha256": "0c6ff5ed7c56fe9534dab495423218aa514a9fc612efd7acf0ae8da630d37feb"
   },
   {
     "path": "godot/assets/people/clothing_robe_small_biped_average_adult.png",
@@ -9450,6 +9450,54 @@
   {
     "path": "godot/assets/people/overlay_bandage_winged_slim_child.png",
     "sha256": "dd4c03d7e0fe0078614fbeb75a989058ad8b89becf1ff8a36e6e1e7c264e6a07"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_left_average_adult.png",
+    "sha256": "5c730db162ed4f2d85f118764ddb6b08995b1277c6c5aec20ddd9143d5c3bb7a"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_left_average_child.png",
+    "sha256": "4fa4c8eb81df649ec4fef6d78a35244a9347374460f77c0541ae89b449e69517"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_left_broad_adult.png",
+    "sha256": "4190f33389a10fdbf23069449925be99793b8cee068cefbc0c28dff0e183df2b"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_left_broad_child.png",
+    "sha256": "5a0bd75435a11c3a216b4ac1047ec200d892bee17ce7bba63b11a5344311e1f6"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_left_slim_adult.png",
+    "sha256": "170c403f8f2e5368e559c519fde80b199f29eafb09675e583788178ddd48ee5a"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_left_slim_child.png",
+    "sha256": "b2c266b8bea41effe75c505ebf7a96b1171519b7bb1cf97b568032b8620058b5"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_right_average_adult.png",
+    "sha256": "a639224369b345ee75cc1887035680454ed947dd6ab95386512507675d3e72c9"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_right_average_child.png",
+    "sha256": "13e862f0af6e28763c6e1f2cae96e1b54efcf151218f0653b7e92ac274fcdda6"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_right_broad_adult.png",
+    "sha256": "1d0fd109a9623a23d30f58bc79263d4bb60fb290d042ee94a6db1881d4d34294"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_right_broad_child.png",
+    "sha256": "8387bb3891022f3cfdb13a57329d81a6acaa6e2a96d3fc38b58ff9f3d9d57817"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_right_slim_adult.png",
+    "sha256": "95bc96230c49391a1121294361befb9caeb79d882e2866c19e394492eb5a7331"
+  },
+  {
+    "path": "godot/assets/people/overlay_bruise_right_slim_child.png",
+    "sha256": "ee554f558b7ddb9741b4145970507db819b6da8e9bef25f6705a5283a97e3b55"
   },
   {
     "path": "godot/assets/plants/alder_0.png",

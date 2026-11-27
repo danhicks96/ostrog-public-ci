@@ -16994,6 +16994,90 @@ generator = "tools/art/people.py"
 licence = "project-original"
 
 [[asset]]
+path = "godot/assets/people/overlay_bruise_left_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
 path = "godot/assets/plants/alder_0.png"
 kind = "plants"
 source = "generated"

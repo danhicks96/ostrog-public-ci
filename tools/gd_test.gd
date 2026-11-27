@@ -935,6 +935,41 @@ func test_expressive_biped_layers_follow_the_same_cell_and_reuse() -> void:
 	entities.free()
 	world.free()
 
+func test_arm_bruise_follows_side_and_clears_when_pooled() -> void:
+	var world := WorldView.new()
+	world.assets = preload("res://scripts/assets.gd").new()
+	world.species_art[0] = {"body": "human", "plan": "biped"}
+	var entities := preload("res://scripts/render/entity_layer.gd").new()
+	entities.v = world
+	var person := entities._new_person(entities)
+	var appearance := PackedInt32Array()
+	appearance.resize(world.AGENT_STRIDE)
+	appearance[6] = 2 # Rosun wears a broad adult robe.
+	appearance[10] = 6
+	appearance[17] = 1
+	appearance[19] = -1
+	for flag in [2, 1]:
+		world.arm_bruises[0] = flag
+		var plan := entities.dress_person(person, appearance, 0, -1)
+		var near_side := 2 if flag == 2 else 1
+		var bruise: Sprite2D = person.get_node("bruise_right" if flag == 2 else "bruise_left")
+		check(bruise.visible and not person.get_node("band").visible, "untreated arm bruise wears no head dressing")
+		var image := bruise.texture.get_image()
+		for facing in 4:
+			entities.set_person_frame(person, plan, 4, facing)
+			var mark := image.get_region(Rect2i(bruise.region_rect)).get_used_rect()
+			if facing in [1, 2]:
+				check(mark.has_area() == (facing == near_side), "the far wrist is occluded in profile")
+			else:
+				check(mark.has_area() and (mark.get_center().x < 24) == ((facing == 0) == (flag == 2)), "front and back show the anatomical side")
+	world.arm_bruises.clear()
+	appearance[17] = 0
+	entities.dress_person(person, appearance, 0, -1)
+	for layer in ["bruise_left", "bruise_right", "band"]:
+		check(not person.get_node(layer).visible, "cleared wound is absent after sprite reuse")
+	entities.free()
+	world.free()
+
 func test_building_stack_tracks_real_count_and_resets_when_pooled() -> void:
 	var entities := preload("res://scripts/render/entity_layer.gd").new()
 	var carry := Sprite2D.new()

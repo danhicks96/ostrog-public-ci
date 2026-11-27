@@ -4943,7 +4943,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:738 | _summary_page | nothing beyond what each has lived |
 | godot/scripts/setup.gd:739 | _summary_page | Making the world runs the valley's past first; it takes a moment. |
 | godot/scripts/setup.gd:770 | refused | Could not begin: %s. |
-| godot/scripts/world_view.gd:187 | setup | ostrog/render/world_renderer |
+| godot/scripts/world_view.gd:188 | setup | ostrog/render/world_renderer |
 | godot/scripts/audio/sound.gd:96 | _buses | Master |
 | godot/scripts/audio/sound.gd:173 | ui | %.2f %s ui ui |
 
@@ -5737,7 +5737,7 @@ row. Policy and counts: ASSETS.md.
 
 #### godot/assets/people/
 
-<details><summary>2146 files (click to open)</summary>
+<details><summary>2158 files (click to open)</summary>
 
 | file | pixels | layout | generator |
 |---|---|---|---|
@@ -7886,6 +7886,18 @@ row. Policy and counts: ASSETS.md.
 | overlay_bandage_winged_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | overlay_bandage_winged_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | overlay_bandage_winged_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| overlay_bruise_left_average_adult.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_left_average_child.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_left_broad_adult.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_left_broad_child.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_left_slim_adult.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_left_slim_child.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_right_average_adult.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_right_average_child.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_right_broad_adult.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_right_broad_child.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_right_slim_adult.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
+| overlay_bruise_right_slim_child.png | 2304x192 | 48 frames x 4 directions; 48 px per 48-unit logical cell | tools/art/people.py |
 | swaps.json | 6858 bytes | data | tools/art/people.py |
 
 </details>

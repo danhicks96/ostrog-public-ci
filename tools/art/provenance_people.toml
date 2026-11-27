@@ -3970,7 +3970,7 @@ command = "python3 tools/art/people.py"
 source = "procedural"
 licence = "project"
 size = "2304x192"
-sha256_16 = "22753b2cd2ec9892"
+sha256_16 = "587c297e9b956315"
 description = "clothing layer, cloth + trim swap source colours, 48 frames x 4 dirs"
 
 [[asset]]
@@ -4040,7 +4040,7 @@ command = "python3 tools/art/people.py"
 source = "procedural"
 licence = "project"
 size = "2304x192"
-sha256_16 = "101f833fe58a1215"
+sha256_16 = "0d9d1daa736115b7"
 description = "clothing layer, cloth + trim swap source colours, 48 frames x 4 dirs"
 
 [[asset]]
@@ -4050,7 +4050,7 @@ command = "python3 tools/art/people.py"
 source = "procedural"
 licence = "project"
 size = "2304x192"
-sha256_16 = "b483909342f84b02"
+sha256_16 = "7666d9c8716a4853"
 description = "clothing layer, cloth + trim swap source colours, 48 frames x 4 dirs"
 
 [[asset]]
@@ -4060,7 +4060,7 @@ command = "python3 tools/art/people.py"
 source = "procedural"
 licence = "project"
 size = "2304x192"
-sha256_16 = "3aa111ddc2997dad"
+sha256_16 = "88050731beb48451"
 description = "clothing layer, cloth + trim swap source colours, 48 frames x 4 dirs"
 
 [[asset]]
@@ -4490,7 +4490,7 @@ command = "python3 tools/art/people.py"
 source = "procedural"
 licence = "project"
 size = "2304x192"
-sha256_16 = "70b22fde908f7d31"
+sha256_16 = "6ae1548c0f3b9db3"
 description = "clothing layer, cloth + trim swap source colours, 48 frames x 4 dirs"
 
 [[asset]]
@@ -4500,7 +4500,7 @@ command = "python3 tools/art/people.py"
 source = "procedural"
 licence = "project"
 size = "2304x192"
-sha256_16 = "a0c93a297b145455"
+sha256_16 = "0c6ff5ed7c56fe95"
 description = "clothing layer, cloth + trim swap source colours, 48 frames x 4 dirs"
 
 [[asset]]
@@ -21452,6 +21452,126 @@ licence = "project"
 size = "2304x192"
 sha256_16 = "dd4c03d7e0fe0078"
 description = "bandage overlay, fixed palette ramps, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "5c730db162ed4f2d"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4fa4c8eb81df649e"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4190f33389a10fdb"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "5a0bd75435a11c3a"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "170c403f8f2e5368"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_left_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "b2c266b8bea41eff"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "a639224369b345ee"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "13e862f0af6e2876"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "1d0fd109a9623a23"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "8387bb3891022f3c"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "95bc96230c49391a"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/overlay_bruise_right_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "ee554f558b7ddb97"
+description = "untreated forearm bruise, anatomical side and pose, 48 frames x 4 dirs"
 
 [[asset]]
 path = "godot/assets/people/swaps.json"

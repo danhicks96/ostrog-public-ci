@@ -1717,7 +1717,7 @@ func _update_inspect() -> void:
 	else:
 		if not view.species_art.has(row[22]):
 			view.species_art = sim.species_art()
-		portrait.show_person(row, view.species_art.get(row[22], {}))
+		portrait.show_person(row, view.species_art.get(row[22], {}), view.arm_bruises.get(row[0], 0))
 	var s := "[b]%s[/b]  %s, %d years\n%s\n" % [d["name"], d["species"], d["age"], d["activity"]]
 	var top_because := Rules.inspect_because_line(d)
 	if top_because != "":

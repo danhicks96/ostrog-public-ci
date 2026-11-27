@@ -26,7 +26,7 @@ func _ready() -> void:
 	custom_minimum_size = Vector2(W, H)
 
 
-func show_person(row: Array, art: Dictionary) -> void:
+func show_person(row: Array, art: Dictionary, arm_marks: int = 0) -> void:
 	g = {
 		"body": row[6],
 		"skin": row[7],
@@ -35,7 +35,7 @@ func show_person(row: Array, art: Dictionary) -> void:
 		"cloth": row[10],
 		"cloth_colour": row[11],
 		"child": row[16] == 1,
-		"injured": row[17] == 1,
+		"injured": row[17] == 1 and (arm_marks == 0 or (arm_marks & 4) != 0),
 		"elder": row[18] == 1,
 		"plan": art.get("plan", "biped"),
 		"has_hair": art.get("hair", true),

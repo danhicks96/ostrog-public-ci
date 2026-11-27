@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Rosun’s untreated arm bruise
+
+Rosun wore a forehead bandage in Ashcross while his only wound was an untreated right-arm bruise. The world and inspect portrait now consult the wound record before drawing that dressing. The human sprite shows the bruise on the exposed forearm in the appropriate poses, beneath clothing and equipment. Human robe cuffs now leave the end of each hand visible at its grip. The untreated bruise mark clears when the wound is treated or heals.
+
 ## 2026-11-26 - Held loads and expressive inhabitants
 
 Orsin's hands showed a single log as he carried three to a carpenter's bench in Ashcross. Another inhabitant held a root in front of their face during a walking pose. The client now reads the stack count and anchors the load to the holding or walking arms. A hand stack of logs, planks or stone blocks shows up to three pieces, using the carried material's existing icon. The ground plank icon depicts two boards. A held plank uses one lighter board face so Toriwick's pair remains visible against the loom and clothing. One average adult human appearance uses higher-resolution face, hair and vest sheets within its usual footprint. Equipment and bandages stay independent.

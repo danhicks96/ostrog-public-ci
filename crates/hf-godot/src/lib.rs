@@ -36,6 +36,38 @@ fn rendered_shape(w: &World, a: &hf_sim::agents::Agent) -> hf_sim::agents::Speci
     }
 }
 
+/// Bits 0 and 1 are untreated bruises on the anatomical left and right arms.
+/// Bit 2 preserves an existing dressing when another wound has actually been bound.
+fn arm_bruise_marks(body: &hf_sim::body::Body) -> i32 {
+    use hf_sim::body::{Part, PartState, Treatment, WoundKind};
+    let mut arms = 0;
+    let mut dressed = false;
+    for wound in &body.wounds {
+        if wound.severity <= 0.0 {
+            continue;
+        }
+        dressed |= wound.treated == Some(Treatment::Dressed);
+        if wound.kind == WoundKind::Bruise
+            && wound.treated.is_none()
+            && !matches!(
+                body.parts.get(&wound.part),
+                Some(PartState::Lost | PartState::Replaced(_))
+            )
+        {
+            arms |= match wound.part {
+                Part::ARM_L => 1,
+                Part::ARM_R => 2,
+                _ => 0,
+            };
+        }
+    }
+    if arms != 0 && dressed {
+        arms | 4
+    } else {
+        arms
+    }
+}
+
 fn person_pose(w: &World, a: &hf_sim::agents::Agent, carrying: bool, body: Option<i32>) -> i32 {
     // FIXLOG 2026-10-31, #485 first slice: do not let a recent wound or a new social/eating
     // pose erase movement, combat or the dead-body presentation selected by the existing rules.
@@ -3331,6 +3363,31 @@ impl SimHost {
         out
     }
 
+    /// Sparse pairs of visible person id and arm bruise marks. The ordinary injury
+    /// flag in agents() remains available to other consumers.
+    #[func]
+    fn visible_arm_bruises(&self) -> PackedInt32Array {
+        let mut out = PackedInt32Array::new();
+        if let Some(w) = self.world() {
+            for a in &w.agents {
+                if a.body.wounds.is_empty()
+                    || !a.alive
+                    || a.denned
+                    || rendered_shape(w, a) != hf_sim::agents::Species::Person
+                    || hf_sim::view::known::is_unfound(w, a.id)
+                {
+                    continue;
+                }
+                let marks = arm_bruise_marks(&a.body);
+                if marks != 0 {
+                    out.push(a.id.0 as i32);
+                    out.push(marks);
+                }
+            }
+        }
+        out
+    }
+
     /// Relationship lines (#192, WP-08 8.4): 3 ints each — from_row, to_row, band
     /// (1 friend, 2 likes, 3 knows, 4 dislikes; the same thresholds as the inspect
     /// panel's "people:" line) — for the client overlay that draws who is bound to
@@ -3968,6 +4025,40 @@ mod tests {
     use super::*;
     use hf_sim::ids::ItemId;
     use hf_sim::mind::Activity;
+
+    #[test]
+    fn arm_bruises_follow_anatomical_side_and_treatment() {
+        use hf_sim::body::{Body, Part, PartState, Tissue, Treatment, Wound, WoundKind};
+        let mut body = Body::default();
+        let bruise = Wound {
+            part: Part::ARM_R,
+            kind: WoundKind::Bruise,
+            severity: 0.3,
+            bleeding: 0.0,
+            infected: false,
+            since: 0,
+            by: None,
+            tissue: Tissue::Skin,
+            treated: None,
+            in_anger: false,
+        };
+        body.wounds.push(bruise);
+        assert_eq!(arm_bruise_marks(&body), 2);
+        body.wounds.push(Wound {
+            part: Part::ARM_L,
+            ..bruise
+        });
+        assert_eq!(arm_bruise_marks(&body), 3);
+        body.wounds[0].treated = Some(Treatment::Dressed);
+        assert_eq!(arm_bruise_marks(&body), 1 | 4);
+        body.parts.insert(Part::ARM_L, PartState::Lost);
+        assert_eq!(arm_bruise_marks(&body), 0);
+        body.parts.clear();
+        body.wounds[1].severity = 0.0;
+        assert_eq!(arm_bruise_marks(&body), 0);
+        body.wounds.clear();
+        assert_eq!(arm_bruise_marks(&body), 0);
+    }
 
     /// FIXLOG 2026-11-14: the HUD counts a community's people away as the People panel does,
     /// everyone of it in another place, not only caravan members.
