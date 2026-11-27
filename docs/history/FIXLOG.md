@@ -10,6 +10,40 @@ Orsin's hands showed a single log as he carried three to a carpenter's bench in 
 
 The optional batch renderer skipped the person sprites and assigned a generic body atlas to a batch without a mesh. It now draws people with the same layered sprites as the default renderer, keeping the other batches in place. Client guards check directional pose alignment, sprite reuse, carried quantity and one visible sprite per person.
 
+## 2026-11-26: mood added every long memory together, with no bound (OST-203)
+
+- Symptom: the long-memory part of mood was a plain sum of up to 48 memories divided by 8, so a
+  person with many routine meals sat at the top of the scale whatever else happened.
+- Cause: `mood_terms` summed `valence * strength / 8` over the whole long store; nothing bounded,
+  faded or tired it.
+- Fix: the long term now calls `Memories::mood_term` (OST-202), which is bounded at 0.35, fades with
+  age and tires of routine memories.
+- Guard: `tests/mood.rs::routine_meals_do_not_raise_mood_without_limit` (48 routine meals renewed
+  200 times lift the long term by at most 0.2; the old sum gave 5.4, so it fails without the fix).
+- Test follow-up: `tests/health.rs::illness_spreads_then_fades` counted a person who had walked out of
+  the valley as lost to the fever. With the old sum cushioning mood, nobody in the sick house fell
+  low enough to break and walk out; now four of ten sat at mood -1.00 and left (no death recorded),
+  leaving six. The survival count now includes people with no recorded death, as in
+  `infection_can_kill` (OST-205); the floor of eight and the recovery check are unchanged. That a
+  fever house loses four people to walk-outs is a mood-calibration question left to OST-204 and
+  OST-207, not something this test should hide or decide.
+- Measured, seeds 1-4, 12 game days, days 3-12 (this branch / main): breaks 23, 2, 27, 18 / 22, 2,
+  26, 20; people at mood 0.99 or more: 0% / 0%. The short run does not fill the memory stores, so
+  the issue's long-run clamp census (59-72% before) is not reproduced here; a longer census is left
+  to the soak.
+
+## 2026-11-26: Gourmet and Tidy were never drawn from a genome (OST-1102)
+
+- Symptom: no one was born Gourmet or Tidy, so their effects (binge strain, hauling weight) never
+  showed in a founded or born colony.
+- Cause: `Genome::traits` covered eight traits and had no locus-driven rule for these two.
+- Fix: `genetics.rs` draws Gourmet from a derived locus and Tidy from the `order` disposition, both
+  above 0.8, using the keyed mix that `dispositions` already uses so no random stream is consumed.
+  The three-trait cap still applies; traits are sorted before it truncates, so in a genome that
+  would carry more than three, Gourmet can now displace LightSleeper, which sorts after it.
+  Existing trait order and saves are unchanged.
+- Guard: `tests/gourmet_tidy.rs` (over 500 genomes each trait appears on at least ten people, none
+  exceeds the cap, the same genome draws the same traits).
 ## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
 
 - Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7
