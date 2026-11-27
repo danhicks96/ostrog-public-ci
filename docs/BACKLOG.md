@@ -16,6 +16,14 @@ This is the public backlog for developers working on Ostrog. `OST-` IDs are stab
 
 The milestone labels group related work; they do not promise a release date. Each entry names its own acceptance checks. Pending ports and dependent entries are not open for duplicate work.
 
+### OST-323 · A break daze lasts hours, not a day
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#748](https://github.com/danhicks96/ostrog-public-ci/pull/748)
+
+A daze stood the person where they were for a whole game-day and night. It now lasts two to about six and a half game-hours by stress, and an hour when it starts at night.
+
+**Acceptance:** A daze at ten in the morning lasts two to six and a half hours; one at 23:00 ends within an hour and the person is asleep by 01:00; a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-001 · Give major personal events more weight in camera selection
 
 **Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
@@ -368,6 +376,14 @@ Every "first days" grace (newcomer grace, bands not yet knowing of the valley, t
 A week sleeping on the ground weighs the same as one night, because the thought is refreshed rather than stacked and nothing remembers how many nights in a row a person has slept rough. Give each person a count of consecutive rough nights (reset by a night in a bed) and make the slept-on-the-ground thought weigh a little more for each night in a row, up to a cap.
 
 **Acceptance:** Seven rough nights in a row weigh more than one; a night in a bed resets the count. A FIXLOG entry is added and any simulation digest change is explained in the PR.
+
+### OST-242 · Give a broken or short night its own thought
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#747](https://github.com/danhicks96/ostrog-public-ci/pull/747)
+
+A sleep under six hours gave no thought, so a night cut short by cold, hunger or a raid was not felt. It now leaves a small "a broken night" thought, unless it is a nap soon after a full night.
+
+**Acceptance:** A three-hour sleep after a day awake leaves the thought and a nap soon after a night leaves none; a FIXLOG entry records the break counts on seeds 1-4.
 
 ### OST-241 · Make a break's cost last
 
