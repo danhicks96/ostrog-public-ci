@@ -180,22 +180,21 @@ pub fn mood_terms(a: &crate::agents::Agent, now: u64) -> [f32; 4] {
     let mean = ns.iter().sum::<f32>() / 6.0;
     let least = ns.iter().cloned().fold(1.0_f32, f32::min);
     let needs = 0.8 * (mean - 0.75) - 0.6 * (0.3 - least).max(0.0) / 0.3;
-    let recent: f32 = a
+    // OST-204: a salience-weighted mean of the last ten records, scaled to +-0.3, not a sum that a
+    // run of good bites could push to +-2.5. See docs/history/FIXLOG.md.
+    let (num, den) = a
         .memories
         .short
         .iter()
         .rev()
         .take(10)
-        .map(|r| r.valence * r.salience)
-        .sum::<f32>()
-        / 4.0;
-    let long: f32 = a
-        .memories
-        .long
-        .iter()
-        .map(|m| m.valence * m.strength)
-        .sum::<f32>()
-        / 8.0;
+        .fold((0.0_f32, 0.0_f32), |(n, d), r| {
+            (n + r.valence * r.salience, d + r.salience)
+        });
+    let recent = 0.3 * num / den.max(1.0);
+    // OST-203: the bounded, fading, habituating term (OST-202), not a plain sum of up to 48
+    // memories that pinned mood at the clamp. See docs/history/FIXLOG.md.
+    let long = a.memories.mood_term(now);
     let thoughts = a.thoughts.sum(now) * 0.8;
     [needs, recent, long, thoughts]
 }
