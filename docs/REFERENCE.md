@@ -2679,27 +2679,27 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | thin.rs:794 | very thin |
 | thin.rs:795 | worn almost through |
 | thin.rs:798 |  For {days} days the air about it has been {how}. |
-| threat.rs:395 | the last of them went to {} |
-| threat.rs:405 | their family's memory in {} |
-| threat.rs:682 | raided |
-| threat.rs:682 | carried off |
-| threat.rs:828 | raided |
-| threat.rs:1102 | in a fight with a stranger |
-| threat.rs:1122 | in a fight with a stranger |
-| threat.rs:1284 | here |
-| threat.rs:1288 | east |
-| threat.rs:1289 | north-east |
-| threat.rs:1290 | north |
-| threat.rs:1291 | north-west |
-| threat.rs:1292 | west |
-| threat.rs:1293 | south-west |
-| threat.rs:1294 | south |
-| threat.rs:1295 | south-east |
-| threat.rs:1306 | near |
-| threat.rs:1308 | The strangers from {} are leaving. |
-| threat.rs:1311 | Strangers from {} are camped to the {dir}, {here} of them |
-| threat.rs:1315 | , told they may eat |
-| threat.rs:1317 | , and have taken {} from the stores |
+| threat.rs:401 | the last of them went to {} |
+| threat.rs:411 | their family's memory in {} |
+| threat.rs:688 | raided |
+| threat.rs:688 | carried off |
+| threat.rs:834 | raided |
+| threat.rs:1108 | in a fight with a stranger |
+| threat.rs:1128 | in a fight with a stranger |
+| threat.rs:1290 | here |
+| threat.rs:1294 | east |
+| threat.rs:1295 | north-east |
+| threat.rs:1296 | north |
+| threat.rs:1297 | north-west |
+| threat.rs:1298 | west |
+| threat.rs:1299 | south-west |
+| threat.rs:1300 | south |
+| threat.rs:1301 | south-east |
+| threat.rs:1312 | near |
+| threat.rs:1314 | The strangers from {} are leaving. |
+| threat.rs:1317 | Strangers from {} are camped to the {dir}, {here} of them |
+| threat.rs:1321 | , told they may eat |
+| threat.rs:1323 | , and have taken {} from the stores |
 | trade.rs:590 | was lost on the road |
 | traps.rs:26 | took from the store |
 | traps.rs:109 | caught in a snare |

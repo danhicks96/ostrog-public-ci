@@ -1,5 +1,14 @@
 # Fix log
 
+## 2026-11-26 — Visiting bands could arrive on separate cliff ledges
+
+A band from Fioriokre arrived with three companions below a ledge and one on top. The camp was
+on the ledge. The group stayed in approach and the isolated visitor died of thirst. The entrance
+already had to connect to home, but the nearby member offsets and sampled camp used only the
+surface height. Arrival now checks both against the entrance's navigation component. A member
+whose offset misses the component starts at the entrance. The multilevel placement test covers
+both a detached camp area and a detached arrival tile.
+
 ## 2026-11-26: mood added every long memory together, with no bound (OST-203)
 
 - Symptom: the long-memory part of mood was a plain sum of up to 48 memories divided by 8, so a

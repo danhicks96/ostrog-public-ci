@@ -348,7 +348,7 @@ fn spawn_band(w: &mut World, site: u32, home: TilePos, host: bool) -> bool {
         let p = w
             .grid
             .surface(x.clamp(2, w.grid.width - 3), y.clamp(2, w.grid.height - 3));
-        if camp_ok(w, p) {
+        if w.nav.as_ref().is_some_and(|nav| nav.reach(edge, p)) && camp_ok(w, p) {
             camp = p;
             break;
         }
@@ -361,6 +361,12 @@ fn spawn_band(w: &mut World, site: u32, home: TilePos, host: bool) -> bool {
             (edge.x + k % 3 - 1).clamp(2, w.grid.width - 3),
             (edge.y + k / 3).clamp(2, w.grid.height - 3),
         );
+        // The surface in the next column can be a separate ledge above the entrance.
+        let p = if w.nav.as_ref().is_some_and(|nav| nav.reach(edge, p)) {
+            p
+        } else {
+            edge
+        };
         let a = w.spawn_agent(crate::agents::Species::Person, p);
         // Of their settlement's people and species (P3).
         if let Some((sp, people)) = crate::species::of_site(w, site) {
@@ -1320,4 +1326,42 @@ pub fn status_line(w: &World, b: &Band) -> Option<String> {
             s
         }
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::expedition::Edge;
+    use crate::world::gen::GenParams;
+
+    #[test]
+    fn arriving_band_members_and_camp_share_the_entry_component() {
+        let mut w = World::generate(7, GenParams::default());
+        w.flatten(0, 0, w.grid.width, w.grid.height, 1);
+        let home = TilePos::new(32, 40, 2);
+        let entry = TilePos::new(32, 2, 2);
+        // Walkable ledges two levels above both the usual camp area and a member's offset.
+        w.flatten(26, 11, 13, 10, 3);
+        w.flatten(33, 2, 1, 1, 3);
+        w.meta.founding_site = home;
+        w.rebuild_caches();
+        w.found_party(4);
+        let site = &mut w.overworld.sites[0];
+        site.edge = Edge::North;
+        site.people = 47;
+        let site = site.id;
+        assert!(spawn_band(&mut w, site, home, false));
+        let band = w.bands.last().unwrap();
+        let nav = w.nav.as_ref().unwrap();
+        assert!(nav.reach(home, entry));
+        for ledge in [TilePos::new(32, 16, 4), TilePos::new(33, 2, 4)] {
+            assert!(w.grid.walkable(ledge) && !nav.reach(entry, ledge));
+        }
+        assert!(nav.reach(entry, band.camp), "camp {:?}", band.camp);
+        assert_eq!(band.members.len(), 4);
+        for id in &band.members {
+            let member = w.agents.iter().find(|a| a.id == *id).unwrap();
+            assert!(nav.reach(entry, member.pos), "arrival {:?}", member.pos);
+        }
+    }
 }
