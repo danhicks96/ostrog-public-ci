@@ -9072,6 +9072,294 @@
     "sha256": "09fd173de7a547003df19b7c9f3a4e42c3975d343eddd25add455070bb62afcd"
   },
   {
+    "path": "godot/assets/people/marks_digitigrade_tail_1_average_adult.png",
+    "sha256": "89a9c08e22685efd75930b34db4a425c2a1a0b25f9e2d163786972e9e13d8cbd"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_1_average_child.png",
+    "sha256": "6d8128e1f17da0024541e92b781acd0578558b555fc670aa515e81d5a0f6919b"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_1_broad_adult.png",
+    "sha256": "0512aa94307f30583d44d07736ab2442b03b5866b59e5b379d9916340aa35a25"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_1_broad_child.png",
+    "sha256": "6d8128e1f17da0024541e92b781acd0578558b555fc670aa515e81d5a0f6919b"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_1_slim_adult.png",
+    "sha256": "6a93e0ab8af66964b4862470dbda5476a84c2846779c60ea13e2b228533beb1e"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_1_slim_child.png",
+    "sha256": "c6f50588392998195097ad6ac531645dcb5be2907cfbba85cd39abd0d013f47d"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_2_average_adult.png",
+    "sha256": "e0b2a1d953fa414ab2a48b794ef5363b77cf7c5c3042062a505463e84eb3d2d6"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_2_average_child.png",
+    "sha256": "4fcfee90215a45ca0cee645f1704372108c2dba4cb29a2a959c431ebf144c35f"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_2_broad_adult.png",
+    "sha256": "1debec2a3244812ea1ec3c78da74444bf19a2f5aeec2768e93f4b0eaa532680f"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_2_broad_child.png",
+    "sha256": "4fcfee90215a45ca0cee645f1704372108c2dba4cb29a2a959c431ebf144c35f"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_2_slim_adult.png",
+    "sha256": "ab0f1f7a4f46fd18ee3722a8ddc680477ef2625ff906f98bf5778cf4c6b68275"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_2_slim_child.png",
+    "sha256": "8c8e17f80a82ef9f8bc8adaf7cd54c5b97a40326be7411edfffa4c14132ba23a"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_3_average_adult.png",
+    "sha256": "7c99ad038f6a46b322fe9278312615f83cc6b78b448a8b65532607134fadf464"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_3_average_child.png",
+    "sha256": "aa09446a28c687d85738561e1bc477bf571971e3d429541694be38bf02c89036"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_3_broad_adult.png",
+    "sha256": "38f1700df1e9d5fa2d5f8accdd7bd6012cfc635c90d06af0276ac637a72f680e"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_3_broad_child.png",
+    "sha256": "aa09446a28c687d85738561e1bc477bf571971e3d429541694be38bf02c89036"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_3_slim_adult.png",
+    "sha256": "58400dc66192f01e820d3f8723922cdec9d79af5ef0430995b17d0703484fcf8"
+  },
+  {
+    "path": "godot/assets/people/marks_digitigrade_tail_3_slim_child.png",
+    "sha256": "3f50c2b78218da607dd8bfe7756c30374264bfbd2781f712108e32a4818e14ee"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_1_average_adult.png",
+    "sha256": "22c489f92bb1b6c437e9639a4f45b175d04124ddb2387741f1762321811ff859"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_1_average_child.png",
+    "sha256": "d686e4145e8797791abe7af1f7c5bbdec56713e97469cd8070d261e80097f618"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_1_broad_adult.png",
+    "sha256": "c1d4591062187850a81dfcb6f94f9baf733ae965ba5f30d3cbfbff5f391c1fc4"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_1_broad_child.png",
+    "sha256": "d686e4145e8797791abe7af1f7c5bbdec56713e97469cd8070d261e80097f618"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_1_slim_adult.png",
+    "sha256": "7cd142248cfaa298567570195e3b8f93c5b1b5cb0f606c67950c15e16684455c"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_1_slim_child.png",
+    "sha256": "bff2bb372161ca672e181835e4b2d6733530171377f9c0c2804dfcecfc0523e2"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_2_average_adult.png",
+    "sha256": "1e1b88948608e3865ebe775e1206c77574c03d92f448983edb44d70b8f263789"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_2_average_child.png",
+    "sha256": "24c18c7a32f694939ef69c2a783d24387836130e70c1d9991b46f430893ab0e6"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_2_broad_adult.png",
+    "sha256": "9e1e698b85c5b57871d272e19c6542e1dfc5bea1e1f46de143b4ca0166e51b2e"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_2_broad_child.png",
+    "sha256": "24c18c7a32f694939ef69c2a783d24387836130e70c1d9991b46f430893ab0e6"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_2_slim_adult.png",
+    "sha256": "ec42472f44fa648f626b1f14b9ecf267f2f98452c922bd3d0429f56f48366691"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_2_slim_child.png",
+    "sha256": "7012812b7d599808a4295c5f84f8818917f0a266a5daacd22b13e305dabb0214"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_3_average_adult.png",
+    "sha256": "2f6b523cef26c9267ac75b2e5f0457169171b0341246a0ca5d51957291069bc4"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_3_average_child.png",
+    "sha256": "9e77547fc64b34d4d94b63652cefcf4cc227c23d8fe2dc94e5c36ebb20df273a"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_3_broad_adult.png",
+    "sha256": "343bc4ba730d495c25ae5d380b87292716572259e7ef57b32f1987132ae53f1e"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_3_broad_child.png",
+    "sha256": "9e77547fc64b34d4d94b63652cefcf4cc227c23d8fe2dc94e5c36ebb20df273a"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_3_slim_adult.png",
+    "sha256": "00a7ef651a0c2330997c560a8510558adb6e2998a77834a83fe165137b1f6d82"
+  },
+  {
+    "path": "godot/assets/people/marks_grisk_3_slim_child.png",
+    "sha256": "a7d649bd2edf6325f6c2db1c8b2445beed2a7cb20a854905e920c0353ce5dde1"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_1_average_adult.png",
+    "sha256": "5800d9ce9ed7b1fe8c1dacb06a9686b2bbd12ba175ad5a3474d64b23b8db96bf"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_1_average_child.png",
+    "sha256": "8679b1cc2549ecaf64ccffb6d910ade869eee6e4cc952873c5ca5b74ebfed352"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_1_broad_adult.png",
+    "sha256": "4d290fdee87df5e658d06ee562d626c88347d5ae4e137b161556adb0d0d23925"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_1_broad_child.png",
+    "sha256": "8679b1cc2549ecaf64ccffb6d910ade869eee6e4cc952873c5ca5b74ebfed352"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_1_slim_adult.png",
+    "sha256": "2e5acee06fcfccfd5545a8955198b6342abf65bee8185b6e689f79854867b60c"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_1_slim_child.png",
+    "sha256": "1985e0aa33baf45c09f86c3600d4e432bfaa3f523e29823ac1eb64c29df89378"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_2_average_adult.png",
+    "sha256": "2d945c2a63b0807cf770de60c0ec87479760b0cda60c413d6ce9c8d1fb314644"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_2_average_child.png",
+    "sha256": "0c9bde92663d007ad1082fe00bbe5dd9a35f4b0ad53f4fe91a16275078adf7d7"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_2_broad_adult.png",
+    "sha256": "9c5f7d0ea6b8448926348f59f294dfdbf9be0741b3b5a7e0a9012f2aafb9309c"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_2_broad_child.png",
+    "sha256": "0c9bde92663d007ad1082fe00bbe5dd9a35f4b0ad53f4fe91a16275078adf7d7"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_2_slim_adult.png",
+    "sha256": "cc354019059d355e89ed3ce1025a9bd812c7487666353019bdb9380f8e48d9b3"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_2_slim_child.png",
+    "sha256": "8cb45b0158ed821e8be12621bdfbbb38a9f882e2e6ad16c2c180cc950c4d61df"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_3_average_adult.png",
+    "sha256": "42a9b2e9c03e10432f15168d118a8c4db670f2b72b500d83e2ab5852557a00d7"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_3_average_child.png",
+    "sha256": "d99c7d87ca5763f30513ff7fd9f96b1b3cbb29bded107f73eb94f08433355e19"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_3_broad_adult.png",
+    "sha256": "1693b118a6b2f8957b0c31c67553b10515c812fdcb9e54257c937f267d2ffda6"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_3_broad_child.png",
+    "sha256": "d99c7d87ca5763f30513ff7fd9f96b1b3cbb29bded107f73eb94f08433355e19"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_3_slim_adult.png",
+    "sha256": "bd254467e62aba74afc82eef79138b06fd473b2d0dc70c7b14fe870ae4d6c03e"
+  },
+  {
+    "path": "godot/assets/people/marks_hollin_3_slim_child.png",
+    "sha256": "4bfe18585dd1545953a893c7b9ab333d10a63dee31155a8c4e355b32bf056109"
+  },
+  {
+    "path": "godot/assets/people/marks_human_1_average_adult.png",
+    "sha256": "d493e649fb93971556a1943fc7b5b9a90883b3dc7fe7d3323c0d960a81ea746d"
+  },
+  {
+    "path": "godot/assets/people/marks_human_1_average_child.png",
+    "sha256": "6d8128e1f17da0024541e92b781acd0578558b555fc670aa515e81d5a0f6919b"
+  },
+  {
+    "path": "godot/assets/people/marks_human_1_broad_adult.png",
+    "sha256": "2236d61d515d4a8c41ca6351417c1908ebad399adca1e8ef010d8563acdc0c85"
+  },
+  {
+    "path": "godot/assets/people/marks_human_1_broad_child.png",
+    "sha256": "6d8128e1f17da0024541e92b781acd0578558b555fc670aa515e81d5a0f6919b"
+  },
+  {
+    "path": "godot/assets/people/marks_human_1_slim_adult.png",
+    "sha256": "703a4652ec63f3cb2accbc839f7e5aa723bcf0422c190b6ac2e40a76feaff4cb"
+  },
+  {
+    "path": "godot/assets/people/marks_human_1_slim_child.png",
+    "sha256": "c6f50588392998195097ad6ac531645dcb5be2907cfbba85cd39abd0d013f47d"
+  },
+  {
+    "path": "godot/assets/people/marks_human_2_average_adult.png",
+    "sha256": "bf9f8350e2e712fef4b603101071877708ddf2b78a3f98b632d1abe18deea845"
+  },
+  {
+    "path": "godot/assets/people/marks_human_2_average_child.png",
+    "sha256": "4fcfee90215a45ca0cee645f1704372108c2dba4cb29a2a959c431ebf144c35f"
+  },
+  {
+    "path": "godot/assets/people/marks_human_2_broad_adult.png",
+    "sha256": "74b3b534714a07f06dc663da325f91fe0272e9307c9bfdaa44815c40f65ae24f"
+  },
+  {
+    "path": "godot/assets/people/marks_human_2_broad_child.png",
+    "sha256": "4fcfee90215a45ca0cee645f1704372108c2dba4cb29a2a959c431ebf144c35f"
+  },
+  {
+    "path": "godot/assets/people/marks_human_2_slim_adult.png",
+    "sha256": "ba7db2657184fcd1c81fe96d9a6c142525741faf67e76a1d133dfc5aba45be94"
+  },
+  {
+    "path": "godot/assets/people/marks_human_2_slim_child.png",
+    "sha256": "8c8e17f80a82ef9f8bc8adaf7cd54c5b97a40326be7411edfffa4c14132ba23a"
+  },
+  {
+    "path": "godot/assets/people/marks_human_3_average_adult.png",
+    "sha256": "3c0c6efa098633826c544f49eef67f47e8731be5a907ab69273839e628bf048b"
+  },
+  {
+    "path": "godot/assets/people/marks_human_3_average_child.png",
+    "sha256": "aa09446a28c687d85738561e1bc477bf571971e3d429541694be38bf02c89036"
+  },
+  {
+    "path": "godot/assets/people/marks_human_3_broad_adult.png",
+    "sha256": "cc8e3ce82cb986e6cd341d17839f7cf58f73e2a41c0e9ced6914ff48a4f0f4b6"
+  },
+  {
+    "path": "godot/assets/people/marks_human_3_broad_child.png",
+    "sha256": "aa09446a28c687d85738561e1bc477bf571971e3d429541694be38bf02c89036"
+  },
+  {
+    "path": "godot/assets/people/marks_human_3_slim_adult.png",
+    "sha256": "6bd09a584ec63a4d6f83948155db42ee6076743f3dafa4ebe02323bc7466304a"
+  },
+  {
+    "path": "godot/assets/people/marks_human_3_slim_child.png",
+    "sha256": "3f50c2b78218da607dd8bfe7756c30374264bfbd2781f712108e32a4818e14ee"
+  },
+  {
     "path": "godot/assets/people/marks_murrow_1_average_adult.png",
     "sha256": "c2d432107e1b0a51f54c87c13e76d39c2df2ddbec6d3d58f132b38f60abc3d95"
   },
@@ -9286,6 +9574,78 @@
   {
     "path": "godot/assets/people/marks_skarri_3_slim_child.png",
     "sha256": "20dedf79ae764cdb7c9a0337a85a2e945f33a87b638c03d08549c06916c069d5"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_1_average_adult.png",
+    "sha256": "89a9c08e22685efd75930b34db4a425c2a1a0b25f9e2d163786972e9e13d8cbd"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_1_average_child.png",
+    "sha256": "6d8128e1f17da0024541e92b781acd0578558b555fc670aa515e81d5a0f6919b"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_1_broad_adult.png",
+    "sha256": "0512aa94307f30583d44d07736ab2442b03b5866b59e5b379d9916340aa35a25"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_1_broad_child.png",
+    "sha256": "e301b0b51b17efef6820b237686898d268bbdc521069d4b52e76e1595ec324b6"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_1_slim_adult.png",
+    "sha256": "6a93e0ab8af66964b4862470dbda5476a84c2846779c60ea13e2b228533beb1e"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_1_slim_child.png",
+    "sha256": "c6f50588392998195097ad6ac531645dcb5be2907cfbba85cd39abd0d013f47d"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_2_average_adult.png",
+    "sha256": "e0b2a1d953fa414ab2a48b794ef5363b77cf7c5c3042062a505463e84eb3d2d6"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_2_average_child.png",
+    "sha256": "4fcfee90215a45ca0cee645f1704372108c2dba4cb29a2a959c431ebf144c35f"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_2_broad_adult.png",
+    "sha256": "1debec2a3244812ea1ec3c78da74444bf19a2f5aeec2768e93f4b0eaa532680f"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_2_broad_child.png",
+    "sha256": "08c3f0a194e0aaa639276db54d5ddc113a271989f8e6b5932db55cb0272038b5"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_2_slim_adult.png",
+    "sha256": "ab0f1f7a4f46fd18ee3722a8ddc680477ef2625ff906f98bf5778cf4c6b68275"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_2_slim_child.png",
+    "sha256": "8c8e17f80a82ef9f8bc8adaf7cd54c5b97a40326be7411edfffa4c14132ba23a"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_3_average_adult.png",
+    "sha256": "7c99ad038f6a46b322fe9278312615f83cc6b78b448a8b65532607134fadf464"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_3_average_child.png",
+    "sha256": "aa09446a28c687d85738561e1bc477bf571971e3d429541694be38bf02c89036"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_3_broad_adult.png",
+    "sha256": "38f1700df1e9d5fa2d5f8accdd7bd6012cfc635c90d06af0276ac637a72f680e"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_3_broad_child.png",
+    "sha256": "aa09446a28c687d85738561e1bc477bf571971e3d429541694be38bf02c89036"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_3_slim_adult.png",
+    "sha256": "58400dc66192f01e820d3f8723922cdec9d79af5ef0430995b17d0703484fcf8"
+  },
+  {
+    "path": "godot/assets/people/marks_tharn_3_slim_child.png",
+    "sha256": "3f50c2b78218da607dd8bfe7756c30374264bfbd2781f712108e32a4818e14ee"
   },
   {
     "path": "godot/assets/people/overlay_bandage_amphibious_average_adult.png",

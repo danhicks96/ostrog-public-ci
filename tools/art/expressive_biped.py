@@ -127,6 +127,25 @@ def draw_fitted_hair(pen, direction, style, ink, colours):
         pen.line([(13,17),(18,16),(21,18)],fill=shadow,width=2)
 
 
+def expressive_mark(face, direction, pattern, mid, shadow, high):
+    """Colour the face's plain skin. Brows, eyes, mouth, shading and outline remain intact."""
+    layer = Image.new('RGBA', face.size)
+    for y in range(3, 29):
+        for x in range(2, 32):
+            if face.getpixel((x, y)) != (*mid, 255):
+                continue
+            if pattern == 'cap' and y <= 8:
+                colour = high if y == 8 else shadow
+            elif pattern == 'mask' and direction != 'N' and 8 <= y <= 16:
+                colour = high if y == 8 else shadow
+            elif pattern == 'spots' and y % 5 in (0, 1) and (x + 3 * (y // 5)) % 9 in (0, 1):
+                colour = high
+            else:
+                continue
+            layer.putpixel((x, y), (*colour, 255))
+    return layer
+
+
 def make_frame(art, kind, direction, frame, build='average', style='bowl'):
     d = 'E' if direction == 'W' else direction
     pose = (
@@ -136,7 +155,7 @@ def make_frame(art, kind, direction, frame, build='average', style='bowl'):
     )
     s = art.skeleton(build, 'adult', d, pose)
     canvas = art.Canvas()
-    if kind != 'hair':
+    if kind not in ('hair', 'marks'):
         art.draw_layer(canvas, s, kind, 'vest' if kind == 'clothing' else None, frame)
     image = Image.fromarray(canvas.render()).resize((96, 96), Image.Resampling.NEAREST)
     x0, y0, x1, y1 = s.head
@@ -148,7 +167,7 @@ def make_frame(art, kind, direction, frame, build='average', style='bowl'):
     ink = art.pal.neutral('shadow')
     shadow, mid, light, high = art.SWAP_SOURCES['skin']
     hair_shadow, hair_mid, hair_light, hair_glint = art.SWAP_SOURCES['hair']
-    if kind == 'body':
+    if kind in ('body', 'marks'):
         # Remove the old head, including its outline. The arms are retained below it.
         ImageDraw.Draw(image).rectangle(
             (2 * x0 - 3, 2 * y0 - 2, 2 * x1 + 5, 2 * y1 + 2), fill=(0, 0, 0, 0)
@@ -260,6 +279,8 @@ def make_frame(art, kind, direction, frame, build='average', style='bowl'):
                 pen.ellipse((iris, ey, iris + 3, ey + 4), fill=ink)
                 pen.point((iris + 1, ey + 1), fill=art.pal.neutral('white'))
                 pen.line([(ex, ey + 1), (ex + 2, ey - 1), (ex + 5, ey)], fill=ink)
+        if kind == 'marks':
+            face = expressive_mark(face, d, style, mid, shadow, high)
     elif kind == 'hair':
         if style == 'long':
             draw_long_hair(pen, d, ink, art.SWAP_SOURCES['hair'])
@@ -364,7 +385,7 @@ def make_frame(art, kind, direction, frame, build='average', style='bowl'):
         pen.line((tx + 3, by - 4, rx - 3, by - 4), fill=trim_mid)
         if d != 'N':
             pen.rectangle((rx - 9, by - 5, rx - 6, by - 2), outline=trim_light)
-    if kind in ('body', 'hair'):
+    if kind in ('body', 'hair', 'marks'):
         if kind == 'hair' and style == 'bun':
             # Leave space outside the head silhouette for the gathered knot.
             knot = Image.new('RGBA', (46, 52))

@@ -57,11 +57,11 @@ def main():
     parser.add_argument('--check', action='store_true', help='verify generated outputs without generating')
     args = parser.parse_args()
     outputs = load_rows(ROOT / 'tools/art/ci-pngs.json')
-    if len(outputs) != 2828:
+    if len(outputs) != 2918:
         raise ValueError('incomplete expected PNG inventory')
     if args.check:
         verify_outputs(ROOT, outputs)
-        print('source assets: 2828 exact ephemeral PNGs; no audio')
+        print('source assets: 2918 exact ephemeral PNGs; no audio')
         return
     inputs = load_rows(ROOT / 'tools/art/ci-inputs.json')
     verify_rows(ROOT, inputs)
@@ -80,7 +80,7 @@ def main():
         subprocess.run([sys.executable, str(ROOT / 'tools/art' / name), *flags],
                        cwd=ROOT, env=env, check=True, timeout=900)
     verify_outputs(ROOT, outputs)
-    print('source assets: 2828 exact ephemeral PNGs; no audio')
+    print('source assets: 2918 exact ephemeral PNGs; no audio')
 
 if __name__ == '__main__':
     try:

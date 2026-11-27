@@ -5737,7 +5737,7 @@ row. Policy and counts: ASSETS.md.
 
 #### godot/assets/people/
 
-<details><summary>2189 files (click to open)</summary>
+<details><summary>2279 files (click to open)</summary>
 
 | file | pixels | layout | generator |
 |---|---|---|---|
@@ -7791,6 +7791,78 @@ row. Policy and counts: ASSETS.md.
 | marks_below_3_broad_child.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
 | marks_below_3_slim_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
 | marks_below_3_slim_child.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_1_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_1_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_1_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_1_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_1_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_1_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_2_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_2_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_2_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_2_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_2_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_2_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_3_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_3_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_3_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_3_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_3_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_digitigrade_tail_3_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_1_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_1_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_1_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_1_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_1_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_1_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_2_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_2_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_2_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_2_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_2_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_2_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_3_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_3_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_3_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_3_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_3_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_grisk_3_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_1_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_1_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_1_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_1_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_1_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_1_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_2_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_2_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_2_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_2_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_2_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_2_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_3_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_3_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_3_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_3_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_3_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_hollin_3_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_1_average_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_1_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_1_broad_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_1_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_1_slim_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_1_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_2_average_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_2_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_2_broad_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_2_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_2_slim_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_2_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_3_average_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_3_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_3_broad_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_3_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_3_slim_adult.png | 4608x384 | 144 columns x 12 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_human_3_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | marks_murrow_1_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | marks_murrow_1_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | marks_murrow_1_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
@@ -7845,6 +7917,24 @@ row. Policy and counts: ASSETS.md.
 | marks_skarri_3_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | marks_skarri_3_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | marks_skarri_3_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_1_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_1_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_1_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_1_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_1_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_1_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_2_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_2_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_2_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_2_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_2_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_2_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_3_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_3_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_3_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_3_broad_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_3_slim_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
+| marks_tharn_3_slim_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | overlay_bandage_amphibious_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | overlay_bandage_amphibious_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | overlay_bandage_amphibious_broad_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |

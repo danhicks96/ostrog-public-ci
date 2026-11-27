@@ -2542,7 +2542,11 @@ def draw_overlay(c, s, kind):
 #   (sheet set, plan, species) for every hairless kind
 MARKED = [('murrow', 'biped', 'murrow'), ('skarri', 'winged', 'skarri'),
           ('screeling', 'digitigrade_tail', 'screeling'), ('amphibious', 'amphibious', 'human'),
-          ('below', 'serpentine', 'below')]
+          ('below', 'serpentine', 'below'),
+          # Generated peoples can inherit any of these rigs without hair (species::GEN_PLANS).
+          ('human', 'biped', 'human'), ('hollin', 'biped', 'hollin'),
+          ('grisk', 'small_biped', 'grisk'), ('digitigrade_tail', 'digitigrade_tail', 'human'),
+          ('tharn', 'four_armed', 'tharn')]
 MARKINGS = ['cap', 'mask', 'spots']
 
 
@@ -2696,6 +2700,9 @@ def stone_detail(c):
 
 
 def make_sheet(kind, build='average', age='adult', arg=None, plan='biped', species='human'):
+    if kind == 'marks' and plan == 'biped' and species == 'human' and age == 'adult':
+        import expressive_biped
+        return expressive_biped.make_sheet(sys.modules[__name__], 'marks', build, arg)
     n = PLAN_CELLS[plan][0]   # sheets of a plan use that plan's cell
     img = np.zeros((n * 4, n * len(FRAMES), 4), dtype=np.uint8)
     for r, d in enumerate(DIRS):
@@ -2768,7 +2775,7 @@ def describe(fn):
     if fn.startswith('equipment_'):
         return 'equipment layer, fixed palette ramps, ' + n
     if fn.startswith('marks_'):
-        return 'head marking (%s) of a hairless kind, skin swap source colours, %s' % (MARKINGS[int(fn.split('_')[2]) - 1], n)
+        return 'head marking (%s) of a hairless kind, skin swap source colours, %s' % (MARKINGS[int(fn.rsplit('_', 3)[1]) - 1], n)
     if fn.startswith('overlay_bruise_'):
         return 'untreated forearm bruise, anatomical side and pose, ' + n
     if fn.startswith('overlay_'):

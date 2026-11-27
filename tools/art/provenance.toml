@@ -16329,6 +16329,510 @@ generator = "tools/art/people.py"
 licence = "project-original"
 
 [[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
 path = "godot/assets/people/marks_murrow_1_average_adult.png"
 kind = "people"
 source = "generated"
@@ -16701,6 +17205,132 @@ licence = "project-original"
 
 [[asset]]
 path = "godot/assets/people/marks_skarri_3_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_slim_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_average_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_average_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_broad_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_broad_child.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_slim_adult.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_slim_child.png"
 kind = "people"
 source = "generated"
 generator = "tools/art/people.py"

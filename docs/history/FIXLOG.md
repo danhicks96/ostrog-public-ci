@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 - Fit markings to generated hairless peoples
+
+Generated peoples can inherit a hairless version of a human, Hollin, Grisk, digitigrade or four-armed rig. Their three inherited marking patterns now fit the body and its age. Adult human-rig markings preserve the expressive face. The renderer requests only the skin marking for a hairless inhabitant.
+
 ## 2026-11-27 - Inherited hairstyles on adult human rigs
 
 All ten inherited hairstyles now follow the slim, average and broad adult human rigs at double source resolution. The three builds retain their clothing, equipment, skin and hair colours, injury layers and held-load geometry. Children and other peoples keep their fitted appearances.

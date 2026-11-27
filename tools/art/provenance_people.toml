@@ -20504,6 +20504,726 @@ sha256_16 = "09fd173de7a54700"
 description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
 
 [[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "89a9c08e22685efd"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "6d8128e1f17da002"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "0512aa94307f3058"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "6d8128e1f17da002"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "6a93e0ab8af66964"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_1_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "c6f5058839299819"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "e0b2a1d953fa414a"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4fcfee90215a45ca"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "1debec2a3244812e"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4fcfee90215a45ca"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "ab0f1f7a4f46fd18"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_2_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "8c8e17f80a82ef9f"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "7c99ad038f6a46b3"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "aa09446a28c687d8"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "38f1700df1e9d5fa"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "aa09446a28c687d8"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "58400dc66192f01e"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_digitigrade_tail_3_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "3f50c2b78218da60"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "22c489f92bb1b6c4"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "d686e4145e879779"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "c1d4591062187850"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "d686e4145e879779"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "7cd142248cfaa298"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_1_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "bff2bb372161ca67"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "1e1b88948608e386"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "24c18c7a32f69493"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "9e1e698b85c5b578"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "24c18c7a32f69493"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "ec42472f44fa648f"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_2_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "7012812b7d599808"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "2f6b523cef26c926"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "9e77547fc64b34d4"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "343bc4ba730d495c"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "9e77547fc64b34d4"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "00a7ef651a0c2330"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_grisk_3_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "a7d649bd2edf6325"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "5800d9ce9ed7b1fe"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "8679b1cc2549ecaf"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4d290fdee87df5e6"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "8679b1cc2549ecaf"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "2e5acee06fcfccfd"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_1_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "1985e0aa33baf45c"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "2d945c2a63b0807c"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "0c9bde92663d007a"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "9c5f7d0ea6b84489"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "0c9bde92663d007a"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "cc354019059d355e"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_2_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "8cb45b0158ed821e"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "42a9b2e9c03e1043"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "d99c7d87ca5763f3"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "1693b118a6b2f895"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "d99c7d87ca5763f3"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "bd254467e62aba74"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_hollin_3_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4bfe18585dd15459"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "d493e649fb939715"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "6d8128e1f17da002"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "2236d61d515d4a8c"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "6d8128e1f17da002"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "703a4652ec63f3cb"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_1_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "c6f5058839299819"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "bf9f8350e2e712fe"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4fcfee90215a45ca"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "74b3b534714a07f0"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4fcfee90215a45ca"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "ba7db2657184fcd1"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_2_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "8c8e17f80a82ef9f"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "3c0c6efa09863382"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "aa09446a28c687d8"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "cc8e3ce82cb986e6"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "aa09446a28c687d8"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "4608x384"
+sha256_16 = "6bd09a584ec63a4d"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_human_3_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "3f50c2b78218da60"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
 path = "godot/assets/people/marks_murrow_1_average_adult.png"
 generator = "tools/art/people.py"
 command = "python3 tools/art/people.py"
@@ -21041,6 +21761,186 @@ source = "procedural"
 licence = "project"
 size = "2304x192"
 sha256_16 = "20dedf79ae764cdb"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "89a9c08e22685efd"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "6d8128e1f17da002"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "0512aa94307f3058"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "e301b0b51b17efef"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "6a93e0ab8af66964"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_1_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "c6f5058839299819"
+description = "head marking (cap) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "e0b2a1d953fa414a"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "4fcfee90215a45ca"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "1debec2a3244812e"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "08c3f0a194e0aaa6"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "ab0f1f7a4f46fd18"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_2_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "8c8e17f80a82ef9f"
+description = "head marking (mask) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_average_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "7c99ad038f6a46b3"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_average_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "aa09446a28c687d8"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_broad_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "38f1700df1e9d5fa"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_broad_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "aa09446a28c687d8"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_slim_adult.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "58400dc66192f01e"
+description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
+
+[[asset]]
+path = "godot/assets/people/marks_tharn_3_slim_child.png"
+generator = "tools/art/people.py"
+command = "python3 tools/art/people.py"
+source = "procedural"
+licence = "project"
+size = "2304x192"
+sha256_16 = "3f50c2b78218da60"
 description = "head marking (spots) of a hairless kind, skin swap source colours, 48 frames x 4 dirs"
 
 [[asset]]

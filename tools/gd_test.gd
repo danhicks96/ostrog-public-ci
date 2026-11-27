@@ -1013,6 +1013,32 @@ func test_inherited_adult_hair_covers_every_build_and_direction() -> void:
 	entities.free()
 	world.free()
 
+func test_hairless_people_use_fitted_skin_markings_without_a_hair_swap() -> void:
+	var world := WorldView.new()
+	world.assets = preload("res://scripts/assets.gd").new()
+	var entities := preload("res://scripts/render/entity_layer.gd").new()
+	entities.v = world
+	var person := entities._new_person(entities)
+	var appearance := PackedInt32Array()
+	appearance.resize(world.AGENT_STRIDE)
+	appearance[6] = 1
+	appearance[19] = -1
+	for rig in [["human", "biped"], ["hollin", "biped"], ["grisk", "small_biped"], ["digitigrade_tail", "digitigrade_tail"], ["tharn", "four_armed"]]:
+		world.species_art[0] = {"body": rig[0], "plan": rig[1], "hair": false}
+		for child in [0, 1]:
+			appearance[16] = child
+			var plan := entities.dress_person(person, appearance, 0, 7)
+			entities.set_person_frame(person, plan, entities.P_CARRY, 0)
+			var hair: Sprite2D = person.get_node("hair")
+			var body: Sprite2D = person.get_node("body")
+			check(hair.visible and hair.texture != null and hair.region_rect == body.region_rect,
+					"the hairless %s person has a mark fitted to their own body cell" % rig[0])
+			check(hair.offset * hair.scale == body.offset * body.scale, "marking and body share the foot anchor")
+	for key in world.swapped_cache:
+		check(not str(key).contains("|hair|"), "a hairless person loads only their skin marking")
+	entities.free()
+	world.free()
+
 func test_arm_bruise_follows_side_and_clears_when_pooled() -> void:
 	var world := WorldView.new()
 	world.assets = preload("res://scripts/assets.gd").new()

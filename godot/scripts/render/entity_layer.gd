@@ -674,13 +674,12 @@ func dress_person(p: Node2D, A: PackedInt32Array, i: int, carry_kind: int) -> St
 				layers[1][1] = "people/expressive_bowl_clothing.png"
 		elif build == "broad" and style == "long":
 			layers[2][1] = "people/expressive_long_hair.png"
+	if not art.get("hair", true):
+		# A hairless person's inherited pattern is a skin layer on their own rig.
+		layers[2] = ["hair", Rules.marking_sheet(body_set, A[i + 8], ba), "skin", A[i + 7]]
 	for l in layers:
 		var s: Sprite2D = p.get_node(l[0])
 		s.texture = v._swapped(l[1], l[2], l[3])
-		if l[0] == "hair" and not art.get("hair", true):
-			# #485: a kind without hair wears its head marking in this slot instead, one of
-			# three chosen by the inherited hair-style gene, in the person's own skin colours.
-			s.texture = v._swapped(Rules.marking_sheet(body_set, A[i + 8], ba), "skin", A[i + 7])
 		s.visible = s.texture != null
 	var marks: int = v.arm_bruises.get(A[i], 0)
 	for side in ["left", "right"]:
