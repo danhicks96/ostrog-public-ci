@@ -515,6 +515,10 @@ pub fn step(w: &mut World) {
             let a = &w.agents[i];
             let t = |x| a.traits.has(x);
             use crate::mind::Trait as T;
+            let food_near = w.items.iter().any(|it| {
+                it.kind.is_food()
+                    && matches!(it.place, crate::items::ItemPlace::Ground(p) if p.dist(here) <= 6)
+            });
             let lonely = a.relationships.values().all(|r| r.opinion < 0.3);
             let violent = a.beliefs.lean(crate::mind::beliefs::Topic::Violence) > 0.4;
             // One who came through within the day has nowhere to walk out to (#395,
@@ -547,7 +551,9 @@ pub fn step(w: &mut World) {
                         wt[1] *= 2.0;
                         wt[5] *= 2.0;
                     }
-                    Cause::Need("hunger") => wt[3] *= 3.0,
+                    // A hungry person binges only where there is something to eat within the six
+                    // tiles a binge reaches; a binge with nothing there would fill them for free.
+                    Cause::Need("hunger") if food_near => wt[3] *= 3.0,
                     _ => {}
                 }
             }
