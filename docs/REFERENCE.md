@@ -1397,7 +1397,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3258 strings (click to open)</summary>
+<details><summary>3260 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3263,98 +3263,100 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/culture.rs:904 | ale |
 | systems/culture.rs:906 | berry wine |
 | systems/culture.rs:909 | drunk |
-| systems/decide.rs:99 | someone |
-| systems/decide.rs:103 | search_for_the_lost |
-| systems/decide.rs:104 | go looking for one of the lost near {at} |
-| systems/decide.rs:112 | food |
-| systems/decide.rs:113 | go_for_meals |
-| systems/decide.rs:113 | eat the {kind} at {at} |
+| systems/decide.rs:101 | someone |
+| systems/decide.rs:105 | search_for_the_lost |
+| systems/decide.rs:106 | go looking for one of the lost near {at} |
+| systems/decide.rs:114 | food |
 | systems/decide.rs:115 | go_for_meals |
-| systems/decide.rs:115 | gather food at {at} |
-| systems/decide.rs:116 | sleep |
-| systems/decide.rs:116 | sleep in the bed at {at} |
-| systems/decide.rs:117 | sleep |
-| systems/decide.rs:117 | sleep where they are |
-| systems/decide.rs:118 | talk |
-| systems/decide.rs:118 | talk with {} |
-| systems/decide.rs:119 | wander |
-| systems/decide.rs:119 | wander toward {at} |
-| systems/decide.rs:120 | keep_together |
-| systems/decide.rs:120 | walk with a purpose to {at} |
-| systems/decide.rs:121 | stock_the_store |
-| systems/decide.rs:121 | gather for the store at {at} |
-| systems/decide.rs:122 | rest_a_moment |
-| systems/decide.rs:122 | rest a moment |
-| systems/decide.rs:129 | work |
-| systems/decide.rs:130 | work |
-| systems/decide.rs:130 | work: {what} |
-| systems/decide.rs:132 | keep_warm |
-| systems/decide.rs:132 | get warm or under a roof at {at} |
-| systems/decide.rs:134 | fight_fire |
-| systems/decide.rs:135 | fight the fire at {at} by {} |
-| systems/decide.rs:137 | flee_fire |
-| systems/decide.rs:137 | get away from the fire to {at} |
-| systems/decide.rs:138 | tend |
-| systems/decide.rs:138 | tend {} |
-| systems/decide.rs:139 | confront |
-| systems/decide.rs:139 | go after {} |
-| systems/decide.rs:140 | welcome |
-| systems/decide.rs:140 | go out to the strangers' camp at {at} |
-| systems/decide.rs:141 | study |
-| systems/decide.rs:141 | study the old thing at {at} |
-| systems/decide.rs:142 | avenge |
+| systems/decide.rs:115 | eat the {kind} at {at} |
+| systems/decide.rs:117 | go_for_meals |
+| systems/decide.rs:117 | gather food at {at} |
+| systems/decide.rs:118 | sleep |
+| systems/decide.rs:118 | sleep in the bed at {at} |
+| systems/decide.rs:119 | sleep |
+| systems/decide.rs:119 | sleep where they are |
+| systems/decide.rs:120 | talk |
+| systems/decide.rs:120 | talk with {} |
+| systems/decide.rs:121 | wander |
+| systems/decide.rs:121 | wander toward {at} |
+| systems/decide.rs:122 | keep_together |
+| systems/decide.rs:122 | walk with a purpose to {at} |
+| systems/decide.rs:123 | drink |
+| systems/decide.rs:123 | look for drinking water near {at} |
+| systems/decide.rs:124 | stock_the_store |
+| systems/decide.rs:124 | gather for the store at {at} |
+| systems/decide.rs:125 | rest_a_moment |
+| systems/decide.rs:125 | rest a moment |
+| systems/decide.rs:132 | work |
+| systems/decide.rs:133 | work |
+| systems/decide.rs:133 | work: {what} |
+| systems/decide.rs:135 | keep_warm |
+| systems/decide.rs:135 | get warm or under a roof at {at} |
+| systems/decide.rs:137 | fight_fire |
+| systems/decide.rs:138 | fight the fire at {at} by {} |
+| systems/decide.rs:140 | flee_fire |
+| systems/decide.rs:140 | get away from the fire to {at} |
+| systems/decide.rs:141 | tend |
+| systems/decide.rs:141 | tend {} |
+| systems/decide.rs:142 | confront |
 | systems/decide.rs:142 | go after {} |
-| systems/decide.rs:143 | hearth |
-| systems/decide.rs:143 | sit at the hearth at {at} |
-| systems/decide.rs:145 | study_the_stone |
-| systems/decide.rs:146 | sit by the portal stone at {at} |
-| systems/decide.rs:148 | drink |
-| systems/decide.rs:148 | drink at {at} |
-| systems/decide.rs:396 | interrupted by {} |
-| systems/decide.rs:443 | went for {} |
-| systems/decide.rs:445 | remembering good meals of it |
-| systems/decide.rs:447 | though not fond of it |
-| systems/decide.rs:488 | sought out {name} |
-| systems/decide.rs:489 | a good friend |
-| systems/decide.rs:515 | went after the strangers |
-| systems/decide.rs:529 | went out to the strangers' camp |
-| systems/decide.rs:559 | someone |
-| systems/decide.rs:566 | set out to look for {name} |
-| systems/decide.rs:567 | word came they were seen that way |
-| systems/decide.rs:671 | nobody else was doing anything |
-| systems/decide.rs:673 | they knew how, and believe {} |
-| systems/decide.rs:676 | they knew how |
-| systems/decide.rs:693 | went to fight the fire by {} |
-| systems/decide.rs:730 | went after {bname} |
-| systems/decide.rs:731 | it has hurt {hurt} people |
-| systems/decide.rs:790 | starving |
-| systems/decide.rs:792 | parched |
-| systems/decide.rs:794 | exhausted |
-| systems/decide.rs:796 | cold in their sleep |
-| systems/decide.rs:798 | freezing |
-| systems/decide.rs:800 | a pressing need |
-| systems/decide.rs:815 | {}h {:02}m from now |
-| systems/decide.rs:822 | found no way to ({x},{y},{z}); not trying it again for {when} |
-| systems/decide.rs:827 | found no drink standing at ({x},{y},{z}); not going there for water for {when} |
-| systems/decide.rs:832 | gave up on {} for now; back to it {when} |
-| systems/decide.rs:914 | no path |
-| systems/decide.rs:972 | the stores are ours |
-| systems/decide.rs:1235 | no path |
-| systems/decide.rs:1500 | no way there they know of |
-| systems/decide.rs:1502 | in the flood's way |
-| systems/decide.rs:1508 | found no way there lately |
-| systems/decide.rs:1648 | the ground there is under water |
-| systems/decide.rs:1649 | someone else is already at it |
-| systems/decide.rs:1652 | off work since they broke down |
-| systems/decide.rs:1654 | weighs nothing now |
-| systems/decide.rs:2636 | hunger |
-| systems/decide.rs:2641 | thirst |
-| systems/decide.rs:2646 | tiredness |
-| systems/decide.rs:2651 | days of food in store |
-| systems/decide.rs:2656 | night near with no bed or roof |
-| systems/decide.rs:2661 | arrival urge |
-| systems/decide.rs:2666 | leisure weight |
-| systems/decide.rs:2675 | nothing |
+| systems/decide.rs:143 | welcome |
+| systems/decide.rs:143 | go out to the strangers' camp at {at} |
+| systems/decide.rs:144 | study |
+| systems/decide.rs:144 | study the old thing at {at} |
+| systems/decide.rs:145 | avenge |
+| systems/decide.rs:145 | go after {} |
+| systems/decide.rs:146 | hearth |
+| systems/decide.rs:146 | sit at the hearth at {at} |
+| systems/decide.rs:148 | study_the_stone |
+| systems/decide.rs:149 | sit by the portal stone at {at} |
+| systems/decide.rs:151 | drink |
+| systems/decide.rs:151 | drink at {at} |
+| systems/decide.rs:399 | interrupted by {} |
+| systems/decide.rs:446 | went for {} |
+| systems/decide.rs:448 | remembering good meals of it |
+| systems/decide.rs:450 | though not fond of it |
+| systems/decide.rs:491 | sought out {name} |
+| systems/decide.rs:492 | a good friend |
+| systems/decide.rs:518 | went after the strangers |
+| systems/decide.rs:532 | went out to the strangers' camp |
+| systems/decide.rs:562 | someone |
+| systems/decide.rs:569 | set out to look for {name} |
+| systems/decide.rs:570 | word came they were seen that way |
+| systems/decide.rs:674 | nobody else was doing anything |
+| systems/decide.rs:676 | they knew how, and believe {} |
+| systems/decide.rs:679 | they knew how |
+| systems/decide.rs:696 | went to fight the fire by {} |
+| systems/decide.rs:733 | went after {bname} |
+| systems/decide.rs:734 | it has hurt {hurt} people |
+| systems/decide.rs:793 | starving |
+| systems/decide.rs:795 | parched |
+| systems/decide.rs:797 | exhausted |
+| systems/decide.rs:799 | cold in their sleep |
+| systems/decide.rs:801 | freezing |
+| systems/decide.rs:803 | a pressing need |
+| systems/decide.rs:818 | {}h {:02}m from now |
+| systems/decide.rs:825 | found no way to ({x},{y},{z}); not trying it again for {when} |
+| systems/decide.rs:830 | found no drink standing at ({x},{y},{z}); not going there for water for {when} |
+| systems/decide.rs:835 | gave up on {} for now; back to it {when} |
+| systems/decide.rs:917 | no path |
+| systems/decide.rs:975 | the stores are ours |
+| systems/decide.rs:1238 | no path |
+| systems/decide.rs:1504 | no way there they know of |
+| systems/decide.rs:1506 | in the flood's way |
+| systems/decide.rs:1512 | found no way there lately |
+| systems/decide.rs:1654 | the ground there is under water |
+| systems/decide.rs:1655 | someone else is already at it |
+| systems/decide.rs:1658 | off work since they broke down |
+| systems/decide.rs:1660 | weighs nothing now |
+| systems/decide.rs:2642 | hunger |
+| systems/decide.rs:2647 | thirst |
+| systems/decide.rs:2652 | tiredness |
+| systems/decide.rs:2657 | days of food in store |
+| systems/decide.rs:2662 | night near with no bed or roof |
+| systems/decide.rs:2667 | arrival urge |
+| systems/decide.rs:2672 | leisure weight |
+| systems/decide.rs:2681 | nothing |
 | systems/expedition.rs:191 | to trade {} at {} |
 | systems/expedition.rs:193 | to find {} |
 | systems/expedition.rs:194 | to fetch {} from {} |

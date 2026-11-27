@@ -60,6 +60,8 @@ enum Goal {
     /// Walk with a purpose while something is not secured (#415): back to the group or camp,
     /// or out to where food was found before. The same walk as `Wander`, but not leisure.
     Seek(TilePos),
+    /// Search the ground for water without committing to an unlocated source.
+    SeekWater(TilePos),
     /// Gather from a food plant for the store, not for their own hunger (#415).
     Stock(TilePos),
     Loiter,
@@ -118,6 +120,7 @@ fn goal_words(w: &World, g: &Goal) -> (&'static str, String) {
         Goal::Talk(id, _) => ("talk", format!("talk with {}", who(*id))),
         Goal::Wander(at) => ("wander", format!("wander toward {at}")),
         Goal::Seek(at) => ("keep_together", format!("walk with a purpose to {at}")),
+        Goal::SeekWater(at) => ("drink", format!("look for drinking water near {at}")),
         Goal::Stock(at) => ("stock_the_store", format!("gather for the store at {at}")),
         Goal::Loiter => ("rest_a_moment", "rest a moment".to_string()),
         Goal::Work(did) => {
@@ -571,7 +574,7 @@ pub fn step(w: &mut World) {
         let a = &mut w.agents[i];
         let gate_walk = matches!(
             goal,
-            Some(Goal::Seek(_)) | Some(Goal::Stock(_)) | Some(Goal::Warm(_))
+            Some(Goal::Seek(_) | Goal::SeekWater(_)) | Some(Goal::Stock(_)) | Some(Goal::Warm(_))
         );
         let next = match goal {
             Some(Goal::Search(_, at)) => Activity::Going {
@@ -624,7 +627,7 @@ pub fn step(w: &mut World) {
             },
             Some(Goal::Wander(to)) => Activity::Wandering { to },
             // A walk with a purpose reads as going somewhere, and they think again on arrival.
-            Some(Goal::Seek(to)) => Activity::Going {
+            Some(Goal::Seek(to) | Goal::SeekWater(to)) => Activity::Going {
                 to,
                 then: Box::new(Activity::Loitering {
                     ticks_left: TICKS_PER_MINUTE as u32,
@@ -1015,7 +1018,7 @@ fn choose_band(w: &World, i: usize, r: &mut rand_chacha::ChaCha8Rng) -> Option<G
         }
         if matches!(band.state, crate::threat::BandState::Camped(_)) {
             if let Some(p) = search_for_water(w, i, r) {
-                return Some(Goal::Seek(p));
+                return Some(Goal::SeekWater(p));
             }
         }
     }
@@ -1487,6 +1490,7 @@ fn choose(
             | Goal::Talk(_, t)
             | Goal::Wander(t)
             | Goal::Seek(t)
+            | Goal::SeekWater(t)
             | Goal::Stock(t)
             | Goal::Warm(t)
             | Goal::Flee(t)
@@ -1640,7 +1644,9 @@ fn choose(
         let score = base * emotion * held * taught * mood * disposition;
         // Nor is the gate's ground under water or flooding (#415, safety first).
         let wet = match &g {
-            Goal::Seek(t) | Goal::Stock(t) | Goal::Warm(t) => unsafe_ground(w, *t),
+            Goal::Seek(t) | Goal::SeekWater(t) | Goal::Stock(t) | Goal::Warm(t) => {
+                unsafe_ground(w, *t)
+            }
             _ => false,
         };
         if let Some(c) = trace.as_deref_mut() {
@@ -1788,7 +1794,7 @@ fn choose(
             consider(urgency * dist_discount(s.stand), Goal::Drink(s.stand));
         } else if thirst_p > 0.4 {
             if let Some(p) = search_for_water(w, i, r) {
-                consider(urgency * dist_discount(p), Goal::Seek(p));
+                consider(urgency * dist_discount(p), Goal::SeekWater(p));
             }
         }
     }

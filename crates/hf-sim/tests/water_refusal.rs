@@ -295,6 +295,7 @@ fn a_thirsty_person_can_search_then_recall_an_obscured_pond() {
     assert!(!hf_sim::mind::perception::line_of_sight(
         &w.grid, from, source
     ));
+    w.trace_why(Some(w.agents[i].id));
     thirsty(&mut w, i, 0.15);
     hf_sim::systems::decide::step(&mut w);
     assert!(
@@ -304,6 +305,9 @@ fn a_thirsty_person_can_search_then_recall_an_obscured_pond() {
         "a parched person without a source should set off to search: {:?}",
         w.agents[i].activity
     );
+    let cycle = w.why.as_ref().unwrap().cycles.back().unwrap();
+    assert!(cycle.chosen.starts_with("look for drinking water near "));
+    assert!(cycle.options.iter().any(|o| o.chosen && o.cycle == "drink"));
     let now = w.meta.tick;
     w.agents[i].knowledge.note(
         Known::Water(source),
