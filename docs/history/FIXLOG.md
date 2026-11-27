@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-27 Hask kept pressing a settlement through repeated hardship
+
+A seed-seven settlement qualified for hardship on two successive daily observations.
+All nine members were sick and eight were starving. Hask kept penalizing the harvest
+until day four because the cooldown on a previous sickness reprieve also blocked the
+withdrawal of pressure imposed more recently.
+
+When Hask recognizes hardship, it now ends its active Plenty interventions. Granting
+further relief follows the existing cooldown. The original harvest, cold and aid
+events retain their identities. The seeded replay ends the harvest pressure on its
+second hard day and issues the next reprieve on its original schedule. The tests
+in `tests/pacing_cooldown.rs` also check that one hard day preserves pressure and
+that Aun retains its own intervention durations. Existing saves keep their format.
+A run encountering this sequence can change from the day pressure ends.
+
 ## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
 
 - Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten

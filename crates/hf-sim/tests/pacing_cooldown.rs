@@ -78,3 +78,46 @@ fn repeated_hardship_ends_new_pressure_without_renewing_the_reprieve() {
         (respite.event, respite.until)
     );
 }
+
+#[test]
+fn auns_existing_intervention_keeps_its_own_duration() {
+    let mut w = World::opening_world(7);
+    w.meta.engine = Engine::Steady;
+    w.meta.tick = (w.meta.tick / TICKS_PER_DAY + 1) * TICKS_PER_DAY + 4 * TICKS_PER_HOUR + 11;
+    w.drop_item(ItemKind::Meal, 900, w.communities[0].home);
+    observe_day(&mut w, true);
+    observe_day(&mut w, true);
+    for _ in 0..6 {
+        observe_day(&mut w, false);
+    }
+    let storm = w
+        .deity_answers
+        .iter()
+        .find(|a| a.trigger == Trigger::Plenty && a.lever == Lever::DryStorms)
+        .unwrap()
+        .clone();
+    let count = w
+        .deity_answers
+        .iter()
+        .filter(|a| a.trigger == Trigger::Hardship)
+        .count();
+    assert_eq!(count, 2);
+    for _ in 0..2 {
+        observe_day(&mut w, true);
+    }
+    assert_eq!(w.deity_watch.hard_days, 2);
+    let still_running = w
+        .deity_answers
+        .iter()
+        .find(|a| a.event == storm.event)
+        .unwrap();
+    assert_eq!(still_running.until, storm.until);
+    assert!(still_running.until > w.meta.tick);
+    assert_eq!(
+        w.deity_answers
+            .iter()
+            .filter(|a| a.trigger == Trigger::Hardship)
+            .count(),
+        count
+    );
+}

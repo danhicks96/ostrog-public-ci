@@ -1749,9 +1749,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | deity.rs:197 | fight |
 | deity.rs:197 | killed |
 | deity.rs:197 | stranger |
-| deity.rs:360 | for the killing of {dead}, by {}'s will |
-| deity.rs:397 | the valley |
-| deity.rs:404 | a far place |
+| deity.rs:364 | for the killing of {dead}, by {}'s will |
+| deity.rs:401 | the valley |
+| deity.rs:408 | a far place |
 | delving.rs:67 | iron and copper for the smelter |
 | delving.rs:68 | tin to make bronze |
 | delving.rs:69 | silver or gold to set a gem in |
