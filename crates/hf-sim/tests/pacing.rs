@@ -182,7 +182,9 @@ fn hask_presses_plenty_and_lets_go_of_the_broken() {
     // And nothing to gather: since #415 people with nothing in store go out and gather at once,
     // and a valley with its bushes in fruit was no longer broken for long enough to count.
     w.plants.retain(|p| !p.kind.yields_food());
-    run(&mut w, 3, &mut ev);
+    // Two hard days must be seen before the deity lets go; how many days into the run the first
+    // falls depends on the path the valley took here, so give it room (OST-549).
+    run(&mut w, 5, &mut ev);
     let now = w.meta.tick;
     assert!(
         !w.deity_answers

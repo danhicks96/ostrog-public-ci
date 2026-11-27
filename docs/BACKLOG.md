@@ -210,7 +210,7 @@ Add a `Lonely` thought, appended to the thought list, that appears while an awak
 
 ### OST-1102 · Draw Gourmet and Tidy traits from the genome
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#743](https://github.com/danhicks96/ostrog-public-ci/pull/743)
 
 Draw the Gourmet and Tidy traits from the genome so that people can have them. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
@@ -497,6 +497,22 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 
 **First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
 
+### OST-203 · Use the bounded long-memory term in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#742](https://github.com/danhicks96/ostrog-public-ci/pull/742)
+
+Mood still added every long memory together. It now reads the bounded, fading, habituating term from OST-202.
+
+**Acceptance:** A person with 48 routine meals renewed 200 times has a long term at most 0.2 above the same person with none; the stress and break tests still pass; a FIXLOG entry records the break counts on seeds 1-4.
+
+### OST-204 · Average the recent-memory term in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#746](https://github.com/danhicks96/ostrog-public-ci/pull/746)
+
+The recent-memory part of mood summed ten records and could add up to +2.5. It is now a salience-weighted mean scaled to +-0.3.
+
+**Acceptance:** Ten good meals move mood by at most +0.3, one vivid hardship among nine neutral records still moves it by at least -0.05, and a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-205 · Let the worst need bite in mood
 
 **Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#708](https://github.com/danhicks96/ostrog-public-ci/pull/708)
@@ -544,6 +560,14 @@ Mood's needs term already averages all six needs and takes the lowest (it landed
 Everyone awake near the hearth sits, and any sitter can be the teller, so a four-month-old tells a realm battle. Keep children in the circle as listeners, but let only someone old enough tell: a realm story or an old-valley tale needs the older childhood stage, and a lived belief needs someone of age.
 
 **Acceptance:** A hearth with a three-year-old who alone holds a realm story and two adults who lack it: the child tells nothing over five evenings and is among the listeners of the adults' tellings. A ten-year-old in the same place tells it. A FIXLOG entry is added.
+
+### OST-549 · A grieving person and an angry one break differently
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#745](https://github.com/danhicks96/ostrog-public-ci/pull/745)
+
+The kind of a breakdown ignores what the person feels. Read the cause first and weight the kind by it: anger at someone near brings a fight (else a tantrum), grief a daze, shame withdrawal or walking out, hunger a binge; with no cause the bag is untouched.
+
+**Acceptance:** Over 20 seeds a person over the threshold with grief about a dead friend breaks into a daze at least half the time; with no cause the kind is as before. A FIXLOG entry is added.
 
 ## Waiting on code or measurement
 
