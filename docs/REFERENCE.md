@@ -1398,7 +1398,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3258 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3605,18 +3605,19 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:344 | cold |
 | systems/strain.rs:345 | loneliness |
 | systems/strain.rs:346 | discomfort |
-| systems/strain.rs:542 | from {} |
-| systems/strain.rs:546 | because they were {} |
-| systems/strain.rs:550 | from {n} |
-| systems/strain.rs:606 | {}'s {} |
-| systems/strain.rs:639 | breaking the {label} |
-| systems/strain.rs:667 | eaten in a binge |
-| systems/strain.rs:701 | set by {name} in a rage |
-| systems/strain.rs:781 | wondered where {who} is |
-| systems/strain.rs:782 | the rest of the party is not here |
-| systems/strain.rs:805 | starting a fight |
-| systems/strain.rs:853 | in a fight |
-| systems/strain.rs:878 | in a fight |
+| systems/strain.rs:556 | hunger |
+| systems/strain.rs:594 | from {} |
+| systems/strain.rs:598 | because they were {} |
+| systems/strain.rs:602 | from {n} |
+| systems/strain.rs:658 | {}'s {} |
+| systems/strain.rs:691 | breaking the {label} |
+| systems/strain.rs:719 | eaten in a binge |
+| systems/strain.rs:753 | set by {name} in a rage |
+| systems/strain.rs:833 | wondered where {who} is |
+| systems/strain.rs:834 | the rest of the party is not here |
+| systems/strain.rs:857 | starting a fight |
+| systems/strain.rs:905 | in a fight |
+| systems/strain.rs:930 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
