@@ -39,6 +39,83 @@ struct Crossing {
     radius: i32,
 }
 
+fn regional_level(map: &RealmMap, i: usize) -> f32 {
+    ((map.filled[i] - map.sea_level) / (1.0 - map.sea_level).max(1e-6)).clamp(0.0, 1.0)
+}
+
+fn crossing_grade(map: &RealmMap, upstream: usize, downstream: usize) -> (f32, i32) {
+    let level = (regional_level(map, upstream) + regional_level(map, downstream)) * 0.5;
+    let radius = ((map.flow[upstream].max(1.0) as u32).ilog2() as i32 / 2).clamp(1, 5);
+    (level, radius)
+}
+
+/// The outer part of a mapped diagonal channel in a region beside its two ends.
+/// Distances are measured in tiles inward from the shared corner.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct RiverCorner {
+    direction: (i8, i8),
+    level: f32,
+    radius: i32,
+}
+
+impl RiverCorner {
+    pub fn of_region(map: &RealmMap, region: usize) -> Vec<Self> {
+        let (x, y) = map.xy(region);
+        let mut corners = Vec::new();
+        for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+            let (ux, uy) = (x as i32 + dx, y as i32 + dy);
+            if ux < 0 || uy < 0 || ux >= map.size as i32 || uy >= map.size as i32 {
+                continue;
+            }
+            let u = map.idx(ux as usize, uy as usize);
+            let v = map.down[u];
+            if !map.river[u] || v == usize::MAX || !map.river[v] {
+                continue;
+            }
+            let (vx, vy) = map.xy(v);
+            let (vx, vy) = (vx as i32, vy as i32);
+            if (vx - ux).abs() != 1
+                || (vy - uy).abs() != 1
+                || (vx - x as i32).abs() + (vy - y as i32).abs() != 1
+            {
+                continue;
+            }
+            let (level, radius) = crossing_grade(map, u, v);
+            corners.push(Self {
+                direction: ((dx + vx - x as i32) as i8, (dy + vy - y as i32) as i8),
+                level,
+                radius,
+            });
+        }
+        corners
+    }
+
+    pub(crate) fn lip(&self, p: &GenParams) -> TilePos {
+        TilePos::new(
+            if self.direction.0 < 0 { 0 } else { p.width - 1 },
+            if self.direction.1 < 0 {
+                0
+            } else {
+                p.height - 1
+            },
+            (self.level * p.relief as f32).round() as i32 + 1,
+        )
+    }
+
+    pub(crate) fn water_tiles(&self, p: &GenParams) -> impl Iterator<Item = TilePos> + '_ {
+        let lip = self.lip(p);
+        let (dx, dy) = self.direction;
+        let height = p.height;
+        // On a side quadrant the centre of tile (i,j) is (i+j+1)/sqrt(2)
+        // tiles from the diagonal through the shared vertex.
+        let span = (2 * self.radius * self.radius).isqrt();
+        (0..span.min(p.width)).flat_map(move |i| {
+            (0..(span - i).min(height))
+                .map(move |j| lip.offset(-i * i32::from(dx), -j * i32::from(dy), 0))
+        })
+    }
+}
+
 impl RiverReach {
     pub fn of_region(seed: u64, map: &RealmMap, region: usize) -> Option<Self> {
         let downstream = map.down[region];
@@ -46,17 +123,15 @@ impl RiverReach {
             return None;
         }
         let (cx, cy) = map.xy(region);
-        let level = |i: usize| {
-            ((map.filled[i] - map.sea_level) / (1.0 - map.sea_level).max(1e-6)).clamp(0.0, 1.0)
-        };
         let crossing = |other: usize, upstream: usize, lower: usize| {
             let (x, y) = map.xy(other);
             let shared = hash64(&[seed, purpose::WORLDGEN_WATER, upstream as u64, lower as u64]);
+            let (level, radius) = crossing_grade(map, upstream, lower);
             Crossing {
                 direction: (x as i32 - cx as i32, y as i32 - cy as i32),
                 along_edge: 0.25 + (shared % 1001) as f32 / 2000.0,
-                level: (level(region) + level(other)) * 0.5,
-                radius: ((map.flow[upstream].max(1.0) as u32).ilog2() as i32 / 2).clamp(1, 5),
+                level,
+                radius,
             }
         };
         let mut arms = vec![crossing(downstream, region, downstream)];
@@ -69,7 +144,7 @@ impl RiverReach {
             }
         }
         Some(Self {
-            level: level(region),
+            level: regional_level(map, region),
             arms,
         })
     }

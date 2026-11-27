@@ -46,6 +46,9 @@ pub struct GenParams {
     /// River crossings inherited from the selected realm region. Older saves keep their grid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub river: Option<watershed::RiverReach>,
+    /// River water clipping a corner between two neighboring river regions.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub river_corners: Vec<watershed::RiverCorner>,
     /// A selected region with no mapped river or upstream inflow. Local lakes can still form.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub drainage_divide: bool,
@@ -110,6 +113,7 @@ impl Default for GenParams {
             landform: Landform::Valley,
             place: 0,
             river: None,
+            river_corners: Vec::new(),
             drainage_divide: false,
             ocean: Vec::new(),
         }
@@ -179,9 +183,25 @@ pub fn generate(seed: u64, p: &GenParams) -> Generated {
         .river
         .as_ref()
         .map(|reach| reach.carve(seed, p, &mut grid));
+    // The inherited lip changes its own bed only. Keep the original catchment relief
+    // for the site's independent stream, lake threshold and inland pond outlets.
+    let previous_ground = (!p.river_corners.is_empty()).then(|| grid.ground.clone());
+    for corner in &p.river_corners {
+        for tile in corner.water_tiles(p) {
+            let c = grid.col(tile.x, tile.y);
+            grid.ground[c] = tile.z - 1;
+        }
+    }
     strata::apply(seed, p, &mut grid);
     let ch = biome::Character::resolve(seed, p);
-    let water = hydrology::apply_with_channel(seed, p, &mut grid, &ch, river.as_deref());
+    let water = hydrology::apply_with_channel(
+        seed,
+        p,
+        &mut grid,
+        &ch,
+        river.as_deref(),
+        previous_ground.as_deref(),
+    );
     caves::apply(seed, p, &mut grid);
     caverns::apply(seed, p, &mut grid);
     ores::apply(seed, p, &mut grid);

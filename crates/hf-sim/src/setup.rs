@@ -61,6 +61,7 @@ fn valley_params(
         landform: landform.unwrap_or(regional_landform),
         ocean,
         river: crate::world::gen::watershed::RiverReach::of_region(seed, m, region),
+        river_corners: crate::world::gen::watershed::RiverCorner::of_region(m, region),
         drainage_divide: !m.river[region]
             && !crate::realm::map::neighbours(m.size, region).any(|j| m.down[j] == region),
         place,

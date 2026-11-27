@@ -327,7 +327,22 @@ pub fn survey(w: &mut World) {
         let (y0, y1) = minmax(b.tiles.iter().map(|p| p.y));
         let long = (x1 - x0).max(y1 - y0) + 1;
         let area = b.tiles.len();
-        b.kind = if area >= 12 && long >= 12 && (area as f32) < 2.2 * b.shore.len() as f32 {
+        let regional_stream = w.meta.params.river_corners.iter().any(|corner| {
+            let p = corner.lip(&w.meta.params);
+            // A tiny face of a through-river resembles a pond from this region alone.
+            // A larger connected water body keeps its own surveyed kind and quality.
+            b.tiles.contains(&p)
+                && b.tiles.iter().all(|tile| {
+                    let t = g.get(*tile);
+                    t.is_water()
+                        && t.material == crate::world::Material::WATER
+                        && t.shape == crate::world::Shape::Floor
+                        && corner.water_tiles(&w.meta.params).any(|q| q == *tile)
+                })
+        });
+        b.kind = if regional_stream
+            || area >= 12 && long >= 12 && (area as f32) < 2.2 * b.shore.len() as f32
+        {
             WaterKind::Stream
         } else if area < 40 {
             WaterKind::Pond

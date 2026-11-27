@@ -1,5 +1,14 @@
 # Fix log
 
+## 2026-11-27 Diagonal rivers narrowed to a point between landing sites
+
+When a regional river crossed diagonally, two landing sites aligned their water
+heights but the other two corners stayed dry. Four generated junctions had no
+side-connected water path across the boundary. The neighboring sites now include
+the part of the mapped river that crosses their corners. Its width follows upstream
+flow and its water surface matches the shared crossing height. A surveyed body
+entirely within that small river fragment is recognized as a stream.
+
 ## 2026-11-26 - Pond outlets on inland drainage divides
 
 Dry steppe could gain shallow water on flat ground open to the map edge. Moisture selected pond sites without checking whether the ground could hold a full tile of water. New inland divides now keep pond columns below their lowest outlet. Marshes retain their regional water supply.

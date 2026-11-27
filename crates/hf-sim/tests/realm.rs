@@ -330,6 +330,7 @@ fn each_region_of_the_world_is_its_own_valley() {
             character: Some(unchosen.character),
             landform,
             ocean,
+            river_corners: hf_sim::world::gen::watershed::RiverCorner::of_region(&map, default),
             ..Default::default()
         },
     );

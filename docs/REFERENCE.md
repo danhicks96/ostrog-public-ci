@@ -1844,7 +1844,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | floods.rs:95 | fresh |
 | floods.rs:96 | salt |
 | floods.rs:97 | brackish |
-| floods.rs:627 | carried off by the flood |
+| floods.rs:642 | carried off by the flood |
 | heresy.rs:117 | lost the one who led them |
 | heresy.rs:119 | took the keeping |
 | heresy.rs:157 | came back to the keeper |
@@ -2372,33 +2372,33 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | scenario.rs:835 | scenario |
 | scenario.rs:855 | scenario |
 | scenario.rs:1025 | scenario |
-| setup.rs:75 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
-| setup.rs:81 | A river crosses this region. |
-| setup.rs:83 | A river runs through a neighboring region. |
-| setup.rs:86 | A lake lies in a neighboring region. |
-| setup.rs:90 | The terrain here is {}. |
-| setup.rs:92 | Nobody could live here. |
-| setup.rs:177 | {} and that {last} |
-| setup.rs:177 | , that  |
-| setup.rs:184 | {ch}, on {} |
-| setup.rs:196 | drink ruins people |
-| setup.rs:197 | a drink eases a hard life |
-| setup.rs:198 | no hand is raised in anger |
-| setup.rs:199 | force answers force |
-| setup.rs:200 | a fire is fought |
-| setup.rs:201 | you run from a fire |
-| setup.rs:202 | in hunger, food is shared |
-| setup.rs:203 | in hunger, each keeps their own |
-| setup.rs:204 | strangers are welcome |
-| setup.rs:205 | strangers are a danger |
-| setup.rs:206 | the dead are let go |
-| setup.rs:207 | the living are held close |
-| setup.rs:208 | wrongs are forgiven |
-| setup.rs:209 | trust is earned slowly |
-| setup.rs:353 | character |
-| setup.rs:354 | biome mix |
-| setup.rs:355 | flora draw: |
-| setup.rs:356 | flora not drawn: |
+| setup.rs:76 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
+| setup.rs:82 | A river crosses this region. |
+| setup.rs:84 | A river runs through a neighboring region. |
+| setup.rs:87 | A lake lies in a neighboring region. |
+| setup.rs:91 | The terrain here is {}. |
+| setup.rs:93 | Nobody could live here. |
+| setup.rs:178 | {} and that {last} |
+| setup.rs:178 | , that  |
+| setup.rs:185 | {ch}, on {} |
+| setup.rs:197 | drink ruins people |
+| setup.rs:198 | a drink eases a hard life |
+| setup.rs:199 | no hand is raised in anger |
+| setup.rs:200 | force answers force |
+| setup.rs:201 | a fire is fought |
+| setup.rs:202 | you run from a fire |
+| setup.rs:203 | in hunger, food is shared |
+| setup.rs:204 | in hunger, each keeps their own |
+| setup.rs:205 | strangers are welcome |
+| setup.rs:206 | strangers are a danger |
+| setup.rs:207 | the dead are let go |
+| setup.rs:208 | the living are held close |
+| setup.rs:209 | wrongs are forgiven |
+| setup.rs:210 | trust is earned slowly |
+| setup.rs:354 | character |
+| setup.rs:355 | biome mix |
+| setup.rs:356 | flora draw: |
+| setup.rs:357 | flora not drawn: |
 | shrines.rs:106 | gave up on the shrine |
 | shrines.rs:107 | found no place for it on their own ground |
 | shrines.rs:186 | it burned |
@@ -4654,12 +4654,12 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | world/gen/caverns.rs:78 | Grotto |
 | world/gen/caverns.rs:78 | Undercroft |
 | world/gen/caverns.rs:80 | the {} {} |
-| world/gen/mod.rs:77 | a valley |
-| world/gen/mod.rs:78 | a plain |
-| world/gen/mod.rs:79 | a plateau |
-| world/gen/mod.rs:80 | a ridge |
-| world/gen/mod.rs:81 | a coast |
-| world/gen/mod.rs:82 | a marsh |
+| world/gen/mod.rs:80 | a valley |
+| world/gen/mod.rs:81 | a plain |
+| world/gen/mod.rs:82 | a plateau |
+| world/gen/mod.rs:83 | a ridge |
+| world/gen/mod.rs:84 | a coast |
+| world/gen/mod.rs:85 | a marsh |
 | world/gen/mouths.rs:210 | mouths: want {want}, {} cave cells near, {} faces |
 | world/gen/mouths.rs:238 | mouths: {found} routes found, {failed} failed the walk, {apart} too near another, {} cut |
 

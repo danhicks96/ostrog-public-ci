@@ -14,7 +14,7 @@ use crate::world::{Material, Shape, Tile, TileFlags, WorldGrid};
 /// Lowest height water must cross to leave each column. Flood inward from the map edges
 /// using the same four cardinal neighbors as surface-water bodies. The bed and water in
 /// the live grid occupy whole tiles, so a sub-tile hollow cannot hold a tile of water.
-fn outlet_heights(grid: &WorldGrid) -> Vec<i32> {
+fn outlet_heights(grid: &WorldGrid, heights: &[i32]) -> Vec<i32> {
     use std::cmp::Reverse;
     use std::collections::BinaryHeap;
 
@@ -24,7 +24,7 @@ fn outlet_heights(grid: &WorldGrid) -> Vec<i32> {
         for x in 0..grid.width {
             if x == 0 || y == 0 || x == grid.width - 1 || y == grid.height - 1 {
                 let c = grid.col(x, y);
-                outlet[c] = grid.ground[c];
+                outlet[c] = heights[c];
                 front.push(Reverse((outlet[c], x, y)));
             }
         }
@@ -36,7 +36,7 @@ fn outlet_heights(grid: &WorldGrid) -> Vec<i32> {
             }
             let c = grid.col(xx, yy);
             if outlet[c] == i32::MAX {
-                outlet[c] = level.max(grid.ground[c]);
+                outlet[c] = level.max(heights[c]);
                 front.push(Reverse((outlet[c], xx, yy)));
             }
         }
@@ -45,7 +45,7 @@ fn outlet_heights(grid: &WorldGrid) -> Vec<i32> {
 }
 
 pub fn apply(seed: u64, p: &GenParams, grid: &mut WorldGrid, ch: &Character) -> Vec<bool> {
-    apply_with_channel(seed, p, grid, ch, None)
+    apply_with_channel(seed, p, grid, ch, None, None)
 }
 
 pub(super) fn apply_with_channel(
@@ -54,17 +54,24 @@ pub(super) fn apply_with_channel(
     grid: &mut WorldGrid,
     ch: &Character,
     river: Option<&[bool]>,
+    previous_ground: Option<&[i32]>,
 ) -> Vec<bool> {
     let s = hash64(&[seed, purpose::WORLDGEN_WATER]);
     let n = (p.width * p.height) as usize;
     let mut water = vec![false; n];
     let mut lake = vec![false; n];
+    for corner in &p.river_corners {
+        for tile in corner.water_tiles(p) {
+            water[grid.col(tile.x, tile.y)] = true;
+        }
+    }
+    let heights = previous_ground.unwrap_or(&grid.ground);
     let sea = p.sea_level_fraction * (1.0 + 0.5 * ch.wetness);
     let scale = 1.0 / (p.width.max(p.height) as f32 * 0.5);
     // Lakes fill the valley's lowest ground: the lowest level that holds at least one column
     // in twenty (a handful of columns at a lower level would make only puddles).
     let lake_level = {
-        let mut zs: Vec<i32> = grid.ground.clone();
+        let mut zs = heights.to_vec();
         zs.sort_unstable();
         zs[(zs.len() / 20).min(zs.len() - 1)]
     };
@@ -74,7 +81,7 @@ pub(super) fn apply_with_channel(
         && river.is_none()
         && p.ocean.is_empty()
         && p.landform != super::Landform::Marsh)
-        .then(|| outlet_heights(grid));
+        .then(|| outlet_heights(grid, heights));
     // A meandering stream: a band around a noisy curve across the map.
     for y in 0..p.height {
         for x in 0..p.width {
@@ -106,7 +113,7 @@ pub(super) fn apply_with_channel(
                 && !p.ocean.is_empty()
                 && g == 0
                 && p.shore_distance(x as f32 / p.width as f32, y as f32 / p.height as f32) < 0.2;
-            if stream || is_lake || ocean {
+            if stream || is_lake || ocean || water[grid.col(x, y)] {
                 let c = grid.col(x, y);
                 water[c] = true;
                 lake[c] = is_lake || ocean;
@@ -244,7 +251,7 @@ mod tests {
         }
         let edge = grid.col(6, 2);
         grid.ground[edge] = 0;
-        let outlet = outlet_heights(&grid);
+        let outlet = outlet_heights(&grid, &grid.ground);
         assert_eq!(outlet[basin], 1);
         assert_eq!(outlet[flats], grid.ground[flats]);
         assert_eq!(outlet[edge], grid.ground[edge]);
