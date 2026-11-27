@@ -188,7 +188,12 @@ fn committed_drinker_rechecks_a_foul_shore_before_the_last_sip() {
     #[derive(Clone, Copy)]
     enum Alternative {
         Reachable,
-        Unknown,
+        Visible,
+        Occluded,
+        Foul,
+        Salt,
+        VisibleWell,
+        StockedBarrel,
         Dried,
         CoolingDown,
         Sealed,
@@ -198,7 +203,13 @@ fn committed_drinker_rechecks_a_foul_shore_before_the_last_sip() {
     for (recognized, alternative, thirst, refuses) in [
         (true, Reachable, 0.67, true),
         (false, Reachable, 0.67, false),
-        (true, Unknown, 0.67, false),
+        (true, Visible, 0.67, true),
+        (true, Visible, 0.20, false),
+        (true, Occluded, 0.67, false),
+        (true, Foul, 0.67, false),
+        (true, Salt, 0.67, false),
+        (true, VisibleWell, 0.67, true),
+        (true, StockedBarrel, 0.67, false),
         (true, Dried, 0.67, false),
         (true, CoolingDown, 0.67, false),
         (true, Sealed, 0.67, false),
@@ -207,7 +218,7 @@ fn committed_drinker_rechecks_a_foul_shore_before_the_last_sip() {
     ] {
         let mut w = flat(4561);
         w.grid.set(foul, water_tile());
-        if !matches!(alternative, Dried) {
+        if !matches!(alternative, Dried | VisibleWell | StockedBarrel) {
             w.grid.set(clean, water_tile());
         }
         if matches!(alternative, Sealed) {
@@ -217,6 +228,18 @@ fn committed_drinker_rechecks_a_foul_shore_before_the_last_sip() {
                         .set(clean.offset(dx, dy, dz), Tile::solid(Material::GRANITE));
                 }
             }
+        }
+        if matches!(alternative, Occluded) {
+            w.grid
+                .set(bank.offset(1, 0, 0), Tile::solid(Material::GRANITE));
+        }
+        if matches!(alternative, VisibleWell) {
+            w.place_structure(
+                hf_sim::structures::StructureKind::Well,
+                clean,
+                Material::GRANITE,
+                false,
+            );
         }
         if matches!(alternative, WellHere) {
             w.place_structure(
@@ -240,13 +263,32 @@ fn committed_drinker_rechecks_a_foul_shore_before_the_last_sip() {
             ticks_left: 2,
             back: None,
         };
-        if !matches!(alternative, Unknown) {
+        if matches!(
+            alternative,
+            Reachable | Dried | CoolingDown | Sealed | WellHere | Foul | Salt
+        ) {
             a.knowledge.note(
                 Known::Water(clean),
                 clean,
                 w.meta.tick,
-                floods::TAG_WATER_FRESH,
+                match alternative {
+                    Foul => floods::TAG_WATER_FOUL,
+                    Salt => floods::TAG_WATER_SALT,
+                    _ => floods::TAG_WATER_FRESH,
+                },
             );
+        }
+        if matches!(alternative, StockedBarrel) {
+            // The known surface water is close enough that a household keeps its barrel in reserve.
+            w.communities[0].home = clean;
+            w.communities[0].water = 5;
+            w.place_structure(
+                hf_sim::structures::StructureKind::Barrel,
+                clean,
+                Material::WOOD,
+                false,
+            );
+            assert_eq!(water::barrel(&w, clean), Some(clean));
         }
         if matches!(alternative, CoolingDown) {
             let stand = water::spots(&w, bank, 60)

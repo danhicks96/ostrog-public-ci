@@ -2710,7 +2710,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | underground.rs:559 | since they touched the underworld's rock in {} |
 | underground.rs:608 | deep_caverns |
 | water.rs:78 | a stand at {stand} does not reach {source} (#608) |
-| water.rs:532 | the flux from foul water |
+| water.rs:530 | the flux from foul water |
 | wells.rs:96 | found no place by home to dig it |
 | wells.rs:134 | dug {MAX_DEPTH} levels down and found no water |
 | wells.rs:150 | dug {depth} levels down to the hard rock and found it dry |

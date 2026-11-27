@@ -1,5 +1,13 @@
 # Fix log
 
+## 2026-11-27 — A drinker could overlook a visible alternative to foul water
+
+Ordric knew the water at his feet was foul. A fresh pond five tiles away was in sight, but
+he drank and caught the flux. The final sip only checked alternatives stored in memory,
+although the planner could see the other pond. A drinker reconsidering a known foul source
+now uses the same visible or remembered locations as the planner. A desperate person can
+still take the water at hand.
+
 ## 2026-11-26 - Looking for water while hungry
 
 A thirsty settler could pass a meal in hand and go hungry because walking somewhere to look for water scored as highly as a drink. Looking now uses the same urgency as searching for food. Camped visitors can eat their carried food and rest before setting out to look. Someone on high ground can also follow an open, dry step downhill and discover drinking water from the next level.

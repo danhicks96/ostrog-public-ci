@@ -408,14 +408,12 @@ pub(crate) enum DrinkResult {
 }
 
 /// Reuse the planner's live candidates (including wells, melted snow and barrel stores).
-/// Reconsider a committed drink once, at the last sip, and only for a place the person
-/// remembers. A remembered shore that froze, dried or became unreachable cannot help.
+/// At the last sip, the person can turn to water they remember or can see. A shore
+/// that froze, dried or became unreachable cannot help.
 fn known_alternative(w: &World, i: usize, at: TilePos) -> bool {
     let a = &w.agents[i];
     let Some(nav) = &w.nav else { return false };
-    let sites = spots_for(w, at, 60, true, |key, p| {
-        a.knowledge.get(key).is_some_and(|b| b.pos == p)
-    });
+    let sites = located_spots(w, a, &a.knowledge, at, 60, true);
     candidates(w, sites).into_iter().any(|s| {
         a.work_cooldowns
             .get(&dry_key(s.stand))
