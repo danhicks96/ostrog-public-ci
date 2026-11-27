@@ -1719,9 +1719,16 @@ func _update_inspect() -> void:
 			view.species_art = sim.species_art()
 		portrait.show_person(row, view.species_art.get(row[22], {}))
 	var s := "[b]%s[/b]  %s, %d years\n%s\n" % [d["name"], d["species"], d["age"], d["activity"]]
-	var top_because := Rules.inspect_because_line(d)
-	if top_because != "":
-		s += "[color=#d8c8a0]%s[/color]\n" % top_because
+	var activity_detail: String = d.get("activity_detail", "")
+	if activity_detail != "":
+		s += "[color=#d8c8a0]%s[/color]\n" % activity_detail
+	var choice := Rules.inspect_decision_line(d)
+	if choice != "":
+		s += "[color=#d8c8a0]%s[/color]\n" % choice
+	s += "Mood: %s" % d.get("mood_word", "")
+	if d.get("why", "") != "":
+		s += " — %s" % d["why"]
+	s += "\n"
 	if why_open:
 		s += Rules.format_why(d) + "\n"
 	if d.has("kind"):
@@ -1774,10 +1781,6 @@ func _update_inspect() -> void:
 		s += "customs:\n"
 		for c in d["customs"]:
 			s += "  [color=#d9c9a8]%s[/color]\n" % c
-	s += "mood: %s" % d.get("mood_word", "")
-	# Why (#292): the thoughts pushing the mood its way, and what they feel most.
-	if d.get("why", "") != "": s += ", because: %s" % d["why"]
-	s += "\n"
 	if d.get("feeling", "") != "": s += "feels: %s\n" % d["feeling"]
 	# On their mind (#1418): each thought with its sign, strongest first.
 	s += Rules.format_moodlets(d.get("thoughts", []))

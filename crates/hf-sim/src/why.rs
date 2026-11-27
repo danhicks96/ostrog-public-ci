@@ -106,6 +106,8 @@ pub struct WhyTrace {
     pub agent: AgentId,
     pub cycles: VecDeque<Cycle>,
     pub percepts: VecDeque<Percept>,
+    // Only the most recent failed plan for this person, from the actual event.
+    last_failure: Option<(u64, String, String)>,
 }
 
 impl WhyTrace {
@@ -114,7 +116,30 @@ impl WhyTrace {
             agent,
             cycles: VecDeque::new(),
             percepts: VecDeque::new(),
+            last_failure: None,
         }
+    }
+
+    pub(crate) fn observe_failures(&mut self, events: &[crate::events::Event]) {
+        for event in events.iter().rev() {
+            match &event.kind {
+                crate::events::EventKind::PlanFailed {
+                    agent,
+                    goal,
+                    reason,
+                } if *agent == self.agent => {
+                    self.last_failure = Some((event.tick, goal.clone(), reason.clone()));
+                    return;
+                }
+                _ => {}
+            }
+        }
+    }
+
+    /// Only the failure at the start of this idle activity can explain its pause.
+    pub fn failure_at(&self, agent: AgentId, start: u64) -> Option<(&str, &str)> {
+        let (tick, goal, reason) = self.last_failure.as_ref()?;
+        (agent == self.agent && *tick == start).then_some((goal.as_str(), reason.as_str()))
     }
 
     /// Keep a percept, dropping the oldest past the cap (#569).
@@ -258,7 +283,12 @@ impl crate::world_state::World {
         match agent {
             None => self.why = None,
             Some(id) if self.why.as_ref().is_some_and(|t| t.agent == id) => {}
-            Some(id) => self.why = Some(WhyTrace::new(id)),
+            Some(id) => {
+                let mut trace = WhyTrace::new(id);
+                // The selection can land on the failure tick, including in a paused save.
+                trace.observe_failures(&self.last_events);
+                self.why = Some(trace);
+            }
         }
     }
 

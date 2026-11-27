@@ -1428,9 +1428,12 @@ func test_readability_feed_rate_because_lines_and_first_run_hints() -> void:
 	check(already.contains("★ ") and already.count("because") == 1, "feed line never duplicates an inline because-clause: %s" % already)
 
 	# Panel & hover because-lines from simulation read models.
-	check(Rules.inspect_because_line({"why_cycles": [{"because": PackedStringArray(["hunger was pressing", "stew was near"])}], "why": "hungry"}) == "because: hunger was pressing, stew was near", "inspect_because_line prefers traced decision reasons")
-	check(Rules.inspect_because_line({"why": "slept on the ground, a quarrel"}) == "because: slept on the ground, a quarrel", "inspect_because_line uses mood why")
-	check(Rules.inspect_because_line({"why": "", "feeling": "afraid of Greyjaw"}) == "because: feels afraid of Greyjaw", "inspect_because_line falls back to feeling")
+	var cycle := {"when": "Autumn day 2 10:00", "chosen": "seek a meal", "because": PackedStringArray(["hunger was pressing", "stew was near"])}
+	var inspected := {"why_traced": true, "why_cycles": [cycle], "activity": "standing about", "why": "ate well"}
+	check(Rules.inspect_decision_line(inspected) == "Last traced choice (Autumn day 2 10:00): seek a meal — hunger was pressing, stew was near", "recorded reasons belong to the named, dated decision")
+	inspected.why_traced = false
+	check(Rules.inspect_decision_line(inspected) == "", "untraced decisions are not shown")
+	check(Rules.inspect_decision_line({"why": "ate well", "feeling": "afraid", "reaction_trace": [{"problem": "wetness"}]}) == "", "mood, feeling and reaction cannot explain a current action")
 	var fav_row := Rules.format_favourite_row({"name": "Ada", "community": "Ashcross", "alive": true, "where": "at (10, 10, z1)", "activity": "resting", "why": "slept on the ground", "feeling": ""})
 	check(fav_row.contains("— because: slept on the ground"), "favourite row includes because-line: %s" % fav_row)
 	var hov := Rules.format_hover({"name": "Ada", "activity": "working", "why": "warm meal", "feeling": ""})

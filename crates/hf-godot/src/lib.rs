@@ -36,6 +36,41 @@ fn rendered_shape(w: &World, a: &hf_sim::agents::Agent) -> hf_sim::agents::Speci
     }
 }
 
+/// Describe the current commitment. Only the recorded failure at the start
+/// of this person's idle pause can explain why they stopped.
+fn inspect_activity(w: &World, a: &hf_sim::agents::Agent) -> (String, String) {
+    use hf_sim::mind::Activity;
+    let activity = &a.activity;
+    if !a.alive {
+        return (activity.describe(), String::new());
+    }
+    match activity {
+        Activity::Going { then, .. } if matches!(then.as_ref(), Activity::Idle) => {
+            // Water trips and funeral rites both use this walk.
+            ("walking".into(), String::new())
+        }
+        Activity::Drinking { .. } => (activity.describe(), "Goal: quench thirst".into()),
+        Activity::Going { then, .. } if matches!(then.as_ref(), Activity::Drinking { .. }) => {
+            ("walking to water".into(), "Goal: quench thirst".into())
+        }
+        Activity::Idle => {
+            let failure = w
+                .meta
+                .tick
+                .checked_sub(u64::from(a.activity_ticks))
+                .and_then(|start| w.why.as_ref()?.failure_at(a.id, start));
+            let detail = failure
+                .map(|(goal, reason)| match goal {
+                    "drinking" => format!("Did not drink: {reason}"),
+                    _ => format!("Stopped {goal}: {reason}"),
+                })
+                .unwrap_or_default();
+            (activity.describe(), detail)
+        }
+        _ => (activity.describe(), String::new()),
+    }
+}
+
 fn person_pose(w: &World, a: &hf_sim::agents::Agent, carrying: bool, body: Option<i32>) -> i32 {
     // FIXLOG 2026-10-31, #485 first slice: do not let a recent wound or a new social/eating
     // pose erase movement, combat or the dead-body presentation selected by the existing rules.
@@ -1893,10 +1928,9 @@ impl SimHost {
         } else {
             format!("at ({}, {}, z{} — {rel_z})", a.pos.x, a.pos.y, a.pos.z)
         };
-        d.set(
-            "activity",
-            &GString::from(format!("{} — {where_str}", a.activity.describe()).as_str()),
-        );
+        let (activity, detail) = inspect_activity(w, a);
+        d.set("activity", format!("{activity} — {where_str}").as_str());
+        d.set("activity_detail", detail.as_str());
         d.set("surface_z", surf);
         d.set("where", &GString::from(where_str.as_str()));
         d.set("activity_ticks", a.activity_ticks as i64);
@@ -3955,6 +3989,62 @@ mod tests {
     use super::*;
     use hf_sim::ids::ItemId;
     use hf_sim::mind::Activity;
+
+    #[test]
+    fn inspect_failure_belongs_to_the_person_and_the_current_pause() {
+        use hf_sim::events::{Event, EventKind};
+        use hf_sim::ids::EventId;
+        use hf_sim::mind::Activity;
+        let mut w = World::opening_world(3);
+        let id = w.agents[0].id;
+        w.meta.tick = 100;
+        w.agents[0].activity = Activity::Idle;
+        w.agents[0].activity_ticks = 0;
+        let failure = Event {
+            id: EventId(123),
+            tick: 100,
+            at: Some(w.agents[0].pos),
+            severity: Severity::Trace,
+            kind: EventKind::PlanFailed {
+                agent: id,
+                goal: "drinking".into(),
+                reason: "remembered foul water; another source is within reach".into(),
+            },
+        };
+        w.last_events = vec![failure.clone()];
+        w.trace_why(Some(w.agents[1].id));
+        assert!(inspect_activity(&w, &w.agents[0]).1.is_empty());
+        w.trace_why(Some(id));
+        assert!(inspect_activity(&w, &w.agents[0])
+            .1
+            .contains("remembered foul water"));
+        w.last_events.clear();
+        w.meta.tick += 1;
+        w.agents[0].activity_ticks += 1;
+        assert!(inspect_activity(&w, &w.agents[0])
+            .1
+            .contains("remembered foul water"));
+        w.agents[0].activity_ticks = 0;
+        assert!(inspect_activity(&w, &w.agents[0]).1.is_empty());
+        w.agents[0].activity = Activity::Drinking {
+            ticks_left: 1,
+            back: None,
+        };
+        assert_eq!(inspect_activity(&w, &w.agents[0]).1, "Goal: quench thirst");
+        w.agents[0].activity = Activity::Going {
+            to: w.agents[0].pos,
+            then: Box::new(Activity::Idle),
+        };
+        assert_eq!(
+            inspect_activity(&w, &w.agents[0]),
+            ("walking".into(), String::new())
+        );
+        w.trace_why(None);
+        w.trace_why(Some(id));
+        w.events.pending.push(failure);
+        hf_sim::systems::flush::step(&mut w);
+        assert!(w.why.as_ref().unwrap().failure_at(id, 100).is_some());
+    }
 
     /// FIXLOG 2026-11-14: the HUD counts a community's people away as the People panel does,
     /// everyone of it in another place, not only caravan members.

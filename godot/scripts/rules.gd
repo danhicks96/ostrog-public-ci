@@ -705,26 +705,24 @@ static func toast_again(nth: int, first: int, tick: int) -> String:
 	var ord := "%d%s" % [nth, "nd" if nth == 2 else ("rd" if nth == 3 else "th")]
 	return "(again, the %s time in %d day%s)" % [ord, days, "" if days == 1 else "s"]
 
-## The simulation-backed because-line for an inspected person (#413 A5): latest traced decision
-## reason, or mood thoughts (`why`), or strongest feeling (`feeling`), or recent reaction trace.
-static func inspect_because_line(d: Dictionary) -> String:
+## A decision trace can outlive the action it chose. Keep its choice, recorded
+## reasons and time together rather than assigning those reasons to the current action.
+static func inspect_decision_line(d: Dictionary) -> String:
 	var cycles: Array = d.get("why_cycles", [])
-	if cycles.size() > 0:
-		var c: Dictionary = cycles[0]
-		var reasons: PackedStringArray = c.get("because", PackedStringArray())
-		if reasons.size() > 0:
-			return "because: " + ", ".join(reasons)
-	var why_txt := String(d.get("why", "")).strip_edges()
-	if why_txt != "":
-		return "because: " + why_txt
-	var feel_txt := String(d.get("feeling", "")).strip_edges()
-	if feel_txt != "":
-		return "because: feels " + feel_txt
-	var trace: Array = d.get("reaction_trace", [])
-	if trace.size() > 0:
-		var r: Dictionary = trace[0]
-		return "because: noticed %s (%s)" % [r.get("problem", ""), r.get("reaction", "")]
-	return ""
+	if not d.get("why_traced", false) or cycles.is_empty():
+		return ""
+	var cycle: Dictionary = cycles[0]
+	var choice := String(cycle.get("chosen", "")).strip_edges()
+	if choice.is_empty():
+		return ""
+	var when := String(cycle.get("when", ""))
+	if when.is_empty() and cycle.has("tick"):
+		when = "tick %d" % int(cycle["tick"])
+	var line := "Last traced choice: %s" % choice if when.is_empty() else "Last traced choice (%s): %s" % [when, choice]
+	var reasons: PackedStringArray = cycle.get("because", PackedStringArray())
+	if not reasons.is_empty():
+		line += " — " + ", ".join(reasons)
+	return line
 
 ## Format a favourite inhabitant's row for the Favourites panel, including their because-line (#413 A5).
 static func format_favourite_row(d: Dictionary) -> String:
