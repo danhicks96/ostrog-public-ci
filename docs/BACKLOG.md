@@ -106,7 +106,7 @@ Add a `Lonely` thought, appended to the thought list, that appears while an awak
 
 ### OST-1102 · Draw Gourmet and Tidy traits from the genome
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#743](https://github.com/danhicks96/ostrog-public-ci/pull/743)
 
 Draw the Gourmet and Tidy traits from the genome so that people can have them. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
@@ -448,6 +448,14 @@ Mood's needs term already averages all six needs and takes the lowest (it landed
 Everyone awake near the hearth sits, and any sitter can be the teller, so a four-month-old tells a realm battle. Keep children in the circle as listeners, but let only someone old enough tell: a realm story or an old-valley tale needs the older childhood stage, and a lived belief needs someone of age.
 
 **Acceptance:** A hearth with a three-year-old who alone holds a realm story and two adults who lack it: the child tells nothing over five evenings and is among the listeners of the adults' tellings. A ten-year-old in the same place tells it. A FIXLOG entry is added.
+
+### OST-549 · A grieving person and an angry one break differently
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+The kind of a breakdown ignores what the person feels. Read the cause first and weight the kind by it: anger at someone near brings a fight (else a tantrum), grief a daze, shame withdrawal or walking out, hunger a binge; with no cause the bag is untouched.
+
+**Acceptance:** Over 20 seeds a person over the threshold with grief about a dead friend breaks into a daze at least half the time; with no cause the kind is as before. A FIXLOG entry is added.
 
 ## Waiting on code or measurement
 
