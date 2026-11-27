@@ -121,7 +121,7 @@
   },
   {
     "path": "tools/art/expressive_biped.py",
-    "sha256": "235ef5a27ba7426064e4aca47fe0e169b9b864d7b36e5137e5e6570fcf35787d"
+    "sha256": "741b10f0b9c2fa217b05d334be3fbd23c4e40c9250214b39ac07d80d66b24f3a"
   },
   {
     "path": "tools/art/fallback/generate.py",
@@ -185,7 +185,7 @@
   },
   {
     "path": "tools/art/people.py",
-    "sha256": "4bf741373c70f8907673f95404dd8cd99e3edd3776f5154c8bdca4e8eb358116"
+    "sha256": "d07beb956ca3e5aab50940393a3b8e22cfe082b43bd1422e0cd2b9bb0f8c9197"
   },
   {
     "path": "tools/art/people_contact.py",
@@ -209,7 +209,7 @@
   },
   {
     "path": "tools/art/provenance.toml",
-    "sha256": "72605e56dc23018f3cf022a3050b7f3e91925198709fdfc4c883e96e7b1494d2"
+    "sha256": "c4174dc92a6977e2ccf1aaed57150b420e0b47927a12824d1f631d42eddc51f6"
   },
   {
     "path": "tools/art/provenance_check.py",
@@ -217,7 +217,7 @@
   },
   {
     "path": "tools/art/provenance_people.toml",
-    "sha256": "180f0ef031fe0a11ecfc956c30ada51fdd1f6959f0861d7cc3acee06eb74ee04"
+    "sha256": "df87a7cae63f5aeb2e0b38dab174ad7c8d2cbed68bc9d9350a91ed6e85048ac5"
   },
   {
     "path": "tools/art/provenance_report.py",

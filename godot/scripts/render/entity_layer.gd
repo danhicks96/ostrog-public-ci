@@ -668,6 +668,9 @@ func dress_person(p: Node2D, A: PackedInt32Array, i: int, carry_kind: int) -> St
 		layers[2][1] = "people/expressive_bowl_hair.png"
 		if v.OUTFIT[A[i + 10] % 8] == "vest":
 			layers[1][1] = "people/expressive_bowl_clothing.png"
+	elif body_set == "human" and ba == "broad_adult" and A[i + 8] % 10 == 2:
+		layers[0][1] = "people/expressive_long_body.png"
+		layers[2][1] = "people/expressive_long_hair.png"
 	for l in layers:
 		var s: Sprite2D = p.get_node(l[0])
 		s.texture = v._swapped(l[1], l[2], l[3])

@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Broad adults with long hair
+
+Broad adult humans with long hair now have a detailed face and shoulder-length waves fitted to their existing rig. Clothes, hand-held loads and wound overlays keep their original placement. Rosun's walking, limestone-hauling and recovery saves show the appearance in both renderers. Children and other body sets retain their own sheets.
+
 ## 2026-11-26 - Rosun’s untreated arm bruise
 
 Rosun wore a forehead bandage in Ashcross while his only wound was an untreated right-arm bruise. The world and inspect portrait now consult the wound record before drawing that dressing. The human sprite shows the bruise on the exposed forearm in the appropriate poses, beneath clothing and equipment. Human robe cuffs now leave the end of each hand visible at its grip. The untreated bruise mark clears when the wound is treated or heals.

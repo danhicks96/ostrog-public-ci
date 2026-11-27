@@ -10820,6 +10820,20 @@ generator = "tools/art/people.py"
 licence = "project-original"
 
 [[asset]]
+path = "godot/assets/people/expressive_long_body.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
+path = "godot/assets/people/expressive_long_hair.png"
+kind = "people"
+source = "generated"
+generator = "tools/art/people.py"
+licence = "project-original"
+
+[[asset]]
 path = "godot/assets/people/hair_01.png"
 kind = "people"
 source = "generated"

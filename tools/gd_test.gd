@@ -935,6 +935,46 @@ func test_expressive_biped_layers_follow_the_same_cell_and_reuse() -> void:
 	entities.free()
 	world.free()
 
+func test_long_hair_on_the_broad_rig_keeps_the_load_at_the_hands() -> void:
+	var world := WorldView.new()
+	world.assets = preload("res://scripts/assets.gd").new()
+	world.species_art = {0: {"body": "human", "plan": "biped"}, 1: {"body": "hollin", "plan": "biped"}}
+	var entities := preload("res://scripts/render/entity_layer.gd").new()
+	entities.v = world
+	var person := entities._new_person(entities)
+	var appearance := PackedInt32Array()
+	appearance.resize(world.AGENT_STRIDE)
+	appearance[6] = 2 # broad build
+	appearance[19] = -1
+	var ordinary_hands: Image
+	for variant in ["short hair", "long hair", "child", "hollin"]:
+		appearance[8] = 0 if variant == "short hair" else 2
+		appearance[16] = 1 if variant == "child" else 0
+		appearance[22] = 1 if variant == "hollin" else 0
+		var plan := entities.dress_person(person, appearance, 0, 7)
+		entities.set_person_frame(person, plan, entities.P_CARRY, 0)
+		var expected := 96 if variant == "long hair" else 48
+		for layer_name in ["body", "hair"]:
+			var layer: Sprite2D = person.get_node(layer_name)
+			check(layer.visible and layer.region_rect.size == Vector2(expected, expected),
+					variant + " selects the fitted " + layer_name + " cell")
+			check(layer.region_rect.size * layer.scale == Vector2(48, 48),
+					variant + " keeps the logical rig size")
+		if variant in ["short hair", "long hair"]:
+			var body: Sprite2D = person.get_node("body")
+			var skin := body.texture.get_image().get_region(Rect2i(body.region_rect))
+			skin.resize(48, 48, Image.INTERPOLATE_NEAREST)
+			# Compare the band of skin alongside the held load in logical coordinates.
+			var anchor := Vector2i(entities._carry_at(0, plan) - body.offset * body.scale)
+			var hands := skin.get_region(Rect2i(anchor + Vector2i(-6, 2), Vector2i(26, 8)))
+			if variant == "short hair":
+				ordinary_hands = hands
+				check(hands.get_used_rect().has_area(), "the load anchor includes skin")
+			else:
+				check(hands.get_data() == ordinary_hands.get_data(), "the broad hands still meet the load")
+	entities.free()
+	world.free()
+
 func test_arm_bruise_follows_side_and_clears_when_pooled() -> void:
 	var world := WorldView.new()
 	world.assets = preload("res://scripts/assets.gd").new()

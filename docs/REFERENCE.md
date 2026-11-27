@@ -5737,7 +5737,7 @@ row. Policy and counts: ASSETS.md.
 
 #### godot/assets/people/
 
-<details><summary>2158 files (click to open)</summary>
+<details><summary>2160 files (click to open)</summary>
 
 | file | pixels | layout | generator |
 |---|---|---|---|
@@ -7004,6 +7004,8 @@ row. Policy and counts: ASSETS.md.
 | expressive_bowl_body.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
 | expressive_bowl_clothing.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
 | expressive_bowl_hair.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_long_body.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
+| expressive_long_hair.png | 4608x384 | 48 frames x 4 directions; 96 px per 48-unit logical cell | tools/art/people.py |
 | hair_01.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | hair_01_amphibious_average_adult.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |
 | hair_01_amphibious_average_child.png | 2304x192 | 72 columns x 6 rows (rows S, W, E, N) | tools/art/people.py |

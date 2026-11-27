@@ -41,7 +41,7 @@ treated as shippable project art.
 
 | Status | Count | Notes |
 |---|---|---|
-| Generated | 2902 | all under `godot/assets/`, licence `project-original`, regenerable from `tools/art/*.py` |
+| Generated | 2904 | all under `godot/assets/`, licence `project-original`, regenerable from `tools/art/*.py` |
 | Derived | 0 | none in this fallback rehearsal |
 | Sourced | 0 | no third-party art or sound ships; no attribution file is owed |
 | Hand-pixelled | 0 | |

@@ -796,7 +796,7 @@ def layout(folder, name, w, h):
         if m:
             return f'growth stage {m.group(2)} of 0..3'
         return 'single image'
-    if folder == 'people' and base.startswith(('expressive_bowl_', 'overlay_bruise_')):
+    if folder == 'people' and base.startswith(('expressive_', 'overlay_bruise_')):
         cell = h // 4
         return f'{w // cell} frames x 4 directions; {cell} px per 48-unit logical cell'
     if folder == 'people':

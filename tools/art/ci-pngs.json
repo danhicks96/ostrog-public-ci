@@ -5924,6 +5924,14 @@
     "sha256": "7967be238ce0516e7eb00c7a5e54214a69c45c6de5deb7f1248a756900ddf4cd"
   },
   {
+    "path": "godot/assets/people/expressive_long_body.png",
+    "sha256": "ac264c50f94c33676ffe2ec2fa579f8b10c9cc77a070e3cd03e920bf04eab0c5"
+  },
+  {
+    "path": "godot/assets/people/expressive_long_hair.png",
+    "sha256": "07c17b3abb960405179eed674baa992158c04ed6a07c126da599581967d35c41"
+  },
+  {
     "path": "godot/assets/people/hair_01.png",
     "sha256": "d5b80b0ba74eb6e019d5da6ec38483fa2afdda542efde26d2b58f206d6884fdc"
   },
