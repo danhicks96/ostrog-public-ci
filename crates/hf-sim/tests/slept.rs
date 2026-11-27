@@ -140,3 +140,56 @@ fn a_night_in_a_bed_resets_the_rough_count() {
         "back to one night's weight"
     );
 }
+
+/// OST-242: a night cut short is felt; a nap soon after a full night is not.
+fn short_sleep(seed: u64, awake_hours: u64) -> f32 {
+    use hf_sim::agents::Species;
+    use hf_sim::mind::Activity;
+    use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
+    let mut p = GenParams::small();
+    p.width = 64;
+    p.height = 64;
+    let mut w = World::generate(seed, p);
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.tick = TICKS_PER_DAY + 10 * TICKS_PER_HOUR;
+    w.rebuild_caches();
+    let at = w.grid.surface(30, 30);
+    let id = w.spawn_agent(Species::Person, at);
+    let i = w.agents.iter().position(|a| a.id == id).unwrap();
+    let now = w.meta.tick;
+    let a = &mut w.agents[i];
+    a.needs.rest = 0.05;
+    a.needs.hunger = 1.0;
+    a.needs.thirst = 1.0;
+    a.needs.warmth = 1.0;
+    a.needs.social = 1.0;
+    a.last_sleep = now - awake_hours * TICKS_PER_HOUR;
+    a.activity = Activity::Sleeping {
+        bed: None,
+        until: now + 3 * TICKS_PER_HOUR,
+    };
+    a.activity_ticks = 0;
+    for _ in 0..4 * TICKS_PER_HOUR {
+        w.step();
+        if !w.agents[i].activity.is_asleep() {
+            break;
+        }
+    }
+    assert!(!w.agents[i].activity.is_asleep(), "the sleep ended");
+    let t = w.meta.tick;
+    w.agents[i].thoughts.sum_of(ThoughtKind::SleptBadly, t)
+}
+
+#[test]
+fn a_broken_night_is_felt() {
+    let after_a_day = short_sleep(1702, 14);
+    assert!(
+        after_a_day < -0.05,
+        "a short sleep after a day awake left {after_a_day}"
+    );
+    let nap = short_sleep(1702, 3);
+    assert!(
+        nap.abs() < 1e-6,
+        "a nap soon after a night left {nap}, not nothing"
+    );
+}

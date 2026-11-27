@@ -94,6 +94,12 @@ pub enum ThoughtKind {
     Missing,
     /// Appended (#879): parched, same gate as Hungry (`needs.thirst < 0.2`).
     Thirsty,
+    /// Appended (OST-241): broke down; the cost is felt for days, not for one needs pass.
+    Broke,
+    /// Appended (OST-1101): awake with the social need run low.
+    Lonely,
+    /// Appended (OST-242): a night cut short, under six hours after a day awake.
+    SleptBadly,
 }
 
 impl ThoughtKind {
@@ -153,6 +159,9 @@ impl ThoughtKind {
             ThoughtKind::Prayed => (0.2, 2.0),
             ThoughtKind::Missing => (-0.2, 4.0),
             ThoughtKind::Thirsty => (-0.3, 0.5),
+            ThoughtKind::Broke => (-0.25, 2.0),
+            ThoughtKind::Lonely => (-0.15, 0.5),
+            ThoughtKind::SleptBadly => (-0.15, 1.0),
         }
     }
     pub fn label(self) -> &'static str {
@@ -210,6 +219,9 @@ impl ThoughtKind {
             ThoughtKind::Prayed => "prayed at the shrine in hard times",
             ThoughtKind::Missing => "the missing",
             ThoughtKind::Thirsty => "parched",
+            ThoughtKind::Broke => "broke down",
+            ThoughtKind::Lonely => "lonely",
+            ThoughtKind::SleptBadly => "a broken night",
         }
     }
 }
