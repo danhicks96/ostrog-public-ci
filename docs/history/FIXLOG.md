@@ -2,11 +2,12 @@
 
 ## 2026-11-27: ordinary headless runs started inaudible audio
 
-- Symptom: a saved scene launched headlessly started ambient loops even though the headless
-  display has no audible output; on the integrated Windows client this reproduced retained
+- Symptom: a saved scene launched with a headless display and dummy audio driver started
+  inaudible ambient loops; on the integrated Windows client this reproduced retained
   audio resources on exit in three out of three observed runs.
-- Fix: ordinary headless runs use the same quiet audio mode as screenshots. An explicit
-  `--audio-log` still opts in, and graphical launches keep their existing audio behavior.
+- Fix: headless runs using the dummy audio driver use the same quiet mode as screenshots.
+  An explicit `--audio-log` still opts in; graphical launches and headless runs with a
+  real audio driver keep their existing audio behavior.
 - Observation: on integrated source dd2a25d, five candidate headless launches loaded the
   same save without shutdown warnings, and two graphical launches each started seven
   ambient loops. In two explicit headless audio-log runs, one still retained resources;
