@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Surface plants in the landing preview
+
+The landing wizard listed the wild species drawn for the entire world at every landing. Its note now counts the selected site’s surface vegetation and names up to five kinds growing on the previewed terrain. Local history can change their numbers before the founders arrive.
+
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 ## 2026-11-26 - Landing site and egress point
 

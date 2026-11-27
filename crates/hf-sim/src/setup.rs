@@ -393,3 +393,36 @@ pub fn preview_in(
         region,
     }
 }
+
+impl Preview {
+    /// Examples for the landing note: two abundant kinds and up to three other wild
+    /// species from the world's flora draw found on this surface.
+    pub fn surface_plant_examples(&self) -> Vec<(crate::plants::PlantKind, usize)> {
+        use crate::plants::PlantKind;
+        use crate::world::gen::flora::FLORA_CANDIDATES;
+        use std::cmp::Reverse;
+
+        let mut counts = [0usize; 256];
+        for &column in &self.plants {
+            counts[usize::from(column)] += 1;
+        }
+        let mut present: Vec<_> = PlantKind::ALL
+            .into_iter()
+            .map(|kind| (kind, counts[kind as usize + 1]))
+            .filter(|(kind, n)| *n > 0 && kind.grows())
+            .collect();
+        present.sort_by_key(|&(kind, n)| (Reverse(n), kind));
+        present
+            .iter()
+            .take(2)
+            .chain(
+                present
+                    .iter()
+                    .skip(2)
+                    .filter(|(kind, _)| FLORA_CANDIDATES.contains(kind))
+                    .take(3),
+            )
+            .copied()
+            .collect()
+    }
+}

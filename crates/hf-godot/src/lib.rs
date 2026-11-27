@@ -483,6 +483,12 @@ fn preview_dict(p: &hf_sim::setup::Preview) -> VarDictionary {
     v.set("tiles", &PackedInt32Array::from(tiles.as_slice()));
     v.set("heights", &PackedInt32Array::from(p.heights.as_slice()));
     v.set("plants", &PackedByteArray::from(p.plants.as_slice()));
+    let surface_plants: PackedStringArray = p
+        .surface_plant_examples()
+        .into_iter()
+        .map(|(kind, _)| GString::from(kind.label()))
+        .collect();
+    v.set("surface_plants", &surface_plants);
     v.set(
         "founding",
         Vector3i::new(p.founding.x, p.founding.y, p.founding.z),

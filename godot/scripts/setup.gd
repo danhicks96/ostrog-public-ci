@@ -509,7 +509,7 @@ func _collect_preview() -> void:
 	var entry := {
 		"texture": ImageTexture.create_from_image(preview_art.image(p)),
 		# In a player's words, not the describe command's (Rules.valley_note, FIXLOG 2026-11-14).
-		"lines": Rules.valley_note(Array(p["lines"]), str(p.get("label", ""))) + "\nThe red marker shows the egress point where the founders emerge.",
+		"lines": Rules.valley_note(Array(p["lines"]), str(p.get("label", "")), p.get("surface_plants", PackedStringArray())) + "\nThe red marker shows the egress point where the founders emerge.",
 	}
 	preview_cache[preview_waiting] = entry
 	preview_waiting = ""

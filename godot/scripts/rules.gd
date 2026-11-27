@@ -29,7 +29,7 @@ static func toasts_held(open_ids: Array, settings_open: bool) -> bool:
 ## as a debug print: "character: wetness +0.14 warmth +1.00 stoniness -0.36 (a mild valley), set
 ## by parameter", "flora not drawn: ..." (FIXLOG 2026-11-14). `label` is the preview's own
 ## ("a mild valley"); a kind of ground under a tenth of the valley is left out.
-static func valley_note(lines: Array, label: String) -> String:
+static func valley_note(lines: Array, label: String, surface_plants: PackedStringArray = []) -> String:
 	var out: PackedStringArray = []
 	if label != "":
 		# The label carries its own article ("a mild valley").
@@ -48,10 +48,10 @@ static func valley_note(lines: Array, label: String) -> String:
 					main_kinds.append(part.substr(0, at))
 			if not main_kinds.is_empty():
 				out.append("Mostly %s." % _and_list(main_kinds))
-		elif l.begins_with("flora draw: ") and l.count(": ") >= 2:
-			var kinds := l.substr(l.find(": ", 12) + 2)
-			if kinds != "":
-				out.append("Wild plants here: %s." % kinds)
+	# The world's flora draw is a pool of possible species. These examples come from
+	# living plants on the surface of this particular landing.
+	if not surface_plants.is_empty():
+		out.append("Surface plants in this preview include %s." % _and_list(surface_plants))
 	return "\n".join(out)
 
 static func _and_list(items: PackedStringArray) -> String:

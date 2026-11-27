@@ -1764,14 +1764,15 @@ func test_the_wizard_says_the_valley_in_a_players_words() -> void:
 	var sim := SimHost.new()
 	var p: Dictionary = sim.valley_preview(1, PackedFloat32Array([0.14, 1.0, -0.36]), -1)
 	check(not p.is_empty() and p.has("lines") and p.has("label"), "a preview with lines and a label")
-	var note: String = Rules.valley_note(Array(p["lines"]), str(p["label"]))
+	var note: String = Rules.valley_note(Array(p["lines"]), str(p["label"]), p["surface_plants"])
 	for dev in ["character:", "wetness", "set by parameter", "biome mix", "flora", "not drawn", " of 22", "%"]:
 		check(not note.contains(dev), "no '%s' on the page: %s" % [dev, note])
 	check(note.begins_with("A ") and not note.begins_with("A a ") and not note.begins_with("A an "), "one article: %s" % note)
 	check(note.to_lower().begins_with(str(p["label"]).to_lower()) or note.to_lower().begins_with("a " + str(p["label"]).to_lower()), "it opens with the landing site's description: %s" % note)
-	check(note.contains("Mostly ") and note.contains("Wild plants here: "), "the ground and the plants: %s" % note)
-	var made := Rules.valley_note(["biome mix: grassland 31%, fen 23%, heath 4%, fell <1%", "flora draw: 2 of 22 wild kinds: yews, hazels", "flora not drawn: alders"], "a mild valley")
-	check(made == "A mild valley.\nMostly grassland and fen.\nWild plants here: yews, hazels.", "the wording: %s" % made)
+	check(note.contains("Mostly ") and note.contains("Surface plants in this preview include "), "the ground and the plants: %s" % note)
+	var made := Rules.valley_note(["biome mix: grassland 31%, fen 23%, heath 4%, fell <1%", "flora draw: 2 of 22 wild kinds: yews, hazels", "flora not drawn: alders"], "a mild valley", PackedStringArray(["shrubs", "hazels"]))
+	check(made == "A mild valley.\nMostly grassland and fen.\nSurface plants in this preview include shrubs and hazels.", "the wording: %s" % made)
+	check(Rules.valley_note(["flora draw: 2 of 22 wild kinds: yews, hazels"], "a mild valley") == "A mild valley.", "an empty surface has no claimed plants")
 
 # FIXLOG 2026-11-14: each Settings slider shows its value; autosave at the left end says "off".
 func test_settings_sliders_say_their_value() -> void:

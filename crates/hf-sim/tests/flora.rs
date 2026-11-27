@@ -465,6 +465,51 @@ fn setup_preview_shows_the_worlds_flora_draw() {
     );
 }
 
+/// A seed can admit a species that a selected site's ground does not support.
+#[test]
+fn landing_plant_examples_match_the_selected_sites_surface() {
+    use hf_sim::realm::{self, RealmParams};
+    use hf_sim::setup::{preview_in, WorldSetup};
+
+    let seed = 7;
+    let map = realm::generate(seed, &RealmParams::default());
+    for region in [16423, 7846, 9368, 28317] {
+        let mut preview = preview_in(seed, &map, None, Some(region));
+        let examples = preview.surface_plant_examples();
+        let mut setup = WorldSetup::new(seed);
+        setup.region = Some(region);
+        setup.history_years = 0;
+        let world = World::from_setup(&setup);
+        assert_eq!(examples.len(), 5);
+        for (kind, count) in examples {
+            let live = world
+                .plants
+                .iter()
+                .filter(|p| {
+                    p.kind == kind && p.alive && p.pos.z == world.grid.surface(p.pos.x, p.pos.y).z
+                })
+                .count();
+            assert!(count > 0);
+            assert_eq!(count, live, "region {region}: {kind:?}");
+        }
+
+        // Keep the world draw and replace only the surface. Dead wood, empty ground
+        // and absent world species must not appear in the examples.
+        use PlantKind::{FallenLog, Shrub, Willow, Yarrow};
+        preview.plants = vec![0, FallenLog as u8 + 1];
+        assert!(preview.surface_plant_examples().is_empty());
+        for (kind, n) in [(Yarrow, 1), (Shrub, 4), (Willow, 9)] {
+            preview
+                .plants
+                .extend(std::iter::repeat_n(kind as u8 + 1, n));
+        }
+        assert_eq!(
+            preview.surface_plant_examples(),
+            [(Willow, 9), (Shrub, 4), (Yarrow, 1)]
+        );
+    }
+}
+
 /// Multi-seed realized-density control: removing kinds from the bag changes which plant occupies
 /// a suitable low-flora site, never how many suitable sites are occupied. The full-catalogue
 /// control uses the same generated grid, climate, water and purpose-tagged placement stream.
