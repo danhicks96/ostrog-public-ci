@@ -2186,7 +2186,7 @@ fn clear_wall_site(w: &mut World, pos: crate::ids::TilePos, material: Material) 
     let mut moves = Vec::new();
     for i in occupants {
         let a = &w.agents[i];
-        if a.is_moving() {
+        if a.is_moving() || a.activity.is_asleep() || a.held.is_some() || a.body.needs_care() {
             return false;
         }
         let home = a

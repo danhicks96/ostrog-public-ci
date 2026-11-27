@@ -300,6 +300,9 @@ fn finishing_a_wall_uses_a_real_stride_or_leaves_everyone_and_materials_in_place
         "stairs",
         "shut corner",
         "second occupant",
+        "sleeping",
+        "held",
+        "needs care",
     ] {
         let mut w = World::generate(4472, GenParams::small());
         w.flatten(2, 2, 60, 60, 1);
@@ -342,6 +345,29 @@ fn finishing_a_wall_uses_a_real_stride_or_leaves_everyone_and_materials_in_place
             w.agents[j].pos = p;
             w.agents[j].from = p;
         }
+        if matches!(case, "sleeping" | "held" | "needs care") {
+            w.agents[j].pos = p;
+            w.agents[j].from = p;
+            match case {
+                "sleeping" => {
+                    w.agents[j].activity = Activity::Sleeping {
+                        bed: None,
+                        until: u64::MAX,
+                    }
+                }
+                "held" => w.agents[j].held = Some((cid, 0, w.tick())),
+                _ => hf_sim::systems::health::wound(
+                    &mut w,
+                    j,
+                    hf_sim::body::Part::ARM_L,
+                    hf_sim::body::WoundKind::Cut,
+                    0.6,
+                    0.0,
+                    "test",
+                    None,
+                ),
+            }
+        }
         w.agents[i].pos = p;
         w.agents[i].from = p;
         let mut order = settlement::make(&mut w, DesignationKind::BuildWall(Material::WOOD), p, 5);
@@ -382,7 +408,7 @@ fn finishing_a_wall_uses_a_real_stride_or_leaves_everyone_and_materials_in_place
                 assert_eq!(a.pos, p, "{case}");
                 assert_eq!(order.requirements, materials);
                 assert!(a.work_cooldowns.contains_key(&id.0));
-                if case == "second occupant" {
+                if case != "shut corner" {
                     assert_eq!(w.agents[j].pos, p);
                 }
             }
