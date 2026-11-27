@@ -275,6 +275,15 @@ impl Genome {
         if self.f(locus::HARDINESS) < 0.2 {
             list.push(Trait::LightSleeper);
         }
+        // OST-1102: Gourmet and Tidy, drawn from derived loci that consume no random stream
+        // (the same keyed mix as `dispositions`); Tidy follows the `order` disposition.
+        let extra = |key: usize| (mix(&self.loci, key, 488) & 0xFFFF) as f32 / 65_535.0;
+        if extra(4) > 0.8 {
+            list.push(Trait::Gourmet);
+        }
+        if extra(2) > 0.8 {
+            list.push(Trait::Tidy);
+        }
         list.sort();
         list.truncate(3);
         Traits { list }
