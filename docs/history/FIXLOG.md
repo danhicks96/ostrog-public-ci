@@ -23,6 +23,19 @@ Local floors, route tiles and world hexes keep their last observation when the p
 New landing sites on a mapped river inherit channel inlets, outlet and crossing levels from the regional drainage network. Neighbouring river regions share the position and width of a crossing. The river shapes the bed and banks before strata and plants form.
 
 The simulation records directed drops between channel surfaces at generation. A drop is active while both original surfaces are liquid and exposed. Drought, inundation and ice can interrupt it. Existing saves keep their original terrain and water.
+## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
+
+- Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7
+  were hearth tellers 40 to 295 times on the audit's seeds.
+- Cause: every awake person within two tiles of the hearth sat, and any sitter could be the
+  teller; `hearth_evening` read no age.
+- Fix: children stay in the circle as listeners, but a sitter is a teller of a realm story or an
+  old-valley tale only from the older childhood stage (`old_enough_for(Childhood::Older)`), and
+  of what they came to hold, or the line about the other side of the portal, only once of age.
+- Guard: `tests/stories.rs::a_small_child_at_the_hearth_listens_and_does_not_tell` (a three-year-old
+  holding the only copy of a story tells nothing; a ten-year-old tells it; it fails without the
+  fix). Worlds with small children at the hearth tell fewer tales, so their digest changes. The
+  700-day tellers-under-7 measurement was not run.
 
 ## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 
