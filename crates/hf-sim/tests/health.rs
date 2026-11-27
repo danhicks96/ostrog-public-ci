@@ -10,7 +10,7 @@ use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::world::gen::GenParams;
 use hf_sim::World;
 
-/// A 9Ã—7 wooden house at (24,24) with six beds, as the planner would build it.
+/// A 9×7 wooden house at (24,24) with six beds, as the planner would build it.
 fn house_with_beds(w: &mut World) {
     w.build_house(
         24,
@@ -284,7 +284,10 @@ fn illness_spreads_then_fades() {
             })
         })
         .count();
-    assert_eq!(sick, 0, "no resident still has the winter fever at follow-up");
+    assert_eq!(
+        sick, 0,
+        "no resident still has the winter fever at follow-up"
+    );
     let alive = w.agents.iter().filter(|a| survived(a)).count();
     assert!(
         alive >= 8,
