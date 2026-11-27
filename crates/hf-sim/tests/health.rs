@@ -269,7 +269,8 @@ fn illness_spreads_then_fades() {
         // The winter fever, that is. Twelve days of ordinary life can bring a fresh infection
         // from a new wound (a hunt went wrong on one seed once threats and goats arrived);
         // that is a different illness, and infection_can_kill covers it.
-        .filter(|a| (a.alive || survived(a)) && a.body.illness.is_some())
+        // A departed person's last recorded illness no longer progresses here.
+        .filter(|a| a.alive && a.body.illness.is_some())
         .filter(|a| !a.body.wounds.iter().any(|wd| wd.infected))
         // Fix-site (FIXLOG 2026-11-01 #488 beast fever): a hunter bitten in these twelve days
         // catches beast fever, a separate illness with its own slow course, whose wound has
@@ -283,7 +284,7 @@ fn illness_spreads_then_fades() {
             })
         })
         .count();
-    assert_eq!(sick, 0, "everyone recovered from the fever");
+    assert_eq!(sick, 0, "no resident still has the winter fever at follow-up");
     let alive = w.agents.iter().filter(|a| survived(a)).count();
     assert!(
         alive >= 8,
