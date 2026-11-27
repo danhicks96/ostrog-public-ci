@@ -1,6 +1,7 @@
 //! Mourning (OST-215): a loss that stays. Each death of someone close leaves a record on the
 //! bereaved; while it is young it weighs on their mood, easing by half every third of its span.
 
+use crate::fmath::Det;
 use crate::ids::AgentId;
 use crate::time::TICKS_PER_DAY;
 use serde::{Deserialize, Serialize};
@@ -40,7 +41,7 @@ impl Bereavement {
     pub fn weight(&self, now: u64) -> f32 {
         let age = now.saturating_sub(self.since) as f32 / TICKS_PER_DAY as f32;
         let half = self.tie.span_days() / 3.0;
-        -0.45 * self.bond * 0.5_f32.powf(age / half)
+        -0.45 * self.bond * 0.5_f32.d_powf(age / half)
     }
 }
 
