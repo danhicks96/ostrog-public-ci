@@ -1093,6 +1093,7 @@ Thoughts feed mood and stress. The bridge sends the strongest six as `{label} {w
 | Thirsty | parched | -0.3 | 0.5 |
 | Broke | broke down | -0.25 | 2.0 |
 | Lonely | lonely | -0.15 | 0.5 |
+| SleptBadly | a broken night | -0.15 | 1.0 |
 
 #### Breaks (`systems/strain.rs`)
 
@@ -3155,8 +3156,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/act.rs:186 | nothing to gather |
 | systems/act.rs:221 | forage |
 | systems/act.rs:284 | the bed was taken |
-| systems/act.rs:370 | they left |
-| systems/act.rs:543 | a poisoning from {} |
+| systems/act.rs:376 | they left |
+| systems/act.rs:549 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |
