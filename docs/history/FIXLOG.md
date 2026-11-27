@@ -7,7 +7,9 @@ The break also consumed up to four portions from the surrounding six tiles immed
 including food beyond the person's sight. The person now seeks food they hold, see or
 remember, walks to it when necessary and spends the usual 15 game minutes per serving.
 Every successful portion uses the ordinary eating action, checks position and ownership,
-records the meal and accounts for one consumed unit. An interrupted or failed attempt
+requires an open movement edge for adjacent ground food, records the meal and accounts
+for one consumed unit. Unseen changes leave the remembered target in place until the
+person sees it or goes to check it. An interrupted or failed attempt
 can end before the four-serving limit. Saves retain the remaining servings and the
 original search area during a break. Existing ordinary meals keep their saved encoding.
 

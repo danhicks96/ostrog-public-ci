@@ -1397,7 +1397,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3259 strings (click to open)</summary>
+<details><summary>3260 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3146,20 +3146,21 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | save/mod.rs:173 | chronicle.sqlite |
 | save/mod.rs:185 | chronicle is ahead of the world ({} > {}) |
 | save/mod.rs:197 | {}.{i}.hfsave |
-| systems/act.rs:127 | path blocked |
-| systems/act.rs:135 | did not arrive |
-| systems/act.rs:186 | no water here |
-| systems/act.rs:205 | invalid serving count |
-| systems/act.rs:211 | food gone |
-| systems/act.rs:223 | food moved |
-| systems/act.rs:230 | eaten in a binge |
-| systems/act.rs:232 | eat |
-| systems/act.rs:235 | no serving available |
-| systems/act.rs:285 | nothing to gather |
-| systems/act.rs:320 | forage |
-| systems/act.rs:384 | the bed was taken |
-| systems/act.rs:470 | they left |
-| systems/act.rs:643 | a poisoning from {} |
+| systems/act.rs:138 | path blocked |
+| systems/act.rs:146 | did not arrive |
+| systems/act.rs:197 | no water here |
+| systems/act.rs:216 | invalid serving count |
+| systems/act.rs:222 | food gone |
+| systems/act.rs:234 | food moved |
+| systems/act.rs:246 | food out of reach |
+| systems/act.rs:254 | eaten in a binge |
+| systems/act.rs:256 | eat |
+| systems/act.rs:259 | no serving available |
+| systems/act.rs:309 | nothing to gather |
+| systems/act.rs:344 | forage |
+| systems/act.rs:408 | the bed was taken |
+| systems/act.rs:494 | they left |
+| systems/act.rs:667 | a poisoning from {} |
 | systems/animals.rs:341 | brought down by wolves |
 | systems/animals.rs:348 | brought down by wolves |
 | systems/animals.rs:363 | taken by a wolf |

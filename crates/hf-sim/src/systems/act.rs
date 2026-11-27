@@ -43,34 +43,45 @@ fn next_serving(w: &mut World, i: usize, portions: BingePortions) -> bool {
     let here = a.pos;
     let sight = super::perceive::sight_radius(w, a, w.meta.tick);
     let nav = w.nav.as_ref().expect("navigation initialized");
-    let target = w
-        .items
-        .iter()
-        .filter(|it| it.kind.is_food() && it.count > 0)
-        .filter_map(|it| {
-            let (owned, at) = match it.place {
-                ItemPlace::Carried(id) | ItemPlace::Held(id) if id == a.id => (true, here),
-                ItemPlace::Ground(pos) => {
-                    let at = if pos.dist(portions.origin) <= 6
-                        && pos.dist(here) <= sight
-                        && crate::mind::perception::line_of_sight(&w.grid, here, pos)
-                    {
-                        pos
-                    } else {
-                        a.knowledge.get(Known::Item(it.id))?.pos
-                    };
-                    if at.dist(portions.origin) > 6
-                        || super::hazards::under_water(w, at)
-                        || !nav.reach(here, at)
-                    {
-                        return None;
-                    }
-                    (false, at)
-                }
-                _ => return None,
-            };
-            Some((!owned, at.dist(here), it.id, at))
+    let sees = |at: crate::ids::TilePos| {
+        at.dist(here) <= sight && crate::mind::perception::line_of_sight(&w.grid, here, at)
+    };
+    // An unseen change of owner, count or location cannot erase an old report.
+    let mut candidates = BTreeMap::new();
+    for (key, belief) in a.knowledge.iter_kind(|k| matches!(k, Known::Item(_))) {
+        let Known::Item(id) = key else { continue };
+        if belief.pos.dist(portions.origin) <= 6
+            && !sees(belief.pos)
+            && (belief.tag == ItemKind::Meal as u16
+                || crate::items::COOKABLE
+                    .iter()
+                    .any(|k| *k as u16 == belief.tag))
+        {
+            candidates.insert(*id, (false, belief.pos));
+        }
+    }
+    for it in &w.items {
+        let (owned, at) = match it.place {
+            ItemPlace::Carried(id) | ItemPlace::Held(id) if id == a.id => (true, here),
+            ItemPlace::Ground(p)
+                if (p.dist(portions.origin) <= 6 || candidates.contains_key(&it.id)) && sees(p) =>
+            {
+                (false, p)
+            }
+            _ => continue,
+        };
+        if it.kind.is_food() && it.count > 0 && (owned || at.dist(portions.origin) <= 6) {
+            candidates.insert(it.id, (owned, at));
+        } else {
+            candidates.remove(&it.id);
+        }
+    }
+    let target = candidates
+        .into_iter()
+        .filter(|(_, (owned, at))| {
+            *owned || (!super::hazards::under_water(w, *at) && nav.reach(here, *at))
         })
+        .map(|(id, (owned, at))| (!owned, at.dist(here), id, at))
         .min_by_key(|&(ground, dist, id, _)| (ground, dist, id));
     let Some((_, _, item, at)) = target else {
         return false;
@@ -224,6 +235,19 @@ pub fn step(w: &mut World) {
                     continue;
                 }
                 if ticks_left <= 1 {
+                    // An adjacent stack may have moved across a blocked diagonal during the meal.
+                    // Use the walker's actual one-step geometry, including its corner rule.
+                    if let ItemPlace::Ground(at) = w.items[ix].place {
+                        if here != at {
+                            let mut adjacent = Vec::new();
+                            crate::nav::neighbours(&w.grid, here, &mut adjacent);
+                            if !adjacent.iter().any(|s| s.to == at) {
+                                w.agents[i].knowledge.doubt(Known::Item(item));
+                                fail(w, i, "food out of reach");
+                                continue;
+                            }
+                        }
+                    }
                     let kind = w.items[ix].kind;
                     let quality = w.items[ix].quality;
                     let cause = if binge.is_some() {
@@ -857,7 +881,7 @@ mod serving_tests {
         start_binge(&mut w, 0);
         assert!(matches!(w.agents[0].activity, Activity::Loitering { .. }));
         // An existing memory may be used, but its location must not be updated from unseen reality.
-        let old = HERE.offset(0, 3, 0);
+        let old = HERE.offset(6, 0, 0);
         w.agents[0].knowledge.note(
             Known::Item(hidden),
             old,
@@ -870,6 +894,118 @@ mod serving_tests {
         assert_eq!(meals(&w), 0);
         assert_eq!(w.agents[0].last_meal, None);
         assert_eq!(w.items.len(), 4);
+    }
+
+    #[test]
+    fn remembered_food_leads_to_the_same_place_after_unseen_changes() {
+        let base = scene();
+        // They can see the empty tile in this separate control.
+        let mut exposed = base.clone();
+        let remembered = HERE.offset(3, 0, 0);
+        let missing = food(&mut exposed, 1, ItemPlace::Ground(remembered));
+        exposed.agents[0].knowledge.note(
+            Known::Item(missing),
+            remembered,
+            exposed.meta.tick,
+            ItemKind::Berries as u16,
+        );
+        exposed.items.clear();
+        start_binge(&mut exposed, 0);
+        assert!(matches!(
+            exposed.agents[0].activity,
+            Activity::Loitering { .. }
+        ));
+        for hidden_change in ["moved", "taken", "empty", "removed"] {
+            let mut w = base.clone();
+            let old = HERE.offset(3, 0, 0);
+            let hidden = HERE.offset(5, 0, 0);
+            w.grid.set(
+                HERE.offset(1, 0, 0),
+                Tile {
+                    material: Material::STONE_BLOCK,
+                    shape: Shape::Wall,
+                    flags: TileFlags::NONE,
+                },
+            );
+            w.rebuild_caches();
+            let item = food(&mut w, 1, ItemPlace::Ground(hidden));
+            w.agents[0].knowledge.note(
+                Known::Item(item),
+                old,
+                w.meta.tick,
+                ItemKind::Berries as u16,
+            );
+            let other = w.spawn_agent(Species::Person, hidden);
+            match hidden_change {
+                "taken" => w.items[0].place = ItemPlace::Held(other),
+                "empty" => w.items[0].count = 0,
+                "removed" => w.items.clear(),
+                _ => {}
+            }
+            start_binge(&mut w, 0);
+            assert!(
+                matches!(&w.agents[0].activity,Activity::Going{to,then} if *to==old
+                && matches!(**then,Activity::Eating{item:id,..} if id==item)),
+                "{hidden_change}"
+            );
+            advance(&mut w, MEAL_TICKS * 2);
+            assert_eq!(w.agents[0].pos, old);
+            assert_eq!(meals(&w), 0);
+            assert_eq!(w.agents[0].last_meal, None);
+            assert!(w
+                .events
+                .pending
+                .iter()
+                .any(|e| matches!(e.kind, EventKind::PlanFailed { .. })));
+        }
+    }
+
+    #[test]
+    fn a_moved_ground_serving_needs_an_open_adjacent_edge_at_completion() {
+        let base = scene();
+        for binge in [
+            None,
+            Some(BingePortions {
+                origin: HERE,
+                servings_left: 1,
+            }),
+        ] {
+            for mode in ["open", "corner", "embedded", "downstairs"] {
+                let mut w = base.clone();
+                let item = food(&mut w, 1, ItemPlace::Ground(HERE));
+                w.agents[0].activity = Activity::Eating {
+                    item,
+                    ticks_left: MEAL_TICKS,
+                    binge,
+                };
+                advance(&mut w, MEAL_TICKS - 1);
+                let diag = HERE.offset(1, 1, 0);
+                let wall = Tile {
+                    material: Material::STONE_BLOCK,
+                    shape: Shape::Wall,
+                    flags: TileFlags::NONE,
+                };
+                let to = match mode {
+                    "corner" => {
+                        w.grid.set(HERE.offset(1, 0, 0), wall);
+                        diag
+                    }
+                    "embedded" => {
+                        w.grid.set(diag, wall);
+                        diag
+                    }
+                    "downstairs" => HERE.offset(0, 0, -1),
+                    _ => diag,
+                };
+                w.items[0].place = ItemPlace::Ground(to);
+                advance(&mut w, 1);
+                let reached = mode == "open";
+                assert_eq!(meals(&w), usize::from(reached), "{mode}");
+                assert_eq!(w.items.is_empty(), reached);
+                assert_eq!(w.agents[0].last_meal.is_some(), reached);
+                assert_eq!(w.agents[0].needs.hunger > 0.0, reached);
+            }
+        }
     }
 
     #[test]
