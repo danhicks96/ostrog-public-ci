@@ -18,7 +18,7 @@ The milestone labels group related work; they do not promise a release date. Eac
 
 ### OST-215 · Mourning: a loss that stays and eases over weeks
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#749](https://github.com/danhicks96/ostrog-public-ci/pull/749)
 
 A death left a seven-day thought. Each bereaved partner, child or parent now carries a record that weighs on mood as a Mourning thought and eases by half every third of forty (or twenty) days.
 
