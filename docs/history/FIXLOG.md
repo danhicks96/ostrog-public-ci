@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 — Small camps could lose the ability to replace their tools
+
+A four-person community had a usable workbench, logs and rough stone for most of twelve days after losing its tools. Ordering a knapped stone tool required eight residents. The existing workbench recipe can now be ordered by small camps with the same supplies and shortage. The emergence tests cover missing materials, an unfinished bench, spare tools and repeated planning.
+
 ## 2026-11-27: what a person feels leans how they break (OST-549)
 
 - Symptom: two people at the end of their rope broke by a trait-weighted bag and a fixed personal

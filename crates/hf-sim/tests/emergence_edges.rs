@@ -205,3 +205,103 @@ fn a_refugee_flood_bends_the_valley_and_does_not_break_it() {
     assert!(after_open > 0, "an open community died of the flood");
     let _ = joined_open;
 }
+
+#[test]
+fn a_small_camp_can_order_a_replacement_stone_tool_at_its_workbench() {
+    use hf_sim::ids::TilePos;
+    use hf_sim::items::ItemPlace;
+    use hf_sim::structures::StructureKind;
+    use hf_sim::work::{recipes, DesignationKind};
+    use hf_sim::world::{gen::GenParams, Material};
+
+    for case in [
+        "ready",
+        "missing stone",
+        "short on logs",
+        "unfinished bench",
+        "no bench",
+        "spare tool",
+        "metal on hand",
+    ] {
+        let mut w = World::generate(197, GenParams::small());
+        w.flatten(2, 2, 60, 60, 1);
+        w.meta.founding_site = TilePos::new(30, 30, 2);
+        w.rebuild_caches();
+        let founders = w.found_party(4);
+        let cid = w
+            .agents
+            .iter()
+            .find(|a| a.id == founders[0])
+            .unwrap()
+            .community
+            .unwrap();
+        let home = w.communities.iter().find(|c| c.id == cid).unwrap().home;
+        w.items.retain(|it| {
+            !matches!(
+                it.kind,
+                ItemKind::Tool
+                    | ItemKind::IronBar
+                    | ItemKind::CopperBar
+                    | ItemKind::RoughStone
+                    | ItemKind::Log
+            )
+        });
+        w.structures.retain(|s| s.kind != StructureKind::Workbench);
+        let bench = home.offset(2, 0, 0);
+        if case != "no bench" {
+            w.place_structure(StructureKind::Workbench, bench, Material::WOOD, true);
+            if case == "unfinished bench" {
+                w.structures
+                    .iter_mut()
+                    .find(|s| s.pos == bench && s.kind == StructureKind::Workbench)
+                    .unwrap()
+                    .progress = 0.5;
+            }
+        }
+        let ground = ItemPlace::Ground(home);
+        w.create_item(
+            ItemKind::Log,
+            if case == "short on logs" { 1 } else { 2 },
+            ground,
+            0.5,
+            "test",
+        );
+        if case != "missing stone" {
+            w.create_item(ItemKind::RoughStone, 1, ground, 0.5, "test");
+        }
+        if case == "spare tool" {
+            w.create_item(ItemKind::Tool, 2, ground, 0.5, "test");
+        }
+        if case == "metal on hand" {
+            w.create_item(ItemKind::IronBar, 1, ground, 0.5, "test");
+        }
+        w.ensure_nav();
+        // Let the founders see the actual stacks before asking for their work plans.
+        for _ in 0..hf_sim::systems::perceive::STRIPE {
+            w.meta.tick += 1;
+            hf_sim::systems::perceive::step(&mut w);
+        }
+        w.meta.autoplan = true;
+        for _ in 0..2 {
+            w.meta.tick = w.meta.tick / hf_sim::time::TICKS_PER_HOUR * hf_sim::time::TICKS_PER_HOUR
+                + hf_sim::time::TICKS_PER_HOUR;
+            hf_sim::systems::settlement::step(&mut w);
+        }
+        let orders: Vec<_> = w
+            .designations
+            .iter()
+            .filter(|d| d.kind == DesignationKind::Craft(recipes::STONE_TOOL) && !d.done)
+            .collect();
+        assert_eq!(orders.len(), usize::from(case == "ready"), "{case}");
+        if let Some(d) = orders.first() {
+            assert_eq!((d.community, d.pos), (Some(cid), bench));
+            assert!(founders
+                .iter()
+                .any(|id| hf_sim::work::planner::plan_for(&w, *id, d).is_some()));
+        }
+        assert!(w
+            .designations
+            .iter()
+            .all(|d| d.kind != DesignationKind::Craft(recipes::IRON_TOOL)));
+    }
+}

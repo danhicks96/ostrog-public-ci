@@ -1445,6 +1445,31 @@ fn plan_community(w: &mut World, cid: crate::ids::CommunityId) {
         }
     }
 
+    use crate::work::recipes as rc;
+    let stock = |w: &World, k: ItemKind| count_kind(w, &here, k);
+    // Tools in reach of home (as work.rs take_tool looks): a relic in a far ruin is no
+    // spare tool for anyone here.
+    let tools_here: u32 = w
+        .items
+        .iter()
+        .filter(|it| {
+            it.kind == ItemKind::Tool
+                && matches!(it.place, ItemPlace::Ground(p) if p.dist(home) <= 45)
+        })
+        .map(|it| it.count)
+        .sum();
+    let wants_stone_tool = |w: &World| {
+        tools_here < people / 4 + 1
+            && stock(w, ItemKind::IronBar) == 0
+            && stock(w, ItemKind::CopperBar) == 0
+            && stock(w, ItemKind::RoughStone) >= 1
+            && stock(w, ItemKind::Log) >= 2
+    };
+    // A few people with a finished workbench can haft a knapped edge before
+    // there are enough of them for specialist workshops.
+    if people < 8 && wants_stone_tool(w) {
+        post_recipe(w, cid, &here, rc::STONE_TOOL);
+    }
     // 9. Workshops and recipes: a carpenter and a loom once there are eight people, a smelter
     //    when ore is on hand, an anvil when bars are; orders posted from need, one per recipe.
     if people >= 8 {
@@ -1590,19 +1615,6 @@ fn plan_community(w: &mut World, cid: crate::ids::CommunityId) {
                 }
             }
         }
-        use crate::work::recipes as rc;
-        let stock = |w: &World, k: ItemKind| count_kind(w, &here, k);
-        // Tools in reach of home (as work.rs take_tool looks): a relic in a far ruin is no
-        // spare tool for anyone here.
-        let tools_here: u32 = w
-            .items
-            .iter()
-            .filter(|it| {
-                it.kind == ItemKind::Tool
-                    && matches!(it.place, ItemPlace::Ground(p) if p.dist(home) <= 45)
-            })
-            .map(|it| it.count)
-            .sum();
         // Of a material: tin ore, bronze bars (C33).
         let of = |w: &World, k: ItemKind, m: Material| count_of(w, &here, k, m);
         // Arms are wanted only once strangers have threatened these people (systems/arms.rs),
@@ -1682,15 +1694,7 @@ fn plan_community(w: &mut World, cid: crate::ids::CommunityId) {
                     && stock(w, ItemKind::Plank) >= 1
                     && tools_here < people / 4 + 1,
             ),
-            (
-                // Before there is metal: a knapped edge on a haft, made at the workbench.
-                rc::STONE_TOOL,
-                stock(w, ItemKind::IronBar) == 0
-                    && stock(w, ItemKind::CopperBar) == 0
-                    && stock(w, ItemKind::RoughStone) >= 1
-                    && stock(w, ItemKind::Log) >= 2
-                    && tools_here < people / 4 + 1,
-            ),
+            (rc::STONE_TOOL, wants_stone_tool(w)),
             (
                 rc::CLOTH,
                 stock(w, ItemKind::Fibre) >= 3 && stock(w, ItemKind::Cloth) < 6,
@@ -1791,19 +1795,8 @@ fn plan_community(w: &mut World, cid: crate::ids::CommunityId) {
             ),
         ];
         for (id, want) in wants {
-            if !want || has_designation(w, |k| *k == DesignationKind::Craft(id)) {
-                continue;
-            }
-            let station = rc::recipe(id).station;
-            let at = w
-                .structures
-                .iter()
-                .find(|s| s.kind == station && s.progress >= 1.0 && here.holds(s.pos))
-                .map(|s| s.pos);
-            if let Some(at) = at {
-                let mut d = make(w, DesignationKind::Craft(id), at, 6);
-                d.community = Some(cid);
-                w.designations.push(d);
+            if want {
+                post_recipe(w, cid, &here, id);
             }
         }
         // Wild plants cut for what they give (#286): fibre from reeds and nettles when the loom
@@ -3387,6 +3380,23 @@ fn quarry_at(w: &mut World, home: TilePos, cid: crate::ids::CommunityId, site: T
 /// Whether an item lies within reach of `home` (the quarry's stone count, C71).
 fn here_holds(_w: &World, home: TilePos, it: &crate::items::Item) -> bool {
     matches!(it.place, ItemPlace::Ground(p) if p.dist(home) <= 30)
+}
+
+fn post_recipe(w: &mut World, cid: crate::ids::CommunityId, here: &Here, id: u8) {
+    if has_designation(w, |k| *k == DesignationKind::Craft(id)) {
+        return;
+    }
+    let station = crate::work::recipes::recipe(id).station;
+    if let Some(at) = w
+        .structures
+        .iter()
+        .find(|s| s.kind == station && s.progress >= 1.0 && here.holds(s.pos))
+        .map(|s| s.pos)
+    {
+        let mut d = make(w, DesignationKind::Craft(id), at, 6);
+        d.community = Some(cid);
+        w.designations.push(d);
+    }
 }
 
 fn has_designation(w: &World, f: impl Fn(&DesignationKind) -> bool) -> bool {
