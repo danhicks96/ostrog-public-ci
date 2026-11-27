@@ -17,6 +17,18 @@
   different kinds, so seeded digests move. The kind-by-feeling table on seeds 1-4 is not run, so
   #558 stays open.
 
+## 2026-11-26: Gourmet and Tidy were never drawn from a genome (OST-1102)
+
+- Symptom: no one was born Gourmet or Tidy, so their effects (binge strain, hauling weight) never
+  showed in a founded or born colony.
+- Cause: `Genome::traits` covered eight traits and had no locus-driven rule for these two.
+- Fix: `genetics.rs` draws Gourmet from a derived locus and Tidy from the `order` disposition, both
+  above 0.8, using the keyed mix that `dispositions` already uses so no random stream is consumed.
+  The three-trait cap still applies; traits are sorted before it truncates, so in a genome that
+  would carry more than three, Gourmet can now displace LightSleeper, which sorts after it.
+  Existing trait order and saves are unchanged.
+- Guard: `tests/gourmet_tidy.rs` (over 500 genomes each trait appears on at least ten people, none
+  exceeds the cap, the same genome draws the same traits).
 ## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
 
 - Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7
