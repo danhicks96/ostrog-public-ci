@@ -34,11 +34,19 @@ var rng := RandomNumberGenerator.new()
 var silent := false
 var log_path := ""
 var log_lines := []
-var open_doors := {}   # Vector2i -> true: doors someone stood in at the last look
-var doors_z := -9999   # the level open_doors was taken on
+var report_stamp := Vector2i(-2, 0)
+var displayed_tick := -1
+var displayed_rect := Rect2i()
+var displayed_known_only := false
+var water_sources: Dictionary[Vector3i, bool] = {} # Surface position -> currently seen.
+var reported_doors: Array[Vector2i] = []
+var door_occupancy: Dictionary[Vector2i, bool] = {}
+var door_tick := -1
+var door_level := 0
 
 func init(view, s: Dictionary, quiet: bool) -> void:
 	v = view
+	v.world_replaced.connect(_reset_reports)
 	settings = s
 	silent = quiet
 	rng.seed = 1
@@ -80,7 +88,6 @@ func init(view, s: Dictionary, quiet: bool) -> void:
 			if p.stream: p.play()
 		for p in fire_voices:
 			if p.stream: p.play()
-		if water_voice.stream: water_voice.play()
 	apply_volumes()
 	# Fires lit and put out before the first frame (the --ticks run-up) are not news.
 	v.sim.drain_sounds()
@@ -240,22 +247,108 @@ func _positional_loops() -> void:
 			p.volume_db = lerpf(p.volume_db, 0.0, 0.3)
 		else:
 			p.volume_db = lerpf(p.volume_db, -80.0, 0.3)
-	# Water: the nearest animated water tile in view.
+	_refresh_reports()
 	var best := Vector2.ZERO
-	var bd := 1e18
-	for k in v.chunk_nodes:
-		var g = v.chunk_nodes[k][0]
-		if not g.visible:
+	var distance := water_voice.max_distance * water_voice.max_distance
+	var target_db := -80.0
+	var cull: Rect2i = v.cull_rect()
+	for p: Vector3i in water_sources:
+		var at := Vector2i(p.x, p.y)
+		if not cull.has_point(at) or (v.known_only and not v.tile_in_sight(at)):
 			continue
-		for dd in g.dyn:
-			if dd[2] == "water":
-				var p2 := Vector2(dd[0] * TILE + 16, dd[1] * TILE + 16)
-				var d2 := p2.distance_squared_to(c)
-				if d2 < bd:
-					bd = d2
-					best = p2
+		var current := water_sources[p]
+		if current and p.z >= v.water_freeze_level:
+			continue
+		if current and v.surveyed_floor and not v._observed_water_surface(p.x, p.y, p.z):
+			continue
+		var source := (Vector2(at) + Vector2(0.5, 0.5)) * TILE
+		var d2 := source.distance_squared_to(c)
+		if d2 < distance:
+			distance = d2
+			best = source
+			# A remembered shore has a quiet ambient bed independent of its present state.
+			target_db = -2.0 if current else -22.0
+	if target_db == -80.0:
+		water_voice.stop()
+		water_voice.volume_db = -80.0
+		return
 	water_voice.position = best
-	water_voice.volume_db = lerpf(water_voice.volume_db, -2.0 if bd < 1e17 else -80.0, 0.3)
+	if not silent and water_voice.stream and not water_voice.playing:
+		water_voice.play()
+	water_voice.volume_db = lerpf(water_voice.volume_db, target_db, 0.3)
+
+func _reset_reports() -> void:
+	water_voice.stop()
+	water_voice.volume_db = -80.0
+	report_stamp = Vector2i(-2, 0)
+	displayed_tick = -1
+	water_sources.clear()
+	reported_doors.clear()
+	door_occupancy.clear()
+	door_tick = -1
+
+func _refresh_reports() -> void:
+	if not v.surveyed_floor:
+		_refresh_displayed_sources()
+		return
+	if report_stamp == v.floor_stamp:
+		return
+	report_stamp = v.floor_stamp
+	water_sources.clear()
+	reported_doors.clear()
+	for at: Vector2i in v.remembered:
+		var record: Vector4i = v.remembered[at]
+		var flags: int = v.flags_of(record.y)
+		if flags & 3 and not (flags & 128):
+			water_sources[Vector3i(at.x, at.y, v.view_z)] = record.x == 1
+		elif record.x == 1 and v.shape_of(record.y) == 2 and flags & 8:
+			reported_doors.append(at)
+	# A gap can expose a lower surface. Require its own report and the projection
+	# used for drawing the column; an inferred supporting material has no water state.
+	for z: int in v.lower_records:
+		if z >= v.view_z:
+			continue
+		var floor_records: Dictionary = v.lower_records[z]
+		for at: Vector2i in floor_records:
+			var record: Vector4i = floor_records[at]
+			var flags: int = v.flags_of(record.y)
+			if not (flags & 3) or flags & 128:
+				continue
+			var upper: Vector4i = v.remembered.get(at, Vector4i.ZERO)
+			if upper.x != 1 or v.shape_of(upper.y) != 0 or v.flags_of(upper.y) & 3:
+				continue
+			var surface: Array = v._ground_family(at.x, at.y)
+			if surface[2] and surface[3] == z:
+				water_sources[Vector3i(at.x, at.y, z)] = record.x == 1
+
+## A world without a colony chart displays its local terrain directly. A chart
+## with zero reported tiles is still a surveyed view and never enters this path.
+func _refresh_displayed_sources() -> void:
+	var centre := Vector2i((_centre() / TILE).floor())
+	var radius := ceili(maxf(water_voice.max_distance, pool[0].max_distance) / TILE)
+	var bounds := Rect2i(centre, Vector2i.ONE).grow(radius).intersection(v.cull_rect()).intersection(Rect2i(0, 0, v.w, v.h))
+	var tick: int = v.sim.tick()
+	if displayed_tick == tick and displayed_rect == bounds and displayed_known_only == v.known_only and report_stamp == v.floor_stamp:
+		return
+	displayed_tick = tick
+	displayed_rect = bounds
+	displayed_known_only = v.known_only
+	report_stamp = v.floor_stamp
+	water_sources.clear()
+	reported_doors.clear()
+	for y in range(bounds.position.y, bounds.end.y):
+		for x in range(bounds.position.x, bounds.end.x):
+			if v.known_only and not v.explored.has(Vector2i(x >> 3, y >> 3)):
+				continue
+			var tile: int = v.tile_at(v.view_z, x, y)
+			if v.shape_of(tile) == 2 and v.flags_of(tile) & 8:
+				reported_doors.append(Vector2i(x, y))
+				continue
+			var surface: Array = v._ground_family(x, y)
+			if surface[2]:
+				var z: int = surface[3]
+				if not (v.flags_of(v.tile_at(z, x, y)) & 128) and v._water_has_air_above(x, y, z):
+					water_sources[Vector3i(x, y, z)] = true
 
 func _work_and_calls() -> void:
 	var A: PackedInt32Array = v.agents
@@ -306,23 +399,24 @@ func _events() -> void:
 			continue
 		play_at(r[0], Vector2(int(r[1]) * TILE + 16, int(r[2]) * TILE + 16), -2.0, 0.3)
 
-## A door swings open when someone steps into the doorway: the world view draws it open while
-## the tile is occupied, so the sound plays when a door in view goes from shut to open.
+## A camera pan or first observation can reveal an occupied doorway. A creak
+## requires a previously observed empty doorway and an actual simulation advance.
 func _doors() -> void:
-	var now := {}
-	for k in v.chunk_nodes:
-		var g = v.chunk_nodes[k][0]
-		if not g.visible:
+	_refresh_reports()
+	var now: Dictionary[Vector2i, bool] = {}
+	var tick: int = v.sim.tick()
+	var advanced: bool = tick > door_tick and door_tick >= 0 and v.view_z == door_level
+	var cull: Rect2i = v.cull_rect()
+	for at in reported_doors:
+		if not cull.has_point(at):
 			continue
-		for dd in g.dyn:
-			if dd[2] == "door" and v.occupied.has(Vector3i(dd[0], dd[1], v.view_z)):
-				now[Vector2i(dd[0], dd[1])] = true
-	if doors_z == v.view_z:
-		for p in now:
-			if not open_doors.has(p):
-				play_at("door", Vector2(p.x * TILE + 16, p.y * TILE + 16), -6.0, 0.15)
-	open_doors = now
-	doors_z = v.view_z
+		var occupied: bool = v.occupied.has(Vector3i(at.x, at.y, v.view_z))
+		now[at] = occupied
+		if advanced and occupied and door_occupancy.has(at) and not door_occupancy[at]:
+			play_at("door", (Vector2(at) + Vector2(0.5, 0.5)) * TILE, -6.0, 0.15)
+	door_occupancy = now
+	door_tick = tick
+	door_level = v.view_z
 
 func save_log() -> void:
 	if log_path == "":

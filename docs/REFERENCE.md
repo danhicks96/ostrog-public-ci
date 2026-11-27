@@ -4961,14 +4961,14 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:738 | _summary_page | nothing beyond what each has lived |
 | godot/scripts/setup.gd:739 | _summary_page | Making the world runs the valley's past first; it takes a moment. |
 | godot/scripts/setup.gd:770 | refused | Could not begin: %s. |
-| godot/scripts/world_view.gd:188 | setup | ostrog/render/world_renderer |
-| godot/scripts/world_view.gd:389 | projected_block | No surveyed surface below |
-| godot/scripts/world_view.gd:390 | projected_block | Unknown below this level |
-| godot/scripts/world_view.gd:398 | projected_block | %s recorded at z%d |
-| godot/scripts/world_view.gd:400 | projected_block | Previously observed. Current depth and quality unknown. |
-| godot/scripts/world_view.gd:407 | projected_block | Looking below (%d, %d, z%d) |
-| godot/scripts/audio/sound.gd:96 | _buses | Master |
-| godot/scripts/audio/sound.gd:173 | ui | %.2f %s ui ui |
+| godot/scripts/world_view.gd:190 | setup | ostrog/render/world_renderer |
+| godot/scripts/world_view.gd:392 | projected_block | No surveyed surface below |
+| godot/scripts/world_view.gd:393 | projected_block | Unknown below this level |
+| godot/scripts/world_view.gd:401 | projected_block | %s recorded at z%d |
+| godot/scripts/world_view.gd:403 | projected_block | Previously observed. Current depth and quality unknown. |
+| godot/scripts/world_view.gd:410 | projected_block | Looking below (%d, %d, z%d) |
+| godot/scripts/audio/sound.gd:103 | _buses | Master |
+| godot/scripts/audio/sound.gd:180 | ui | %.2f %s ui ui |
 
 </details>
 

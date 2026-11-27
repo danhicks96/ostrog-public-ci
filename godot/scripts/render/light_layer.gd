@@ -28,6 +28,7 @@ var flash := 0.0
 
 func init(view) -> void:
 	v = view
+	v.world_replaced.connect(func(): sky_tex = null)
 	layer = 1
 	rect = ColorRect.new()
 	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -37,6 +38,12 @@ func init(view) -> void:
 	rect.material = mat
 	add_child(rect)
 
+var mask_report := Vector2i(-2, 0)
+
+func _write_mask(data: PackedByteArray, i: int, under: bool, tile: int) -> void:
+	data[2 * i] = 0 if under else 255
+	data[2 * i + 1] = 255 if Rules.blocks_light(tile) else 0
+
 func _build_sky() -> void:
 	var w: int = v.w
 	var h: int = v.h
@@ -45,12 +52,20 @@ func _build_sky() -> void:
 	var data := PackedByteArray()
 	data.resize(w * h * 2)
 	var g: PackedInt32Array = v.ground
-	for y in h:
-		for x in w:
-			var t: int = v.tile_at(z, x, y)
-			var under: bool = g[y * w + x] >= z and v.shape_of(t) != 2
-			data[(y * w + x) * 2] = 0 if under else 255
-			data[(y * w + x) * 2 + 1] = 255 if Rules.blocks_light(t) else 0
+	if v.surveyed_floor:
+		# Unknown cells keep a uniform fog grade and do not transmit point lights.
+		data.fill(255)
+		for at: Vector2i in v.remembered:
+			var i := at.y * w + at.x
+			var record: Vector4i = v.remembered[at]
+			_write_mask(data, i, g[i] >= z and v.shape_of(record.y) != 2, record.y)
+	else:
+		for y in h:
+			for x in w:
+				var i := y * w + x
+				var tile: int = v.tile_at(z, x, y)
+				_write_mask(data, i, g[i] >= z and v.shape_of(tile) != 2, tile)
+	mask_report = v.floor_stamp
 	var img := Image.create_from_data(w, h, false, Image.FORMAT_RG8, data)
 	if sky_tex == null:
 		sky_tex = ImageTexture.create_from_image(img)
@@ -64,7 +79,7 @@ func _build_sky() -> void:
 func update(d: float) -> void:
 	var presentation_delta := 0.0 if v.animation_frozen else d
 	sky_age += presentation_delta
-	if v.view_z != sky_z or sky_age > 4.0:
+	if sky_tex == null or v.view_z != sky_z or (v.surveyed_floor and mask_report != v.floor_stamp) or sky_age > 4.0:
 		_build_sky()
 	var vp: Viewport = v.get_viewport()
 	var inv: Transform2D = vp.get_canvas_transform().affine_inverse()

@@ -38,8 +38,17 @@ class EffectsView:
 			texture = ImageTexture.create_from_image(image)
 		return texture
 
+class CentredSound:
+	extends "res://scripts/audio/sound.gd"
+
+	func _centre() -> Vector2:
+		return Vector2(16, 16)
+
 class UndergroundView:
 	extends RefCounted
+	signal world_replaced
+	var surveyed_floor := false
+	var floor_stamp := Vector2i.ZERO
 	var w := 1
 	var h := 1
 	var view_z := -2
@@ -2225,3 +2234,110 @@ func test_colony_observation_respects_membership_and_fog() -> void:
 	check(Rules.pick(rows,25,0,pos,1.0,v.tile_in_sight) == -1, "a hidden inhabitant cannot be picked")
 	v.free()
 	sim.free()
+
+func test_watcher_sound_uses_individual_survey_records() -> void:
+	var v := WorldView.new()
+	v.w = 5
+	v.h = 1
+	v.zmin = 1
+	v.zmax = 2
+	v.view_z = 2
+	v.surveyed_floor = true
+	v.floor_stamp = Vector2i(1, 2)
+	const WET := 1 << 24
+	const DOOR := (2 << 16) | (8 << 24)
+	v.ground = PackedInt32Array([0, 0, 0, 0, 0])
+	v.levels = {1: PackedInt32Array([0, 0, 0, WET, 0]), 2: PackedInt32Array([WET, 0, WET, 0, DOOR])}
+	v.remembered = {
+		Vector2i(0, 0): Vector4i(1, WET, 0, -1), Vector2i(1, 0): Vector4i(0, WET, 0, -1),
+		Vector2i(3, 0): Vector4i(1, 0, 0, -1), Vector2i(4, 0): Vector4i(1, DOOR, 0, -1),
+	}
+	v.lower_records = {1: {Vector2i(3, 0): Vector4i(1, WET, 0, -1)}}
+	var sound = preload("res://scripts/audio/sound.gd").new()
+	sound.v = v
+	sound._refresh_reports()
+	check(sound.water_sources.size() == 3 and sound.water_sources.get(Vector3i(0, 0, 2)) == true
+		and sound.water_sources.get(Vector3i(1, 0, 2)) == false and sound.water_sources.get(Vector3i(3, 0, 1)) == true,
+		"water keeps the displayed floor, remembered shore, and directly reported lower surface")
+	check(not sound.water_sources.has(Vector3i(2, 0, 2)) and sound.reported_doors == [Vector2i(4, 0)],
+		"a camera-visible unknown cell supplies no sound source")
+	v.remembered[Vector2i(4, 0)].x = 0
+	v.floor_stamp.x += 1
+	sound._refresh_reports()
+	check(sound.reported_doors.is_empty(), "a remembered door cannot report an opening")
+	sound.free()
+	v.free()
+
+func test_unknown_light_blocker_needs_a_survey_report() -> void:
+	var v := WorldView.new()
+	v.w = 3
+	v.h = 1
+	v.ground = PackedInt32Array([0, 0, 0])
+	v.view_z = 1
+	v.surveyed_floor = true
+	v.levels[1] = PackedInt32Array([0, 2 << 16, 2 << 16])
+	v.remembered = {Vector2i(1, 0): Vector4i(0, 0, 0, -1), Vector2i(2, 0): Vector4i(1, 2 << 16, 0, -1)}
+	var light := LightLayer.new()
+	light.init(v)
+	light._build_sky()
+	var pixels := light.sky_tex.get_image()
+	check(pixels.get_pixel(0, 0).g == 1.0 and pixels.get_pixel(1, 0).g == 0.0 and pixels.get_pixel(2, 0).g == 1.0,
+		"unreported ground blocks light uniformly; the remembered gap and witnessed wall use their records")
+	v.world_replaced.emit()
+	check(light.sky_tex == null, "replacing the world invalidates its lighting mask before the next update on any level")
+	light.free()
+	v.free()
+
+func test_reported_air_below_cannot_identify_a_hidden_surface() -> void:
+	var v := WorldView.new()
+	v.w = 1
+	v.h = 1
+	v.zmin = 3
+	v.view_z = 5
+	v.surveyed_floor = true
+	v.ground = PackedInt32Array([5])
+	v.remembered = {Vector2i.ZERO: Vector4i(1, 0, 0, -1)}
+	v.levels = {3: PackedInt32Array([0]), 4: PackedInt32Array([0])}
+	var report := v.projected_block(Vector3i(0, 0, 5), {"title": "Live water below", "ground": "Unreported river"})
+	check(report.ground == "No surveyed surface below" and report.water == "Unknown below this level",
+		"an air observation beneath the inspected floor is a gap even when the terrain height is unknown")
+	var live := {"title": "Standing on rock", "height_observed": true, "surface_z": 4}
+	v.remembered[Vector2i.ZERO].z = 5
+	check(v.projected_block(Vector3i(0, 0, 5), live) == live, "a recorded stone support and known height retain standing-floor inspection")
+	live.height_observed = false
+	check(v.projected_block(Vector3i(0, 0, 5), live).ground == "No surveyed surface below",
+		"the display fallback for an unknown height cannot establish a standing surface")
+	v.surveyed_floor = false
+	check(v.projected_block(Vector3i(0, 0, 5), live) == live, "legacy raw inspection retains its original report")
+	v.free()
+
+func test_uncharted_display_and_empty_colony_report_are_distinct() -> void:
+	var v := WorldView.new()
+	var host := SimHost.new()
+	v.sim = host
+	v.w = 3
+	v.h = 1
+	v.zmax = 1
+	v.view_z = 1
+	v.floor_stamp = Vector2i(0, 1)
+	const WET := 1 << 24
+	const DOOR := (2 << 16) | (8 << 24)
+	v.levels[1] = PackedInt32Array([WET, 1 << 16, DOOR])
+	v.ground = PackedInt32Array([0, 0, 0])
+	var sound := CentredSound.new()
+	sound.v = v
+	sound.water_voice = AudioStreamPlayer2D.new()
+	var door_voice := AudioStreamPlayer2D.new()
+	sound.add_child(sound.water_voice)
+	sound.add_child(door_voice)
+	sound.pool.append(door_voice)
+	sound._refresh_reports()
+	check(sound.water_sources.has(Vector3i(0, 0, 1)) and sound.reported_doors == [Vector2i(2, 0)],
+		"a fully displayed local map supplies water and doors from its visible cells")
+	v.surveyed_floor = true
+	v.floor_stamp.x += 1
+	sound._refresh_reports()
+	check(sound.water_sources.is_empty() and sound.reported_doors.is_empty(), "a colony chart with zero reported cells conceals all water and doors")
+	sound.free()
+	v.free()
+	host.free()

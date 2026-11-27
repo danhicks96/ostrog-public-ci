@@ -4,6 +4,8 @@ extends Node2D
 ## plants, structures, items, inhabitants, and per-tile lighting. Immediate mode (_draw) in
 ## Phase 1; TileMapLayer batching is a Phase 3 performance task if measurements need it.
 
+signal world_replaced
+
 const TILE := 32
 const Rules := preload("res://scripts/rules.gd")
 const AGENT_STRIDE := 25
@@ -233,6 +235,7 @@ func setup(s: SimHost, a) -> void:
 ## identity and a fresh load's chunk versions all read the same, so without this the old
 ## world's ground stays on screen.
 func reset_world() -> void:
+	world_replaced.emit()
 	# 2026-10-30 #414 review: transient effects and id history belong to the old world too.
 	effects.reset_world()
 	if name_tags != null:
@@ -384,7 +387,7 @@ func projected_block(p: Vector3i, info: Dictionary) -> Dictionary:
 	var upper: Vector4i = remembered[at]
 	if upper.x != 1 or shape_of(upper.y) != 0 or (flags_of(upper.y) & 3):
 		return info
-	if upper.z != 13 and p.z <= ground[p.y * w + p.x] + 1:
+	if upper.z != 0 and upper.z != 13 and info.get("height_observed", false) and p.z <= int(info.surface_z) + 1:
 		return info # Inspecting the standing surface, not looking down through a gap.
 	var surface := "No surveyed surface below"
 	var water := "Unknown below this level"
@@ -959,6 +962,9 @@ func _observed_water_surface(x: int, y: int, z: int) -> bool:
 			return false
 	elif not _lower_in_sight(x, y, z) or not (flags_of(tile_at(z, x, y)) & 3) or flags_of(tile_at(z,x,y)) & 128:
 		return false
+	return _water_has_air_above(x, y, z)
+
+func _water_has_air_above(x: int, y: int, z: int) -> bool:
 	if z == zmax:
 		return true
 	var above := tile_at(z + 1, x, y)

@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - What the watcher can hear through fog
+
+Panning over unexplored ground could reveal water by sound or make a stationary animal's doorway creak. The watcher now hears currently reported liquid surfaces and a quieter ambience at remembered shores. Witnessed movement through a known doorway still makes a sound. Unreported walls and doors no longer alter the lighting behind fog, and inspecting a reported air gap describes only the surfaces recorded below it.
+
 ## 2026-11-26 - Looking uphill respects the colony's survey
 
 Hilltops, frozen pools and the block inspector use the height and materials the colony has seen. A scout who reaches higher ground can reveal the material underfoot. A partially observed water column reports its known depth and leaves the remaining depth uncertain.
