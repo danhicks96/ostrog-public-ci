@@ -3230,31 +3230,84 @@ fn crossing_gate(
     for &q in ring {
         projected.set(q, wall);
     }
-    let mut closed = w
+    let mut current = w
         .nav
         .clone()
-        .unwrap_or_else(|| crate::nav::Nav::build(&projected));
+        .unwrap_or_else(|| crate::nav::Nav::build(&w.grid));
+    current.update(&w.grid);
+    let mut closed = current.clone();
     closed.update(&projected);
-    let mut nav = closed.clone();
+    // The largest stretch of exterior surface that the camp can presently reach.
+    // Sample its ordinary ground, without asking about distant resources.
+    let mut areas = std::collections::BTreeMap::<u32, (u32, TilePos)>::new();
+    for x in 0..w.grid.width {
+        for y in 0..w.grid.height {
+            if (xmin..=xmax).contains(&x) && (ymin..=ymax).contains(&y) {
+                continue;
+            }
+            let p = w.grid.surface(x, y);
+            if !current.reach(home, p) {
+                continue;
+            }
+            if let Some(region) = closed.component_of(p) {
+                let (count, anchor) = areas.entry(region).or_insert((0, p));
+                *count += 1;
+                if (p.dist(toward), p) < (anchor.dist(toward), *anchor) {
+                    *anchor = p;
+                }
+            }
+        }
+    }
+    let (_, country) = areas
+        .values()
+        .max_by_key(|(count, anchor)| (*count, std::cmp::Reverse(*anchor)))
+        .copied()?;
+    let mut scratch = crate::nav::AStarScratch::new(&projected);
     let mut exits = Vec::new();
+    let mut back = Vec::new();
     for gate in candidates {
         projected.set(gate, door);
         crate::nav::neighbours(&projected, gate, &mut exits);
-        let inside = exits.iter().any(|s| {
-            let p = s.to;
-            p.x > xmin && p.x < xmax && p.y > ymin && p.y < ymax && closed.reach(home, p)
-        });
-        let outside = exits.iter().any(|s| {
-            let p = s.to;
-            p.x < xmin || p.x > xmax || p.y < ymin || p.y > ymax
-        });
-        if inside && outside {
-            nav.update(&projected);
-            if nav.reach(home, gate) {
-                return Some(gate);
+        let mut approaches = Vec::new();
+        for e in &exits {
+            if !closed.reach(home, e.to) {
+                continue;
+            }
+            crate::nav::neighbours(&projected, e.to, &mut back);
+            if back.iter().any(|b| b.to == gate) {
+                approaches.push(e.to);
             }
         }
         projected.set(gate, wall);
+        // Both legs avoid the closed tile. Opening it supplies just the two
+        // directed steps through the door. Opposing approaches also work on a
+        // notch or a raised gate in an otherwise incomplete outline.
+        let mut route = |from, to| {
+            matches!(
+                crate::nav::find_path(
+                    &projected,
+                    &mut scratch,
+                    from,
+                    to,
+                    crate::nav::astar::DEFAULT_MAX_EXPANSIONS
+                ),
+                crate::nav::PathResult::Found(_)
+            )
+        };
+        for out in &exits {
+            if !closed.reach(out.to, country) {
+                continue;
+            }
+            let dx = out.to.x - gate.x;
+            let dy = out.to.y - gate.y;
+            if approaches
+                .iter()
+                .any(|p| (p.x - gate.x) * dx + (p.y - gate.y) * dy < 0 && route(home, *p))
+                && route(out.to, country)
+            {
+                return Some(gate);
+            }
+        }
     }
     None
 }
@@ -4559,6 +4612,28 @@ mod gate_tests {
             let expected = viable.iter().min_by_key(|q| (q.dist(toward), **q)).copied();
             assert_eq!(crossing_gate(&w, home, &ring, toward, None), expected);
         }
+        // A doorway into a one-cell outdoor pocket does not lead into the country.
+        let mut pocket = w.grid.clone();
+        for (x, y) in [(26, 21), (26, 23), (27, 21), (27, 22), (27, 23)] {
+            pocket.set(TilePos::new(x, y, 2), wall);
+        }
+        std::mem::swap(&mut w.grid, &mut pocket);
+        let pocket_gate = TilePos::new(25, 22, 2);
+        assert_ne!(
+            crossing_gate(&w, home, &ring, pocket_gate, None),
+            Some(pocket_gate)
+        );
+        std::mem::swap(&mut w.grid, &mut pocket);
+        let notch = TilePos::new(23, 22, 2);
+        let mut irregular = ring.clone();
+        irregular.retain(|q| q.x != 25 || !(21..=23).contains(&q.y));
+        irregular.extend(
+            [(23, 21), (23, 22), (23, 23), (24, 20), (24, 24)].map(|(x, y)| TilePos::new(x, y, 2)),
+        );
+        assert_eq!(
+            crossing_gate(&w, home, &irregular, notch, None),
+            Some(notch)
+        );
         let gate = TilePos::new(25, 22, 2);
         let cid = w.found_community(home);
         w.grid = completed;
@@ -4583,6 +4658,32 @@ mod gate_tests {
         let delivered: u32 = closing.requirements.iter().map(|r| r.delivered).sum();
         let old_id = closing.id;
         w.designations.push(closing);
+        // A carrier who had already picked up another stack still owns it until
+        // reaching the cancelled site. Dropping there releases the old leases.
+        use crate::work::{Plan, ResKey, Step};
+        let who = w.spawn_agent(crate::agents::Species::Person, gate);
+        let carrier = w.agents.iter().position(|a| a.id == who).unwrap();
+        let parcel = w.create_item(
+            crate::items::ItemKind::Plank,
+            3,
+            crate::items::ItemPlace::Carried(who),
+            0.5,
+            "test",
+        );
+        let keys = [ResKey::Item(parcel), ResKey::Designation(old_id)];
+        assert!(w.reservations.acquire_all(who, &keys, w.tick() + 600));
+        w.agents[carrier].activity = crate::mind::Activity::Working {
+            plan: Plan {
+                designation: old_id,
+                cursor: 0,
+                label: "delivering planks".into(),
+                steps: vec![Step::DropAt {
+                    to: gate,
+                    kind: crate::items::ItemKind::Plank,
+                    for_site: Some(old_id),
+                }],
+            },
+        };
         assert!(!can_finish_ring_wall(
             &mut w,
             gate,
@@ -4609,6 +4710,21 @@ mod gate_tests {
                 .map(|it| it.count)
                 .sum::<u32>(),
             delivered
+        );
+        crate::systems::work::run(&mut w, carrier);
+        assert!(keys
+            .iter()
+            .all(|key| !w.reservations.leases.contains_key(key)));
+        assert!(w.items.iter().any(|it| it.id == parcel
+            && it.count == 3
+            && it.place == crate::items::ItemPlace::Ground(gate)));
+        assert_eq!(
+            w.items
+                .iter()
+                .filter(|it| it.place == crate::items::ItemPlace::Ground(gate))
+                .map(|it| it.count)
+                .sum::<u32>(),
+            delivered + 3
         );
         w.grid.set(gate, wall);
         assert_eq!(crossing_gate(&w, home, &ring, cliff, Some(cliff)), None);

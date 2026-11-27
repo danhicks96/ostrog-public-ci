@@ -3580,9 +3580,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/settlement.rs:2943 | west |
 | systems/settlement.rs:2944 | south |
 | systems/settlement.rs:2945 | north |
-| systems/settlement.rs:4410 | a need for another room |
-| systems/settlement.rs:4412 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
-| systems/settlement.rs:4477 | We {label}, as our first house was built. |
+| systems/settlement.rs:4463 | a need for another room |
+| systems/settlement.rs:4465 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
+| systems/settlement.rs:4530 | We {label}, as our first house was built. |
 | systems/society.rs:265 | carried off |
 | systems/society.rs:385 | they hold that other kinds are best kept apart, and most here are {plural} |
 | systems/society.rs:397 | strangers are not taken in |
