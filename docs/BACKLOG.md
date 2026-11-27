@@ -459,7 +459,7 @@ Everyone awake near the hearth sits, and any sitter can be the teller, so a four
 
 ### OST-549 · A grieving person and an angry one break differently
 
-**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#745](https://github.com/danhicks96/ostrog-public-ci/pull/745)
 
 The kind of a breakdown ignores what the person feels. Read the cause first and weight the kind by it: anger at someone near brings a fight (else a tantrum), grief a daze, shame withdrawal or walking out, hunger a binge; with no cause the bag is untouched.
 

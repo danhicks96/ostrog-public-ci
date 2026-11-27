@@ -303,7 +303,16 @@ fn the_arrival_is_a_shock_that_fades_and_the_calm_shake_it_faster() {
                 "day 1 thoughts: {shocked} against {not}"
             );
         }
-        daily.push(thought(&w));
+        // OST-549: breaks now follow what the person feels, and the thoughts they leave behind
+        // (a binge, a fight) differ, so the fade is read off the arrival thought alone.
+        let now = w.meta.tick;
+        let m: Vec<f32> = w
+            .agents
+            .iter()
+            .filter(|a| a.alive && members.contains(&a.id))
+            .map(|a| a.thoughts.sum_of(ThoughtKind::Arrival, now))
+            .collect();
+        daily.push(m.iter().sum::<f32>() / m.len().max(1) as f32);
     }
     assert!(daily[0] < daily[5] - 0.1, "{daily:?}");
     assert!(
