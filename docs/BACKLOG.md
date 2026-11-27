@@ -371,7 +371,7 @@ A week sleeping on the ground weighs the same as one night, because the thought 
 
 ### OST-242 · Give a broken or short night its own thought
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#747](https://github.com/danhicks96/ostrog-public-ci/pull/747)
 
 A sleep under six hours gave no thought, so a night cut short by cold, hunger or a raid was not felt. It now leaves a small "a broken night" thought, unless it is a nap soon after a full night.
 
