@@ -4,7 +4,6 @@
 
 The landing wizard listed the wild species drawn for the entire world at every landing. Its note now counts the selected site’s surface vegetation and names up to five kinds growing on the previewed terrain. Local history can change their numbers before the founders arrive.
 
-## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
 ## 2026-11-26 - Landing site and egress point
 
 Setup names the selected local area the landing site and identifies the founding portal tile as the egress point. History and the home follow action use the generated place name. Terrain descriptions reserve valley for the landform. Arrival history now reads the landform used for the selected region instead of drawing it again from the world seed.
