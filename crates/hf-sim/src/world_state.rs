@@ -215,14 +215,17 @@ pub struct World {
 }
 
 impl World {
+    /// The founding site is saved at the original standing height, one above its ground.
+    /// Construction and excavation can change the live column throughout the game.
+    pub(crate) fn climate_datum_z(&self) -> i32 {
+        self.meta.founding_site.z - 1
+    }
+
     /// The air temperature at `p` (#268): the valley reading lapsed by height above (or
     /// warmth by depth below) the founding site's ground — heights frost earlier and
     /// drain warmth faster, dug cellars keep warmer than the surface reading.
     pub fn temp_at(&self, p: TilePos) -> f32 {
-        let base = self
-            .grid
-            .ground_z(self.meta.founding_site.x, self.meta.founding_site.y);
-        crate::thermal::lapse_c(self.weather.temperature_c, base, p.z)
+        crate::thermal::lapse_c(self.weather.temperature_c, self.climate_datum_z(), p.z)
     }
 
     /// A species of this world: a built-in one or one generated for it (P6).

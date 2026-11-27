@@ -30,9 +30,7 @@ pub fn step(w: &mut World) {
     // any surface tile can be, on the highest ground, so a marginal night that is no frost
     // on the valley floor can still take a field on a height.
     let valley = w.weather.temperature_c;
-    let base = w
-        .grid
-        .ground_z(w.meta.founding_site.x, w.meta.founding_site.y);
+    let base = w.climate_datum_z();
     let high = w.grid.ground.iter().max().copied().unwrap_or(base);
     let shoulder = matches!(
         w.calendar().season,

@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-26 - Construction preserves the regional frost line
+
+A wall or excavation at the founding site used to change temperatures across the region. Water, crops, snow on roofs and inhabitants now use the original ground elevation when calculating temperature at their own level. Existing saves already record that elevation.
+
 ## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
 
 - Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7

@@ -135,9 +135,7 @@ fn step_roofs(w: &mut World) {
     let snowing = w.weather.sky == crate::systems::weather::Sky::Snow;
     // The thaw is where the roof stands (#268): a roof on the heights keeps its snow longer.
     let valley = w.weather.temperature_c;
-    let base = w
-        .grid
-        .ground_z(w.meta.founding_site.x, w.meta.founding_site.y);
+    let base = w.climate_datum_z();
     for (q, r) in w.roofs.iter_mut() {
         let thaw = crate::thermal::lapse_c(valley, base, q.z) > 1.0;
         if snowing {

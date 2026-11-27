@@ -14,11 +14,9 @@ pub fn step(w: &mut World) {
     let stripe = (tick % STRIPE as u64) as usize;
     let mut events = Vec::new();
     // Heat dries a body faster (#433): half as fast again above 25 C, twice above 30.
-    // Reckoned where the person stands (#268): the heights run hotter than the valley floor.
+    // Reckoned where the person stands (#268): higher elevations are cooler.
     let valley = w.weather.temperature_c;
-    let base = w
-        .grid
-        .ground_z(w.meta.founding_site.x, w.meta.founding_site.y);
+    let base = w.climate_datum_z();
     for (i, a) in w.agents.iter_mut().enumerate() {
         if !a.alive || i % STRIPE as usize != stripe {
             continue;

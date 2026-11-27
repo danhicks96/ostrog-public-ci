@@ -1514,22 +1514,22 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | body.rs:528 | {} scar{} |
 | body.rs:530 | s |
 | body.rs:538 | sound |
-| building.rs:160 | with nothing left to hold it |
-| building.rs:162 | under the weight of the snow |
-| building.rs:200 | when the roof came down |
-| building.rs:216 | roof fell |
-| building.rs:346 | when the upper room came down |
-| building.rs:358 | when its lower support gave way |
-| building.rs:435 | stone |
-| building.rs:435 | timber |
-| building.rs:437 | An |
-| building.rs:442 | {a} {built} house |
-| building.rs:443 | {a} {built} house with thatch |
-| building.rs:444 | {a} {built} house with shingles |
-| building.rs:447 | {kind} going up: walls {walls} of {edges}. |
-| building.rs:451 | {kind}: walls up, roof {} of {}. |
-| building.rs:460 | {kind}, roofed. Snow on it {:.0} hours; its weakest part bears about {:.0}. |
-| building.rs:464 | {kind}, roofed. |
+| building.rs:158 | with nothing left to hold it |
+| building.rs:160 | under the weight of the snow |
+| building.rs:198 | when the roof came down |
+| building.rs:214 | roof fell |
+| building.rs:344 | when the upper room came down |
+| building.rs:356 | when its lower support gave way |
+| building.rs:433 | stone |
+| building.rs:433 | timber |
+| building.rs:435 | An |
+| building.rs:440 | {a} {built} house |
+| building.rs:441 | {a} {built} house with thatch |
+| building.rs:442 | {a} {built} house with shingles |
+| building.rs:445 | {kind} going up: walls {walls} of {edges}. |
+| building.rs:449 | {kind}: walls up, roof {} of {}. |
+| building.rs:458 | {kind}, roofed. Snow on it {:.0} hours; its weakest part bears about {:.0}. |
+| building.rs:462 | {kind}, roofed. |
 | cascade.rs:161 | {count} {what} |
 | cascade.rs:169 | drenched |
 | cascade.rs:219 | roof |
@@ -2740,7 +2740,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | why.rs:230 | over {} at {:.2} |
 | why.rs:241 | {}: put off until food and shelter are secure |
 | why.rs:243 | {}: put off while the arrival is fresh |
-| world_state.rs:644 | returned |
+| world_state.rs:647 | returned |
 | mind/attention.rs:42 | the ground |
 | mind/attention.rs:43 | animal sign |
 | mind/attention.rs:44 | a stuck building |

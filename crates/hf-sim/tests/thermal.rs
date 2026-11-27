@@ -21,6 +21,34 @@ fn cold_world() -> (World, usize) {
 }
 
 #[test]
+fn changing_the_founding_column_preserves_the_regional_frost_line() {
+    use hf_sim::world::{Material, Tile, TileFlags};
+
+    let (mut w, _) = cold_world();
+    let site = w.meta.founding_site;
+    let ground = site.offset(0, 0, -1);
+    let pond = site.offset(8, 0, 0);
+    let mut water = Tile::floor(Material::WATER);
+    water.flags = TileFlags(TileFlags::WATER);
+    w.grid.set(pond, water);
+    let cellar = pond.offset(0, 0, -3);
+    w.weather.temperature_c = -1.0;
+    let unchanged = |w: &World| {
+        assert_eq!(w.temp_at(pond), -2.5);
+        assert!(hf_sim::water::frozen_at(w, pond));
+        assert_eq!(w.temp_at(cellar), 2.0);
+    };
+    unchanged(&w);
+    w.grid.set(site, Tile::solid(Material::WOOD));
+    assert_eq!(w.grid.ground_z(site.x, site.y), site.z);
+    unchanged(&w);
+    w.grid.set(site, Tile::AIR);
+    w.grid.set(ground, Tile::AIR);
+    assert!(w.grid.ground_z(site.x, site.y) < ground.z);
+    unchanged(&w);
+}
+
+#[test]
 fn a_killing_frost_takes_the_growing_crop() {
     let (mut w, _) = cold_world();
     let at = w.grid.surface(35, 35);
