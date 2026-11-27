@@ -683,6 +683,26 @@ func test_ladders_and_fire_frames() -> void:
 		frames[Rules.fire_frame(float(t), 0, 128, 32)] = true
 	check(frames.size() == 4, "a 4-frame fire sheet shows 4 frames, saw %d" % frames.size())
 
+func test_thistle_draws_its_growth_and_season() -> void:
+	var world := WorldView.new()
+	world.assets = preload("res://scripts/assets.gd").new()
+	var layer := preload("res://scripts/render/entity_layer.gd").new()
+	world.add_child(layer)
+	layer.init(world, world)
+	for season in [0, 3]:
+		world.season = season
+		for stage in 3:
+			world.plants = PackedInt32Array([0, 0, 0, world.PLANT_KIND.find("thistle"), [20, 55, 95][stage], 1])
+			layer._used.clear()
+			layer._plant(0)
+			var rendered := int(layer._used.get("sprite", 0)) == 1
+			check(rendered, "a thistle draws at stage %d in season %d" % [stage, season])
+			if rendered:
+				var suffix := "_winter" if season == 3 else ""
+				var expected := "res://assets/plants/thistle_%d%s.png" % [stage, suffix]
+				check(layer._pool["sprite"][0].texture.resource_path == expected, "the observed plant uses its matching stage and season")
+	world.free()
+
 # #423: every kind of animal the sim sends has its sheet, the three new bodies at the end in
 # the sim's order (agents.rs Species, appended), so none is drawn as the deer fallback.
 func test_every_animal_kind_has_a_sheet() -> void:

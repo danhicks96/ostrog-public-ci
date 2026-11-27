@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 - Draw thistle at its observed growth stage
+
+The normal plant renderer now draws thistle with its existing three growth stages and winter sheets. On a late Ferncross save an established plant and a young rosette both previously had no sprite.
+
 ## 2026-11-27 - Inherited hairstyles on adult human rigs
 
 All ten inherited hairstyles now follow the slim, average and broad adult human rigs at double source resolution. The three builds retain their clothing, equipment, skin and hair colours, injury layers and held-load geometry. Children and other peoples keep their fitted appearances.

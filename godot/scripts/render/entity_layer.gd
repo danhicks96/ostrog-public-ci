@@ -22,7 +22,7 @@ const CROPS := ["grain", "root", "barley", "oats", "rye", "peas", "flax"]
 ## Wild plants by three growth stages with optional season sheets (tools/art/plants.py).
 const STAGED := ["herbs", "fern", "vine", "root_crops", "flowering_plant", "hazel", "bilberry",
 	"wild_strawberry", "bramble", "wild_garlic", "chanterelle", "cattail", "death_cap", "hemlock",
-	"nightshade", "lily_of_the_valley", "nettle", "woad", "madder", "weld", "yarrow", "comfrey"]
+	"nightshade", "lily_of_the_valley", "nettle", "woad", "madder", "weld", "yarrow", "comfrey", "thistle"]
 const FLAT_STRUCT := ["stockpile", "bed", "fence_post"]
 # Sheets whose frames are states, not animation (tools/art/structures.py): frame 0 cold or
 # unlit, frame 1 lit. They show the lit frame while active and never cycle; cycling them made a
