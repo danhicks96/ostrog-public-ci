@@ -403,7 +403,7 @@ Mood still added every long memory together. It now reads the bounded, fading, h
 
 ### OST-204 · Average the recent-memory term in mood
 
-**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** pending
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#746](https://github.com/danhicks96/ostrog-public-ci/pull/746)
 
 The recent-memory part of mood summed ten records and could add up to +2.5. It is now a salience-weighted mean scaled to +-0.3.
 
