@@ -1042,11 +1042,6 @@ fn choose_band(w: &World, i: usize, r: &mut rand_chacha::ChaCha8Rng) -> Option<G
         if let Some(s) = crate::water::nearest_knowing(w, i, me, 60, &a.knowledge, desperate) {
             return Some(Goal::Drink(s.stand));
         }
-        if matches!(band.state, crate::threat::BandState::Camped(_)) {
-            if let Some(p) = search_for_water(w, i, r) {
-                return Some(Goal::SeekWater(p));
-            }
-        }
     }
     // Hungry with food in hand: eat it. (Foraging again while carrying food piled up stacks a
     // carnivore could not live on: a Skarri band member carried 1,300 of berries, the C43 soak.)
@@ -1057,6 +1052,15 @@ fn choose_band(w: &World, i: usize, r: &mut rand_chacha::ChaCha8Rng) -> Option<G
     if 1.0 - a.needs.hunger > 0.55 {
         if let Some(it) = carried {
             return Some(Goal::EatItem(it.id, me));
+        }
+    }
+    // A walk to look for water can wait for food in hand or a tired camper's rest.
+    if a.needs.thirst < 0.45
+        && a.needs.rest >= 0.3
+        && matches!(band.state, crate::threat::BandState::Camped(_))
+    {
+        if let Some(p) = search_for_water(w, i, r) {
+            return Some(Goal::SeekWater(p));
         }
     }
     // Hungry and nothing in hand: forage what they have seen growing near the camp, as anyone

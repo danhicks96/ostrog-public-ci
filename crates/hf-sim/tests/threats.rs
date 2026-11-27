@@ -985,3 +985,50 @@ fn the_acceptance_check_passes_for_a_band_that_comes_in_by_the_east_edge() {
     );
     assert_band_comes_in(&mut w, band);
 }
+
+#[test]
+fn camped_water_search_leaves_time_to_eat_and_rest() {
+    use hf_sim::items::{ItemKind, ItemPlace};
+    use hf_sim::mind::Activity;
+
+    let (mut w, id) = far_band(4, River::Wading);
+    let band = w.bands.iter_mut().find(|b| b.id == id).unwrap();
+    let who = band.members[0];
+    let i = w.agents.iter().position(|a| a.id == who).unwrap();
+    let camp = w.agents[i].pos;
+    band.camp = camp;
+    band.state = hf_sim::threat::BandState::Camped(w.meta.tick);
+    assert!(
+        hf_sim::water::nearest_knowing(&w, i, camp, 60, &w.agents[i].knowledge, true).is_none()
+    );
+    w.create_item(ItemKind::Meal, 1, ItemPlace::Carried(who), 0.6, "test");
+    let choose = |w: &mut World, hunger, rest| {
+        let a = &mut w.agents[i];
+        a.path.clear();
+        a.idle_ticks = 0;
+        a.set_activity(Activity::Idle);
+        a.needs.thirst = 0.1;
+        a.needs.hunger = hunger;
+        a.needs.rest = rest;
+        hf_sim::systems::decide::step(w);
+        w.agents[i].activity.clone()
+    };
+    assert!(
+        matches!(choose(&mut w, 0.08, 1.0), Activity::Going {then, ..} if matches!(*then, Activity::Eating { .. })),
+        "a hungry camper eats their carried food"
+    );
+    assert!(
+        matches!(choose(&mut w, 1.0, 0.04), Activity::Sleeping { .. }),
+        "an exhausted camper can sleep"
+    );
+    assert!(
+        matches!(choose(&mut w, 1.0, 1.0), Activity::Going {then, ..} if matches!(*then, Activity::Loitering { .. })),
+        "rested and fed, they search"
+    );
+    let bank = TilePos::new(camp.x, RIVER_TOP + 2, 2);
+    w.agents[i].pos = bank;
+    assert!(
+        matches!(choose(&mut w, 0.08, 0.04), Activity::Going {then, ..} if matches!(*then, Activity::Drinking { .. })),
+        "a real drink remains urgent"
+    );
+}
