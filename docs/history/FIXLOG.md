@@ -1,5 +1,13 @@
 # Fix log
 
+## 2026-11-26: first appearance of new clothing, skin or hair colours
+
+In a mature Ashcross save, a newly visible person's colours could stall a frame while the client
+walked every pixel of several sprite sheets in GDScript. The first recolour now searches packed
+RGBA8 pixels for each source colour. The existing texture cache serves later appearances.
+The sheet guard checks overlapping palette entries, transparent and partial-alpha pixels, and
+mip levels.
+
 ## 2026-11-26: Gourmet and Tidy were never drawn from a genome (OST-1102)
 
 - Symptom: no one was born Gourmet or Tidy, so their effects (binge strain, hauling weight) never

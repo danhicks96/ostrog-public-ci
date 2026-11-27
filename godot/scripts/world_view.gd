@@ -1228,17 +1228,29 @@ func _swapped(path: String, group: String, idx: int) -> Texture2D:
 		return tex
 	var dst: Array = targets[idx % targets.size()]
 	var img := tex.get_image()
-	img.convert(Image.FORMAT_RGBA8)
-	var map := {}
-	for k in range(mini(src.size(), dst.size())):
-		map[Color.html(src[k]).to_rgba32()] = Color.html(dst[k])
-	for py in range(img.get_height()):
-		for px in range(img.get_width()):
-			var c := img.get_pixel(px, py)
-			if c.a == 0.0: continue
-			var k := c.to_rgba32()
-			if map.has(k):
-				img.set_pixel(px, py, map[k])
+	_recolor_sheet(img, src, dst)
 	var out := ImageTexture.create_from_image(img)
 	swapped_cache[key] = out
 	return out
+
+## Search the original sheet for each source colour so a replacement is never matched twice.
+static func _recolor_sheet(img: Image, source_colors: Array, target_colors: Array) -> void:
+	img.convert(Image.FORMAT_RGBA8)
+	var original := img.get_data().to_int32_array()
+	var recolored := original.duplicate()
+	var base_pixels := img.get_width() * img.get_height()
+	for k in range(mini(source_colors.size(), target_colors.size())):
+		var source := Color.html(source_colors[k])
+		if source.a8 == 0:
+			continue
+		var before := _rgba8_word(source)
+		var after := _rgba8_word(Color.html(target_colors[k]))
+		var i := original.find(before)
+		while i >= 0 and i < base_pixels:
+			recolored[i] = after
+			i = original.find(before, i + 1)
+	# The original loop paints only the base level. Preserve any stored mip levels.
+	img.set_data(img.get_width(), img.get_height(), img.has_mipmaps(), Image.FORMAT_RGBA8, recolored.to_byte_array())
+
+static func _rgba8_word(color: Color) -> int:
+	return PackedByteArray([color.r8, color.g8, color.b8, color.a8]).to_int32_array()[0]

@@ -2131,3 +2131,19 @@ func test_catch_up_has_one_control_and_the_spans_the_bridge_knows() -> void:
 	var since: Dictionary = sim.catch_up_since(0)
 	check(since.has("has_news"), "since-look says whether there is news")
 	sim.free()
+
+func test_sheet_recolor_preserves_original_matches_and_mip_levels() -> void:
+	var raw := PackedByteArray([
+		255, 0, 0, 255, 0, 255, 0, 255, 11, 22, 33, 0, 9, 8, 7, 128,
+		255, 0, 0, 255,
+	])
+	var img := Image.create_from_data(2, 2, true, Image.FORMAT_RGBA8, raw)
+	WorldView._recolor_sheet(img,
+		["#ff0000ff", "#00ff00ff", "#0b162100", "#09080780"],
+		["#00ff00ff", "#0000ffff", "#112233ff", "#bc717f88"])
+	check(img.get_data() == PackedByteArray([
+		0, 255, 0, 255, 0, 0, 255, 255, 11, 22, 33, 0, 188, 113, 127, 136,
+		255, 0, 0, 255,
+	]), "recolour original opaque and partial-alpha texels and preserve transparent texels and mip bytes")
+	WorldView._recolor_sheet(img, ["#0000ffff", "#0000ffff"], ["#ff0000ff", "#ffffffff"])
+	check(img.get_pixel(1, 0) == Color.WHITE, "the final target wins for a repeated source colour")
