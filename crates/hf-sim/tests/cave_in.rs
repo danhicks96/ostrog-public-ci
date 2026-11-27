@@ -6,6 +6,7 @@ use hf_sim::events::EventKind;
 use hf_sim::ids::TilePos;
 use hf_sim::items::{ItemKind, ItemPlace};
 use hf_sim::mind::techniques::{Learned, Technique, Techniques};
+use hf_sim::mind::Activity;
 use hf_sim::structures::StructureKind;
 use hf_sim::time::{TICKS_PER_DAY, TICKS_PER_HOUR};
 use hf_sim::underground;
@@ -205,12 +206,42 @@ fn a_miner_who_knows_props_first() {
     }
     dig_wall(&mut w, cid);
     w.ensure_nav();
+    // This scenario starts once the miner accepts the cut. Accept it again after
+    // the miner's own support is built; leave the shoring decisions to the worker.
+    let cut = w.designations.last().unwrap().id;
+    let face = TilePos::new(50, 30, -2);
+    let support_built = |w: &World| {
+        w.structures
+            .iter()
+            .any(|s| s.kind == StructureKind::Support && s.pos.z == face.z && s.progress >= 1.0)
+    };
+    let take_cut = |w: &mut World| {
+        let order = w.designations.iter().find(|d| d.id == cut).unwrap();
+        let planned = hf_sim::work::planner::plan_for(w, ids[0], order).expect("reachable cut");
+        let expires = w.tick() + u64::from(planned.estimate) + 600;
+        assert!(w.reservations.acquire_all(ids[0], &planned.keys, expires));
+        hf_sim::systems::decide::commit(w, i, Activity::Working { plan: planned.plan });
+    };
+    take_cut(&mut w);
+    let mut resumed = false;
     let (mut propped, mut collapsed) = (false, false);
     for _ in 0..TICKS_PER_DAY {
         w.step();
+        if !resumed
+            && propped
+            && matches!(w.agents[i].activity, Activity::Idle)
+            && w.grid.get(face).shape.is_solid()
+            && support_built(&w)
+        {
+            take_cut(&mut w);
+            resumed = true;
+        }
         for e in &w.last_events {
             match e.kind {
-                EventKind::Propped { .. } => propped = true,
+                EventKind::Propped { agent, .. } if agent == ids[0] => propped = true,
+                EventKind::Mined { at, .. } if at == face => {
+                    assert!(propped && support_built(&w), "the support preceded the cut");
+                }
                 EventKind::Collapse { .. } => collapsed = true,
                 _ => {}
             }
@@ -218,12 +249,7 @@ fn a_miner_who_knows_props_first() {
     }
     assert!(propped, "stopped to prop the roof first");
     assert!(!collapsed, "and the roof held");
-    assert!(
-        w.structures
-            .iter()
-            .any(|s| s.kind == StructureKind::Support && s.pos.z == -2),
-        "the prop was set"
-    );
+    assert!(support_built(&w), "the prop was set");
     assert!(
         !w.grid.get(TilePos::new(50, 30, -2)).shape.is_solid(),
         "and then the cut was made"
