@@ -12425,3 +12425,19 @@ the simulation changes only for people who sleep rough more than one night runni
 Guard: `tests/slept.rs::a_week_on_the_ground_weighs_more_than_one_night` fails without the extra
 weight (seven nights weighed the same as one); `a_night_in_a_bed_resets_the_rough_count` covers
 the reset.
+
+## 2026-11-27 — OST-549: what a person feels leans how they break
+
+Symptom: two people at the end of their rope broke by a trait-weighted bag and a fixed personal
+lean; grief, anger and shame never entered it, so a widow was as likely to throw a tantrum as to
+sit in a daze.
+Cause: `strain::step` chose the kind before it read the cause of the break.
+Fix: the cause is read first (and reused for the explanation). Anger at someone awake within 8
+tiles makes a fight three times as likely (capped at 1, still barred by a firm belief against
+violence); anger with no one near weights a tantrum x2; grief about a person gives daze at least
+1.5 times the rest of the bag; shame weights withdrawing and walking out x2; hunger weights a
+binge x3. With no cause the bag and its rolls are untouched. No save change.
+Guard: `tests/breaks.rs::grief_breaks_into_a_daze` fails without the fix (2 of 20 broke into a
+daze); `without_a_cause_the_trait_bag_still_picks` covers the unchanged bag. The explanation test
+now keeps the other person out of fight range.
+Not measured: the kind-by-feeling table on seeds 1-4, so #558 stays open.

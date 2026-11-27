@@ -445,6 +445,25 @@ pub fn step(w: &mut World) {
         );
         let who = w.agents[i].id;
         let here = w.agents[i].pos;
+        // OST-549: what the person feels leans the kind. Read once; the same value explains the
+        // break below.
+        let cause = break_cause(&w.agents[i], tick);
+        // Anger about someone close by and awake points the break at them.
+        let angry_at = match cause {
+            Cause::Feeling(crate::mind::feelings::FeelingKind::Anger, Subject::Person(x)) => w
+                .agents
+                .iter()
+                .find(|o| {
+                    o.id == x
+                        && o.alive
+                        && o.species == Species::Person
+                        && o.pos.dist(here) <= 8
+                        && o.pos.z == here.z
+                        && !o.activity.is_asleep()
+                })
+                .map(|o| o.id),
+            _ => None,
+        };
         // Someone nearby they think little of makes it a fight; otherwise temperament picks.
         let target = w
             .agents
@@ -460,6 +479,7 @@ pub fn step(w: &mut World) {
             .filter(|o| w.agents[i].opinion_of(o.id) < -0.2)
             .map(|o| o.id)
             .next();
+        let target = angry_at.or(target);
         let roll: f32 = r.gen();
         let industrious = w.agents[i].traits.has(crate::mind::Trait::Industrious);
         let solitary = w.agents[i].traits.has(crate::mind::Trait::Solitary);
@@ -473,9 +493,16 @@ pub fn step(w: &mut World) {
             let fight = if lean <= -0.6 {
                 0.0
             } else {
-                0.6 * w.agents[i]
-                    .beliefs
-                    .weight(crate::mind::beliefs::Topic::Violence, 1.0)
+                let base = 0.6
+                    * w.agents[i]
+                        .beliefs
+                        .weight(crate::mind::beliefs::Topic::Violence, 1.0);
+                // OST-549: fury at someone right there makes a fight three times as likely.
+                if angry_at == Some(t) {
+                    (base * 3.0).min(1.0)
+                } else {
+                    base
+                }
             };
             if roll < fight {
                 Break::Fight(t)
@@ -505,6 +532,25 @@ pub fn step(w: &mut World) {
             ];
             let own = (a.id.0 as usize).wrapping_mul(2_654_435_761) % 5;
             wt[own] += 3.0;
+            // OST-549: the feeling behind the break weights its kind (with no cause the bag is
+            // untouched, so the same rolls pick the same kinds as before).
+            {
+                use crate::mind::feelings::FeelingKind as F;
+                match cause {
+                    Cause::Feeling(F::Anger, _) => wt[0] *= 2.0,
+                    Cause::Feeling(F::Grief, Subject::Person(_)) => {
+                        // Grief takes most of the bag: a daze, in the nine breaks out of fifteen.
+                        let rest: f32 = wt.iter().sum::<f32>() - wt[4];
+                        wt[4] = wt[4].max(1.5 * rest);
+                    }
+                    Cause::Feeling(F::Shame, _) => {
+                        wt[1] *= 2.0;
+                        wt[5] *= 2.0;
+                    }
+                    Cause::Need("hunger") => wt[3] *= 3.0,
+                    _ => {}
+                }
+            }
             let total: f32 = wt.iter().sum();
             let mut x = roll * total;
             let mut k = 0;
@@ -532,7 +578,7 @@ pub fn step(w: &mut World) {
             Break::WalkOut => "walking out",
             Break::Firestart => "setting a fire",
         };
-        let explanation = match break_cause(&w.agents[i], tick) {
+        let explanation = match cause {
             Cause::Feeling(k, Subject::Person(about)) => BreakExplanation::Known {
                 about: Some(about),
                 cause: k.word().to_string(),
