@@ -473,6 +473,14 @@ A week sleeping on the ground weighs the same as one night, because the thought 
 
 **Acceptance:** Seven rough nights in a row weigh more than one; a night in a bed resets the count. A FIXLOG entry is added and any simulation digest change is explained in the PR.
 
+### OST-242 · Give a broken or short night its own thought
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#747](https://github.com/danhicks96/ostrog-public-ci/pull/747)
+
+A sleep under six hours gave no thought, so a night cut short by cold, hunger or a raid was not felt. It now leaves a small "a broken night" thought, unless it is a nap soon after a full night.
+
+**Acceptance:** A three-hour sleep after a day awake leaves the thought and a nap soon after a night leaves none; a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-241 · Make a break's cost last
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** Pending
