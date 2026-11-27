@@ -1397,7 +1397,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3257 strings (click to open)</summary>
+<details><summary>3259 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -3580,9 +3580,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/settlement.rs:2943 | west |
 | systems/settlement.rs:2944 | south |
 | systems/settlement.rs:2945 | north |
-| systems/settlement.rs:4262 | a need for another room |
-| systems/settlement.rs:4264 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
-| systems/settlement.rs:4329 | We {label}, as our first house was built. |
+| systems/settlement.rs:4410 | a need for another room |
+| systems/settlement.rs:4412 | We build upward when another room is needed, as the upper room at {origin} proved for {why}. |
+| systems/settlement.rs:4477 | We {label}, as our first house was built. |
 | systems/society.rs:265 | carried off |
 | systems/society.rs:385 | they hold that other kinds are best kept apart, and most here are {plural} |
 | systems/society.rs:397 | strangers are not taken in |
@@ -3651,46 +3651,48 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/work.rs:418 | from a slipped axe |
 | systems/work.rs:423 | from falling stone |
 | systems/work.rs:428 | at the building site |
-| systems/work.rs:484 | building |
-| systems/work.rs:484 | digging |
-| systems/work.rs:560 | the old valley |
-| systems/work.rs:586 | studying the {what} left at {site} |
-| systems/work.rs:1085 | chop |
-| systems/work.rs:1167 | mine |
-| systems/work.rs:1169 | iron ore |
-| systems/work.rs:1178 | mine |
-| systems/work.rs:1180 | copper ore |
-| systems/work.rs:1183 | mine |
-| systems/work.rs:1193 | mine |
-| systems/work.rs:1195 | coal |
-| systems/work.rs:1215 | mine |
-| systems/work.rs:1223 | mine |
-| systems/work.rs:1225 | rough gems |
-| systems/work.rs:1236 | mine |
-| systems/work.rs:1265 | {f} here |
-| systems/work.rs:1284 | {}, a cavern grown with pale fungus{} |
-| systems/work.rs:1286 |  around a still pool |
-| systems/work.rs:1289 | a cave |
-| systems/work.rs:1364 | dig |
-| systems/work.rs:1380 | a way down |
-| systems/work.rs:1416 | dig |
-| systems/work.rs:1473 | harvest |
-| systems/work.rs:1575 | beating at a fire |
-| systems/work.rs:1587 | poultice |
-| systems/work.rs:1691 | {n} {} |
-| systems/work.rs:1693 |  and  |
-| systems/work.rs:1763 | craft |
-| systems/work.rs:1772 | craft |
-| systems/work.rs:1799 | set with a {gem_name} |
-| systems/work.rs:1853 | cook |
-| systems/work.rs:1866 | cook |
-| systems/work.rs:1929 | from a boar's tusk |
-| systems/work.rs:1931 | from a wolf's bite |
-| systems/work.rs:1947 | hunted |
-| systems/work.rs:1971 | hunt |
-| systems/work.rs:1979 | hunt |
-| systems/work.rs:2112 | set about putting a lamp where they work below |
-| systems/work.rs:2113 | because it is too dark down there to see the rock |
+| systems/work.rs:492 | building a wall |
+| systems/work.rs:493 | leaving a crossing through the palisade |
+| systems/work.rs:504 | building |
+| systems/work.rs:504 | digging |
+| systems/work.rs:580 | the old valley |
+| systems/work.rs:606 | studying the {what} left at {site} |
+| systems/work.rs:1105 | chop |
+| systems/work.rs:1187 | mine |
+| systems/work.rs:1189 | iron ore |
+| systems/work.rs:1198 | mine |
+| systems/work.rs:1200 | copper ore |
+| systems/work.rs:1203 | mine |
+| systems/work.rs:1213 | mine |
+| systems/work.rs:1215 | coal |
+| systems/work.rs:1235 | mine |
+| systems/work.rs:1243 | mine |
+| systems/work.rs:1245 | rough gems |
+| systems/work.rs:1256 | mine |
+| systems/work.rs:1285 | {f} here |
+| systems/work.rs:1304 | {}, a cavern grown with pale fungus{} |
+| systems/work.rs:1306 |  around a still pool |
+| systems/work.rs:1309 | a cave |
+| systems/work.rs:1384 | dig |
+| systems/work.rs:1400 | a way down |
+| systems/work.rs:1436 | dig |
+| systems/work.rs:1493 | harvest |
+| systems/work.rs:1595 | beating at a fire |
+| systems/work.rs:1607 | poultice |
+| systems/work.rs:1711 | {n} {} |
+| systems/work.rs:1713 |  and  |
+| systems/work.rs:1783 | craft |
+| systems/work.rs:1792 | craft |
+| systems/work.rs:1819 | set with a {gem_name} |
+| systems/work.rs:1873 | cook |
+| systems/work.rs:1886 | cook |
+| systems/work.rs:1949 | from a boar's tusk |
+| systems/work.rs:1951 | from a wolf's bite |
+| systems/work.rs:1967 | hunted |
+| systems/work.rs:1991 | hunt |
+| systems/work.rs:1999 | hunt |
+| systems/work.rs:2132 | set about putting a lamp where they work below |
+| systems/work.rs:2133 | because it is too dark down there to see the rock |
 | view/alive.rs:46 | died |
 | view/alive.rs:46 | captured |
 | view/alive.rs:46 | broke |

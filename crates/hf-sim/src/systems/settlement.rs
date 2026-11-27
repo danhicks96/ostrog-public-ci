@@ -3020,7 +3020,8 @@ fn palisade(w: &mut World, cid: crate::ids::CommunityId, home: TilePos) {
                 break;
             }
         }
-        if ring.len() != pal.ring.len() {
+        let expanded = ring.len() != pal.ring.len();
+        if expanded {
             if let Some(c) = w.communities.iter_mut().find(|c| c.id == cid) {
                 if let Some(p) = c.palisade.as_mut() {
                     p.ring = ring.clone();
@@ -3029,7 +3030,7 @@ fn palisade(w: &mut World, cid: crate::ids::CommunityId, home: TilePos) {
         }
         // Built and mended: every ring tile not standing and with no order gets one (C73:
         // seed 3's wall stood at 64 of 85 with five orders open, the rest never reposted).
-        if !whole || ring.len() != pal.ring.len() {
+        if !whole || expanded {
             let pal = crate::society::Palisade {
                 ring,
                 ..pal.clone()
@@ -3058,6 +3059,9 @@ fn palisade(w: &mut World, cid: crate::ids::CommunityId, home: TilePos) {
                         post(w, DesignationKind::BuildWall(wall), q, 5);
                     }
                 }
+            }
+            if expanded {
+                refresh_ring_gate(w, cid, wall, None);
             }
         }
         return;
@@ -3169,7 +3173,9 @@ fn palisade(w: &mut World, cid: crate::ids::CommunityId, home: TilePos) {
         .copied()
         .or(c.field_site)
         .unwrap_or(w.meta.founding_site);
-    let gate = *ring.iter().min_by_key(|q| (q.dist(toward), **q)).unwrap();
+    let Some(gate) = crossing_gate(w, home, &ring, toward, None) else {
+        return;
+    };
     let wall = wall_material(w, cid, first_house);
     w.structures
         .retain(|st| !(st.kind == StructureKind::Stockpile && ring.contains(&st.pos)));
@@ -3191,6 +3197,148 @@ fn palisade(w: &mut World, cid: crate::ids::CommunityId, home: TilePos) {
         });
     }
     set_home_site(w, pid, gate);
+}
+
+/// Keep the preference for a gate facing the fields, but only where people can
+/// actually pass through the finished ring. Project onto a private grid: no
+/// wall is built, no event posted and no real navigation cache is dirtied here.
+fn crossing_gate(
+    w: &World,
+    home: TilePos,
+    ring: &[TilePos],
+    toward: TilePos,
+    existing: Option<TilePos>,
+) -> Option<TilePos> {
+    use crate::world::{Tile, TileFlags};
+    let mut candidates: Vec<_> = ring
+        .iter()
+        .copied()
+        .filter(|&q| {
+            let t = w.grid.get(q);
+            !t.is_solid() || t.flags.has(TileFlags::DOOR)
+        })
+        .collect();
+    candidates.sort_by_key(|&q| (Some(q) != existing, q.dist(toward), q));
+    let xmin = ring.iter().map(|p| p.x).min()?;
+    let xmax = ring.iter().map(|p| p.x).max()?;
+    let ymin = ring.iter().map(|p| p.y).min()?;
+    let ymax = ring.iter().map(|p| p.y).max()?;
+    let wall = Tile::solid(Material::WOOD);
+    let mut door = wall;
+    door.flags = TileFlags(TileFlags::DOOR);
+    let mut projected = w.grid.clone();
+    for &q in ring {
+        projected.set(q, wall);
+    }
+    let mut closed = w
+        .nav
+        .clone()
+        .unwrap_or_else(|| crate::nav::Nav::build(&projected));
+    closed.update(&projected);
+    let mut nav = closed.clone();
+    let mut exits = Vec::new();
+    for gate in candidates {
+        projected.set(gate, door);
+        crate::nav::neighbours(&projected, gate, &mut exits);
+        let inside = exits.iter().any(|s| {
+            let p = s.to;
+            p.x > xmin && p.x < xmax && p.y > ymin && p.y < ymax && closed.reach(home, p)
+        });
+        let outside = exits.iter().any(|s| {
+            let p = s.to;
+            p.x < xmin || p.x > xmax || p.y < ymin || p.y > ymax
+        });
+        if inside && outside {
+            nav.update(&projected);
+            if nav.reach(home, gate) {
+                return Some(gate);
+            }
+        }
+        projected.set(gate, wall);
+    }
+    None
+}
+
+/// An unfinished ring may date from an older plan, or its approaches may have
+/// changed. Reassign unfinished work; a door still needs its normal materials
+/// and a builder. Replacing an old door also takes ordinary wall materials and work.
+pub(super) fn can_finish_ring_wall(
+    w: &mut World,
+    pos: TilePos,
+    community: Option<crate::ids::CommunityId>,
+    material: Material,
+) -> bool {
+    let Some(cid) = community else {
+        return true;
+    };
+    let ring_wall = w
+        .communities
+        .iter()
+        .find(|c| c.id == cid)
+        .and_then(|c| c.palisade.as_ref())
+        .is_some_and(|p| p.ring.contains(&pos));
+    !ring_wall || refresh_ring_gate(w, cid, material, Some(pos)).is_some_and(|gate| gate != pos)
+}
+
+fn refresh_ring_gate(
+    w: &mut World,
+    cid: crate::ids::CommunityId,
+    material: Material,
+    finishing_wall: Option<TilePos>,
+) -> Option<TilePos> {
+    let c = w.communities.iter().find(|c| c.id == cid)?;
+    let pal = c.palisade.as_ref()?;
+    let old = pal.gate;
+    let toward = c
+        .field_tiles
+        .first()
+        .copied()
+        .or(c.field_site)
+        .unwrap_or(w.meta.founding_site);
+    let new = crossing_gate(w, c.home, &pal.ring, toward, Some(old))?;
+    if new == old && finishing_wall != Some(new) {
+        return Some(new);
+    }
+    let removed = crate::work::split_off(&mut w.designations, |o| {
+        o.done
+            || o.community != Some(cid)
+            || !((o.pos == new && matches!(o.kind, DesignationKind::BuildWall(_)))
+                || (old != new && o.pos == old && o.kind == DesignationKind::BuildDoor))
+    });
+    w.give_back(removed);
+    for (site, kind, priority) in [
+        (new, DesignationKind::BuildDoor, 6),
+        (old, DesignationKind::BuildWall(material), 5),
+    ] {
+        if site == new && kind != DesignationKind::BuildDoor {
+            continue;
+        }
+        let tile = w.grid.get(site);
+        let standing = if site == new {
+            tile.flags.has(crate::world::TileFlags::DOOR)
+        } else {
+            tile.is_solid()
+        };
+        if !standing
+            && !w
+                .designations
+                .iter()
+                .any(|o| !o.done && o.pos == site && o.kind == kind)
+        {
+            let mut o = make(w, kind, site, priority);
+            o.community = Some(cid);
+            w.designations.push(o);
+        }
+    }
+    if let Some(pal) = w
+        .communities
+        .iter_mut()
+        .find(|c| c.id == cid)
+        .and_then(|c| c.palisade.as_mut())
+    {
+        pal.gate = new;
+    }
+    Some(new)
 }
 
 /// What a wall is built of (C73): what the first house is walled with, else timber; but stone
@@ -4355,5 +4503,114 @@ mod upper_storey_reason_tests {
             upper_storey_reason(true, true, true),
             Some(UpperStoreyReason::CulturalPreference)
         );
+    }
+}
+
+#[cfg(test)]
+mod gate_tests {
+    use super::*;
+    use crate::nav::Nav;
+    use crate::world::{gen::GenParams, Tile, TileFlags};
+
+    #[test]
+    fn the_preferred_door_has_a_crossing_in_the_finished_ring() {
+        let mut w = World::generate(72, GenParams::small());
+        w.flatten(2, 2, 60, 60, 1);
+        let home = TilePos::new(22, 22, 2);
+        w.meta.founding_site = home;
+        let outside = TilePos::new(22, 15, 2);
+        let cliff = TilePos::new(22, 19, 3);
+        // Only the outside approaches the raised ledge where the field-facing door was proposed.
+        for y in 17..=19 {
+            w.grid
+                .set(TilePos::new(22, y, 2), Tile::solid(Material::GRANITE));
+        }
+        let mut ring = Vec::new();
+        for x in 19..=25 {
+            for y in 19..=25 {
+                if x == 19 || x == 25 || y == 19 || y == 25 {
+                    ring.push(if (x, y) == (22, 19) {
+                        cliff
+                    } else {
+                        TilePos::new(x, y, 2)
+                    });
+                }
+            }
+        }
+        w.rebuild_caches();
+        let wall = Tile::solid(Material::WOOD);
+        let mut door = wall;
+        door.flags = TileFlags(TileFlags::DOOR);
+        let mut completed = w.grid.clone();
+        for &q in &ring {
+            completed.set(q, wall);
+        }
+        let mut viable = Vec::new();
+        for &q in &ring {
+            completed.set(q, door);
+            let test = Nav::build(&completed);
+            if test.reach(home, q) && test.reach(home, outside) {
+                viable.push(q);
+            }
+            completed.set(q, wall);
+        }
+        assert!(!viable.is_empty() && !viable.contains(&cliff));
+        for &toward in &ring {
+            let expected = viable.iter().min_by_key(|q| (q.dist(toward), **q)).copied();
+            assert_eq!(crossing_gate(&w, home, &ring, toward, None), expected);
+        }
+        let gate = TilePos::new(25, 22, 2);
+        let cid = w.found_community(home);
+        w.grid = completed;
+        w.grid.set(gate, Tile::AIR);
+        w.grid.set(cliff, door);
+        w.communities
+            .iter_mut()
+            .find(|c| c.id == cid)
+            .unwrap()
+            .palisade = Some(crate::society::Palisade {
+            ring: ring.clone(),
+            gate: cliff,
+            begun: 1,
+            stood: None,
+            closed: false,
+        });
+        let mut closing = make(&mut w, DesignationKind::BuildWall(Material::WOOD), gate, 5);
+        closing.community = Some(cid);
+        for q in &mut closing.requirements {
+            q.delivered = q.needed;
+        }
+        let delivered: u32 = closing.requirements.iter().map(|r| r.delivered).sum();
+        let old_id = closing.id;
+        w.designations.push(closing);
+        assert!(!can_finish_ring_wall(
+            &mut w,
+            gate,
+            Some(cid),
+            Material::WOOD
+        ));
+        assert!(w.grid.walkable(gate) && w.grid.get(cliff).flags.has(TileFlags::DOOR));
+        assert!(w.designations.iter().all(|d| d.id != old_id));
+        assert!(w
+            .designations
+            .iter()
+            .any(|d| d.kind == DesignationKind::BuildDoor
+                && d.pos == gate
+                && !d.materials_complete()));
+        assert!(w
+            .designations
+            .iter()
+            .any(|d| d.kind == DesignationKind::BuildWall(Material::WOOD) && d.pos == cliff));
+        assert!(delivered > 0);
+        assert_eq!(
+            w.items
+                .iter()
+                .filter(|it| it.place == crate::items::ItemPlace::Ground(gate))
+                .map(|it| it.count)
+                .sum::<u32>(),
+            delivered
+        );
+        w.grid.set(gate, wall);
+        assert_eq!(crossing_gate(&w, home, &ring, cliff, Some(cliff)), None);
     }
 }

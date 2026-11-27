@@ -1,5 +1,9 @@
 # Fix log
 
+## 2026-11-27 — A palisade gate could open onto the wrong side of a cliff
+
+A community planned a 68-tile palisade and then added six more sites. Its field-facing gate no longer led out once those walls stood. Closing the remaining gap cut the residents off from the outside. The planner checks the projected crossing when choosing the gate and again when the ring grows. Builders can change unfinished orders at an older ring and return delivered materials before replacing a gap with a door. The gate tests compare door choices against a completed ring and exercise the replacement orders.
+
 ## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
 
 - Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten

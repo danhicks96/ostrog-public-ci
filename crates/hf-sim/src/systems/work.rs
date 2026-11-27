@@ -476,6 +476,26 @@ pub fn run(w: &mut World, i: usize) -> bool {
                 w.agents[i].needs.hunger = (w.agents[i].needs.hunger - 0.004).max(0.0);
             }
             if done_now {
+                let order = &w.designations[dix];
+                if let DesignationKind::BuildWall(material) = order.kind {
+                    if !super::settlement::can_finish_ring_wall(w, dpos, order.community, material)
+                    {
+                        w.agents[i]
+                            .work_cooldowns
+                            .insert(designation.0, tick + crate::time::TICKS_PER_HOUR);
+                        w.events.push(
+                            tick,
+                            Some(dpos),
+                            Severity::Trace,
+                            EventKind::PlanFailed {
+                                agent: who,
+                                goal: "building a wall".into(),
+                                reason: "leaving a crossing through the palisade".into(),
+                            },
+                        );
+                        return finish(w, i);
+                    }
+                }
                 apply_effect(w, i, designation, station);
                 let label = match &w.agents[i].activity {
                     Activity::Working { plan } => plan.label.clone(),
