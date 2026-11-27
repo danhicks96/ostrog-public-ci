@@ -310,6 +310,8 @@ fn a_lived_belief_is_told_once_a_year_to_each_listener() {
         a.stories.clear();
         a.tales.clear();
         a.beliefs = Default::default();
+        // Grown, so anyone here may tell (OST-511).
+        a.born = -30 * TICKS_PER_YEAR as i64;
     };
     for k in 0..4 {
         seat(&mut w, k);
