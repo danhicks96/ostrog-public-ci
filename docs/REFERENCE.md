@@ -3604,19 +3604,19 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/strain.rs:344 | cold |
 | systems/strain.rs:345 | loneliness |
 | systems/strain.rs:346 | discomfort |
-| systems/strain.rs:550 | hunger |
-| systems/strain.rs:588 | from {} |
-| systems/strain.rs:592 | because they were {} |
-| systems/strain.rs:596 | from {n} |
-| systems/strain.rs:652 | {}'s {} |
-| systems/strain.rs:685 | breaking the {label} |
-| systems/strain.rs:713 | eaten in a binge |
-| systems/strain.rs:747 | set by {name} in a rage |
-| systems/strain.rs:827 | wondered where {who} is |
-| systems/strain.rs:828 | the rest of the party is not here |
-| systems/strain.rs:851 | starting a fight |
-| systems/strain.rs:899 | in a fight |
-| systems/strain.rs:924 | in a fight |
+| systems/strain.rs:556 | hunger |
+| systems/strain.rs:594 | from {} |
+| systems/strain.rs:598 | because they were {} |
+| systems/strain.rs:602 | from {n} |
+| systems/strain.rs:658 | {}'s {} |
+| systems/strain.rs:691 | breaking the {label} |
+| systems/strain.rs:719 | eaten in a binge |
+| systems/strain.rs:753 | set by {name} in a rage |
+| systems/strain.rs:833 | wondered where {who} is |
+| systems/strain.rs:834 | the rest of the party is not here |
+| systems/strain.rs:857 | starting a fight |
+| systems/strain.rs:905 | in a fight |
+| systems/strain.rs:930 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |
