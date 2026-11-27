@@ -1,5 +1,24 @@
 # Fix log
 
+## 2026-11-27: what a person feels leans how they break (OST-549)
+
+- Symptom: two people at the end of their rope broke by a trait-weighted bag and a fixed personal
+  lean; grief, anger and shame never entered it, so a widow was as likely to throw a tantrum as to
+  sit in a daze.
+- Cause: `strain::step` chose the kind of break before it read the cause of the break.
+- Fix: the cause is read first (and reused for the explanation). Anger at someone awake within 8
+  tiles makes a fight three times as likely (capped at 1, still barred by a firm belief against
+  violence); anger with no one near weights a tantrum x2; grief about a person gives a daze at
+  least 1.5 times the rest of the bag; shame weights withdrawing and walking out x2; hunger
+  weights a binge x3, only when food lies within the six tiles a binge reaches (it would otherwise
+  fill them for free). With no cause the bag and its rolls are untouched. No save change.
+- Guard: `tests/breaks.rs::grief_breaks_into_a_daze` (fails without the fix: 2 of 20 broke into a
+  daze); `without_a_cause_the_trait_bag_still_picks` covers the unchanged bag. The explanation
+  test now keeps the other person out of fight range, the arrival-fade gate reads the arrival
+  thought alone, and the Hask pacing gate runs 5 days not 3 so two hard days are seen whichever
+  way the valley's breaks fell. Breaks with a feeling behind them pick
+  different kinds, so seeded digests move. The kind-by-feeling table on seeds 1-4 is not run, so
+  #558 stays open.
 ## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
 
 - Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten
