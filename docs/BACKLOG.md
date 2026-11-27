@@ -441,6 +441,14 @@ Everyone awake near the hearth sits, and any sitter can be the teller, so a four
 
 **Acceptance:** A hearth with a three-year-old who alone holds a realm story and two adults who lack it: the child tells nothing over five evenings and is among the listeners of the adults' tellings. A ten-year-old in the same place tells it. A FIXLOG entry is added.
 
+### OST-549 · A grieving person and an angry one break differently
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+The kind of a breakdown ignores what the person feels. Read the cause first and weight the kind by it: anger at someone near brings a fight (else a tantrum), grief a daze, shame withdrawal or walking out, hunger a binge; with no cause the bag is untouched.
+
+**Acceptance:** Over 20 seeds a person over the threshold with grief about a dead friend breaks into a daze at least half the time; with no cause the kind is as before. A FIXLOG entry is added.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
