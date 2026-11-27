@@ -209,6 +209,16 @@ pub fn step(w: &mut World) {
     contagion(w);
     for a in w.agents.iter_mut().filter(|a| a.alive) {
         a.feelings.fade_hour();
+        // A loss that stays (OST-215): the open bereavements weigh as one Mourning thought,
+        // refreshed hourly; a loss under the floor is dropped.
+        if !a.bereaved.is_empty() {
+            a.bereaved
+                .retain(|b| b.weight(tick).abs() >= crate::mind::bereavement::FLOOR);
+            let m = crate::mind::bereavement::total(&a.bereaved, tick);
+            if m < 0.0 {
+                a.thoughts.add_shaped(ThoughtKind::Mourning, m, 1.0 / 12.0, tick);
+            }
+        }
         for (k, t) in [
             (F::Fear, ThoughtKind::Afraid),
             (F::Grief, ThoughtKind::Grieving),

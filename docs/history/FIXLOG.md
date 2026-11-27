@@ -1,5 +1,20 @@
 # Fix log
 
+## 2026-11-27: a loss left a seven-day thought and nothing else (OST-215)
+
+- Symptom: a death left only `LostSomeone` (-0.6 for 7 days) and a grief feeling gone in about 7.7
+  days, so a widow's mood was back to normal within a week and nothing marked who had lost whom.
+- Fix: each partner, child or parent who outlives a death now carries a `Bereavement` (who, tie,
+  bond from their opinion of the dead, tick) on the agent (`mind/bereavement.rs`, saved with a serde
+  default so old saves load). Every hour `feel::step` sums the open ones into one appended
+  `ThoughtKind::Mourning`: weight `-0.45 * bond * 0.5^(age / (span / 3))`, span 40 days for a partner or
+  a child and 20 for a parent, total clamped to -0.8; a record whose weight falls under 0.03 is
+  dropped. The thought lasts two hours and is refreshed hourly, so it never lapses between passes.
+  Friends and siblings, per-subject stacking (OST-209) and the pairing bar (OST-216) are left to
+  those issues.
+- Guard: `tests/mourning.rs` (a widow of bond 0.9 carries at most -0.1 at day 20 and nothing at day 60;
+  the weight eases with age; a partner is mourned longer than a parent).
+
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
 - Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only

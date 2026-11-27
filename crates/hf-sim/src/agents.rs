@@ -124,6 +124,9 @@ pub struct Agent {
     pub last_meal: Option<u64>,
     #[serde(default)]
     pub last_sleep: u64,
+    /// Losses still weighing on them (OST-215); see `mind::bereavement`.
+    #[serde(default)]
+    pub bereaved: Vec<crate::mind::bereavement::Bereavement>,
     /// Work orders this person gave up on recently: designation id -> tick until retry.
     #[serde(default)]
     pub work_cooldowns: std::collections::BTreeMap<u32, u64>,
