@@ -481,6 +481,14 @@ The kind of a breakdown ignores what the person feels. Read the cause first and 
 
 **Acceptance:** Over 20 seeds a person over the threshold with grief about a dead friend breaks into a daze at least half the time; with no cause the kind is as before. A FIXLOG entry is added.
 
+### OST-543 · A birth gladdens the wider family
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+A birth gives the new thought to the parents only. Let the grandparents, the child's brothers and sisters and the parents' close friends be glad too: strongly for kin, a little for friends.
+
+**Acceptance:** A staged birth with a living grandmother, an older brother, a friend of the mother at opinion 0.8 and a stranger: the grandmother and brother feel Joy about the child, the friend some, the stranger none. A FIXLOG entry is added.
+
 ## Waiting on code or measurement
 
 ### OST-1200 · Count a drought as blocking storms as well as rain
