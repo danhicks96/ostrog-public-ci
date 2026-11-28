@@ -703,6 +703,14 @@ Add `crates/hf-sim/examples/biography_census.rs`: for each colonist who lived at
 
 **Acceptance:** 95% of such lives fit in 60 lines and 100% keep the listed events, or the shortfall is reported with examples. Simulation state is unchanged.
 
+### OST-157 · Let the soak table script take seeds and keep the alive lines
+
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
+
+`tools/soak/run4.sh` runs seeds 1 to 4 only and keeps only the `SOAK` lines. Take the seeds from `SEEDS` (default `1 2 3 4`), keep every seed's `ALIVE` lines in `alive.txt`, and print each key's values side by side. Extra arguments such as `--alive` already pass through to the soak. Tracking issue: [#73](https://github.com/danhicks96/ostrog-public-ci/issues/73).
+
+**Acceptance:** `SEEDS="1 2" tools/soak/run4.sh <wt> 2 <out> --alive` prints two `SOAK` lines and an `alive.txt` with two lines per key; without `SEEDS` it behaves as before (four seeds). Simulation state is unchanged.
+
 ## Repository usability and diagnostics
 
 ### OST-1501 · Map where game data lives and how to change it
