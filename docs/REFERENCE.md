@@ -1094,6 +1094,7 @@ Thoughts feed mood and stress. The bridge sends the strongest six as `{label} {w
 | Broke | broke down | -0.25 | 2.0 |
 | Lonely | lonely | -0.15 | 0.5 |
 | SleptBadly | a broken night | -0.15 | 1.0 |
+| Mourning | mourning | -0.45 | 1.0 |
 
 #### Breaks (`systems/strain.rs`)
 
@@ -1459,9 +1460,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:511 | someone |
 | accounts.rs:521 | {} and {} more |
 | accounts.rs:525 |  Said: {words} ({by}). |
-| agents.rs:489 | fur |
-| agents.rs:490 | feathers |
-| agents.rs:491 | scales |
+| agents.rs:492 | fur |
+| agents.rs:493 | feathers |
+| agents.rs:494 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2128,24 +2129,24 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:579 | {name} is already back with the others |
-| opening.rs:580 | what became of {name} is already known |
-| opening.rs:592 | no sign of {who} here |
-| opening.rs:603 | {who} was alive, and is coming back |
-| opening.rs:610 | something |
-| opening.rs:614 | {who} had died there, of {cause} |
-| opening.rs:793 | coming through the portal |
-| opening.rs:945 | the herb-woman |
-| opening.rs:948 | apprenticed to {master} |
-| opening.rs:957 | the carpenter |
-| opening.rs:958 | apprenticed to {master} |
-| opening.rs:967 | the smith |
-| opening.rs:968 | apprenticed to {master} |
-| opening.rs:984 | the quarry |
-| opening.rs:985 | apprenticed to {master} |
-| opening.rs:989 | the baker |
-| opening.rs:990 | apprenticed to {master} |
-| opening.rs:1102 | brought through the portal |
+| opening.rs:580 | {name} is already back with the others |
+| opening.rs:581 | what became of {name} is already known |
+| opening.rs:593 | no sign of {who} here |
+| opening.rs:604 | {who} was alive, and is coming back |
+| opening.rs:611 | something |
+| opening.rs:615 | {who} had died there, of {cause} |
+| opening.rs:794 | coming through the portal |
+| opening.rs:946 | the herb-woman |
+| opening.rs:949 | apprenticed to {master} |
+| opening.rs:958 | the carpenter |
+| opening.rs:959 | apprenticed to {master} |
+| opening.rs:968 | the smith |
+| opening.rs:969 | apprenticed to {master} |
+| opening.rs:985 | the quarry |
+| opening.rs:986 | apprenticed to {master} |
+| opening.rs:990 | the baker |
+| opening.rs:991 | apprenticed to {master} |
+| opening.rs:1103 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
@@ -2365,14 +2366,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:450 | scenario |
-| scenario.rs:491 | brought by the founders |
-| scenario.rs:801 | scenario |
-| scenario.rs:808 | scenario |
-| scenario.rs:816 | scenario |
-| scenario.rs:835 | scenario |
-| scenario.rs:855 | scenario |
-| scenario.rs:1025 | scenario |
+| scenario.rs:452 | scenario |
+| scenario.rs:493 | brought by the founders |
+| scenario.rs:803 | scenario |
+| scenario.rs:810 | scenario |
+| scenario.rs:818 | scenario |
+| scenario.rs:837 | scenario |
+| scenario.rs:857 | scenario |
+| scenario.rs:1027 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |
@@ -3599,25 +3600,25 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/society.rs:853 | trade |
 | systems/spoil.rs:87 | rotted |
 | systems/spoil.rs:99 | {n} {k} |
-| systems/strain.rs:341 | hunger |
-| systems/strain.rs:342 | thirst |
-| systems/strain.rs:343 | weariness |
-| systems/strain.rs:344 | cold |
-| systems/strain.rs:345 | loneliness |
-| systems/strain.rs:346 | discomfort |
-| systems/strain.rs:556 | hunger |
-| systems/strain.rs:594 | from {} |
-| systems/strain.rs:598 | because they were {} |
-| systems/strain.rs:602 | from {n} |
-| systems/strain.rs:660 | {}'s {} |
-| systems/strain.rs:693 | breaking the {label} |
-| systems/strain.rs:721 | eaten in a binge |
-| systems/strain.rs:764 | set by {name} in a rage |
-| systems/strain.rs:844 | wondered where {who} is |
-| systems/strain.rs:845 | the rest of the party is not here |
-| systems/strain.rs:868 | starting a fight |
-| systems/strain.rs:916 | in a fight |
-| systems/strain.rs:941 | in a fight |
+| systems/strain.rs:361 | hunger |
+| systems/strain.rs:362 | thirst |
+| systems/strain.rs:363 | weariness |
+| systems/strain.rs:364 | cold |
+| systems/strain.rs:365 | loneliness |
+| systems/strain.rs:366 | discomfort |
+| systems/strain.rs:576 | hunger |
+| systems/strain.rs:614 | from {} |
+| systems/strain.rs:618 | because they were {} |
+| systems/strain.rs:622 | from {n} |
+| systems/strain.rs:680 | {}'s {} |
+| systems/strain.rs:713 | breaking the {label} |
+| systems/strain.rs:741 | eaten in a binge |
+| systems/strain.rs:784 | set by {name} in a rage |
+| systems/strain.rs:864 | wondered where {who} is |
+| systems/strain.rs:865 | the rest of the party is not here |
+| systems/strain.rs:888 | starting a fight |
+| systems/strain.rs:936 | in a fight |
+| systems/strain.rs:961 | in a fight |
 | systems/weather.rs:155 | rain |
 | systems/weather.rs:156 | snow |
 | systems/weather.rs:157 | a storm |

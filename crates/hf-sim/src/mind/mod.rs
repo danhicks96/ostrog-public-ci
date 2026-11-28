@@ -5,6 +5,7 @@ pub mod activity;
 pub mod acts;
 pub mod attention;
 pub mod beliefs;
+pub mod bereavement;
 pub mod conscience;
 pub mod dispositions;
 pub mod feelings;

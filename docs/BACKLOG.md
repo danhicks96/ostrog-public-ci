@@ -16,6 +16,14 @@ This is the public backlog for developers working on Ostrog. `OST-` IDs are stab
 
 The milestone labels group related work; they do not promise a release date. Each entry names its own acceptance checks. Pending ports and dependent entries are not open for duplicate work.
 
+### OST-215 · Mourning: a loss that stays and eases over weeks
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#749](https://github.com/danhicks96/ostrog-public-ci/pull/749)
+
+A death left a seven-day thought. Each bereaved partner, child or parent now carries a record that weighs on mood as a Mourning thought and eases by half every third of forty (or twenty) days.
+
+**Acceptance:** A widow at bond 0.9 carries at most -0.1 at day 20 and nothing at day 60; the guard test and a FIXLOG entry are in the PR.
+
 ### OST-323 · A break daze lasts hours, not a day
 
 **Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#748](https://github.com/danhicks96/ostrog-public-ci/pull/748)

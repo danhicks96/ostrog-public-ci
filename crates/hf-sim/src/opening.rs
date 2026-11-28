@@ -466,6 +466,7 @@ impl Identity {
             switches: 0,
             last_meal: None,
             last_sleep: tick,
+            bereaved: Vec::new(),
             work_cooldowns: Default::default(),
             tool: None,
             weapon: None,

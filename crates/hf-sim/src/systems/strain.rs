@@ -112,6 +112,26 @@ pub fn observe(w: &mut World) {
                             {
                                 t.weight *= g;
                             }
+                            // A grown child mourning a parent carries it twenty days; one who
+                            // lost a partner or a child, forty.
+                            let tie = if d.children.contains(&k) {
+                                crate::mind::bereavement::Tie::Parent
+                            } else {
+                                crate::mind::bereavement::Tie::Partner
+                            };
+                            let bond = w.agents[i]
+                                .relationships
+                                .get(agent)
+                                .map(|r| r.opinion.clamp(0.2, 1.0))
+                                .unwrap_or(0.5);
+                            w.agents[i]
+                                .bereaved
+                                .push(crate::mind::bereavement::Bereavement {
+                                    who: *agent,
+                                    tie,
+                                    bond,
+                                    since: tick,
+                                });
                             w.agents[i].remember(
                                 tick,
                                 MemKind::Hardship,
