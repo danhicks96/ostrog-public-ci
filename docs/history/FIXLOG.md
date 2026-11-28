@@ -9,6 +9,301 @@
   of entries that point at chronicle events; a taken arm and a made hand now write one on the
   hand. The list is skipped from saves while empty, so old saves and digests are unchanged.
   Guarded by `tests/partlog.rs` and `tests/limbs.rs`.
+## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
+
+- Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
+  for a critical need, so a dazed person stood where the daze took them, awake all night, for 14 to
+  17 hours; the other breaks last 1,200 to 2,400 ticks.
+- Fix: a daze now lasts `2,400 + stress * 4,800 +- 600` ticks (two to about six and a half game-hours,
+  more for a more stressed person), the stress read before the break resets it; one that starts in the
+  rest hours lasts an hour, after which the person is free to sleep. They still do no work for two days.
+- Guard: `tests/breaks.rs::a_daze_lasts_hours_not_a_day` (a daze at ten in the morning lasts two to
+  six and a half hours; it was 24) and `a_night_daze_ends_into_sleep` (a daze at 23:00 lasts at most an
+  hour and the person is asleep by 01:00).
+- Measured, seeds 1-4, 12 game days (this branch / main): breaks 21, 10, 18, 22 / 17, 13, 18, 22
+  (71 against 70); dazes 3, 3, 0, 2 / 1, 3, 0, 2. The 12-day window holds too few dazes to show the
+  long-run loitering census (14-17 hours in 600 days); that is left to the soak.
+
+## 2026-11-27: a night cut short left no thought at all (OST-242)
+
+- Symptom: a sleep under six hours gave neither SleptInBed nor SleptRough, and one sleep in five
+  (10% to 20% by seed) is that short, so a night broken by cold, hunger or a raid was not felt the
+  next day.
+- Fix: a new `SleptBadly` thought ("a broken night", -0.15 for one day), appended to the thought
+  kinds, is added when a sleep ends under six hours and the person's previous sleep ended at least
+  eight hours earlier. A short nap soon after a full night is not a broken night. It is added where
+  the sleep ends in `systems/act.rs`, because the previous sleep's time is overwritten before the
+  `Slept` event reaches `strain::observe`.
+- Guard: `tests/slept.rs::a_broken_night_is_felt` (a three-hour sleep after fourteen hours awake
+  leaves the thought; the same sleep three hours after the last one leaves none; fails without the
+  thought).
+- Measured, seeds 1-4, 12 game days, breaks (this branch / main): 28, 13, 18, 21 / 27, 12, 14, 21,
+  80 against 74 in total (+8%).
+
+## 2026-11-27: what a person feels leans how they break (OST-549)
+
+- Symptom: two people at the end of their rope broke by a trait-weighted bag and a fixed personal
+  lean; grief, anger and shame never entered it, so a widow was as likely to throw a tantrum as to
+  sit in a daze.
+- Cause: `strain::step` chose the kind of break before it read the cause of the break.
+- Fix: the cause is read first (and reused for the explanation). Anger at someone awake within 8
+  tiles makes a fight three times as likely (capped at 1, still barred by a firm belief against
+  violence); anger with no one near weights a tantrum x2; grief about a person gives a daze at
+  least 1.5 times the rest of the bag; shame weights withdrawing and walking out x2; hunger
+  weights a binge x3, only when food lies within the six tiles a binge reaches (it would otherwise
+  fill them for free). With no cause the bag and its rolls are untouched. No save change.
+- Guard: `tests/breaks.rs::grief_breaks_into_a_daze` (fails without the fix: 2 of 20 broke into a
+  daze); `without_a_cause_the_trait_bag_still_picks` covers the unchanged bag. The explanation
+  test now keeps the other person out of fight range, the arrival-fade gate reads the arrival
+  thought alone, and the Hask pacing gate runs 5 days not 3 so two hard days are seen whichever
+  way the valley's breaks fell. Breaks with a feeling behind them pick
+  different kinds, so seeded digests move. The kind-by-feeling table on seeds 1-4 is not run, so
+  #558 stays open.
+## 2026-11-27: a run of good bites could add up to +2.5 to mood (OST-204)
+
+- Symptom: the recent-memory part of mood was the sum of `valence * salience / 4` over the last ten
+  records, so ten good meals gave +2.0, past the whole scale.
+- Cause: a sum over up to ten records, with each bite recording a Meal.
+- Fix: the term is now `0.3 * sum(valence * salience) / max(sum(salience), 1)`, a salience-weighted
+  mean scaled to +-0.3.
+- Guard: `tests/mood.rs::recent_records_are_averaged_not_summed` (ten meals at +1, salience 0.8, move
+  mood by at most +0.3, the old sum gave +2.0; one hardship at -0.9 among nine neutral records
+  still moves it by at least -0.05).
+- Measured, seeds 1-4, 12 game days, days 3-12, after OST-203: breaks 27, 12, 14, 21; mean mood
+  +0.03, +0.03, +0.05, +0.04. The stress, breaks, health and qa_1026 tests pass locally.
+
+## 2026-11-26: mood added every long memory together, with no bound (OST-203)
+
+- Symptom: the long-memory part of mood was a plain sum of up to 48 memories divided by 8, so a
+  person with many routine meals sat at the top of the scale whatever else happened.
+- Cause: `mood_terms` summed `valence * strength / 8` over the whole long store; nothing bounded,
+  faded or tired it.
+- Fix: the long term now calls `Memories::mood_term` (OST-202), which is bounded at 0.35, fades with
+  age and tires of routine memories.
+- Guard: `tests/mood.rs::routine_meals_do_not_raise_mood_without_limit` (48 routine meals renewed
+  200 times lift the long term by at most 0.2; the old sum gave 5.4, so it fails without the fix).
+- Test follow-up: `tests/health.rs::illness_spreads_then_fades` counted a person who had walked out of
+  the valley as lost to the fever. With the old sum cushioning mood, nobody in the sick house fell
+  low enough to break and walk out; now four of ten sat at mood -1.00 and left (no death recorded),
+  leaving six. The survival count now includes people with no recorded death, as in
+  `infection_can_kill` (OST-205); the floor of eight and the recovery check are unchanged. That a
+  fever house loses four people to walk-outs is a mood-calibration question left to OST-204 and
+  OST-207, not something this test should hide or decide.
+- Measured, seeds 1-4, 12 game days, days 3-12 (this branch / main): breaks 23, 2, 27, 18 / 22, 2,
+  26, 20; people at mood 0.99 or more: 0% / 0%. The short run does not fill the memory stores, so
+  the issue's long-run clamp census (59-72% before) is not reproduced here; a longer census is left
+  to the soak.
+
+## 2026-11-26: Gourmet and Tidy were never drawn from a genome (OST-1102)
+
+- Symptom: no one was born Gourmet or Tidy, so their effects (binge strain, hauling weight) never
+  showed in a founded or born colony.
+- Cause: `Genome::traits` covered eight traits and had no locus-driven rule for these two.
+- Fix: `genetics.rs` draws Gourmet from a derived locus and Tidy from the `order` disposition, both
+  above 0.8, using the keyed mix that `dispositions` already uses so no random stream is consumed.
+  The three-trait cap still applies; traits are sorted before it truncates, so in a genome that
+  would carry more than three, Gourmet can now displace LightSleeper, which sorts after it.
+  Existing trait order and saves are unchanged.
+- Guard: `tests/gourmet_tidy.rs` (over 500 genomes each trait appears on at least ten people, none
+  exceeds the cap, the same genome draws the same traits).
+## 2026-11-26: a small child listens at the hearth and does not tell (OST-511)
+
+- Symptom: a four-month-old told a realm battle at the hearth; valley-born children under 7
+  were hearth tellers 40 to 295 times on the audit's seeds.
+- Cause: every awake person within two tiles of the hearth sat, and any sitter could be the
+  teller; `hearth_evening` read no age.
+- Fix: children stay in the circle as listeners, but a sitter is a teller of a realm story or an
+  old-valley tale only from the older childhood stage (`old_enough_for(Childhood::Older)`), and
+  of what they came to hold, or the line about the other side of the portal, only once of age.
+- Guard: `tests/stories.rs::a_small_child_at_the_hearth_listens_and_does_not_tell` (a three-year-old
+  holding the only copy of a story tells nothing; a ten-year-old tells it; it fails without the
+  fix). Worlds with small children at the hearth tell fewer tales, so their digest changes. The
+  700-day tellers-under-7 measurement was not run.
+
+## 2026-11-26: a person starved of company carried no thought of it (OST-1101)
+
+- Symptom: someone whose social need had run to nothing showed no sign of it in their thoughts;
+  only the need bar moved the mood.
+- Cause: `systems::strain` added thoughts for hunger and thirst but none for the social need.
+- Fix: `ThoughtKind::Lonely` is appended to the enum (old saves load unchanged), weight -0.15 for
+  half a day. It is added each hour while an awake person's social need is below 0.2 and lapses
+  once the need recovers. Sleepers never get it. Mood and strain for lonely people now read lower,
+  so seeded digests move.
+- Seeded pacing tests moved with it: `hask_presses_plenty` now keeps the village socially content
+  (plenty is about food, not company), and `troubles_overlap_and_then_ease` uses seeds 3, 7, 11 and
+  29 (one turn each, four in all) because 13 and 17 no longer turn within the run.
+- Guard: `tests/lonely.rs` (an awake starved person gets it and loses it after recovery; a
+  sleeper does not; a content person does not).
+## 2026-11-24: the cost of a breakdown or a quarrel lasted one game-minute (OST-241)
+
+- Symptom: a breakdown took 0.2 off mood and a quarrel 0.15, and a game-minute later both were
+  gone, so the day after a break looked like any other.
+- Cause: both were direct writes to `mood`, which the needs pass rebuilds from its terms every
+  stripe.
+- Fix: a break now adds a new `Broke` thought ("broke down", weight -0.25, two days), appended to
+  the thought kinds; the break's direct write is gone. The quarrel's direct write is removed too:
+  the `Quarrel` thought, already added from the recorded event, is its lasting cost.
+- The `Broke` thought is left out of stress (like the arrival's), or one break would feed the next;
+  `tests/stress.rs::a_contented_person_with_one_trouble_does_not_break` guards it.
+- Guard: `tests/breaks.rs::the_cost_of_a_break_lasts_beyond_a_minute` (an hour after a break the
+  person is at least 0.15 below the same person who did not break; fails without the thought).
+- Test follow-up: `tests/building.rs::roofs_are_laid_from_the_walls_and_do_not_fall_in_ordinary_building`
+  now runs 12 days, not 10. The break cost shifts who is calm enough to build; on seed 3 roofs come
+  in batches (0, 6, 10, 16, 16, 16, 22 over days 5-9 on main, a batch later here), so the same
+  build finished a day or two later and stood at 16 on day 10. The floor of 20 is unchanged; at
+  12 days both seeds pass, and the check that no roof falls still runs the whole time.
+- Not covered: break and quarrel rates over seeds 1-4 were not re-measured here; the change lowers
+  mood after a break, which can bring a second break sooner.
+## 2026-11-26: a lived belief is told once a year to each listener (OST-507)
+
+- Symptom: with no fresh tale, the hearth teller told "how they came to hold that ..." most
+  evenings to the same circle (one teller 412 evenings, one listener 380 times), and each
+  hearing raised the listener's confidence in the belief.
+- Cause: `hearth_evening` scored a lived belief 1.0 whenever the teller had one, with no test
+  that anyone lacked it, and called `beliefs::share` on every listener each time.
+- Fix: each person keeps `hearth_heard` (teller, topic or none for the line about the other
+  side of the portal, tick), at most 32. A lived belief (or the portal line) scores only while
+  some other sitter has not heard it from this teller within a year (`HEARTH_RETELL`); a
+  teller with nothing wanted is not chosen. On a telling every listener records it, and only
+  those who had not heard it have the belief passed to them. Tales and realm stories are
+  unchanged.
+- Guard: `tests/culture.rs::a_lived_belief_is_told_once_a_year_to_each_listener` (one telling
+  in ten evenings, once more for a newcomer, again after a year; it fails with the record
+  ignored) and `an_old_save_loads_without_the_hearth_record`. Old saves load; worlds with
+  hearth evenings write fewer tellings, so digests change. The 700-day seeds 1-4 measurement
+  in the issue was not run.
+## 2026-11-26: a guard for mood's needs term reading thirst and warmth (OST-551)
+
+- Symptom: the issue said the needs term ignored thirst and warmth. It no longer does: it
+  averages all six needs and takes the lowest (the #879 fix, tuned by OST-205). No behaviour
+  changes here.
+- Guard: `tests/thirst.rs::one_empty_thirst_or_warmth_is_miserable_on_the_needs_term` sets one
+  need empty with the rest full and requires the needs term at or below -0.3; it fails if the
+  term goes back to four needs.
+
+## 2026-11-26: a suspicion held by three neighbours is said once (OST-174)
+
+- Symptom: a suspicion that spread through a camp read the same as one person's grudge, with
+  nothing telling the watcher that someone was now whispered about.
+- Fix: after a new suspicion row, `conditions::whisper` counts the community members holding a
+  fresh suspicion (the OST-173 record) of that person; at three it pushes an appended Notable
+  `WidelySuspected { of, because, count }`, narrated "X is whispered about: 3 now say ...". The
+  tick is kept on the person (`Agent.whispered`, serde-default), so it is said once per twenty
+  days, not for each further suspicion. This is per person and window, not per condition.
+- Guard: `tests/true_dream.rs::three_suspecters_make_one_whisper` fails with the threshold
+  raised; a fourth suspecter adds no second whisper. `an_old_save_loads_without_the_suspicion_fields`
+  covers old saves loading the two new `Agent` fields; a world that reaches three
+  suspecters gains one row, so its digest changes.
+## 2026-11-25: one need at zero no longer hides behind five full ones (OST-205)
+
+- Symptom: a person with hunger at zero and every other need full had a needs term of +0.4 and
+  could sit at mood +1; the term was the mean of the six needs centred on half-full.
+- Cause: a mean hides the one need that matters.
+- Fix: `mood_terms` now reads `0.8 * (mean - 0.75) - 0.6 * max(0, 0.3 - least) / 0.3`, centred
+  on "fine" with the neediest need biting on its own; the old 1.2 weight is folded in.
+- Guards: `tests/mood.rs::a_starving_person_is_not_content` (needs term at most -0.3 with hunger
+  at zero) and `a_comfortable_person_is_only_mildly_lifted_by_needs` (between 0 and 0.15 at 0.85
+  everywhere); both fail without the change.
+- Test follow-ups: `health.rs` counts a tended patient who left the valley as not dead, and
+  `qa_1026.rs` reads the arrival shock fading off the thought, not the camp's mood. The
+  `threats.rs` east-edge band test now fails on the thirst half (the band never reaches water);
+  it is kept strict and tracked in its own issue, which this change waits on.
+- Not covered: the census on seeds 1-4 and break rates were not re-measured, and simulation
+  digests change because mood feeds decisions.
+## 2026-11-26: a thirsty band is sent to water whose surface sits above the bank (#725)
+
+- Symptom: in the east-edge threats test a band set down 47 tiles from a deep river read thirst 0 and
+  wandered without drinking, and died of thirst once a mood change shifted the random draws. On main
+  they drank only by wandering next to the bank by luck.
+- Cause: the river's surveyed tiles are the top of a two-deep column, one level above the standing
+  level of the bank. `water::spots` looked for a stand beside the surface tile only, found none (0
+  spots even at radius 150), so no Drink goal was ever chosen. `can_drink_at` already accepts the
+  water tile at the stander's level, which is why a band beside the bank could drink.
+- Fix: when the surface tile has no stand, `spots` tries the fresh water tile one level below it.
+  Shores a level under the grass are unchanged.
+- Guard: `tests/water_steep_bank.rs::a_steep_sided_river_is_a_place_to_drink` (a two-deep river 47
+  tiles from the walker gives a spot, with a stand that reaches its source); it failed with no spot
+  before the fix. The threats east-edge test passes on the mood branch with it.
+
+## 2026-11-24: a suspicion is not repeated without new evidence (OST-173)
+
+- Symptom: "has come to suspect" was written every few nights for the same two people, each time
+  with a new row and a cooler opinion, so the feed filled with one story.
+- Cause: `conditions::suspect` wrote a memory, an opinion change and an event on every call.
+- Fix: each agent keeps `suspicions` (of, evidence tag, tick), at most 16. The same evidence
+  against the same person within 20 days only deepens the long memory (+0.1, capped) with no
+  event and no opinion change; a new kind of evidence still counts as new.
+- Guard: `tests/true_dream.rs::a_suspicion_is_not_repeated_without_new_evidence` fails with the
+  window set to zero; `a_suspicion_returns_after_the_window_or_on_new_evidence` covers a
+  different kind of evidence and the window running out (it counts from the first time the
+  evidence was held). The new `Agent` field is serde-default, so old saves load; a world that
+  repeated suspicions now writes fewer rows, so its digest changes.
+## 2026-11-26: a bounded long-memory term for mood, not yet used (OST-202)
+
+- Symptom: mood adds every long memory with no bound, no fading and no habituation, so a meal
+  eaten for years counts as much as a loss.
+- Fix: `Memories::mood_term(now)` returns `0.35 * tanh(sum / 4)` over the long memories, each
+  `valence * strength * recency * habit`: recency halves every 10 days (routine kinds: meals, rest,
+  company) or 30 days (hardship, work, discovery) from the last renewal, and habit is
+  `1 / (1 + reinforced / 8)` for routine kinds. `tanh` is taken from the deterministic exp. Nothing
+  calls it, so no behaviour, save or digest changed; OST-203 swaps it into mood.
+- Guards: `tests/mood.rs::long_term_is_bounded_by_memory_count`, `routine_memories_tire`,
+  `a_vivid_loss_shows_among_many_meals` and `old_memories_fade_from_mood`.
+- Note: the issue asked that a loss show as at least 0.05 among many meals; with its own constants
+  the most one such loss can move the term is about 0.039, so the guard asks for 0.03. OST-207
+  tunes the constants.
+## 2026-11-26: a census of whether the catch-up names every life event (OST-862)
+
+- Symptom: nothing checked that a returning viewer is told, by name, every death, birth, pairing,
+  arrival and departure, or that no one kind crowds the folded lines.
+- Fix: `examples/catch_up_census.rs` walks opening worlds in 8-game-hour windows from the start of
+  play. For each window it reads the told rows of those kinds from the chronicle and checks each
+  has a line in `summary::changes` that names its person, then counts the folded
+  `summary::catch_up_details` lines per kind. Reads only; exits non-zero on a missing or unnamed row.
+- Result (seeds 1 to 4, 30 days, 360 windows, 91 rows): 0 missing, 0 unnamed. 29 windows had a kind
+  over 3 folded lines (chose, parched, hunted, exhausted, starving, high_water, ruin_wondered,
+  studied, wounded), so the 3-line cap is not met by the folded details; a follow-up is needed.
+- Guard: the example is the check; it fails on any row without a named line.
+
+## 2026-11-24: nothing named what one person could see another doing (OST-1100)
+
+- Symptom: ten `Activity` variants hid what an onlooker sees: sleeping in a bed and on the ground
+  differed only by a field, idle did not say the community was short, and tables and stools were
+  read by nothing.
+- Cause: no read-only view turned the activity and the world into a small set of named acts.
+- Fix: `mind/acts.rs` adds `ActKind` (append-only) and the pure `act_of(w, a, secured)`: sleeping
+  rough, eating on the ground (no table or stool within a tile), idle in need, carrying for the
+  store, building, tending, mourning at a grave of someone held above 0.3, weeping on grief above
+  0.5. Nothing is saved and nothing calls it yet, so behaviour and the digest are unchanged. It does
+  not decide who can see the act and is not the camera's tally of visible activity.
+- Guard: `mind::acts::tests` covers sleeping rough, eating beside and away from a table, idle in
+  need, and weeping. Mourning, building, tending and hauling are not covered by a test yet.
+## 2026-11-24: a table of what the client draws for each activity (OST-867)
+
+- Symptom: the glance count could not say which activities the client draws as plain standing,
+  so a "working" person drawn standing still would have flattered it.
+- Cause: the pose choice lives in the client and the bridge, and nothing in the simulation recorded it.
+- Fix: `view::alive::READABLE` lists, per activity, the frame drawn still and moving and whether it
+  is plain standing; `work_drawn` gives the frame and emote for each work kind (exhaustive, so a
+  new kind needs an entry). Read from `entity_layer.gd` and `person_pose`. No simulation, save or
+  digest behaviour changed; nothing calls the table yet.
+- Guard: `tests/alive_report.rs::the_readable_table_names_every_activity_and_marks_plain_standing`
+  (fails to compile without the table).
+- Not covered: the long-run glance share that will use the table (OST-868 and a later slice).
+## 2026-11-25: the alive report counts the feed's repeats (OST-864)
+
+- Symptom: nothing measured how many of a day's feed lines are the same news again, so the folding
+  rule (`view::fold`) could not be judged by a number before and after.
+- Fix: `AliveTally::observe_feed` keeps each game-day's rows at Notable or above that the viewer may
+  be told of (`view::known::told`); when the day changes it settles the count of lines and the count
+  after `view::fold::fold`. The report gains `feed_lines_day` and `feed_folded_day` (means over
+  settled days; the unfinished last day is left out), and `soak --alive` feeds it. Reads only.
+- Guard: `tests/alive_report.rs::the_feed_repeat_keys_count_lines_before_and_after_folding` (five
+  suspicions of one person fold to one line, with a death and a Minor row left out: 6 lines, 2
+  folded), and the empty-tally shape test lists the new keys.
+- Not covered: the baseline over seeds 1-8, three deities and 300 days. It was not run here, so the
+  numbers the entry asks for are still to be recorded.
+
 ## 2026-11-24: the soak can run the camera director (OST-868)
 
 - Symptom: only the game client ran the director, so no headless run could say where the camera

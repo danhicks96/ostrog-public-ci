@@ -16,6 +16,14 @@ This is the public backlog for developers working on Ostrog. `OST-` IDs are stab
 
 The milestone labels group related work; they do not promise a release date. Each entry names its own acceptance checks. Pending ports and dependent entries are not open for duplicate work.
 
+### OST-323 · A break daze lasts hours, not a day
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#748](https://github.com/danhicks96/ostrog-public-ci/pull/748)
+
+A daze stood the person where they were for a whole game-day and night. It now lasts two to about six and a half game-hours by stress, and an hour when it starts at night.
+
+**Acceptance:** A daze at ten in the morning lasts two to six and a half hours; one at 23:00 ends within an hour and the person is asleep by 01:00; a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-001 · Give major personal events more weight in camera selection
 
 **Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
@@ -90,7 +98,7 @@ The Catch Up read model folds viewer-visible events of Notable severity or highe
 
 ### OST-1100 · Read what a person is seen doing without changing anything
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#690](https://github.com/danhicks96/ostrog-public-ci/pull/690)
 
 Add a pure `ActKind` / `act_of` helper in `mind` that classifies a person's current activity as an observer could see it, with no caller wired yet. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
@@ -98,7 +106,7 @@ Add a pure `ActKind` / `act_of` helper in `mind` that classifies a person's curr
 
 ### OST-1101 · Add a Lonely thought when the social need runs low
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#727](https://github.com/danhicks96/ostrog-public-ci/pull/727)
 
 Add a `Lonely` thought, appended to the thought list, that appears while an awake person's social need is low and fades when it recovers. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
@@ -106,7 +114,7 @@ Add a `Lonely` thought, appended to the thought list, that appears while an awak
 
 ### OST-1102 · Draw Gourmet and Tidy traits from the genome
 
-**Milestone:** Make the inner life visible and trustworthy · **State:** Claimed · **Developer:** Tamsin (TS) · **Public PR:** Pending
+**Milestone:** Make the inner life visible and trustworthy · **State:** In review · **Developer:** Tamsin (TS) · **Public PR:** [#743](https://github.com/danhicks96/ostrog-public-ci/pull/743)
 
 Draw the Gourmet and Tidy traits from the genome so that people can have them. Check current owners and overlapping public work before starting; do not touch unrelated behaviour.
 
@@ -369,6 +377,14 @@ A week sleeping on the ground weighs the same as one night, because the thought 
 
 **Acceptance:** Seven rough nights in a row weigh more than one; a night in a bed resets the count. A FIXLOG entry is added and any simulation digest change is explained in the PR.
 
+### OST-242 · Give a broken or short night its own thought
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#747](https://github.com/danhicks96/ostrog-public-ci/pull/747)
+
+A sleep under six hours gave no thought, so a night cut short by cold, hunger or a raid was not felt. It now leaves a small "a broken night" thought, unless it is a nap soon after a full night.
+
+**Acceptance:** A three-hour sleep after a day awake leaves the thought and a nap soon after a night leaves none; a FIXLOG entry records the break counts on seeds 1-4.
+
 ### OST-241 · Make a break's cost last
 
 **Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** Pending
@@ -377,6 +393,14 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 
 **Acceptance:** An hour after a break the person is at least 0.15 lower in mood than the same person without it. A FIXLOG entry is added and any simulation digest change is explained in the PR.
 
+### OST-173 · Do not repeat a suspicion without new evidence
+
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#700](https://github.com/danhicks96/ostrog-public-ci/pull/700)
+
+`conditions::suspect` writes "has come to suspect" every few nights for the same two people. When someone already holds a suspicion of the same person from the same kind of evidence within the last 20 days, reinforce that memory instead of writing a new event; a new kind of evidence still counts as new.
+
+**Acceptance:** A marked sleeper and one neighbour over 15 nights give exactly one suspected event; a bite on night 16 gives a second. A FIXLOG entry is added.
+
 ### OST-1500 · Record and query unattended simulation diagnostics
 
 **Priority:** High · **Milestone:** Verify long-running simulations · **State:** Claimed · **Developer:** Ostrog CI (OC) · **Public PR:** Pending
@@ -384,6 +408,78 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 Extend the opt-in decision logger with a Flight Recorder for machine soaks and desktop debugging. Survey provides world summaries and points to anomalies; focused Trace explains actual choices, attempts, failures and outcomes with stable tick and entity references; verified Replay is a follow-up that refuses to claim equivalence on divergence or missing inputs. Local read-only queries should recover useful evidence without opening the game or loading an entire recording. Keep diagnostics separate from narrative history, the Why lens, and the camera director. Any future in-game consumer reads simulation signals independently of the recorder.
 
 **First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
+
+### OST-203 · Use the bounded long-memory term in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#742](https://github.com/danhicks96/ostrog-public-ci/pull/742)
+
+Mood still added every long memory together. It now reads the bounded, fading, habituating term from OST-202.
+
+**Acceptance:** A person with 48 routine meals renewed 200 times has a long term at most 0.2 above the same person with none; the stress and break tests still pass; a FIXLOG entry records the break counts on seeds 1-4.
+
+### OST-204 · Average the recent-memory term in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#746](https://github.com/danhicks96/ostrog-public-ci/pull/746)
+
+The recent-memory part of mood summed ten records and could add up to +2.5. It is now a salience-weighted mean scaled to +-0.3.
+
+**Acceptance:** Ten good meals move mood by at most +0.3, one vivid hardship among nine neutral records still moves it by at least -0.05, and a FIXLOG entry records the break counts on seeds 1-4.
+
+### OST-205 · Let the worst need bite in mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#708](https://github.com/danhicks96/ostrog-public-ci/pull/708)
+
+The needs term of mood was a plain mean of the six needs centred on half-full, so one need at zero with the rest full still read as mildly pleased. It is now centred on "fine" and the neediest need bites on its own.
+
+**Acceptance:** A person with hunger at zero and every other need full, no memories or thoughts, has mood at most -0.3; with every need at 0.85 the needs term is mildly positive. A FIXLOG entry is added and any simulation digest change is explained in the PR.
+
+### OST-202 · A bounded long-memory term for mood
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#726](https://github.com/danhicks96/ostrog-public-ci/pull/726)
+
+Mood adds every long memory together with no bound, no fading and no habituation, so a routine meal eaten for years counts as much as a loss. This adds the pure function the new mood formula will call: a bounded term that weighs recent and vivid memories and tires of routine ones. Nothing calls it yet.
+
+**Acceptance:** The term is bounded by 0.35 whatever the store size, a routine memory reinforced 200 times adds at most a twentieth of a fresh one, a vivid loss shows among many meals, and an old memory fades. Simulation digests are unchanged.
+
+### OST-174 · Say once that someone is whispered about
+
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#730](https://github.com/danhicks96/ostrog-public-ci/pull/730)
+
+A suspicion held by three neighbours reads like one held by one. When three different community members come to hold a suspicion of the same person, say it once per person per twenty days with an appended Notable `WidelySuspected` event, and not again for a fourth.
+
+**Acceptance:** Three neighbours who suspect a marked sleeper on different nights give exactly one `WidelySuspected` with a count of three, on the night of the third, and none after a fourth. The enum-order check passes and a FIXLOG entry is added.
+
+### OST-507 · Tell a lived belief only to those who have not heard it from this teller this year
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#739](https://github.com/danhicks96/ostrog-public-ci/pull/739)
+
+When no tale is fresh, the hearth teller tells "how they came to hold that ..." nightly to the same circle, and every retelling raises each listener's confidence in the belief. Record, per listener, which lived-belief telling they have heard from which teller and when; tell a lived belief (or the line about the other side of the portal) only when at least one other sitter has not heard it from this teller within a year, and pass the belief on only to those who had not.
+
+**Acceptance:** Four sitters at a hearth with one event-sourced belief and no realm stories or tales: over ten evenings there is one telling of it; a newcomer who sits down on the sixth evening hears it once more; after a year it can be told again. A FIXLOG entry is added.
+
+### OST-551 · Pin that mood's needs term reads thirst and warmth
+
+**Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#735](https://github.com/danhicks96/ostrog-public-ci/pull/735)
+
+Mood's needs term already averages all six needs and takes the lowest (it landed with the thirst and warmth fix), but no test states the issue's own acceptance. Add a guard that one empty thirst, or one empty warmth, with every other need full, puts the needs term at or below -0.3 with no memories or thoughts.
+
+**Acceptance:** The guard passes on the current code and fails if the term goes back to four needs. A FIXLOG entry records that the behaviour was already in place.
+
+### OST-511 · Let small children listen at the hearth and not tell
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI Story (OT) · **Public PR:** Pending
+
+Everyone awake near the hearth sits, and any sitter can be the teller, so a four-month-old tells a realm battle. Keep children in the circle as listeners, but let only someone old enough tell: a realm story or an old-valley tale needs the older childhood stage, and a lived belief needs someone of age.
+
+**Acceptance:** A hearth with a three-year-old who alone holds a realm story and two adults who lack it: the child tells nothing over five evenings and is among the listeners of the adults' tellings. A ten-year-old in the same place tells it. A FIXLOG entry is added.
+
+### OST-549 · A grieving person and an angry one break differently
+
+**Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Story (OT) · **Public PR:** [#745](https://github.com/danhicks96/ostrog-public-ci/pull/745)
+
+The kind of a breakdown ignores what the person feels. Read the cause first and weight the kind by it: anger at someone near brings a fight (else a tantrum), grief a daze, shame withdrawal or walking out, hunger a binge; with no cause the bag is untouched.
+
+**Acceptance:** Over 20 seeds a person over the threshold with grief about a dead friend breaks into a daze at least half the time; with no cause the kind is as before. A FIXLOG entry is added.
 
 ## Waiting on code or measurement
 
@@ -521,7 +617,7 @@ Hearths are cooked at but never get a pot. Post one from a stored vessel. Tracki
 
 ### OST-1400 · Name three stages of childhood
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#616](https://github.com/danhicks96/ostrog-public-ci/pull/616)
 
 Add an infant, small-child and older-child answer to how far along a child is, with two helpers for later behaviour gates. Decision D101 already records the ages: infant under 2, small under 7, grown at 15 (human years), scaled by each kind's maturity. This is a read-only helper: no caller, no saved field, no behaviour change. The age of authority (16) stays a separate rule.
 
@@ -529,7 +625,7 @@ Add an infant, small-child and older-child answer to how far along a child is, w
 
 ### OST-1401 · Add a threat pacing census example
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#617](https://github.com/danhicks96/ostrog-public-ci/pull/617)
 
 Add a read-only example that prints one CSV row per 100 game-days of band set-outs, hosts besieging, portions raided, endings by kind, deaths not of old age and the longest gap from an ending to the next arrival, so storyteller changes can be measured before and after. No simulation change and no threat tuning.
 
@@ -537,7 +633,7 @@ Add a read-only example that prints one CSV row per 100 game-days of band set-ou
 
 ### OST-1402 · Score a house as a room
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#618](https://github.com/danhicks96/ostrog-public-ci/pull/618)
 
 Add a pure room statistic for a house plan: space per sleeper, furnishing, light, beauty and clutter, folded into one bounded impressiveness number. Nothing calls it, and dirt stays zero until a dirt source exists. Do not wire a consumer, home valuation or the body provenance work in OST-006.
 
@@ -545,7 +641,7 @@ Add a pure room statistic for a house plan: space per sleeper, furnishing, light
 
 ### OST-1403 · Find one tile for a lean-to
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#619](https://github.com/danhicks96/ostrog-public-ci/pull/619)
 
 Add a pure search for the nearest suitable single tile within 12 tiles of home where one person could put up a lean-to. The tile must be flat, walkable, dry, unbuilt, not ordered, outside house plans and the palisade, and not a place the person fears. Nothing calls it. This shares `houses.rs` with OST-1402, so the two land one after the other.
 
@@ -553,7 +649,7 @@ Add a pure search for the nearest suitable single tile within 12 tiles of home w
 
 ### OST-1404 · Let wild plants read their ground
 
-**Milestone:** Fill in the living world · **State:** Claimed · **Developer:** Marlow (ML) · **Public PR:** Pending
+**Milestone:** Fill in the living world · **State:** Landed · **Developer:** Marlow (ML) · **Public PR:** [#620](https://github.com/danhicks96/ostrog-public-ci/pull/620)
 
 Wild, non-crop plants currently grow at the weather's rate alone. Make them read ground, nearby water, shade from a mature tree, and crowding the way crops already read ground, reusing the existing crop ground table. This changes plant growth, so it is a gameplay change, not a refactor.
 
@@ -577,7 +673,7 @@ Add `soak --alive`: feed the director the same events and suggestions the bridge
 
 ### OST-864 · Count how many feed lines a day are the same news again
 
-**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** [#714](https://github.com/danhicks96/ostrog-public-ci/pull/714)
 
 Extend the alive report with, per game-day, the number of lines that reach the feed at notable or above, the number after folding, and the top fold keys. Tracking issue: [#408](https://github.com/danhicks96/ostrog-public-ci/issues/408). Uses the existing `view::known::told` and `view::fold::fold`.
 
@@ -585,7 +681,7 @@ Extend the alive report with, per game-day, the number of lines that reach the f
 
 ### OST-862 · Check that a returning viewer is told every death, birth and pairing
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** [#721](https://github.com/danhicks96/ostrog-public-ci/pull/721)
 
 Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on opening worlds, compare `summary::changes` and the folded lines against the chronicle's rows of the kinds that name who changed. Tracking issue: [#403](https://github.com/danhicks96/ostrog-public-ci/issues/403).
 

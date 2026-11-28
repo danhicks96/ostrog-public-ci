@@ -730,10 +730,15 @@ fn bite(
     Some(ev)
 }
 
+/// How long the same evidence against the same person counts as already suspected: twenty days.
+const SUSPICION_FRESH: u64 = 20 * crate::time::TICKS_PER_DAY;
+/// Suspicions kept per person.
+pub const SUSPICIONS_KEPT: usize = 16;
+
 /// Those of the community who noticed come to suspect agent `i`: the one who saw or was hurt
 /// first, then whoever slept nearest. A suspicion is a memory of them with the row as its
 /// source, and a cooler opinion; it can be wrong.
-fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
+pub fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
     let tick = w.meta.tick;
     let (of, me, cid) = (w.agents[i].id, w.agents[i].pos, w.agents[i].community);
     let Some(cid) = cid else { return };
@@ -747,6 +752,30 @@ fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
         return;
     };
     let by = w.agents[j].id;
+    // The same kind of evidence against the same person, already held and still fresh, only
+    // deepens the suspicion: no new row, no cooler opinion (OST-173).
+    let tag = because
+        .bytes()
+        .fold(2166136261u32, |h, b| (h ^ b as u32).wrapping_mul(16777619));
+    let a = &mut w.agents[j];
+    if a.suspicions
+        .iter()
+        .any(|s| s.0 == of && s.1 == tag && tick.saturating_sub(s.2) < SUSPICION_FRESH)
+    {
+        if let Some(m) = a.memories.long.iter_mut().find(|m| {
+            m.kind == crate::mind::MemKind::Hardship
+                && m.subject == crate::mind::Subject::Person(of)
+        }) {
+            m.strength = (m.strength + 0.1).min(1.0);
+            m.last = tick;
+        }
+        return;
+    }
+    a.suspicions.retain(|s| !(s.0 == of && s.1 == tag));
+    a.suspicions.push((of, tag, tick));
+    if a.suspicions.len() > SUSPICIONS_KEPT {
+        a.suspicions.remove(0);
+    }
     w.agents[j].remember(
         tick,
         crate::mind::MemKind::Hardship,
@@ -764,6 +793,48 @@ fn suspect(w: &mut World, i: usize, ev: EventId, because: &str) {
             by,
             of,
             because: because.to_string(),
+        },
+    );
+    whisper(w, i, because);
+}
+
+/// How many different neighbours must suspect one person before the valley is told.
+const WHISPER_AT: usize = 3;
+
+/// When `WHISPER_AT` different members of their community hold a fresh suspicion of agent `i`,
+/// say so once per twenty days (OST-174).
+fn whisper(w: &mut World, i: usize, because: &str) {
+    let tick = w.meta.tick;
+    let (of, me, cid) = (w.agents[i].id, w.agents[i].pos, w.agents[i].community);
+    if w.agents[i]
+        .whispered
+        .is_some_and(|t| tick.saturating_sub(t) < SUSPICION_FRESH)
+    {
+        return;
+    }
+    let count = w
+        .agents
+        .iter()
+        .filter(|a| {
+            a.alive
+                && a.community == cid
+                && a.suspicions
+                    .iter()
+                    .any(|s| s.0 == of && tick.saturating_sub(s.2) < SUSPICION_FRESH)
+        })
+        .count();
+    if count < WHISPER_AT {
+        return;
+    }
+    w.agents[i].whispered = Some(tick);
+    w.events.push(
+        tick,
+        Some(me),
+        Severity::Notable,
+        EventKind::WidelySuspected {
+            of,
+            because: because.to_string(),
+            count: count as u32,
         },
     );
 }

@@ -749,3 +749,26 @@ fn a_stand_where_no_drink_was_had_is_passed_over_for_other_water() {
     let again = hf_sim::water::nearest_knowing(&w, i, me, 60, &k, false).unwrap();
     assert_eq!(again.stand, first.stand, "and back to it after a while");
 }
+
+/// OST-551: the needs term reads all six needs, so one parched or freezing person with every
+/// other need full is miserable on that term alone.
+#[test]
+fn one_empty_thirst_or_warmth_is_miserable_on_the_needs_term() {
+    let w = World::opening_world(1791);
+    let mut a = w.agents[0].clone();
+    a.memories = Default::default();
+    a.thoughts = Default::default();
+    for (thirst, warmth) in [(0.05, 1.0), (1.0, 0.05)] {
+        a.needs.hunger = 1.0;
+        a.needs.rest = 1.0;
+        a.needs.social = 1.0;
+        a.needs.comfort = 1.0;
+        a.needs.thirst = thirst;
+        a.needs.warmth = warmth;
+        let [needs, ..] = hf_sim::systems::needs::mood_terms(&a, w.meta.tick);
+        assert!(
+            needs <= -0.3,
+            "thirst {thirst}, warmth {warmth}: needs term {needs}"
+        );
+    }
+}

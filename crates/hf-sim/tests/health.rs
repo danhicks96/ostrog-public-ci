@@ -198,7 +198,12 @@ fn infection_can_kill() {
             }
         }
         let a = &w.agents[i];
-        (a.alive, tended || a.death.as_deref() == Some("fever"))
+        // OST-205: a tended, miserable patient may now set out from the valley instead of
+        // staying (no death is recorded then); what matters here is that the fever did not kill.
+        (
+            a.alive || a.death.is_none(),
+            tended || a.death.as_deref() == Some("fever"),
+        )
     };
     let (alive_alone, _) = outcome(false);
     let (alive_tended, was_tended) = outcome(true);
@@ -266,7 +271,9 @@ fn illness_spreads_then_fades() {
     let alive = w
         .agents
         .iter()
-        .filter(|a| a.alive && a.species == hf_sim::agents::Species::Person)
+        // OST-203: a person who walked out of the valley (no death recorded) was not lost to the
+        // fever; the test is about what the illness kills, as in infection_can_kill (OST-205).
+        .filter(|a| (a.alive || a.death.is_none()) && a.species == hf_sim::agents::Species::Person)
         .count();
     assert!(
         alive >= 8,
