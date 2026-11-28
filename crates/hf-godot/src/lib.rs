@@ -497,6 +497,60 @@ fn preview_dict(p: &hf_sim::setup::Preview) -> VarDictionary {
     v
 }
 
+/// Choose the item that is being delivered or eaten for the single in-world hand sprite.
+/// The inventory read model still returns all carried stacks.
+fn display_carried(w: &World) -> Vec<&hf_sim::items::Item> {
+    use hf_sim::items::{ItemKind, ItemPlace};
+    use hf_sim::mind::Activity;
+    use hf_sim::work::Step;
+    use std::collections::BTreeMap;
+
+    fn wanted(activity: &Activity) -> Option<(Option<ItemKind>, Option<hf_sim::ids::ItemId>)> {
+        match activity {
+            Activity::Going { then, .. } => wanted(then),
+            Activity::Eating { item, .. } => Some((None, Some(*item))),
+            Activity::Working { plan } => {
+                for step in plan.steps.iter().skip(plan.cursor) {
+                    match step {
+                        // A future pickup is not yet the item in their hands.
+                        Step::PickUp { .. } => return None,
+                        Step::DropAt { kind, .. } => return Some((Some(*kind), None)),
+                        _ => {}
+                    }
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+    let wants: BTreeMap<_, _> = w
+        .agents
+        .iter()
+        .filter_map(|a| wanted(&a.activity).map(|v| (a.id, v)))
+        .collect();
+    // DropAt consumes the first carried stack of its kind. Retain the old last-stack
+    // fallback otherwise, and order carriers deterministically.
+    let mut selected = BTreeMap::new();
+    for item in &w.items {
+        if let ItemPlace::Carried(id) = item.place {
+            let entry = selected.entry(id).or_insert((None, item));
+            entry.1 = item;
+            if entry.0.is_none()
+                && wants.get(&id).is_some_and(|(kind, exact)| {
+                    kind.is_none_or(|kind| kind == item.kind)
+                        && exact.is_none_or(|exact| exact == item.id)
+                })
+            {
+                entry.0 = Some(item);
+            }
+        }
+    }
+    selected
+        .into_values()
+        .map(|(chosen, fallback)| chosen.unwrap_or(fallback))
+        .collect()
+}
+
 impl SimHost {
     /// The world the view reads: the session's, or while the session is on the step thread,
     /// the snapshot of it as the last batch of ticks left it (#603).
@@ -3598,6 +3652,22 @@ impl SimHost {
         out
     }
 
+    /// One activity-relevant carried stack per carrier, for the world renderer.
+    #[func]
+    fn displayed_carried(&self) -> PackedInt32Array {
+        let mut out = PackedInt32Array::new();
+        if let Some(w) = self.world() {
+            for it in display_carried(w) {
+                if let hf_sim::items::ItemPlace::Carried(id) = it.place {
+                    out.push(id.0 as i32);
+                    out.push(it.kind as i32);
+                    out.push(it.material.0 as i32);
+                }
+            }
+        }
+        out
+    }
+
     /// Carved walls (C35), 4 ints each: x, y, z, quality tier 0..5.
     #[func]
     fn engravings(&self) -> PackedInt32Array {
@@ -3955,6 +4025,136 @@ mod tests {
     use super::*;
     use hf_sim::ids::ItemId;
     use hf_sim::mind::Activity;
+
+    #[test]
+    fn displayed_cargo_follows_delivery_and_keeps_inventory() {
+        use hf_sim::items::{Item, ItemKind, ItemPlace};
+        use hf_sim::work::{Designation, DesignationKind, Plan, Step};
+        use hf_sim::world::Material;
+        let mut w = World::opening_world(4);
+        let who = w.agents[0].id;
+        let at = w.agents[0].pos;
+        let job = w.alloc_designation_id();
+        let stack = |id, kind| Item {
+            id: ItemId(id),
+            kind,
+            count: 2,
+            place: ItemPlace::Carried(who),
+            quality: 0.5,
+            material: Material::AIR,
+            story: None,
+            rot: 0.0,
+        };
+        w.items = vec![
+            stack(1, ItemKind::RoughStone),
+            stack(2, ItemKind::Berries),
+            stack(3, ItemKind::Berries),
+        ];
+        w.designations.push(Designation {
+            id: job,
+            kind: DesignationKind::Haul,
+            pos: at,
+            requirements: Vec::new(),
+            work_left: 0,
+            work_total: 0,
+            max_workers: 1,
+            priority: 1,
+            created: 0,
+            failures: 0,
+            done: false,
+            community: None,
+            owner: None,
+        });
+        let plan = |kind| Activity::Working {
+            plan: Plan {
+                designation: job,
+                steps: vec![
+                    Step::GoTo {
+                        to: at,
+                        adjacent: false,
+                    },
+                    Step::DropAt {
+                        to: at,
+                        kind,
+                        for_site: None,
+                    },
+                ],
+                cursor: 0,
+                label: "carrying".into(),
+            },
+        };
+        w.agents[0].activity = plan(ItemKind::RoughStone);
+        assert_eq!(display_carried(&w)[0].id, ItemId(1));
+        w.items.reverse();
+        assert_eq!(
+            display_carried(&w)[0].id,
+            ItemId(1),
+            "different-kind ordering does not hide cargo"
+        );
+        w.items.reverse();
+        w.agents[0].activity = Activity::Going {
+            to: at,
+            then: Box::new(plan(ItemKind::RoughStone)),
+        };
+        assert_eq!(display_carried(&w)[0].id, ItemId(1));
+        w.agents[0].activity = Activity::Working {
+            plan: Plan {
+                designation: job,
+                steps: vec![
+                    Step::GoTo {
+                        to: at,
+                        adjacent: false,
+                    },
+                    Step::PickUp {
+                        item: ItemId(4),
+                        count: 1,
+                    },
+                    Step::GoTo {
+                        to: at,
+                        adjacent: false,
+                    },
+                    Step::DropAt {
+                        to: at,
+                        kind: ItemKind::RoughStone,
+                        for_site: None,
+                    },
+                ],
+                cursor: 0,
+                label: "fetching".into(),
+            },
+        };
+        assert_eq!(
+            display_carried(&w)[0].id,
+            ItemId(3),
+            "before pickup use the old fallback"
+        );
+        if let Activity::Working { plan } = &mut w.agents[0].activity {
+            plan.cursor = 2;
+        }
+        assert_eq!(
+            display_carried(&w)[0].id,
+            ItemId(1),
+            "after pickup show cargo"
+        );
+        w.agents[0].activity = plan(ItemKind::Berries);
+        assert_eq!(
+            display_carried(&w)[0].id,
+            ItemId(2),
+            "food delivery uses the first matching stack"
+        );
+        w.agents[0].activity = Activity::Eating {
+            item: ItemId(2),
+            ticks_left: 10,
+        };
+        assert_eq!(display_carried(&w)[0].id, ItemId(2));
+        w.agents[0].activity = Activity::Idle;
+        assert_eq!(
+            display_carried(&w)[0].id,
+            ItemId(3),
+            "other activities keep the last-stack fallback"
+        );
+        assert_eq!(w.items.len(), 3, "inventory is unchanged");
+    }
 
     /// FIXLOG 2026-11-14: the HUD counts a community's people away as the People panel does,
     /// everyone of it in another place, not only caravan members.

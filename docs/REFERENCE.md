@@ -8226,7 +8226,9 @@ Other read models in `crates/hf-godot/src/lib.rs`, all flat `PackedInt32Array`s:
 material, active, progress x 100), `items()` 6 (id, x, y, z, kind, count), `designations()` 7
 (id, x, y, z, code, progress, materials complete; codes 0 wall, 1 door, 2 floor, 3 + kind x 100
 structure, 4 chop, 5 mine, 6 sow, 7 harvest, 8 haul, 9 cook, 10 dig stairs, 11 hunt, 12 craft,
-13 tend, 14 douse, 15 beat out), `carried()` pairs (agent id, item kind), `lights()` 4 (x, y, z,
+13 tend, 14 douse, 15 beat out), `carried()` triples (agent id, item kind, material),
+`displayed_carried()` the same fields for one activity-relevant stack per carrier,
+`lights()` 4 (x, y, z,
 structure kind), `scorched(z, days)` 3 (x, y, hours since it burned), `explored(cid, z)` pairs of
 8x8 cells. Scalars: `sky()` 0 clear, 1 overcast, 2 rain, 3 snow; `season()` 0..3; `hour()`;
 `temperature()` in C; `calendar()`; `population()` (living humans). `drain_sounds()` returns the
