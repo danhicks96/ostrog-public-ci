@@ -26,7 +26,7 @@ A daze stood the person where they were for a whole game-day and night. It now l
 
 ### OST-001 · Give major personal events more weight in camera selection
 
-**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
 
 An unwitnessed major event can be discounted enough that one busy person elsewhere draws the camera instead. Give major deaths, captures, breakdowns and exiles full presence even in an empty cell. Keep the existing weights for routine events, fires and departing caravans.
 
@@ -408,6 +408,14 @@ A breakdown and a quarrel each knock a fixed amount off mood, and the next needs
 Extend the opt-in decision logger with a Flight Recorder for machine soaks and desktop debugging. Survey provides world summaries and points to anomalies; focused Trace explains actual choices, attempts, failures and outcomes with stable tick and entity references; verified Replay is a follow-up that refuses to claim equivalence on divergence or missing inputs. Local read-only queries should recover useful evidence without opening the game or loading an entire recording. Keep diagnostics separate from narrative history, the Why lens, and the camera director. Any future in-game consumer reads simulation signals independently of the recorder.
 
 **First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
+
+### OST-016 · Let keepers retrieve treasured tools
+
+**Milestone:** Make people's possessions matter · **State:** Ready · **Developer:** None · **Public PR:** None
+
+A living keeper who knows about a reachable treasured tool on the ground can walk back and pick up that exact tool without losing its story. This first slice covers tools only. Leave an equipped tool in place and defer retrieval rather than silently replacing it. Keep this separate from changes to how workers fetch ordinary tools and from inheritance or save-format changes.
+
+**Acceptance:** In a running simulation, a keeper with an empty tool slot walks to and recovers the exact known tool, retaining its keepsake and history. An unknown, unreachable, moved, or no-longer-owned item is not taken from the old target. When a treasured tool and an ordinary stack share a tile, a non-keeper hauling the stack takes only the ordinary goods and can still complete the work. Check an already-planned haul and ordinary tool selection so neither can take a living keeper's treasure. Use focused fixtures for these cases and standard CI.
 
 ### OST-203 · Use the bounded long-memory term in mood
 
