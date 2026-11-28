@@ -207,3 +207,38 @@ fn the_afraid_wander_less() {
     let (calm, scared) = (wandering(false), wandering(true));
     assert!(scared < calm, "wandering: calm {calm}, afraid {scared}");
 }
+
+#[test]
+fn a_birth_gladdens_the_family() {
+    // OST-543: a grandmother and an older brother are glad of a newborn, a friend of the mother
+    // feels some joy about the child, a stranger feels nothing.
+    let (mut w, p) = party(6);
+    let (mother, gran, brother, friend, stranger) = (p[0], p[1], p[2], p[3], p[4]);
+    for a in w.agents.iter_mut() {
+        a.community = Some(hf_sim::ids::CommunityId(0));
+    }
+    let (mid, gid, bid) = (w.agents[mother].id, w.agents[gran].id, w.agents[brother].id);
+    w.agents[mother].mother = Some(gid);
+    w.agents[gran].children = vec![mid];
+    w.agents[brother].mother = Some(mid);
+    w.agents[mother].children = vec![bid];
+    let t = w.meta.tick;
+    w.agents[friend].relate(mid, 0.8, 0.5, t);
+    let baby = w.agents[p[5]].id;
+    let at = w.agents[mother].pos;
+    happen(
+        &mut w,
+        at,
+        EventKind::Born {
+            agent: baby,
+            mother: mid,
+            father: None,
+        },
+    );
+    // Each person feels it their own amount (the jitter of `gain`), so the bounds are wide.
+    assert!(w.agents[gran].feelings.of(F::Joy) >= 0.3);
+    assert!(w.agents[brother].feelings.of(F::Joy) >= 0.3);
+    let f = w.agents[friend].feelings.of(F::Joy);
+    assert!(f > 0.1 && f < 0.5, "friend {f}");
+    assert_eq!(w.agents[stranger].feelings.of(F::Joy), 0.0);
+}

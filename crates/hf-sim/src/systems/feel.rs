@@ -67,6 +67,49 @@ pub fn observe(w: &mut World) {
                     }
                 }
             }
+            // OST-543: a birth gladdens the wider family (grandparents and the child's brothers
+            // and sisters, strongly) and the parents' close friends (a little), not only the
+            // parents, who get their own thought in `strain`.
+            EventKind::Born {
+                agent,
+                mother,
+                father,
+            } => {
+                let child = *agent;
+                let parents: Vec<AgentId> = std::iter::once(*mother).chain(*father).collect();
+                let mut kin: Vec<AgentId> = Vec::new();
+                for p in &parents {
+                    if let Some(pi) = idx(w, *p) {
+                        kin.extend(w.agents[pi].mother);
+                        kin.extend(w.agents[pi].father);
+                        kin.extend(w.agents[pi].children.iter().copied());
+                    }
+                }
+                let community = idx(w, *mother).and_then(|m| w.agents[m].community);
+                let glad: Vec<(usize, f32)> = (0..w.agents.len())
+                    .filter(|&k| {
+                        let a = &w.agents[k];
+                        a.alive
+                            && a.id != child
+                            && !parents.contains(&a.id)
+                            && a.community.is_some()
+                            && a.community == community
+                    })
+                    .filter_map(|k| {
+                        let a = &w.agents[k];
+                        if kin.contains(&a.id) {
+                            Some((k, 0.6))
+                        } else if parents.iter().any(|p| a.opinion_of(*p) >= 0.6) {
+                            Some((k, 0.35))
+                        } else {
+                            None
+                        }
+                    })
+                    .collect();
+                for (k, s) in glad {
+                    feel(w, k, F::Joy, Some(child), s, e.id);
+                }
+            }
             EventKind::Attacked { animal, agent, .. } => {
                 if let Some(i) = idx(w, *agent) {
                     feel(w, i, F::Fear, Some(*animal), 0.7, e.id);
