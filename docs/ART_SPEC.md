@@ -66,7 +66,7 @@ is present or absent.
 | gravel | material | stony uplands, fell; grassland patches in a stony valley |
 | snow | material | snowfield (cold heights). Falling snow over other ground stays a look |
 | soil | material | bare woodland floor; tilled and burned ground |
-| water | flag | streams and lakes on the valley's lowest ground; more lake in a wet valley |
+| water | flag | streams and lakes on the local terrain's lowest ground; more lake in a wet area |
 | deep_water | flag `DEEP` | lake columns two or more tiles from any shore; the outer ring of deep water takes the shallow water at half strength |
 | grass_autumn | look | grass in autumn (drawn instead of grass, edges included), not a family of its own |
 | ash | look | burned ground for ten days |
@@ -152,7 +152,7 @@ does not prove facial readability on every tone or background.
 Deer, boar, wolf, hare, goat, chicken: 4 directions × idle(1), walk(4), sleep(1).
 Goat is a registered species (2026-10-17): wild goats live only on stony uplands and fells,
 graze, breed and are hunted. Chicken is not registered: it has no wild role, so it waits for
-livestock rather than being scattered over the valley as wildlife.
+livestock rather than being scattered over the egress point as wildlife.
 
 ## Items (godot/assets/items32/*.png, with legacy fallbacks in items/)
 

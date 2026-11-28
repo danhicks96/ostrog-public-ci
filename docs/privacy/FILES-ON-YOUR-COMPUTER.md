@@ -53,7 +53,7 @@ and data" page in the game has an **Open folder** button that goes straight ther
 | `logs/` | The game engine's own diary, `godot.log`, used to find crashes. The engine also keeps a few older ones from earlier launches, named `godot<date>T<time>.log`, and removes the oldest itself. | No | Yes |
 | `shader_cache/` | The engine's store of graphics programs it has already prepared for your graphics card, so the next start is quicker (under 1 MB). | No | Yes (rebuilt on the next start) |
 | `ostrog-debug.log` | A detailed record of why each person did what they did. **Only written when debug mode is on**. It grows quickly (about 6 MB in four minutes at the fastest speed); at 32 MB it is renamed `ostrog-debug.log.1` and a new one starts, so the two together never pass about 64 MB. | No, except a short excerpt if you press "Send bug report" and approve a preview | Yes |
-| `timelapse/` | **Only if you turn Timelapse on**: one picture of the valley at noon each game day, with a small note of what happened, kept per world so you can watch it grow. At most 120 pictures and 160 MB per world, for at most 6 worlds (about 1 GB in the worst case); the oldest are removed first. | No | Yes (you lose the time-lapse) |
+| `timelapse/` | **Only if you turn Timelapse on**: one picture of the egress point at noon each game day, with a small note of what happened, kept per world so you can watch it grow. At most 120 pictures and 160 MB per world, for at most 6 worlds (about 1 GB in the worst case); the oldest are removed first. | No | Yes (you lose the time-lapse) |
 
 The game takes no screenshots in normal play; the screenshot and footage options exist only for
 testing and write where the tester tells them to.
@@ -62,7 +62,7 @@ testing and write where the tester tells them to.
 
 | File or folder | What it is, in plain words | Sent anywhere? | Safe to delete? |
 |---|---|---|---|
-| `ostrog/` | While a game is open, the valley's history is kept in a working file here (`chronicle-<number>.sqlite`, with `-wal` and `-shm` companions) instead of in memory; your saves copy it. The game removes the file when it closes and clears any left over from a crash on a later start. The empty folder stays. | No | Yes, when the game is not running |
+| `ostrog/` | While a game is open, the egress point's history is kept in a working file here (`chronicle-<number>.sqlite`, with `-wal` and `-shm` companions) instead of in memory; your saves copy it. The game removes the file when it closes and clears any left over from a crash on a later start. The empty folder stays. | No | Yes, when the game is not running |
 | `ostrog-archive-*.zip.part` | While the launcher downloads an update: the part-downloaded file, checked before anything is installed and removed when the launcher has finished with it. If the launcher is closed in the middle of a download, the part file stays until you delete it. | No | Yes, when no update is running |
 
 ## Playtest files (only if you chose "Yes, help out")

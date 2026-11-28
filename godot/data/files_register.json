@@ -122,7 +122,7 @@
      "names": [
       "timelapse/"
      ],
-     "what": "Only if you turn Timelapse on: one picture of the valley at noon each game day, with a small note of what happened, kept per world so you can watch it grow. At most 120 pictures and 160 MB per world, for at most 6 worlds (about 1 GB in the worst case); the oldest are removed first.",
+     "what": "Only if you turn Timelapse on: one picture of the egress point at noon each game day, with a small note of what happened, kept per world so you can watch it grow. At most 120 pictures and 160 MB per world, for at most 6 worlds (about 1 GB in the worst case); the oldest are removed first.",
      "sent": "No",
      "delete": "Yes (you lose the time-lapse)"
     }
@@ -137,7 +137,7 @@
      "names": [
       "ostrog/"
      ],
-     "what": "While a game is open, the valley's history is kept in a working file here (chronicle-<number>.sqlite, with -wal and -shm companions) instead of in memory; your saves copy it. The game removes the file when it closes and clears any left over from a crash on a later start. The empty folder stays.",
+     "what": "While a game is open, the egress point's history is kept in a working file here (chronicle-<number>.sqlite, with -wal and -shm companions) instead of in memory; your saves copy it. The game removes the file when it closes and clears any left over from a crash on a later start. The empty folder stays.",
      "sent": "No",
      "delete": "Yes, when the game is not running"
     },

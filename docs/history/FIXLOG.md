@@ -6,7 +6,8 @@ Use the chosen term egress point for the local area selected on the world map,
 instead of landing site or a landform-specific name. Call the specific tile
 where the founders emerge the portal exit. Setup, help, narration and current
 documentation now use the same distinction; a command-help test checks the
-chosen term and rejects the retired one.
+chosen term and rejects the retired one. The files guide and current design
+and release-note templates also use the new term where they mean the local area.
 This changes terminology, not the simulation's geography or discovery rules.
 
 ## 2026-11-26 - Landing site and egress point

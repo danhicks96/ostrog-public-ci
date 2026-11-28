@@ -10,7 +10,7 @@ rules.
 ## What already does part of this
 
 - A persistent other place. Deep caverns are made with the world in the basalt below the
-  valley (`world/gen/caverns.rs`), each with a name, a size, sometimes a pool, sometimes the
+  egress point (`world/gen/caverns.rs`), each with a name, a size, sometimes a pool, sometimes the
   underworld's stone in its walls. Below them, beyond the map, lie the deep's settlements and
   peoples in the realm (`realm/sites.rs`, `deep: true`), with beasts of their own
   (`realm/beasts.rs`, lairs in the deep caverns).
