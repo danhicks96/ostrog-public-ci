@@ -721,6 +721,10 @@ Give contributors a linked, text-first architecture map from the README. Start w
 
 **First implementation acceptance:** A contributor can trace a person decision and world change from source to screen and save without knowing the directory layout. The same PR updates maps when ownership, timing, shape, storage or consumers change. Verify links and machine-checkable anchors, reuse existing generated reference tooling where practical, and test that one fixture change to a mapped contract detects stale docs without requiring edits for unrelated refactors. Keep the docs source-only and distinguish measured costs from investigation leads.
 
+## Future epic and planned ideas
+
+The [deferred Ostrog epic and idea backlog](MAVERICK-BACKLOG.md) holds the next epic after the currently queued commitments, plus the parked candidate pool. None of those items are Ready to claim. Promote each scope deliberately after checking current code and claims; do not preempt queued work or duplicate an existing implementation.
+
 ## Gated by a published release
 
 No entries yet. Use this section only when work must wait for a named capability to ship. Record the capability and verification criteria; move the item out of this section only after linking the qualifying published release. Code availability, merge and CI prerequisites belong under ordinary dependencies.
