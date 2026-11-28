@@ -1398,7 +1398,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3258 strings (click to open)</summary>
+<details><summary>3259 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -2711,7 +2711,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | underground.rs:559 | since they touched the underworld's rock in {} |
 | underground.rs:608 | deep_caverns |
 | water.rs:74 | a stand at {stand} does not reach {source} (#608) |
-| water.rs:384 | the flux from foul water |
+| water.rs:420 | the flux from foul water |
 | wells.rs:96 | found no place by home to dig it |
 | wells.rs:134 | dug {MAX_DEPTH} levels down and found no water |
 | wells.rs:150 | dug {depth} levels down to the hard rock and found it dry |
@@ -3627,72 +3627,73 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/weather.rs:161 | the snow stopped |
 | systems/weather.rs:162 | the rain stopped |
 | systems/work.rs:56 | work order gone |
-| systems/work.rs:88 | the prey is gone |
-| systems/work.rs:97 | the beast wandered off |
-| systems/work.rs:99 | the prey got away |
-| systems/work.rs:111 | cannot reach the prey |
-| systems/work.rs:120 | path blocked |
-| systems/work.rs:132 | found len {} |
-| systems/work.rs:134 | unreachable |
-| systems/work.rs:135 | budget |
-| systems/work.rs:162 | found len {} via {} |
-| systems/work.rs:164 | unreachable |
-| systems/work.rs:165 | budget |
-| systems/work.rs:171 | z{z}:{:?} |
-| systems/work.rs:175 |   big-budget A*: {big}; reverse: {back}; column at goal {col:?} |
-| systems/work.rs:193 | cannot reach |
-| systems/work.rs:203 | item gone |
-| systems/work.rs:211 | item moved |
-| systems/work.rs:242 | not at the drop point |
-| systems/work.rs:249 | nothing carried |
-| systems/work.rs:258 | site gone |
-| systems/work.rs:288 | delivered |
-| systems/work.rs:342 | the prey is gone |
-| systems/work.rs:358 | not at the site |
-| systems/work.rs:361 | materials missing |
-| systems/work.rs:418 | from a slipped axe |
-| systems/work.rs:423 | from falling stone |
-| systems/work.rs:428 | at the building site |
-| systems/work.rs:484 | building |
-| systems/work.rs:484 | digging |
-| systems/work.rs:560 | the old valley |
-| systems/work.rs:586 | studying the {what} left at {site} |
-| systems/work.rs:1085 | chop |
-| systems/work.rs:1167 | mine |
-| systems/work.rs:1169 | iron ore |
-| systems/work.rs:1178 | mine |
-| systems/work.rs:1180 | copper ore |
-| systems/work.rs:1183 | mine |
-| systems/work.rs:1193 | mine |
-| systems/work.rs:1195 | coal |
-| systems/work.rs:1215 | mine |
-| systems/work.rs:1223 | mine |
-| systems/work.rs:1225 | rough gems |
-| systems/work.rs:1236 | mine |
-| systems/work.rs:1265 | {f} here |
-| systems/work.rs:1284 | {}, a cavern grown with pale fungus{} |
-| systems/work.rs:1286 |  around a still pool |
-| systems/work.rs:1289 | a cave |
-| systems/work.rs:1364 | dig |
-| systems/work.rs:1380 | a way down |
-| systems/work.rs:1416 | dig |
-| systems/work.rs:1473 | harvest |
-| systems/work.rs:1575 | beating at a fire |
-| systems/work.rs:1587 | poultice |
-| systems/work.rs:1691 | {n} {} |
-| systems/work.rs:1693 |  and  |
-| systems/work.rs:1763 | craft |
-| systems/work.rs:1772 | craft |
-| systems/work.rs:1799 | set with a {gem_name} |
-| systems/work.rs:1853 | cook |
-| systems/work.rs:1866 | cook |
-| systems/work.rs:1929 | from a boar's tusk |
-| systems/work.rs:1931 | from a wolf's bite |
-| systems/work.rs:1947 | hunted |
-| systems/work.rs:1971 | hunt |
-| systems/work.rs:1979 | hunt |
-| systems/work.rs:2112 | set about putting a lamp where they work below |
-| systems/work.rs:2113 | because it is too dark down there to see the rock |
+| systems/work.rs:78 | water source unavailable |
+| systems/work.rs:97 | the prey is gone |
+| systems/work.rs:106 | the beast wandered off |
+| systems/work.rs:108 | the prey got away |
+| systems/work.rs:120 | cannot reach the prey |
+| systems/work.rs:129 | path blocked |
+| systems/work.rs:141 | found len {} |
+| systems/work.rs:143 | unreachable |
+| systems/work.rs:144 | budget |
+| systems/work.rs:171 | found len {} via {} |
+| systems/work.rs:173 | unreachable |
+| systems/work.rs:174 | budget |
+| systems/work.rs:180 | z{z}:{:?} |
+| systems/work.rs:184 |   big-budget A*: {big}; reverse: {back}; column at goal {col:?} |
+| systems/work.rs:202 | cannot reach |
+| systems/work.rs:212 | item gone |
+| systems/work.rs:220 | item moved |
+| systems/work.rs:251 | not at the drop point |
+| systems/work.rs:258 | nothing carried |
+| systems/work.rs:267 | site gone |
+| systems/work.rs:297 | delivered |
+| systems/work.rs:366 | the prey is gone |
+| systems/work.rs:382 | not at the site |
+| systems/work.rs:385 | materials missing |
+| systems/work.rs:442 | from a slipped axe |
+| systems/work.rs:447 | from falling stone |
+| systems/work.rs:452 | at the building site |
+| systems/work.rs:508 | building |
+| systems/work.rs:508 | digging |
+| systems/work.rs:584 | the old valley |
+| systems/work.rs:610 | studying the {what} left at {site} |
+| systems/work.rs:1109 | chop |
+| systems/work.rs:1191 | mine |
+| systems/work.rs:1193 | iron ore |
+| systems/work.rs:1202 | mine |
+| systems/work.rs:1204 | copper ore |
+| systems/work.rs:1207 | mine |
+| systems/work.rs:1217 | mine |
+| systems/work.rs:1219 | coal |
+| systems/work.rs:1239 | mine |
+| systems/work.rs:1247 | mine |
+| systems/work.rs:1249 | rough gems |
+| systems/work.rs:1260 | mine |
+| systems/work.rs:1289 | {f} here |
+| systems/work.rs:1308 | {}, a cavern grown with pale fungus{} |
+| systems/work.rs:1310 |  around a still pool |
+| systems/work.rs:1313 | a cave |
+| systems/work.rs:1388 | dig |
+| systems/work.rs:1404 | a way down |
+| systems/work.rs:1440 | dig |
+| systems/work.rs:1497 | harvest |
+| systems/work.rs:1599 | beating at a fire |
+| systems/work.rs:1611 | poultice |
+| systems/work.rs:1715 | {n} {} |
+| systems/work.rs:1717 |  and  |
+| systems/work.rs:1787 | craft |
+| systems/work.rs:1796 | craft |
+| systems/work.rs:1823 | set with a {gem_name} |
+| systems/work.rs:1877 | cook |
+| systems/work.rs:1890 | cook |
+| systems/work.rs:1953 | from a boar's tusk |
+| systems/work.rs:1955 | from a wolf's bite |
+| systems/work.rs:1971 | hunted |
+| systems/work.rs:1995 | hunt |
+| systems/work.rs:2003 | hunt |
+| systems/work.rs:2136 | set about putting a lamp where they work below |
+| systems/work.rs:2137 | because it is too dark down there to see the rock |
 | view/alive.rs:46 | died |
 | view/alive.rs:46 | captured |
 | view/alive.rs:46 | broke |
