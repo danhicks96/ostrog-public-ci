@@ -3381,20 +3381,20 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/expedition.rs:718 | robbed |
 | systems/expedition.rs:718 | hurt |
 | systems/expedition.rs:748 | the road to {site_name} |
-| systems/feel.rs:135 | born |
-| systems/feel.rs:135 | joined |
-| systems/feel.rs:135 | recovered |
-| systems/feel.rs:135 | returned |
-| systems/feel.rs:135 | came_back |
-| systems/feel.rs:135 | paired |
-| systems/feel.rs:138 | raided |
-| systems/feel.rs:138 | strangers_sighted |
-| systems/feel.rs:138 | besieged |
-| systems/feel.rs:138 | captured |
-| systems/feel.rs:138 | rose |
-| systems/feel.rs:141 | breached |
-| systems/feel.rs:141 | cavern_found |
-| systems/feel.rs:141 | shifted |
+| systems/feel.rs:178 | born |
+| systems/feel.rs:178 | joined |
+| systems/feel.rs:178 | recovered |
+| systems/feel.rs:178 | returned |
+| systems/feel.rs:178 | came_back |
+| systems/feel.rs:178 | paired |
+| systems/feel.rs:181 | raided |
+| systems/feel.rs:181 | strangers_sighted |
+| systems/feel.rs:181 | besieged |
+| systems/feel.rs:181 | captured |
+| systems/feel.rs:181 | rose |
+| systems/feel.rs:184 | breached |
+| systems/feel.rs:184 | cavern_found |
+| systems/feel.rs:184 | shifted |
 | systems/hazards.rs:207 | spread |
 | systems/hazards.rs:230 | spreading to the houses |
 | systems/hazards.rs:338 | roof |

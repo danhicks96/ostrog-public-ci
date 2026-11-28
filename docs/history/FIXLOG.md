@@ -1,5 +1,19 @@
 # Fix log
 
+## 2026-11-28: a birth gladdens the wider family (OST-543)
+
+- Symptom: a child was born and only the parents felt anything; grandparents, brothers and
+  sisters and the parents' friends felt nothing.
+- Cause: `feel::observe` had no branch for a birth (the parents' `NewChild` thought is added in
+  `strain`).
+- Fix: a `Born` branch gives Joy about the child to the parents' parents and the child's brothers
+  and sisters in the mother's community (0.6), and to anyone there with an opinion of 0.6 or more
+  of a parent (0.35). Each feels their own amount (the usual jitter), and only a strong joy is
+  carried on as a Glad thought. No save change; births now move moods, so seeded digests move.
+- Guard: `tests/feelings.rs::a_birth_gladdens_the_family` fails without the fix (all joy zero).
+  The Joy-rows-per-birth and `births_per_joiner` measurement on seeds 1-4 is not run, so #534
+  stays open.
+
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
 - Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
