@@ -32,6 +32,13 @@ Setup names the selected local area the landing site and identifies the founding
   `tools/publish`, and report its absence in a public snapshot.
 - Guard: `tools/tests/frame_time_harness_guard_test.py` covers public and private trees, invalid
   and valid plans, and a missing harness.
+## 2026-11-27 — Show the load being delivered
+
+A person hauling a saw while carrying personal berries appeared to hold the berries: the
+renderer chose whichever carried stack came last. The hand sprite now selects the current
+delivery's stack after pickup, or the item being eaten; without either it keeps the previous
+fallback. The complete carried inventory remains unchanged. Checks cover ordinary and food
+deliveries and the period before pickup.
 
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 

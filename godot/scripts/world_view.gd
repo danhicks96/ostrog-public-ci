@@ -312,7 +312,7 @@ func refresh() -> void:
 		built[Vector2i(bo[i], bo[i + 1])] = bo[i + 2]
 	carried.clear()
 	carried_mat.clear()
-	var c: PackedInt32Array = sim.carried()
+	var c: PackedInt32Array = sim.displayed_carried()
 	for i in range(0, c.size(), 3):
 		carried[c[i]] = c[i + 1]
 		carried_mat[c[i]] = c[i + 2]
