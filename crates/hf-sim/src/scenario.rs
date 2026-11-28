@@ -136,6 +136,7 @@ impl World {
             tool_quality: 0.0,
             tool_wear: 0.0,
             clothes_wear: 1.0,
+            part_log: Default::default(),
             furred: false,
             wet: 0.0,
             // A beast whose body is not a skeleton is born whole, its size within its plan's
@@ -304,6 +305,7 @@ impl World {
             tool_quality: 0.0,
             tool_wear: 0.0,
             clothes_wear: 1.0,
+            part_log: Default::default(),
             furred: false,
             wet: 0.0,
             body: Default::default(),

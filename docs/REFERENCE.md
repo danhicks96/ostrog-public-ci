@@ -1398,7 +1398,7 @@ People, valleys and communities are named from these syllables by seed, so any n
 
 All remaining string literals in `crates/hf-sim/src` outside tests, panics and the tables above: death causes, fire causes, plan-failure reasons, caravan purposes and road stories, choices, search notes, save errors and so on. If a line on screen is in none of the tables above, search this one for its fixed words.
 
-<details><summary>3258 strings (click to open)</summary>
+<details><summary>3277 strings (click to open)</summary>
 
 | file:line | string |
 |---|---|
@@ -1459,9 +1459,9 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | accounts.rs:511 | someone |
 | accounts.rs:521 | {} and {} more |
 | accounts.rs:525 |  Said: {words} ({by}). |
-| agents.rs:489 | fur |
-| agents.rs:490 | feathers |
-| agents.rs:491 | scales |
+| agents.rs:493 | fur |
+| agents.rs:494 | feathers |
+| agents.rs:495 | scales |
 | aquifer.rs:224 | left a cut alone |
 | aquifer.rs:225 | the stone was damp, with water close behind it |
 | arcs.rs:29 | strangers camped near |
@@ -2128,25 +2128,43 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | opening.rs:253 | {name}, who had come through the portal alone and lived |
 | opening.rs:264 | something |
 | opening.rs:272 | where {name} had died, alone, {} |
-| opening.rs:579 | {name} is already back with the others |
-| opening.rs:580 | what became of {name} is already known |
-| opening.rs:592 | no sign of {who} here |
-| opening.rs:603 | {who} was alive, and is coming back |
-| opening.rs:610 | something |
-| opening.rs:614 | {who} had died there, of {cause} |
-| opening.rs:793 | coming through the portal |
-| opening.rs:945 | the herb-woman |
-| opening.rs:948 | apprenticed to {master} |
-| opening.rs:957 | the carpenter |
-| opening.rs:958 | apprenticed to {master} |
-| opening.rs:967 | the smith |
-| opening.rs:968 | apprenticed to {master} |
-| opening.rs:984 | the quarry |
-| opening.rs:985 | apprenticed to {master} |
-| opening.rs:989 | the baker |
-| opening.rs:990 | apprenticed to {master} |
-| opening.rs:1102 | brought through the portal |
+| opening.rs:580 | {name} is already back with the others |
+| opening.rs:581 | what became of {name} is already known |
+| opening.rs:593 | no sign of {who} here |
+| opening.rs:604 | {who} was alive, and is coming back |
+| opening.rs:611 | something |
+| opening.rs:615 | {who} had died there, of {cause} |
+| opening.rs:794 | coming through the portal |
+| opening.rs:946 | the herb-woman |
+| opening.rs:949 | apprenticed to {master} |
+| opening.rs:958 | the carpenter |
+| opening.rs:959 | apprenticed to {master} |
+| opening.rs:968 | the smith |
+| opening.rs:969 | apprenticed to {master} |
+| opening.rs:985 | the quarry |
+| opening.rs:986 | apprenticed to {master} |
+| opening.rs:990 | the baker |
+| opening.rs:991 | apprenticed to {master} |
+| opening.rs:1103 | brought through the portal |
 | par.rs:60 | hf-sim-{i} |
+| partlog.rs:67 | left  |
+| partlog.rs:68 | right  |
+| partlog.rs:72 | hand |
+| partlog.rs:73 | palm |
+| partlog.rs:74 | back of the hand |
+| partlog.rs:75 | thumb |
+| partlog.rs:76 | index finger |
+| partlog.rs:77 | middle finger |
+| partlog.rs:78 | ring finger |
+| partlog.rs:79 | little finger |
+| partlog.rs:83 | , base |
+| partlog.rs:84 | , middle |
+| partlog.rs:85 | , tip |
+| partlog.rs:86 | , last knuckle |
+| partlog.rs:87 | , pad |
+| partlog.rs:88 | , nail |
+| partlog.rs:89 | , nail bed |
+| partlog.rs:91 | {side}{region}{spot} |
 | past.rs:131 | drink |
 | past.rs:132 | violence |
 | past.rs:133 | fire |
@@ -2365,14 +2383,14 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | relics.rs:211 | it was carried out of the valley |
 | relics.rs:212 | it is gone |
 | relics.rs:291 | it was taken by those who split away |
-| scenario.rs:450 | scenario |
-| scenario.rs:491 | brought by the founders |
-| scenario.rs:801 | scenario |
-| scenario.rs:808 | scenario |
-| scenario.rs:816 | scenario |
-| scenario.rs:835 | scenario |
-| scenario.rs:855 | scenario |
-| scenario.rs:1025 | scenario |
+| scenario.rs:452 | scenario |
+| scenario.rs:493 | brought by the founders |
+| scenario.rs:803 | scenario |
+| scenario.rs:810 | scenario |
+| scenario.rs:818 | scenario |
+| scenario.rs:837 | scenario |
+| scenario.rs:857 | scenario |
+| scenario.rs:1027 | scenario |
 | setup.rs:72 | {}, about {:.0} C through the year, wetter than {:.0}% of the land |
 | setup.rs:81 | A river runs by. |
 | setup.rs:84 | Nobody could live here. |
@@ -3428,9 +3446,10 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | systems/health.rs:579 | fever |
 | systems/health.rs:603 | bled out |
 | systems/health.rs:606 | fever |
-| systems/health.rs:710 | a made limb |
-| systems/health.rs:712 | a wooden leg |
-| systems/health.rs:714 | a wooden hand |
+| systems/health.rs:681 | taken to save them |
+| systems/health.rs:718 | a made limb |
+| systems/health.rs:720 | a wooden leg |
+| systems/health.rs:722 | a wooden hand |
 | systems/learn.rs:192 | from watching {dname} |
 | systems/life.rs:91 | worn out |
 | systems/life.rs:114 | worn |

@@ -511,6 +511,7 @@ impl Identity {
             tool_quality: 0.0,
             tool_wear: 0.0,
             clothes_wear: 1.0,
+            part_log: Default::default(),
             furred: false,
             wet: 0.0,
             body: Default::default(),

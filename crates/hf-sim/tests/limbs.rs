@@ -132,3 +132,60 @@ fn a_healer_comes_from_across_the_valley_in_the_morning() {
         .iter()
         .any(|e| matches!(e.kind, EventKind::LimbTaken { by, .. } if by == w.agents[healer].id)));
 }
+
+/// Body & Gear slice 0: a taken arm is kept as the hand's story, pointing at the chronicle event,
+/// and the other hand has none.
+#[test]
+fn a_taken_arm_leaves_its_hands_history_linked_to_the_event() {
+    use hf_sim::partlog::{Change, PartKey, Region, Side, Spot};
+    let mut w = World::generate(2842, GenParams::small());
+    w.flatten(2, 2, 60, 60, 1);
+    w.meta.founding_site = TilePos::new(30, 30, 2);
+    w.meta.tick = TICKS_PER_HOUR * 10;
+    w.rebuild_caches();
+    let ids = w.found_party(2);
+    w.meta.autoplan = false;
+    let idx: Vec<usize> = ids
+        .iter()
+        .map(|id| w.agents.iter().position(|a| a.id == *id).unwrap())
+        .collect();
+    let (p, healer) = (idx[0], idx[1]);
+    for &k in &idx {
+        w.agents[k].pos = w.grid.surface(30 + k as i32 % 3, 30);
+        w.agents[k].activity = hf_sim::mind::Activity::Idle;
+    }
+    w.agents[healer]
+        .techniques
+        .learn(Technique::HerbLore, Learned::Past, 0.6, 0);
+    hf_sim::systems::health::wound(
+        &mut w,
+        p,
+        Part::ARM_L,
+        WoundKind::Cut,
+        0.6,
+        0.0,
+        "a test",
+        None,
+    );
+    w.agents[p].body.wounds.last_mut().unwrap().infected = true;
+    w.agents[p].body.illness = Some(hf_sim::body::Illness {
+        severity: 0.7,
+        since: 0,
+        kind: hf_sim::body::IllnessKind::WoundRot,
+        treated: None,
+    });
+    hf_sim::systems::health::limbs(&mut w);
+    let left = PartKey::new(Side::Left, Region::Hand, Spot::Whole);
+    let right = PartKey::new(Side::Right, Region::Hand, Spot::Whole);
+    let h = w.agents[p].part_log.history(left, false);
+    assert_eq!(h.len(), 1);
+    assert_eq!(h[0].change, Change::Lost);
+    let ev = h[0].event.expect("linked to an event");
+    assert!(w
+        .events
+        .pending
+        .iter()
+        .any(|e| e.id == ev && matches!(e.kind, EventKind::LimbTaken { .. })));
+    assert!(w.agents[p].part_log.history(right, false).is_empty());
+    assert!(w.agents[p].part_log.missing(left));
+}
