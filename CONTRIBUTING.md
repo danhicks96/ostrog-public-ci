@@ -32,6 +32,26 @@ Thanks for your interest in Ostrog. Read [docs/VISION.md](docs/VISION.md) and
 4. Every file under `godot/assets/` needs a row in `tools/art/provenance.toml`.
 5. Decisions that change how the game works go in [docs/DECISIONS.md](docs/DECISIONS.md).
 
+## Maintaining the maps
+
+The [root README](README.md#architecture-map) is the quick route map. Put deeper contracts next to
+their code or data. A folder map should say what it owns, where to start, what writes or reads the data,
+when it changes, what survives save and load, and what test or command verifies it. Link to the
+authoritative explanation instead of maintaining copies. A parent guide can cover simple leaf folders.
+
+When ownership, data shape, timing, consumers or persistence change, update the map in the same pull
+request. Link the evidence used to verify it. Use the existing [decision log](docs/DECISIONS.md) for
+major tradeoffs and superseded choices. Verify the maps without assets with:
+
+```sh
+python3 tools/docs/readme_tables.py --check-maps
+```
+
+For runbooks, include a starting command, expected result, what to do on failure and which evidence
+to retain. Use local source inputs and explain extra prerequisites. Compare performance on fixed
+seeds or fixtures with both commits, build mode and machine class recorded. Report timing evidence
+instead of making uncalibrated numbers into merge gates.
+
 ## Privacy and public snapshots
 
 This repository contains source for CI, not a game or media release. Developers bootstrap a
