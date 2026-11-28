@@ -13,6 +13,17 @@ This changes terminology, not the simulation's geography or discovery rules.
 ## 2026-11-26 - Landing site and egress point
 
 Setup names the selected local area the landing site and identifies the founding portal tile as the egress point. History and the home follow action use the generated place name. Terrain descriptions reserve valley for the landform. The run and soak commands describe the portal arrival at the landing site, and past describes the patterns people noticed. Arrival history now reads the landform used for the selected region instead of drawing it again from the world seed.
+## 2026-11-27: the mature birch lost its outer-canopy leaf catches
+
+- Symptom: the source-generated mature summer birch had no brightest foliage pixels in the
+  outer right canopy, and `tools/art/plants_animals_check.py` failed on the pinned asset.
+- Cause: the sparse seeded catches in overlapping canopy blobs did not leave a surviving
+  highlight in that region for this tree's seed.
+- Fix: add two sunlit catches on existing opaque leaves after the mature summer crown is drawn;
+  retain the unchanged guard and refresh the source and generated-image hashes.
+- Guard: `tools/art/plants_animals_check.py` checks the outer canopy; it failed before the
+  generator change and passes with it.
+
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
 - Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
