@@ -103,6 +103,26 @@ pub fn fresh(w: &World, p: TilePos) -> bool {
         && !frozen_at(w, p)
 }
 
+/// Whether a previously planned collection source still supplies water now.
+pub(crate) fn collection_available(w: &World, p: TilePos, stand: TilePos) -> bool {
+    if crate::systems::hazards::in_floods_way(w, stand) {
+        return false;
+    }
+    if w.structures.iter().any(|s| {
+        s.pos == p
+            && s.progress >= 1.0
+            && (s.kind == StructureKind::Well || (s.kind == StructureKind::Hearth && frozen(w)))
+    }) {
+        return true;
+    }
+    !frozen(w)
+        && fresh(w, p)
+        && w.waters.bodies.iter().any(|b| {
+            (b.tiles.contains(&p) || b.tiles.contains(&p.offset(0, 0, 1)))
+                && !(b.high && w.waters.flooded_once(stand.x, stand.y))
+        })
+}
+
 /// Somewhere beside `p` a person can stand to drink: a walkable tile next to it, at its level
 /// or one above (a lake lies a level under the grass of its shore).
 fn stand_by(w: &World, p: TilePos) -> Option<TilePos> {
@@ -125,6 +145,10 @@ fn stand_by(w: &World, p: TilePos) -> Option<TilePos> {
 /// Every place to drink within `radius` of `near`, nearest first by the straight line: the
 /// shores of the valley's waters where they serve, and finished wells.
 pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
+    spots_for(w, near, radius, true)
+}
+
+fn spots_for(w: &World, near: TilePos, radius: i32, include_stores: bool) -> Vec<Spot> {
     let mut out: Vec<(i32, Spot)> = Vec::new();
     for s in w
         .structures
@@ -191,7 +215,7 @@ pub fn spots(w: &World, near: TilePos, radius: i32) -> Vec<Spot> {
     let water_near = out
         .iter()
         .any(|(d, s)| *d <= 12 && !crate::systems::hazards::in_floods_way(w, s.stand));
-    if !water_near {
+    if include_stores && !water_near {
         for c in w.communities.iter().filter(|c| !c.dissolved && c.water > 0) {
             if let Some(b) = barrel(w, c.home) {
                 let d = b.dist(near);
@@ -220,14 +244,26 @@ pub fn nearest(w: &World, from: TilePos, radius: i32) -> Option<Spot> {
 /// The places to drink within `radius` of `from`, nearest first by the straight line, the
 /// nearest 48 of them with each stand tile once, none in a flood's way (#418).
 fn candidates(w: &World, from: TilePos, radius: i32) -> Vec<Spot> {
+    candidates_from(w, spots(w, from, radius))
+}
+
+fn candidates_from(w: &World, spots: Vec<Spot>) -> Vec<Spot> {
     let mut tried = std::collections::BTreeSet::new();
-    spots(w, from, radius)
+    spots
         .into_iter()
         .filter(|s| tried.insert(s.stand))
         // Not into a flood's way (#418): the next bank clear of it serves.
         .filter(|s| !crate::systems::hazards::in_floods_way(w, s.stand))
         .take(48)
         .collect()
+}
+
+/// A refill must draw from a source, not a household store (including its own).
+pub(crate) fn collection_source(w: &World, from: TilePos, radius: i32) -> Option<Spot> {
+    let nav = w.nav.as_ref()?;
+    candidates_from(w, spots_for(w, from, radius, false))
+        .into_iter()
+        .find(|s| s.stand == from || nav.reach(from, s.stand))
 }
 
 /// What `knowledge` believes of a spot's water, as a `TAG_WATER_*` value (#453, epic #477

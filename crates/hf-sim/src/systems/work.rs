@@ -70,6 +70,15 @@ pub fn run(w: &mut World, i: usize) -> bool {
         crate::duties::worked(w, i, kind);
     }
     match step {
+        Step::FillWater { source } => {
+            if !matches!(w.designations[dix].kind, DesignationKind::FetchWater)
+                || !crate::water::reaches(w.agents[i].pos, source)
+                || !crate::water::collection_available(w, source, w.agents[i].pos)
+            {
+                return abort(w, i, "water source unavailable");
+            }
+            advance(w, i);
+        }
         Step::GoTo { to, adjacent: _ } => {
             // Hunting: the prey moves, so keep walking toward where it is now. Taming too: the
             // order stands where the beast was when it was given, and a tamer who walked there
@@ -329,6 +338,21 @@ pub fn run(w: &mut World, i: usize) -> bool {
             designation,
             station,
         } => {
+            // Old saves can contain a fetch plan created before FillWater existed. Retire
+            // that plan so it can be replanned rather than crediting uncollected water.
+            if matches!(w.designations[dix].kind, DesignationKind::FetchWater) {
+                let Activity::Working { plan } = &w.agents[i].activity else {
+                    unreachable!();
+                };
+                if !plan.steps[..plan.cursor]
+                    .iter()
+                    .any(|s| matches!(s, Step::FillWater { .. }))
+                {
+                    // Retire the obsolete plan without treating a save upgrade as a
+                    // worker's failure; the still-open order can be planned again.
+                    return finish(w, i);
+                }
+            }
             let here = w.agents[i].pos;
             if let DesignationKind::Hunt(prey) | DesignationKind::Tame(prey) =
                 w.designations[dix].kind

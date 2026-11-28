@@ -25,6 +25,8 @@ pub enum Step {
         designation: DesignationId,
         station: Option<StructureId>,
     },
+    /// Fill at the source before carrying water back to the store.
+    FillWater { source: TilePos },
 }
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]

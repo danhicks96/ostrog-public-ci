@@ -189,7 +189,7 @@ pub fn plan_for(w: &World, who: AgentId, d: &Designation) -> Option<Planned> {
         }
         DesignationKind::FetchWater => {
             // To the nearest water (#433), fill the vessel, then to the store and pour.
-            let src = crate::water::nearest(w, d.pos, 40)?;
+            let src = crate::water::collection_source(w, d.pos, 40)?;
             let at_water = src.stand;
             let stand = stand_tile(w, at_water, d.pos)?;
             if !nav.reach(from, at_water) || !nav.reach(at_water, stand) {
@@ -199,6 +199,7 @@ pub fn plan_for(w: &World, who: AgentId, d: &Designation) -> Option<Planned> {
                 to: at_water,
                 adjacent: false,
             });
+            steps.push(Step::FillWater { source: src.source });
             steps.push(Step::GoTo {
                 to: stand,
                 adjacent: false,
