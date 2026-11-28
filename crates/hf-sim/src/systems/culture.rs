@@ -54,6 +54,40 @@ pub const HEARTH_HOURS: std::ops::Range<u64> = 18..21;
 
 /// The share of the others at a hearth who must lack a realm story for it to be told (OST-506).
 pub const HEARTH_FRESH_SHARE: f32 = 0.5;
+/// How long a listener counts as having heard a lived-belief telling from a teller: a year
+/// (OST-507).
+pub const HEARTH_RETELL: u64 = crate::time::TICKS_PER_YEAR;
+/// Tellings a person remembers having heard at the hearth.
+pub const HEARTH_HEARD_KEPT: usize = 32;
+
+/// The belief a person would tell of: their strongest one that came from something that
+/// happened to them.
+fn lived_belief(a: &crate::agents::Agent) -> Option<crate::mind::beliefs::Belief> {
+    use crate::mind::beliefs::Source;
+    a.beliefs
+        .list
+        .iter()
+        .filter(|b| b.sources.iter().any(|s| matches!(s, Source::Event(_))))
+        .max_by(|a, b| {
+            (a.stance.abs() * a.confidence)
+                .partial_cmp(&(b.stance.abs() * b.confidence))
+                .unwrap_or(std::cmp::Ordering::Equal)
+        })
+        .cloned()
+}
+
+/// Has `listener` heard this teller's lived-belief telling (`key`) within the last year?
+fn heard_lately(
+    listener: &crate::agents::Agent,
+    teller: AgentId,
+    key: Option<crate::past::Topic>,
+    now: u64,
+) -> bool {
+    listener
+        .hearth_heard
+        .iter()
+        .any(|h| h.0 == teller && h.1 == key && now.saturating_sub(h.2) < HEARTH_RETELL)
+}
 
 /// A community's finished hearth.
 pub fn hearth_of(w: &World, cid: CommunityId) -> Option<crate::ids::TilePos> {
@@ -80,7 +114,6 @@ pub fn hearth_habit(w: &World, cid: CommunityId) -> f32 {
 /// hold what their own life taught them. The first such evening becomes a custom; each one
 /// after renews it.
 fn hearth_evening(w: &mut World) {
-    use crate::mind::beliefs::Source;
     let tick = w.meta.tick;
     let day = tick / TICKS_PER_DAY;
     let cids: Vec<CommunityId> = w
@@ -124,7 +157,10 @@ fn hearth_evening(w: &mut World) {
         // the same battle again. A teller offers the story the most sitters lack.
         let mut story: Option<(usize, u32)> = None;
         for &t in &sitting {
-            if told.contains(&w.agents[t].id) {
+            // A small child listens and does not tell (OST-511).
+            if told.contains(&w.agents[t].id)
+                || !w.agents[t].old_enough_for(crate::agents::Childhood::Older, tick)
+            {
                 continue;
             }
             let mut best: Option<(usize, u32)> = None;
@@ -185,22 +221,46 @@ fn hearth_evening(w: &mut World) {
             if told.contains(&w.agents[t].id) {
                 continue;
             }
-            let fresh = w.agents[t]
-                .tales
+            // A child tells a tale only from the older stage, and what they came to hold only
+            // once of age (OST-511).
+            let may_tale = w.agents[t].old_enough_for(crate::agents::Childhood::Older, tick);
+            let grown = w.agents[t].of_age(tick);
+            let fresh = if may_tale {
+                w.agents[t]
+                    .tales
+                    .iter()
+                    .find(|x| {
+                        sitting
+                            .iter()
+                            .any(|&l| l != t && !crate::lore::has_tale(w, l, x))
+                    })
+                    .cloned()
+            } else {
+                None
+            };
+            let lived = if grown {
+                lived_belief(&w.agents[t])
+            } else {
+                None
+            };
+            // A lived belief only counts while someone here has not heard it from this
+            // teller this year (OST-507).
+            let key = lived.as_ref().map(|b| b.topic);
+            let teller_id = w.agents[t].id;
+            let wanted = sitting
                 .iter()
-                .find(|x| {
-                    sitting
-                        .iter()
-                        .any(|&l| l != t && !crate::lore::has_tale(w, l, x))
-                })
-                .cloned();
-            let lived = w.agents[t]
-                .beliefs
-                .list
-                .iter()
-                .any(|b| b.sources.iter().any(|s| matches!(s, Source::Event(_))));
-            let score = (if fresh.is_some() { 2.0 } else { 0.0 } + if lived { 1.0 } else { 0.2 })
-                * w.agents[t].talk_weight();
+                .any(|&l| l != t && !heard_lately(&w.agents[l], teller_id, key, tick));
+            let own = if !wanted || !grown {
+                0.0
+            } else if lived.is_some() {
+                1.0
+            } else {
+                0.2
+            };
+            let score = (if fresh.is_some() { 2.0 } else { 0.0 } + own) * w.agents[t].talk_weight();
+            if score <= 0.0 {
+                continue;
+            }
             if best.as_ref().is_none_or(|b| score > b.0) {
                 best = Some((score, t, fresh));
             }
@@ -236,19 +296,20 @@ fn hearth_evening(w: &mut World) {
                 )
             }
             None => {
-                let lived = w.agents[t]
-                    .beliefs
-                    .list
-                    .iter()
-                    .filter(|b| b.sources.iter().any(|s| matches!(s, Source::Event(_))))
-                    .max_by(|a, b| {
-                        (a.stance.abs() * a.confidence)
-                            .partial_cmp(&(b.stance.abs() * b.confidence))
-                            .unwrap_or(std::cmp::Ordering::Equal)
-                    })
-                    .cloned();
+                let lived = lived_belief(&w.agents[t]);
+                let key = lived.as_ref().map(|b| b.topic);
                 for &l in &listeners {
-                    crate::systems::beliefs::share(w, t, l, tick);
+                    // Only someone who had not heard it passes it on and has their view
+                    // moved; everyone sitting there now remembers the telling.
+                    if !heard_lately(&w.agents[l], teller, key, tick) {
+                        crate::systems::beliefs::share(w, t, l, tick);
+                    }
+                    let a = &mut w.agents[l];
+                    a.hearth_heard.retain(|h| !(h.0 == teller && h.1 == key));
+                    a.hearth_heard.push((teller, key, tick));
+                    if a.hearth_heard.len() > HEARTH_HEARD_KEPT {
+                        a.hearth_heard.remove(0);
+                    }
                 }
                 match lived {
                     Some(b) => format!(

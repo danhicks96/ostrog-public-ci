@@ -268,6 +268,18 @@ fn the_arrival_is_a_shock_that_fades_and_the_calm_shake_it_faster() {
     for a in calm.agents.iter_mut() {
         a.thoughts.list.retain(|t| t.kind != ThoughtKind::Arrival);
     }
+    // OST-205: needs now bite in mood, so the camp's hunger can keep the mood down for days;
+    // the shock fading is read off the thought, which is what it is.
+    let thought = |w: &World| {
+        let now = w.meta.tick;
+        let m: Vec<f32> = w
+            .agents
+            .iter()
+            .filter(|a| a.alive && members.contains(&a.id))
+            .map(|a| a.thoughts.sum(now))
+            .collect();
+        m.iter().sum::<f32>() / m.len().max(1) as f32
+    };
     let mut daily = Vec::new();
     for day in 0..7 {
         // Sampled at the hour they came through, each day.
@@ -285,23 +297,22 @@ fn the_arrival_is_a_shock_that_fades_and_the_calm_shake_it_faster() {
             // thought costs — in an unpinned camp that edge can even outweigh the thought
             // (the PR #501 failure at this gate), so the camp is pinned and this gate
             // compares the pure thought cost.
-            let thought = |w: &World| {
-                let now = w.meta.tick;
-                let m: Vec<f32> = w
-                    .agents
-                    .iter()
-                    .filter(|a| a.alive && members.contains(&a.id))
-                    .map(|a| a.thoughts.sum(now))
-                    .collect();
-                m.iter().sum::<f32>() / m.len().max(1) as f32
-            };
             let (shocked, not) = (thought(&w), thought(&calm));
             assert!(
                 shocked < not - 0.1,
                 "day 1 thoughts: {shocked} against {not}"
             );
         }
-        daily.push(mean(&w));
+        // OST-549: breaks now follow what the person feels, and the thoughts they leave behind
+        // (a binge, a fight) differ, so the fade is read off the arrival thought alone.
+        let now = w.meta.tick;
+        let m: Vec<f32> = w
+            .agents
+            .iter()
+            .filter(|a| a.alive && members.contains(&a.id))
+            .map(|a| a.thoughts.sum_of(ThoughtKind::Arrival, now))
+            .collect();
+        daily.push(m.iter().sum::<f32>() / m.len().max(1) as f32);
     }
     assert!(daily[0] < daily[5] - 0.1, "{daily:?}");
     assert!(
