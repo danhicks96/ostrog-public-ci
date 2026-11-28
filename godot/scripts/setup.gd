@@ -13,7 +13,7 @@ signal confirmed(setup: Dictionary)
 
 const COUNT := 10
 const STARTING := 3
-const PAGES := ["Who watches", "Landing site", "The peoples", "Who came through", "What they hold", "Begin"]
+const PAGES := ["Who watches", "Egress point", "The peoples", "Who came through", "What they hold", "Begin"]
 const RARITIES := ["common", "uncommon", "rare", "legendary"]
 const ValleyPreview := preload("res://scripts/valley_preview.gd")
 const Rules := preload("res://scripts/rules.gd")
@@ -281,7 +281,7 @@ func _valley_page() -> void:
 	seed_row.add_child(another)
 
 	var own := CheckBox.new()
-	own.text = "Shape the landing site myself"
+	own.text = "Shape the egress point myself"
 	own.button_pressed = use_character
 	own.toggled.connect(func(on): _shape_myself(on))
 	left.add_child(own)
@@ -347,7 +347,7 @@ func _valley_page() -> void:
 		b.button_pressed = int(y) == realm_years
 		b.pressed.connect(func(): realm_years = int(y); goto(1))
 		age_row.add_child(b)
-	left.add_child(_para("Choose a landing site on the world map. The ring marks your selection.", Color(0.9, 0.9, 0.92), 14))
+	left.add_child(_para("Choose an egress point on the world map. The ring marks your selection.", Color(0.9, 0.9, 0.92), 14))
 	world_rect = TextureRect.new()
 	world_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	world_rect.stretch_mode = TextureRect.STRETCH_SCALE
@@ -489,7 +489,7 @@ func _refresh_preview() -> void:
 	if sim.valley_preview_begin(seed_v, _chosen_character(), region_v):
 		_collect_preview()
 		return
-	preview_lines.text = "Drawing the landing site..."
+	preview_lines.text = "Drawing the egress point..."
 	set_process(true)
 
 func _process(_d: float) -> void:
@@ -509,7 +509,7 @@ func _collect_preview() -> void:
 	var entry := {
 		"texture": ImageTexture.create_from_image(preview_art.image(p)),
 		# In a player's words, not the describe command's (Rules.valley_note, FIXLOG 2026-11-14).
-		"lines": Rules.valley_note(Array(p["lines"]), str(p.get("label", ""))) + "\nThe red marker shows the egress point where the founders emerge.",
+		"lines": Rules.valley_note(Array(p["lines"]), str(p.get("label", ""))) + "\nThe red marker shows the portal exit where the founders emerge.",
 	}
 	preview_cache[preview_waiting] = entry
 	preview_waiting = ""
@@ -632,7 +632,7 @@ func _held_page() -> void:
 # --- The peoples ------------------------------------------------------------------------------
 
 func _peoples_page() -> void:
-	body.add_child(_para("The world beyond the landing site is lived in by peoples of several kinds. " \
+	body.add_child(_para("The world beyond the egress point is lived in by peoples of several kinds. " \
 		+ "Choose which kinds there can be and how rare each is. Rarity sets how a kind starts, not " \
 		+ "how it ends: a rare people has no land of its own and lives as households among others; " \
 		+ "a legendary one's land fails it over the centuries. The world's history decides the rest."))

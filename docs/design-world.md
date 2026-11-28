@@ -1,8 +1,8 @@
-# The world and its landing sites
+# The world and its egress points
 
-The **landing site** is the local area chosen on the world map. The **egress point** is the tile where the founders emerge from the portal. After arrival, use the place name in maps and history (for example, *Follow in Ashcross*). A **valley** is one possible landform alongside a ridge, plateau, plain, coast or marsh.
+The **egress point** is the local area chosen on the world map. Its **portal exit** is the tile where the founders emerge. After arrival, use the place name in maps and history (for example, *Follow in Ashcross*). A **valley** is one possible landform alongside a ridge, plateau, plain, coast or marsh.
 
-The region already supplies rainfall, warmth and stoniness. The local stream currently uses its own seeded curve. A regional river crossing the landing site should ultimately enter and leave in the directions set by the watershed, with local relief determining where rapids or falls can form.
+The region already supplies rainfall, warmth and stoniness. The local stream currently uses its own seeded curve. A regional river crossing the egress point should ultimately enter and leave in the directions set by the watershed, with local relief determining where rapids or falls can form.
 
 A first end-to-end check follows one river through its headwaters, a steep reach and a downstream plain. Adjacent sites must agree on the channel crossing their shared boundary. Inspect the channel elevations, then watch each reach in the game at normal zoom. A visible drop needs an upper reach, a falling face and connected water below.
 
@@ -11,11 +11,11 @@ on (world/gen, deep.rs, setup.rs, expedition.rs, threat.rs, names.rs, chronicle,
 
 ## Historical baseline before M3
 
-- The landing site is one generated 128x128 tile map with 24 levels; its climate comes from a seeded
+- The egress point is one generated 128x128 tile map with 24 levels; its climate comes from a seeded
   `Character { wetness, warmth, stoniness }`, not from anywhere.
 - The "overworld" is six sites made by `Overworld::generate(seed)` from a fixed list: no
   positions, only an edge and a number of days; two villages and a mine have people.
-- The past (`deep::run`) is one landing site's hamlets over up to 300 years, one step a year, with
+- The past (`deep::run`) is one egress point's hamlets over up to 300 years, one step a year, with
   named figures and traces on the ground; names come from fixed English-flavoured tables.
 - The chronicle references only agents (`entity_ref.entity_kind = 'agent'`); `Old*` events
   name no one.
@@ -23,7 +23,7 @@ on (world/gen, deep.rs, setup.rs, expedition.rs, threat.rs, names.rs, chronicle,
 ## What M3 builds
 
 A world of a few hundred regions on a side, generated from the seed before anything else; the
-landing site is one region of it, generated at full detail from that region's data. Peoples with
+egress point is one region of it, generated at full detail from that region's data. Peoples with
 their own languages and convictions found sites, grow, trade, quarrel, fall and are
 remembered; thousands of named figures live, make, rule and die; every one of those things is
 an event in the chronicle with references to what it touched. The arrival happens in a world
@@ -35,7 +35,7 @@ name in a lay is a figure with a life; a raid comes from a real place at a real 
 ## The pieces (module `realm`, crate hf-sim)
 
 1. Region map (`realm/map.rs`). Size 192x192 by default. Per region: elevation, temperature,
-   rainfall, drainage, biome, river flow and its direction, lake, rock (the landing site's strata
+   rainfall, drainage, biome, river flow and its direction, lake, rock (the egress point's strata
    follow it), soil fertility. Generation, all from purpose streams of the seed:
    - elevation from octave noise plus a few ridge lines (mountain chains), sea level by
      fraction;
@@ -46,7 +46,7 @@ name in a lay is a figure with a life; a raid comes from a real place at a real 
      over rising ground (rain shadows behind ranges);
    - biome by temperature and rain (a Whittaker table): ice, tundra, taiga, temperate forest,
      grassland, steppe, desert, savanna, rainforest, swamp, plus mountain and coast.
-2. Embarking (`realm/embark.rs`). The landing site's `GenParams.character` comes from its region
+2. Embarking (`realm/embark.rs`). The egress point's `GenParams.character` comes from its region
    (wetness from rain, warmth from temperature, stoniness from height and rock), and its edge
    rivers enter where the region's river does. The wizard picks a region; the default is a
    habitable one chosen by seed. The old `Character::of_seed` stays for tests and
@@ -61,16 +61,16 @@ name in a lay is a figure with a life; a raid comes from a real place at a real 
    Each simulated year: growth toward what the land carries, a daughter site when crowded,
    trade along the cheapest routes, quarrels where borders and convictions meet, war when
    they harden, famine, plague and fire from conditions, and the deity's leaning on them as
-   now (deity.rs watches the world pass as it watches the landing site's).
+   now (deity.rs watches the world pass as it watches the egress point's).
 5. Figures (`realm/figures.rs`). Named people: rulers, heroes, makers, priests, outlaws, and
    beasts with lairs. Compact records (birth, parents, site, people, craft, deeds as event
    ids, death and cause). Tens of thousands over a thousand years. A figure who comes into the
-   landing site is promoted to a full agent once, keeping name, age, kin and past (D10).
+   egress point is promoted to a full agent once, keeping name, age, kin and past (D10).
 6. The history pass (`realm/history.rs`). Yearly steps for up to 1,000 years on a worker
-   thread, with a loading screen that shows real rows; deep.rs becomes the landing site's own
+   thread, with a loading screen that shows real rows; deep.rs becomes the egress point's own
    chapter of it (who lived in this region, and what came to it from where).
 7. After the arrival. The realm steps once a game-season; `overworld.sites` becomes the real
-   sites near the landing site, with distances in days from the map; caravans go to them, bands
+   sites near the egress point, with distances in days from the map; caravans go to them, bands
    come from them, news of wars and famines arrives as rumours with a teller.
 8. The chronicle. `entity_ref` gains kinds `figure`, `site`, `polity`, `people`, `artifact`,
    `region`, written from a method on `EventKind` beside `participants()`. Era rows summarise
@@ -102,7 +102,7 @@ history rows go to the chronicle. Target: under 20 MB of snapshot for a 1,000-ye
 
 - `realm_is_deterministic` (same seed and parameters, same map and history digest).
 - `rivers_reach_the_sea_or_a_lake`; `rain_shadows_fall_behind_ranges`.
-- `valley_follows_its_region` (a wet, warm region gives a wet, warm landing site).
+- `valley_follows_its_region` (a wet, warm region gives a wet, warm egress point).
 - `history_only_from_simulation` extended: every realm event's references resolve, every
   ruin has an ending event, every named figure in a lay exists.
 - `figure_promoted_keeps_identity`.
@@ -115,7 +115,7 @@ history rows go to the chronicle. Target: under 20 MB of snapshot for a 1,000-ye
 | C24 | Region map: elevation, hydrology, climate, biomes; `ostrog realm --png`; embark from a region |
 | C25 | Peoples and languages (word_for port), sites, polities, the yearly growth step |
 | C26 | Figures, the history pass to 1,000 years, chronicle references, budget |
-| C27 | The landing site inside it: overworld sites from the map, deep.rs fed by the realm, caravans and bands by distance |
+| C27 | The egress point inside it: overworld sites from the map, deep.rs fed by the realm, caravans and bands by distance |
 | C28 | Legends browser v1: world map through time, site, figure and people pages |
 | C29 | The world goes on after the arrival: seasonal steps, wars, migrations, news as rumours |
 | C30 | Review, tester round, four soaks, gap table against DF and RimWorld |

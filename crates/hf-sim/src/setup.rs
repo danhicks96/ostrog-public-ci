@@ -168,7 +168,7 @@ impl WorldSetup {
             Some((last, [])) => last.clone(),
             Some((last, rest)) => format!("{} and that {last}", rest.join(", that ")),
         };
-        // Record the landform separately from the landing site climate.
+        // Record the landform separately from the egress point climate.
         let lf = w.meta.params.landform;
         let ch = format!("{ch} ({})", lf.name());
         (ch, held)

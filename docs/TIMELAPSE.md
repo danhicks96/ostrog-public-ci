@@ -1,6 +1,6 @@
 # Watched-view timelapse (#484)
 
-The Timelapse panel (`T`, or the bottom-bar button) records a watched view of the landing site and lets
+The Timelapse panel (`T`, or the bottom-bar button) records a watched view of the egress point and lets
 the viewer review how it changed. Recording is off by default and the choice persists in
 `user://settings.cfg`. It is a viewing feature only: it gives no orders, adds no events and never
 steps, loads or saves the world.
@@ -82,7 +82,7 @@ or runs at 0.5, 1, 2 or 4 samples per real second.
 ## Verification
 
 - `tools/gd_test.gd`: noon scheduling and the step cut (`test_timelapse_samples_fall_on_exact_noon_ticks`),
-  tick order, byte bound, replay reconcile, capture size bound and landing site zoom
+  tick order, byte bound, replay reconcile, capture size bound and egress point zoom
   (`test_timelapse_byte_bound_order_and_replay`), series reload and pruning
   (`test_timelapse_series_reloads_and_prunes`), event markers and the bridge's identity
   (`test_timelapse_event_markers_and_world_identity`), plus the first slice's ring, panel and
@@ -94,8 +94,8 @@ or runs at 0.5, 1, 2 or 4 samples per real second.
   files; four days of samples land on exact noon ticks with event markers; a save taken before them
   reloads into the same series, and re-running the four days confirms every stored digest and PNG
   byte for byte; a tampered digest is reported as a divergence and later samples are removed; a
-  whole-landing site sample fits the map; the bytes reported equal the PNG bytes on disk. It writes the
-  day images, the landing site image, a screenshot of the panel and `report.json`.
+  whole-egress point sample fits the map; the bytes reported equal the PNG bytes on disk. It writes the
+  day images, the egress point image, a screenshot of the panel and `report.json`.
 
 Evidence: `docs/reviews/484/`.
 

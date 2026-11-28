@@ -2,7 +2,7 @@
 
 Design note for issue #455: dangerous places joined to the colony by a way through, with their
 own people, creatures and riches, which the colony can go into, profit from and pay for. In
-Ostrog the deep caverns under the landing site already are such a place, and the breach a
+Ostrog the deep caverns under the egress point already are such a place, and the breach a
 community digs into one is its portal. This note says what the code already does, what is
 missing, the first slice built on branch `feat-455-portal-economy`, and what would break the
 rules.

@@ -161,16 +161,16 @@ func wizard_seed_is_random_per_new_game_and_kept_across_pages() -> void:
 	check(picks.size() == 1, "the world has another habitable place")
 	check(wz.choose_region(picks[0]), "the place is chosen")
 	await _wait_preview(wz)
-	check(wz.PAGES[1] == "Landing site", "the region picker names the local area")
-	check(wz.preview_lines.text.contains("egress point"), "the local preview identifies the founders’ portal marker")
+	check(wz.PAGES[1] == "Egress point", "the region picker names the local area")
+	check(wz.preview_lines.text.contains("portal exit"), "the local preview identifies the founders’ portal marker")
 	var note: String = wz.world_note.text
 	wz.goto(0)
 	await process_frame
 	wz.goto(1)
 	await process_frame
-	check(wz.seed_v == seed, "back to the landing site page: the same seed")
-	check(wz.region_v == picks[0], "back to the landing site page: the same place")
-	check(wz.world_note.text == note, "back to the landing site page: the same place's description")
+	check(wz.seed_v == seed, "back to the egress point page: the same seed")
+	check(wz.region_v == picks[0], "back to the egress point page: the same place")
+	check(wz.world_note.text == note, "back to the egress point page: the same place's description")
 	var spin: SpinBox = null
 	for c in wz.body.get_child(0).get_child(0).get_child(0).get_children():
 		if c is SpinBox:
@@ -1768,7 +1768,7 @@ func test_the_wizard_says_the_valley_in_a_players_words() -> void:
 	for dev in ["character:", "wetness", "set by parameter", "biome mix", "flora", "not drawn", " of 22", "%"]:
 		check(not note.contains(dev), "no '%s' on the page: %s" % [dev, note])
 	check(note.begins_with("A ") and not note.begins_with("A a ") and not note.begins_with("A an "), "one article: %s" % note)
-	check(note.to_lower().begins_with(str(p["label"]).to_lower()) or note.to_lower().begins_with("a " + str(p["label"]).to_lower()), "it opens with the landing site's description: %s" % note)
+	check(note.to_lower().begins_with(str(p["label"]).to_lower()) or note.to_lower().begins_with("a " + str(p["label"]).to_lower()), "it opens with the egress point's description: %s" % note)
 	check(note.contains("Mostly ") and note.contains("Wild plants here: "), "the ground and the plants: %s" % note)
 	var made := Rules.valley_note(["biome mix: grassland 31%, fen 23%, heath 4%, fell <1%", "flora draw: 2 of 22 wild kinds: yews, hazels", "flora not drawn: alders"], "a mild valley")
 	check(made == "A mild valley.\nMostly grassland and fen.\nWild plants here: yews, hazels.", "the wording: %s" % made)

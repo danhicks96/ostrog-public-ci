@@ -55,7 +55,7 @@ impl Character {
         p.character.unwrap_or_else(|| Character::of_seed(seed))
     }
 
-    /// A few plain words: "a wet, cold, stony landing site".
+    /// A few plain words: "a wet, cold, stony egress point".
     pub fn label(&self) -> String {
         let mut words = Vec::new();
         if self.wetness > 0.4 {
@@ -74,9 +74,9 @@ impl Character {
             words.push("soft-soiled");
         }
         if words.is_empty() {
-            "a temperate landing site".to_string()
+            "a temperate egress point".to_string()
         } else {
-            format!("a {} landing site", words.join(", "))
+            format!("a {} egress point", words.join(", "))
         }
     }
 }

@@ -1,7 +1,7 @@
 //! The arrival (see docs/design-emergence.md).
 //!
-//! Ten survivors came through the portal. Three begin together at the landing site; the other
-//! seven are scattered across the world with unknown fate. Nothing here invents history: whether
+//! Ten survivors came through the portal. Three begin together at the egress point; the other
+//! seven are scattered with unknown fate. Nothing here invents history: whether
 //! a missing survivor is alive is discovered in play (rumour or observation), never assumed.
 //!
 //! A reroll from the setup screen changes one slot's identity and nothing else, because each
@@ -21,7 +21,7 @@ pub const STARTING: usize = 3;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum SurvivorState {
-    /// One of the three who begin at the landing site.
+    /// One of the three who begin at the egress point.
     Starting,
     /// Scattered. `at` is where they are; `fate_known` is false until someone goes and looks.
     /// `truth` is what actually happened — decided when the world was made, and not given to any
@@ -660,7 +660,7 @@ impl World {
     }
 
     /// Where a scattered survivor ended up: a seeded walkable tile at least `min_dist` from the
-    /// landing site. Never called with knowledge the survivors could not have.
+    /// egress point. Never called with knowledge the survivors could not have.
     fn scatter_point(&self, index: u8, min_dist: i32) -> TilePos {
         let home = self.meta.founding_site;
         let mut r = stream(self.meta.seed, &[purpose::OPENING, 0x5CA7, index as u64]);
@@ -705,7 +705,7 @@ impl World {
         out
     }
 
-    /// Begin the arrival: three of the pool start at the landing site with the party's provisions,
+    /// Begin the arrival: three of the pool start at the egress point with the party's provisions,
     /// seven are scattered. `chosen` are slot indices (the default is the first three).
     pub fn begin_opening(&mut self, chosen: &[u8; STARTING], rerolls: &[u32; PARTY]) {
         let chosen = Self::sanely_chosen(chosen);

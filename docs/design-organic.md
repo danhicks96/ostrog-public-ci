@@ -118,7 +118,7 @@ Word of them comes from locals who met them.
 ## 8. The wizard and the deity
 
 The player tunes the starting point, never the outcome. The wizard sets how long the world is
-simulated before arrival, the landing site, who comes through, what they carry, and
+simulated before arrival, the egress point, who comes through, what they carry, and
 the beliefs they share. Shared beliefs are seeded as section 2 beliefs with their source in the
 old village, so they weight choices and can strengthen, split or die out; a group sure that drink
 is ruin can still produce a drinker.

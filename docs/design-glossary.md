@@ -6,7 +6,7 @@ internal type names as they are.
 | We say | Meaning | We do **not** say |
 | --- | --- | --- |
 | **survivor** | One of the ten who came through the portal. In code: an `Agent` of `Species::Human`. | pawn, colonist, settler, dwarf, duplicant |
-| **starting survivors** | The three who begin together at the landing site. | starting party (ambiguous: all ten are the party) |
+| **starting survivors** | The three who begin together at the egress point. | starting party (ambiguous: all ten are the party) |
 | **the missing** | The other seven, scattered alive or dead, unknown until someone goes and looks. | the lost ones (sounds metaphysical) |
 | **Oakfolk** | The community's own name, as shown in the HUD. | the colony, the settlement (fine in code comments, not in the HUD) |
 | **Engine** | The pacing model chosen at setup. It leans on chance; it fires no events. | storyteller, director (the director is the camera) |

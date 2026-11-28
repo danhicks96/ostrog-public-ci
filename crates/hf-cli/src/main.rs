@@ -33,7 +33,7 @@ enum Cmd {
         /// Game-days to run instead of --ticks (#130: 28,800 ticks read as a month).
         #[arg(long)]
         days: Option<u64>,
-        /// Generate the world's history, then follow the founders through the portal to their landing site.
+        /// Generate the world's history, then follow the founders through the portal to their egress point.
         /// This ignores --agents and --small. The default test map has no portal or prior history.
         #[arg(long)]
         opening: bool,
@@ -74,7 +74,7 @@ enum Cmd {
         ring: Option<PathBuf>,
         #[arg(long, default_value_t = 5)]
         save_days: u64,
-        /// Generate the world's history and start the soak when the founders reach their landing site
+        /// Generate the world's history and start the soak when the founders reach their egress point
         /// through the portal. This ignores --agents.
         #[arg(long)]
         opening: bool,

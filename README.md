@@ -17,7 +17,7 @@
 [Optional image omitted from this source snapshot.]
 
 Ostrog is an autonomous colony simulation meant to run on a second monitor. Ten people come
-through a portal into the world. Three emerge together at the egress point of the chosen landing site. The other seven are scattered,
+through a portal into the world. Three emerge together at the portal exit of the chosen egress point. The other seven are scattered,
 alive or dead, and nobody knows which. Each arrives with a life already lived (parents, losses, a
 trade, things they came to believe), and from there they forage, build, farm, mine, hunt, cook,
 quarrel, pair, raise children, form customs and send parties past the edge of the map.

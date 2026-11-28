@@ -913,7 +913,7 @@ pub fn line(w: &World, e: &Event) -> String {
         CaravanLeft {
             leader, members, ..
         } => format!(
-            "{}'s party of {} walks out past the edge of the landing site.",
+            "{}'s party of {} walks out past the edge of the egress point.",
             named_as(w, e.tick, *leader),
             members
         ),
@@ -1234,7 +1234,7 @@ pub fn line(w: &World, e: &Event) -> String {
             cname(w, *community)
         ),
         ReachedDeep { community, rock } => format!(
-            "{}'s shaft came down into the {rock}, the deep beneath the landing site.",
+            "{}'s shaft came down into the {rock}, the deep beneath the egress point.",
             cname(w, *community)
         ),
         LeftUnrested { agent, why } => {

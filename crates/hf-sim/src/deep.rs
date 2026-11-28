@@ -564,7 +564,7 @@ pub fn run(w: &mut World, years: u64) {
     w.nav = None;
 }
 
-/// Good spots for hamlets: flat, by water, away from the landing site and from each other.
+/// Good spots for hamlets: flat, by water, away from the egress point and from each other.
 /// Each is a centre and its house origins (5×4 each).
 type Spot = (TilePos, Vec<(TilePos, Material)>, Option<TilePos>);
 
@@ -579,7 +579,7 @@ fn hamlet_spots(w: &World, r: &mut rand_chacha::ChaCha8Rng) -> Vec<Spot> {
         }
         let x = r.gen_range(12..w.grid.width - 18);
         let y = r.gen_range(12..w.grid.height - 18);
-        // Flat ground at the height of the ground there, not of the landing site.
+        // Flat ground at the height of the ground there, not of the egress point.
         let near = w.grid.surface(x, y);
         if TilePos::new(x, y, land.z).dist(land) < 28 {
             continue;

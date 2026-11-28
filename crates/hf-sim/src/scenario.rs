@@ -635,7 +635,7 @@ impl World {
     /// down to a lit cave gallery, people at work, animals, items, and a hearth. ART REVIEW ONLY.
     ///
     /// The default game opening: a world whose ten survivors are generated, three begin at the
-    /// landing site, seven are scattered. `opening_world_with` takes the setup screen's choice.
+    /// egress point, seven are scattered. `opening_world_with` takes the setup screen's choice.
     /// `rerolls` are the setup screen's per-slot counters, so the three who step onto the map are
     /// exactly the three the cards showed. Without this, rerolling would be theatre.
     pub fn opening_world_with(

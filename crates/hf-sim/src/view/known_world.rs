@@ -46,7 +46,7 @@ pub fn page(w: &World) -> String {
     let known: Vec<_> = ow.sites.iter().filter(|x| !x.known_by.is_empty()).collect();
     if known.is_empty() {
         s +=
-            "None. Nobody here has been past the edge of the landing site or met anyone who has.\n";
+            "None. Nobody here has been past the edge of the egress point or met anyone who has.\n";
     }
     for site in &known {
         let who: Vec<String> = site

@@ -6,7 +6,7 @@ each checkpoint's review and the reason for every fix are kept.
 [Optional image omitted from this source snapshot.]
 
 Ostrog is an autonomous colony simulation meant to run on a second monitor. Ten people
-come through a portal at the chosen landing site; three emerge together at the egress point and the other seven are
+come through a portal at the chosen egress point; three emerge together at the portal exit and the other seven are
 scattered, alive or dead, and nobody knows which. Each of them arrives with a life already
 lived (parents, losses, a trade, things they came to believe), and from there they forage,
 build, farm, mine, hunt, cook, quarrel, pair, raise children, form customs and send parties
@@ -56,20 +56,20 @@ and the roadmap. The long tables are generated from the code (see
 [Optional image omitted from this source snapshot.]
 
 Seed 1, `--opening=steady --ticks=2400 --inspect=1`, two game-hours after the arrival. Top
-left is the HUD (landing site name, calendar, view level, population, community, speed, director,
+left is the HUD (egress point name, calendar, view level, population, community, speed, director,
 the deity who watches). Bottom left is the feed. On the right is the inspect panel for Aelsin: activity,
 community and role, needs, traits, skills, mood, people, beliefs with their sources, and the
 life before the portal.
 
 A fresh hands-on launch opens on the new-game wizard, six pages: who watches (the deity, Aun,
-Hask or Mirre, who paces the world), the landing site (a seed, three character sliders or "Shape the landing site myself", how deep the landing site's past runs, how long the world has stood, and where on
-the world map the landing site lies, with a picture of the landing site that place makes, drawn in the
+Hask or Mirre, who paces the world), the egress point (a seed, three character sliders or "Shape the egress point myself", how deep the egress point's past runs, how long the world has stood, and where on
+the world map the egress point lies, with a picture of the egress point that place makes, drawn in the
 game's own ground colours), the peoples (how many, which kinds and how rare, and what this
 seed would draw), who came through (ten cards, each with a name, age, traits, three best skills
 and three lines of the life they lived; choose three), what they hold (the beliefs they share),
 and Begin. The three step through at 07:00 on day 1 of spring,
 Year 1. The first day is foraging and the first walls; over a few game-days a house with beds,
-a hearth, a field, a stockpile and a quarry shaft appear. Strangers turn up at the landing site edge
+a hearth, a field, a stockpile and a quarry shaft appear. Strangers turn up at the egress point edge
 and are taken in or turned away; some bring word of the missing, and someone may set out to
 look. Fires, floods, cold, wounds, fever, quarrels and breakdowns happen and are met by
 whoever is there, with whatever they know. Births take years. Customs grow from things that
@@ -249,7 +249,7 @@ Integration tests live in `crates/hf-sim/tests/`, one file per area:
 ### The ostrog CLI
 
 `cargo run --release -p hf-cli -- <command>` or `target/release/ostrog <command>`.
-Every command takes `--help`. Without `--opening`, `run` and `soak` build the old test landing site
+Every command takes `--help`. Without `--opening`, `run` and `soak` build the old test egress point
 with `World::generate` (and, with `--agents N`, a founding party of N): no portal, no past and
 no neighbours. With `--opening` they run the game as it is played, from the arrival. `legends`,
 `realm` and `past` make the wider world.
@@ -286,8 +286,8 @@ line (`tools/godot --path godot -- --seed=7`). Anything not in this table prints
 
 | Flag | Effect |
 |---|---|
-| `--seed=N` | world seed (default 1). Any `--seed` skips the autosaves and starts a new landing site: on a hands-on launch the arrival screen, on a fresh random landing site unless `--fixed-seed` is given too (#559); in a shot, footage, `--headless`, `--save-at-end` or `--wizard-shot` run, a landing site for that seed. |
-| `--fixed-seed` | the arrival screen opens on `--seed` (default 1) instead of a fresh random landing site |
+| `--seed=N` | world seed (default 1). Any `--seed` skips the autosaves and starts a new egress point: on a hands-on launch the arrival screen, on a fresh random egress point unless `--fixed-seed` is given too (#559); in a shot, footage, `--headless`, `--save-at-end` or `--wizard-shot` run, an egress point for that seed. |
+| `--fixed-seed` | the arrival screen opens on `--seed` (default 1) instead of a fresh random egress point |
 | `--fresh` | ignore the autosaves and start the arrival without the wizard, paced steadily (seed 1 unless `--seed`) |
 | `--sim-inline` | step the sim on the main thread as before #603, not on its own thread (for debugging; `HF_SIM_THREAD=0` does the same) |
 | `--opening=DEITY` | start from the arrival without the wizard: the first three of the ten cards, paced by `steady`, `relentless` or `whimsical` (Aun, Hask, Mirre). Starts fresh; combine with `--seed=N`. |
@@ -300,7 +300,7 @@ line (`tools/godot --path godot -- --seed=7`). Anything not in this table prints
 | `--zoom=F` | camera zoom (default 1.0; the wheel steps through 0.5, 1, 2, 3, 4) |
 | `--at=X,Y` | centre the camera on tile X,Y |
 | `--at=band` | centre the camera on the first band of strangers' camp, on its level (prints `BANDS [...]`) |
-| `--hungry-neighbour` | before the run, empty the stores of one place beyond the landing site (prints `HUNGRY ...`); whether and when its people come is still the simulation's |
+| `--hungry-neighbour` | before the run, empty the stores of one place beyond the egress point (prints `HUNGRY ...`); whether and when its people come is still the simulation's |
 | `--legends=PAGE` | open the Legends browser at PAGE (`world:0`, `people:N`, `site:N`, `figure:N`, `polity:N`) |
 | `--music-fast` | music director: change pieces quickly (for checking music transitions) |
 | `--verbose-audio` | print the music director's lines (cues, phrases) to the console and godot.log; they are off by default because they were most of godot.log (#565) |
@@ -350,9 +350,9 @@ Linux use `tools/shots/shot.sh`, which draws on Xvfb). Runs that only save are f
 4. The newest valid autosave, unless any of `--fresh`, `--seed`, `--wizard-shot`, `--opening`
    is given or this is a shot or footage run without `--ring`.
 5. Otherwise, on a hands-on launch (a window, and no shot, footage, `--save-at-end`, fresh,
-   stage or load): the wizard, on a fresh random landing site each New game, or on `--seed=N`
+   stage or load): the wizard, on a fresh random egress point each New game, or on `--seed=N`
    (default 1) with `--fixed-seed` or `--wizard-shot` (#559). Going back through its pages
-   keeps the landing site and the place chosen on the world map. Otherwise the arrival, paced
+   keeps the egress point and the place chosen on the world map. Otherwise the arrival, paced
    steadily, with no wizard (#104).
 
 So `tools/godot --path godot -- --seed=N --fixed-seed` opens the wizard for seed N, and `--fresh` or
@@ -491,7 +491,7 @@ as they are.
 |---|---|---|
 | survivor | one of the ten who came through the portal. The word is used in docs and code, not on screen: the screen shows names. | `Agent` of `Species::Human`; `opening::SurvivorSlot` |
 | the ten, the party | all who came through (`PARTY = 10`) | `opening::PARTY` |
-| starting survivors, the three | the three who begin together at the landing site (`STARTING = 3`) | `SurvivorState::Starting` |
+| starting survivors, the three | the three who begin together at the egress point (`STARTING = 3`) | `SurvivorState::Starting` |
 | the missing | the other seven, scattered on the map, alive or dead, unknown until someone goes and looks. About 55% are alive, decided by seed and hidden. "The lost" is not used for them; "lost" in the game means a caravan lost on the road. | `SurvivorState::Missing { truth }` |
 | rumour, word | a stranger's word that someone matching one of the ten was seen somewhere; a reason to go and look, not knowledge. Goes cold after 20 days. | `opening::Rumour`, `hear_of` |
 | search | someone setting out to look ("set out to look for {name}, word came they were seen that way"), settled when they reach the place: found alive and coming back, found dead, or no sign | `opening::Search`, `resolve_search` |
@@ -502,9 +502,10 @@ as they are.
 | the Engine | the pacing model chosen at the arrival: Steady, Relentless or Whimsical. It changes how often strangers come and how choosy the welcome is; it fires no events. Never named in the world's voice. | `engine.rs` |
 | strain | the Engine's reading of how hard things are, 0 to 100% (needs unmet, work backlog) | `engine::tension` |
 | community | a named group with a home, members, roles and a welcome norm. Names are generated per seed from two syllable lists (seed 1's first community is Oakfolk), not fixed. | `society.rs`, `names::community_name` |
-| egress point | the portal tile where the founders emerge | founding site coordinates |
-| landing site, world name | the map's generated name (seed 1: Ashcross) | `names::world_name` |
-| newcomer, stranger | someone who turns up at the landing site edge and is taken in or turned away by the welcome norm | `systems/society.rs` |
+| egress point | the local area chosen on the world map | selected region |
+| portal exit | the tile where the founders emerge | founding site coordinates |
+| egress point, world name | the map's generated name (seed 1: Ashcross) | `names::world_name` |
+| newcomer, stranger | someone who turns up at the egress point edge and is taken in or turned away by the welcome norm | `systems/society.rs` |
 | welcome norm | WhenFed (default: while there is a day of food per head), Open, Closed | `WelcomeNorm` |
 | role | daily work by skill: forager, builder, farmer, cook, miner, hauler, healer | `Role` |
 | traits | ten temperaments: Industrious, Easygoing, Sociable, Solitary, Curious, Cautious, Hearty, Gourmet, LightSleeper, Tidy | `mind/traits.rs` |
@@ -677,7 +678,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | Propped | propped | Minor | {agent} stopped cutting to prop the roof first. |
 | CaveIn | cave_in | (computed at the push site) | The rock came down on {agent}; they are hurt. / The rock came down near {agent}; they got clear. |
 | CaravanFormed | caravan_formed | Major | {leader} gathers {members} of {community} {purpose}. |
-| CaravanLeft | caravan_left | Major | {leader}'s party of {members} walks out past the edge of the landing site. |
+| CaravanLeft | caravan_left | Major | {leader}'s party of {members} walks out past the edge of the egress point. |
 | CaravanReturned | caravan_returned | Major | bringing {received} / {leader}'s party of {members} is back from {site} after {days} days, {goods}. / nothing to show for it |
 | Crafted | crafted | Minor | {agent} made {tier} {kind}. |
 | ToolBroke | tool_broke | Minor | {agent}'s {tier} tool broke. / {agent}'s {what} broke{history}. |
@@ -733,7 +734,7 @@ One row per `EventKind`. `{name}` is filled from the event: a person's or commun
 | StoresRaided | stores_raided | Major | {animal} got into the stores and ate {took} / , and broke the {broke} / . |
 | CameOfAge | came_of_age | Notable | {agent} came of age, best at {best}. |
 | MineSunk | mine_sunk | Notable | {community} set about sinking their shaft deeper, for {why}. |
-| ReachedDeep | reached_deep | Notable | {community}'s shaft came down into the {rock}, the deep beneath the landing site. |
+| ReachedDeep | reached_deep | Notable | {community}'s shaft came down into the {rock}, the deep beneath the egress point. |
 | LeftUnrested | left_unrested | Notable | {agent} was given no rite: {why}. |
 | DeepChosen | deep_chosen | Notable | {community} would go no further into {cavern}, and set about walling the way. / {community} left the way into {cavern} open and dug on, for what the deep holds. |
 | AccountTold | account_told | (computed at the push site) | In {teller}'s telling to {listener}, {version}. / {teller} told {listener} that {version}. |
@@ -4276,7 +4277,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/known_world.rs:34 | a dozen or so |
 | view/known_world.rs:35 | many |
 | view/known_world.rs:43 | [b]What the colony knows[/b] / Not the world as it is: what the people here have seen, heard and been told. /  / [b]Places beyond the colony[/b] /  |
-| view/known_world.rs:49 | None. Nobody here has been past the edge of the landing site or met anyone who has. /  |
+| view/known_world.rs:49 | None. Nobody here has been past the edge of the egress point or met anyone who has. /  |
 | view/known_world.rs:59 | {}, {}, {} days out to the {}; known in {} /  |
 | view/known_world.rs:64 |  and  |
 | view/known_world.rs:67 | Of anywhere else, nothing is known. /  / [b]Strangers[/b] /  |
@@ -4381,7 +4382,7 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | view/legends.rs:380 |  / [b]Beasts of the deep[/b] /  |
 | view/legends.rs:383 | {}, woke {} /  |
 | view/legends.rs:384 | beast |
-| view/legends.rs:392 |  / The landing site lies among the {}. /  |
+| view/legends.rs:392 |  / The egress point lies among the {}. /  |
 | view/legends.rs:411 | They live in the caverns under the land. Their first home was {}. |
 | view/legends.rs:414 | Their first home was {}. |
 | view/legends.rs:425 | They have no land of their own. |
@@ -4565,8 +4566,8 @@ All remaining string literals in `crates/hf-sim/src` outside tests, panics and t
 | world/gen/biome.rs:69 | cold |
 | world/gen/biome.rs:72 | stony |
 | world/gen/biome.rs:74 | soft-soiled |
-| world/gen/biome.rs:77 | a temperate landing site |
-| world/gen/biome.rs:79 | a {} landing site |
+| world/gen/biome.rs:77 | a temperate egress point |
+| world/gen/biome.rs:79 | a {} egress point |
 | world/gen/biome.rs:114 | grassland |
 | world/gen/biome.rs:115 | meadow |
 | world/gen/biome.rs:116 | woodland |
@@ -4684,9 +4685,9 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:293 | _start_debug_log | OSTROG_DEBUG_LOG |
 | godot/scripts/main.gd:304 | _debug_log_on | command=client seed=%d ticks=%d stage=%s opening=%s load=%s |
 | godot/scripts/main.gd:319 | _on_debug_log_toggled | Decision log:  |
-| godot/scripts/main.gd:369 | _ready | autosave could not be read (%s); started a fresh landing site |
-| godot/scripts/main.gd:390 | _ready | No autosave could be read; started a new landing site. The old files are still in the saves folder. |
-| godot/scripts/main.gd:393 | _ready | A new landing site. Watch, or press H for history and O for settings. |
+| godot/scripts/main.gd:369 | _ready | autosave could not be read (%s); started a fresh egress point |
+| godot/scripts/main.gd:390 | _ready | No autosave could be read; started a new egress point. The old files are still in the saves folder. |
+| godot/scripts/main.gd:393 | _ready | A new egress point. Watch, or press H for history and O for settings. |
 | godot/scripts/main.gd:762 | _build_ui | Follow [F] |
 | godot/scripts/main.gd:762 | _build_ui | Keep the camera on this person [F] |
 | godot/scripts/main.gd:769 | _build_ui | ☆ Favourite |
@@ -4824,10 +4825,10 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:1898 | _show_legends | world:0 |
 | godot/scripts/main.gd:1902 | _show_legends |  /  / [color=#9a9a9a]L or Esc to close   Backspace: back   the slider shows the world in any year[/color] |
 | godot/scripts/main.gd:1920 | _on_legends_link | world:0 |
-| godot/scripts/main.gd:1929 | _on_legends_year | This world has no map beyond the landing site. |
+| godot/scripts/main.gd:1929 | _on_legends_year | This world has no map beyond the egress point. |
 | godot/scripts/main.gd:1939 | _on_legends_year | the year before the portal |
 | godot/scripts/main.gd:1939 | _on_legends_year | %d years before the portal |
-| godot/scripts/main.gd:1942 | _on_legends_year | The world %s (the landing site in white, ruins dark%s) |
+| godot/scripts/main.gd:1942 | _on_legends_year | The world %s (the egress point in white, ruins dark%s) |
 | godot/scripts/main.gd:1942 | _on_legends_year | , ringed: where those away are |
 | godot/scripts/main.gd:1960 | _show_history | [b]History[/b] /  /  |
 | godot/scripts/main.gd:1963 | _show_history |  / [b]The record[/b] /  |
@@ -4873,7 +4874,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/main.gd:2721 | _build_settings | Saves:  |
 | godot/scripts/main.gd:2724 | _build_settings | Your files and data |
 | godot/scripts/main.gd:2724 | _build_settings | Every file Ostrog keeps on this computer, its size, and whether it is ever sent |
-| godot/scripts/setup.gd:16 |  | Landing site |
+| godot/scripts/setup.gd:16 |  | Egress point |
 | godot/scripts/setup.gd:16 |  | The peoples |
 | godot/scripts/setup.gd:16 |  | Who came through |
 | godot/scripts/setup.gd:16 |  | What they hold |
@@ -4895,7 +4896,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:255 | _deity_page | live beyond it may already have noticed what it does. |
 | godot/scripts/setup.gd:270 | _valley_page | World seed |
 | godot/scripts/setup.gd:279 | _valley_page | Generate another world |
-| godot/scripts/setup.gd:284 | _valley_page | Shape the landing site myself |
+| godot/scripts/setup.gd:284 | _valley_page | Shape the egress point myself |
 | godot/scripts/setup.gd:288 | _valley_page | Wet |
 | godot/scripts/setup.gd:288 | _valley_page | Mild |
 | godot/scripts/setup.gd:288 | _valley_page | Stony |
@@ -4907,10 +4908,10 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:334 | _valley_page | Centuries: old foundations under newer ones, stone ruins, long-dead names. |
 | godot/scripts/setup.gd:338 | _valley_page | How long the world has stood |
 | godot/scripts/setup.gd:344 | _valley_page | %d years |
-| godot/scripts/setup.gd:350 | _valley_page | Choose a landing site on the world map. The ring marks your selection. |
+| godot/scripts/setup.gd:350 | _valley_page | Choose an egress point on the world map. The ring marks your selection. |
 | godot/scripts/setup.gd:437 | choose_region |  / Choose somewhere people could live. |
-| godot/scripts/setup.gd:492 | _refresh_preview | Drawing the landing site... |
-| godot/scripts/setup.gd:512 | _collect_preview |  / The red marker shows the egress point where the founders emerge. |
+| godot/scripts/setup.gd:492 | _refresh_preview | Drawing the egress point... |
+| godot/scripts/setup.gd:512 | _collect_preview |  / The red marker shows the portal exit where the founders emerge. |
 | godot/scripts/setup.gd:528 | _party_page | Ten came through. Only three of you are here together; the rest were  |
 | godot/scripts/setup.gd:529 | _party_page | thrown elsewhere, alive or dead, nobody here knows which. Choose the three who begin. |
 | godot/scripts/setup.gd:531 | _party_page | Reroll all ten |
@@ -4924,7 +4925,7 @@ HUD, feed, inspect panel, History, away summary, settings and the arrival screen
 | godot/scripts/setup.gd:608 | _held_page | replace it, and hard experience can still turn them. Leave a row at "each their own"  |
 | godot/scripts/setup.gd:609 | _held_page | to let their lives decide. |
 | godot/scripts/setup.gd:622 | _held_page | each their own |
-| godot/scripts/setup.gd:635 | _peoples_page | The world beyond the landing site is lived in by peoples of several kinds.  |
+| godot/scripts/setup.gd:635 | _peoples_page | The world beyond the egress point is lived in by peoples of several kinds.  |
 | godot/scripts/setup.gd:636 | _peoples_page | Choose which kinds there can be and how rare each is. Rarity sets how a kind starts, not  |
 | godot/scripts/setup.gd:637 | _peoples_page | how it ends: a rare people has no land of its own and lives as households among others;  |
 | godot/scripts/setup.gd:638 | _peoples_page | a legendary one's land fails it over the centuries. The world's history decides the rest. |
@@ -8168,7 +8169,7 @@ three step out at 07:00 on day 1 of spring.
 
 ### Map and tiles
 
-The default landing site is 128 x 128 tiles with levels z = -16 to 8 (`GenParams::default`);
+The default egress point is 128 x 128 tiles with levels z = -16 to 8 (`GenParams::default`);
 `--small` is 64 x 64, z = -8 to 6. A tile packs into 32 bits as `material | shape << 16 |
 flags << 24` (`SimHost.level_tiles(z)`).
 
@@ -8257,7 +8258,7 @@ Where the client keeps them (Godot's user folder for the project "Ostrog"):
 
 Autosave runs every N game-days (settings, default 1) into the next ring slot. At start the
 newest valid slot is loaded. If it then fails to load, the HUD says "autosave could not be read
-(...); started a fresh landing site"; the old files stay in the folder. With no valid slot a hands-on
+(...); started a fresh egress point"; the old files stay in the folder. With no valid slot a hands-on
 launch opens the arrival screen. Check a save with `ostrog verify PATH`.
 
 ### The tick pipeline

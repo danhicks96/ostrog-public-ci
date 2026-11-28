@@ -35,7 +35,7 @@ fn ten_are_generated_and_three_begin() {
             a.alive && a.species == hf_sim::agents::Species::Person && a.community.is_some()
         })
         .count();
-    assert_eq!(starting, 3, "three survivors begin at the landing site");
+    assert_eq!(starting, 3, "three survivors begin at the egress point");
 
     let missing = w
         .survivor_pool
@@ -67,7 +67,7 @@ fn the_missing_are_placed_on_the_map_and_far_from_the_start() {
             );
             assert!(
                 at.dist(start) >= 40,
-                "scattered at least 40 tiles from the landing site, got {}",
+                "scattered at least 40 tiles from the egress point, got {}",
                 at.dist(start)
             );
         }

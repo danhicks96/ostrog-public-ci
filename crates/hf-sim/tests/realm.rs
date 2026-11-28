@@ -351,7 +351,7 @@ fn the_wizard_shows_the_ground_the_world_will_have() {
             use hf_sim::world::gen::{ground_seed, Landform};
             Landform::of_seed(ground_seed(seed, r as u64 + 1)) != Landform::of_seed(seed)
         })
-        .expect("choose a landing site whose landform differs from the default");
+        .expect("choose an egress point whose landform differs from the default");
     let p = hf_sim::setup::preview(seed, None, Some(region));
     let mut s = hf_sim::setup::WorldSetup::new(seed);
     s.region = Some(region);

@@ -127,7 +127,7 @@ func _build() -> void:
 	hint_l = Label.new()
 	hint_l.add_theme_color_override("font_color", Color(0.6, 0.64, 0.7))
 	column.add_child(hint_l)
-	hint_l.text = "Settlements in their peoples' colours, ruins dark, the landing site in white. Click or press a key to hurry."
+	hint_l.text = "Settlements in their peoples' colours, ruins dark, the egress point in white. Click or press a key to hurry."
 
 func _process(d: float) -> void:
 	if done or sim == null:

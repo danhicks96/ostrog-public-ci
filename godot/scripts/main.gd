@@ -366,7 +366,7 @@ func _ready() -> void:
 		else:
 			print("load failed (%s), starting fresh" % err)
 			_fresh_world(seed_v)
-			_note("autosave could not be read (%s); started a fresh landing site" % err)
+			_note("autosave could not be read (%s); started a fresh egress point" % err)
 	else:
 		# A fresh, hands-on start asks first: who begins, and who paces them, for whatever seed
 		# was asked for (issue 36: any --seed used to skip the screen, so only seed 1 had one).
@@ -387,10 +387,10 @@ func _ready() -> void:
 			if FileAccess.file_exists(persist.ring_base() + ".%d.hfsave/manifest.json" % i):
 				had_saves = true
 		if had_saves and not fresh_arg and not explicit_seed and stage == "":
-			_note("No autosave could be read; started a new landing site. The old files are still in the saves folder.", 20.0)
+			_note("No autosave could be read; started a new egress point. The old files are still in the saves folder.", 20.0)
 			print("autosaves present but none valid; started fresh")
 		elif not headless and stage == "":
-			_note("A new landing site. Watch, or press H for history and O for settings.", 20.0)
+			_note("A new egress point. Watch, or press H for history and O for settings.", 20.0)
 	if hungry_arg:
 		print("HUNGRY %s" % sim.starve_neighbour())
 	# A shot of someone inspected traces them from the start, so the Why? lens has cycles (#567).
@@ -1926,7 +1926,7 @@ func _on_legends_year(v: float) -> void:
 	var size: int = sim.legends_map_size()
 	if size <= 0:
 		legends_map.texture = null
-		legends_year_label.text = "This world has no map beyond the landing site."
+		legends_year_label.text = "This world has no map beyond the egress point."
 		return
 	var bytes: PackedByteArray = sim.legends_map(int(v))
 	var img := Image.create_from_data(size, size, false, Image.FORMAT_RGB8, bytes)
@@ -1939,7 +1939,7 @@ func _on_legends_year(v: float) -> void:
 	var when := "the year before the portal" if back == 1 else "%d years before the portal" % back
 	if back <= 1 and sim.realm_year() > 0:
 		when = "now"
-	legends_year_label.text = "The world %s (the landing site in white, ruins dark%s)" % [when, ", ringed: where those away are" if away.size() > 0 else ""]
+	legends_year_label.text = "The world %s (the egress point in white, ruins dark%s)" % [when, ", ringed: where those away are" if away.size() > 0 else ""]
 
 ## A link in the History text: "why:ID" opens that event's chain of causes.
 func _on_history_link(meta) -> void:

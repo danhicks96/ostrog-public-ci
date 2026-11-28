@@ -611,7 +611,7 @@ changes one rarity and expects a different world.
 
 ### 4.4 The wizard page
 
-A new page, "The peoples of the world", sits between "Landing site" and "Who came through".
+A new page, "The peoples of the world", sits between "Egress point" and "Who came through".
 - Left: the library as a list of cards. Each card shows:
   - the species' silhouette at 2x;
   - its name and plan;
@@ -1249,7 +1249,7 @@ Generation guarantees four by redrawing. The test `generated_species_differ_four
 every generated species in 100 seeds.
 
 The soak proves it. For each anchor, and for 3 generated species per checked seed, a species soak
-(`ostrog soak --opening --species ID`) settles a community of that species at a landing site
+(`ostrog soak --opening --species ID`) settles a community of that species at an egress point
 suited to its habitat. It reports:
 - where they live (share of sleep hours on the surface, upper caves, caverns);
 - what they eat (by food kind);

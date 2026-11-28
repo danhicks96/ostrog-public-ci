@@ -389,7 +389,7 @@ fn world_page(w: &World) -> String {
     if let Some(region) = w.meta.setup.as_ref().and_then(|x| x.region) {
         if let Some(p) = r.nearest_people(region) {
             s += &format!(
-                "\nThe landing site lies among the {}.\n",
+                "\nThe egress point lies among the {}.\n",
                 people_link(r, p.id)
             );
         }
