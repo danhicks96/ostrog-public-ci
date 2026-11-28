@@ -88,6 +88,110 @@ Repaying a good turn moves hunger numbers, not food. Hand over a real meal. Trac
 
 **Acceptance:** A carried meal changes hands with no food created or used twice; a stack splits by one; feud, opinion and distance each block the repayment; with no food in reach nothing is repaid. Existing social tests and hosted CI pass; no save-format change.
 
+### OST-388 · Opinion of someone not seen for a season stays exactly where it was: fade it toward a baseline
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Opinion never changes with time apart. After three days without in-person contact, fade living ties once a day toward zero, or a +0.3 partner/kin baseline, using the proposed warmth-dependent rate. Leave opinions of the dead unchanged and use stable agent and relationship order without random draws. Tracking issue: [#289](https://github.com/danhicks96/ostrog-public-ci/issues/289).
+
+**Acceptance:** Tests in `crates/hf-sim/tests/social.rs`: `ties_fade_without_meeting` (two at +1.0 kept 40 days apart end below +0.6); `kin_fade_to_a_floor_not_to_nothing` (a parent kept 200 days apart stays at or above +0.3); `a_grudge_cools_untended` (-0.8 kept 60 days apart ends above -0.4); `the_dead_are_not_faded`. Done when the tests pass and the required ties census on seed 5 shows top-5 saturation at day 600 below 60% (from 91%).
+
+### OST-389 · Familiarity never falls, so someone met once years ago is as well known as a sister
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Familiarity only rises. After the same grace as opinion fading, multiply familiarity by 0.997 daily, remembering when it has reached 0.8 so a well-known living person retains a 0.3 floor. Familiarity with the dead can fade to 0.1; weaker acquaintances can fall below 0.3. Preserve old saves with a defaulted field. Tracking issue: [#291](https://github.com/danhicks96/ostrog-public-ci/issues/291).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::familiarity_fades_but_names_are_not_forgotten`: familiarity 1.0 kept 400 days apart ends between 0.3 and 0.4; one that never passed 0.8 can fall below 0.3. Done when the test passes and the required ties census reports a median of at least 12 of 32 ties below familiarity 1.0 at day 600.
+
+### OST-390 · Fade rates are guesses until measured: tune them on seeds 1-8 and record the decision
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Fade rates and familiarity floors are provisional. Measure the existing ties census on seeds 1-8, all three deities, for 600 days, tune the constants against the acceptance targets, and record the proposed rates, kin baseline, familiarity floor, before/after measurements and digest change in the decision and iteration records. Tracking issue: [#294](https://github.com/danhicks96/ostrog-public-ci/issues/294).
+
+**Acceptance:** Test: the OST-388 to a sibling item tests still pass with the tuned constants. Done when the census shows, on seeds 1-8 and all three deities at day 600: top-5 ties at >= 0.995 under 40%; median opinion toward people gone more than 100 days under +0.4; median opinion of living kin above +0.3.
+
+### OST-392 · Opinion is one number with no memory of why: keep a list of the reasons behind it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Opinion is a clamped running sum with no record of its causes. Add an append-only bond-kind enum, a bounded per-relation bond list, a relate_as wrapper and a recompute helper while reproducing existing opinion updates bit for bit. Old nonzero opinions load as one Other bond; expiry and behavior changes belong to later slices. Tracking issue: [#299](https://github.com/danhicks96/ostrog-public-ci/issues/299).
+
+**Acceptance:** Tests in `crates/hf-sim/tests/social.rs`: `bonds_reproduce_old_opinion_exactly` (a scripted run of 200 mixed `relate` calls gives the same `opinion` as before, bit for bit); `old_saves_load_with_opinion_as_one_bond`. Done when both pass and the world digest test is unchanged.
+
+### OST-393 · A thousand ordinary chats outweigh a rescue: cap how much routine talk can add, and let it expire
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Ordinary chats accumulate without limit or expiry. Record them as Chatted bonds lasting ten days, with a stack cap of ten and diminishing contributions; expire and recompute bonds daily in stable order. Keep the legacy Other remainder while later slices migrate other causes. Tracking issue: [#302](https://github.com/danhicks96/ostrog-public-ci/issues/302).
+
+**Acceptance:** Tests in `crates/hf-sim/tests/social.rs`: `a_thousand_chats_are_not_a_rescue` (1,000 talks give opinion under +0.4 from talk alone); `chatter_fades_when_talk_stops` (opinion from talk falls below +0.1 twenty days after the last talk). Done when both pass and the required ties census on seed 5 shows top-5 saturation at day 600 under 50%.
+
+### OST-394 · Every evening at the hearth adds to every listener's opinion of the teller for ever
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Hearth tales and shared drinks increase opinion forever. Record them as SharedHearth bonds of +0.03, lasting five days with at most six stacked contributions, so evenings together remain a bounded reason for liking someone. Tracking issue: [#304](https://github.com/danhicks96/ostrog-public-ci/issues/304).
+
+**Acceptance:** Test `crates/hf-sim/tests/culture.rs::a_season_of_hearth_evenings_is_bounded`: 60 evenings of tales give a listener under +0.15 opinion of the teller from the hearth alone. Done when the test passes.
+
+### OST-395 · A quarrel or a fight between friends leaves no lasting mark once the next chats wash it out
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Routine talk washes away quarrels, fights, verdicts and feuds. Move those causes to explicit negative bond kinds with their proposed durations and stack caps. A feud bond persists while the feud does and is removed when it ends. Tracking issue: [#307](https://github.com/danhicks96/ostrog-public-ci/issues/307).
+
+**Acceptance:** Tests: `crates/hf-sim/tests/social.rs::an_insult_shows_through_friendship` (two at +0.8 quarrel; for at least 2 days opinion is at least 0.15 lower, despite talking); `crates/hf-sim/tests/feuds.rs::a_feud_holds_opinion_down_while_it_lasts` (sides stay at or below their pre-feud opinion minus 0.25 for 30 days of talk, and recover after `end`). Done when both pass.
+
+### OST-396 · Being nursed through a fever counts no more than a chat once talk has filled the scale
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Costly kindness disappears into an opinion already saturated by chatter. Give tending, teaching, rescue and making up distinct bond kinds with their proposed values, durations and caps, including a direct tending contribution as well as the existing debt. Tracking issue: [#310](https://github.com/danhicks96/ostrog-public-ci/issues/310).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::the_one_who_nursed_you_is_liked_above_the_chatterer`: patient tended 3 times by A and chatting 50 times with B ends liking A more. Done when the test passes.
+
+### OST-397 · Once bonds expire, thirty years side by side would count for nothing: add a slow "years together" term
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Expiring recent bonds would otherwise discard years together. Include 0.3 times the existing remembered attitude and the +0.3 kin/partner baseline when recomputing opinion, replacing the earlier opinion-fade mechanism while retaining contact and familiarity behavior. Tracking issue: [#312](https://github.com/danhicks96/ostrog-public-ci/issues/312).
+
+**Acceptance:** Test `crates/hf-sim/tests/social.rs::long_years_together_outlast_the_bonds`: two with 200 days of good company memories, then 30 days apart, keep opinion above +0.2; two strangers with one recent chat do not. Done when the test passes.
+
+### OST-398 · Bond values and stack caps are guesses until measured: tune them on seeds 1-8 and record the decision
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Bond values and stack caps are provisional. Measure seeds 1-8 under all three deities for 600 days, tune the bond shape table and check the existing friendship/dislike bands. Record the proposed table, measured comparisons and digest change. Tracking issue: [#315](https://github.com/danhicks96/ostrog-public-ci/issues/315).
+
+**Acceptance:** Test: the OST-392 to OST-397 tests pass with the tuned table. Done when the census shows, on seeds 1-8 and all three deities: top-5 ties at >= 0.995 under 15%; median living colonist with 1 to 5 ties above +0.4 ("friend" band) and at least one below -0.3 in two of three; `made_up` at least 20 per seed.
+
+### OST-399 · A partner away for weeks or sent into exile is never missed by the one left behind
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Loved people who travel or depart are never missed. Add a Longing thought about an absent living partner, parent, child or close tie after three days; weight it by opinion and time apart, with a lower bound for partners and children. Refresh it daily in stable order without random draws. Tracking issue: [#318](https://github.com/danhicks96/ostrog-public-ci/issues/318). Intake review: Captives held away for at least three days are included; immediate reactions and rescue or ransom are separate slices.
+
+**Acceptance:** Tests in `crates/hf-sim/tests/social.rs`: `a_partner_away_is_missed` (partner sent away 6 days: the one at home has `Longing` about them from day 4); `an_exiled_partner_is_missed_and_the_ache_lessens` (weight after 60 days less than half of day 1, never zero). Done when both pass.
+
+### OST-400 · When someone comes home after weeks away, nobody who missed them is glad
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A return gives no joy to those who missed the traveller. On caravan and lone-journey returns, replace relevant Longing thoughts with Reunited thoughts and record at most three reunion events per return, one per pair, with real-contact stamps. Tracking issue: [#320](https://github.com/danhicks96/ostrog-public-ci/issues/320).
+
+**Acceptance:** Test `crates/hf-sim/tests/journeys.rs::a_return_is_greeted_by_those_who_missed_them`: partner away 8 days returns; the one at home loses `Longing`, gains `Reunited`, and one `reunited` event is pushed. Done when the test passes.
+
+### OST-401 · Journeys out of the valley are made for a dice-picked reason, never to see someone loved who went away
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Journeys have randomly selected reasons rather than following a loved person. Remember a known destination for an exile or departure, allow longing to motivate a journey to that site regardless of trait, and record the reason and the news brought home. Keep the existing travel model and provide the later aims integration point. Tracking issue: [#323](https://github.com/danhicks96/ostrog-public-ci/issues/323).
+
+**Acceptance:** Test `crates/hf-sim/tests/journeys.rs::longing_sends_someone_to_where_the_exile_went`: a partner exiled to a known site; within 150 days of forced daily rolls the one left behind sets out "to see" them at least once. Done when the test passes and seeds 5 shows at least one such journey in 600 days.
+
 ### OST-014 · Fold repeated Catch Up details before limiting the list
 
 **Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Mara (MR) · **Public PR:** [#7](https://github.com/danhicks96/ostrog-public-ci/pull/7)
