@@ -160,6 +160,150 @@ This is the reserved-marking slice of the tracking issue on unused problem and o
 
 **Acceptance:** A test fails if a kind listed as reserved is also written by perception or learning. Existing tests, the enum-order check and the generated reference check pass. Saved state is unchanged.
 
+### OST-425 · When a pairing ends, nothing remembers it: a dead or exiled former partner is just another name
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Ending a pairing discards its personal history. Keep a bounded saved list of former partners and whether the parting came from death, leaving, exile or separation; update both partners when unpairing and use that history in later re-pairing rules. Tracking issue: [#89](https://github.com/danhicks96/ostrog-public-ci/issues/89).
+
+**Acceptance:** Test `crates/hf-sim/tests/qa_1020_medium.rs::an_exiled_partner_is_remembered_as_former` (beside the existing `leaving_the_valley_ends_a_pairing`): after the exile path, the one left has `former` = [(exiled, tick, Exiled)] and an `Ex` tie. Done when the test and a related item's guards pass.
+
+### OST-426 · Once paired, a couple's feeling for each other never changes, whatever passes between them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Partners' romantic feelings do not change with their shared life. Add slow fading after five days apart, daily gains for time together or sleeping under one roof, and losses for quarrels or insults. Preserve old saves by initializing existing partners at the proposed romance baseline. Tracking issue: [#90](https://github.com/danhicks96/ostrog-public-ci/issues/90).
+
+**Acceptance:** Test `crates/hf-sim/tests/romance.rs::partners_romance_follows_how_they_live`: a pair kept together 30 days ends higher than one kept apart 30 days; ten quarrels lower it by at least 0.4. Done when the test passes.
+
+### OST-427 · A couple that no longer love or like each other stays paired for life
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+An unhappy couple remains paired indefinitely. After ten days of low romance and opinion, offer a disposition-weighted parting, moderated by young children. Record the separation and the different feelings of the person leaving and the person left, retaining both parents and current homes. Tracking issue: [#92](https://github.com/danhicks96/ostrog-public-ci/issues/92).
+
+**Acceptance:** Test `crates/hf-sim/tests/romance.rs::partners_who_have_fallen_out_part`: a couple held at romance 0.1 and opinion -0.2 for 30 days parts, with `Parted` pushed, `Ex` set both ways and `Heartbroken` on the one left; a couple at romance 0.6 never parts in 200 days. Done when the test passes.
+
+### OST-428 · Nobody strays from a cold pairing, so an unhappy couple has no story but staying together
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+An unhappy pairing offers no possibility of straying. Allow courtship outside a sufficiently cold relationship under the proposed attraction and disposition gates, excluding parents of a child under two. Keep secrecy until witnessed or told; discovery creates betrayal and accelerates the wronged partner's parting check. Tracking issue: [#93](https://github.com/danhicks96/ostrog-public-ci/issues/93).
+
+**Acceptance:** Test `crates/hf-sim/tests/romance.rs::a_discovered_affair_strains_the_pairing`: A (partnered to B at romance 0.2) courts C; B sees it; B holds `Betrayed` about A and the couple parts within 20 days in the built case. Done when the test passes and no partnered person with romance above 0.5 toward their partner ever courts in the census.
+
+### OST-429 · Partings, jealousy and straying are untuned: count them on seeds 1-8 and set their rates
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Partings, jealousy and straying have no measured rates. Extend the ties census after those behaviors land, run seeds 1-8 with all three deities for 600 days, tune the constants and record proposed rates, measured comparisons and digest changes. Tracking issue: [#94](https://github.com/danhicks96/ostrog-public-ci/issues/94).
+
+**Acceptance:** Test: the OST-425 to OST-428 tests pass with tuned constants. Done when, across seeds 1-8: partings are 5-20% of pairings; at least one jealousy episode per 200 days per seed; discovered affairs at most a third of partings; births per run within 10% of the pre-change census.
+
+### OST-431 · An exile is felt by nobody: no system reads the "exiled" event
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Nobody reacts to an exile. Give the exiled person's kin and close ties a thought and hardship memory about the person sent away, plus grief appraised from the recorded exile event, scaling non-kin reactions by opinion. Tracking issue: [#97](https://github.com/danhicks96/ostrog-public-ci/issues/97).
+
+**Acceptance:** Test `crates/hf-sim/tests/justice.rs::exile_hurts_those_who_loved_them`: a built third-fight exile; the partner and a close friend hold `LovedOneExiled` and grief about the exiled; a stranger holds nothing. Done when the test passes.
+
+### OST-432 · Those who loved an exile bear no grudge against the judge who sent them away, unless the verdict was wrong
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A correct exile leaves loved ones with no grudge against the judge or accuser. Add bounded judgement contributions proportional to love, at half strength for the accuser, reduce social deference to the judge and register torn loyalties where authority conflicts with affection. Preserve the stronger effects of wrongful verdicts. Tracking issue: [#99](https://github.com/danhicks96/ostrog-public-ci/issues/99).
+
+**Acceptance:** Test `crates/hf-sim/tests/justice.rs::the_partner_holds_it_against_the_judge`: after a correct exile, the partner's opinion of the judge drops by at least 0.4 and their social deference to the judge falls; a stranger's does not change. Done when the test passes.
+
+### OST-433 · Nobody follows a partner into exile; the household simply loses one member
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A partner never chooses whether to follow an exile. Make a single seeded choice between affection and roots in children, roles and close friends. Record following or staying and the strongest reason; young children accompany the following partner. Tracking issue: [#101](https://github.com/danhicks96/ostrog-public-ci/issues/101).
+
+**Acceptance:** Test `crates/hf-sim/tests/justice.rs::a_partner_may_follow_into_exile`: with forced rolls, a partner with no children or roles follows (both leave, pairing kept until the edge, both `former` entries absent); a partner with two children stays and the reason names them. Done when the test passes.
+
+### OST-434 · The partner left behind by an exile pairs again the very next morning
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+A partner left behind by exile can pair again immediately. Extend the re-pairing gate to the fresh exile thought and, once former-partner history exists, the proposed twenty-day mourning interval shared with widowhood. Tracking issue: [#103](https://github.com/danhicks96/ostrog-public-ci/issues/103).
+
+**Acceptance:** Test `crates/hf-sim/tests/justice.rs::no_new_partner_the_week_after_an_exile`: a built exile; the partner, with a willing candidate at +1.0, does not pair for 20 days. Done when the test passes.
+
+### OST-435 · How the valley reacts to exiles is not counted: add it to the census and tune it
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Exile reactions have no census. Measure re-pairing delay, following, grudges against the judge after thirty days and returns. Run seeds 1-16 under all three deities for 600 days, tune the reaction constants and record a proposed decision and measured history entry. Tracking issue: [#105](https://github.com/danhicks96/ostrog-public-ci/issues/105).
+
+**Acceptance:** Test: the OST-431 to a related item tests pass with tuned constants. Done when, over the seeds with exiles: no partner re-pairs within 20 days; half or more of the exiled's kin hold a grudge against the judge at +30 days; at least one follow per 10 partnered exiles.
+
+### OST-437 · Every couple is equally likely to have a child: nobody wants children more or less than anyone else
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Every eligible couple has the same chance of a child. Give each person a saved desire for children drawn from dispositions and a seeded term, modified by family events, existing children and food security. Combine the two desires while retaining the current mean chance before tuning. Tracking issue: [#111](https://github.com/danhicks96/ostrog-public-ci/issues/111).
+
+**Acceptance:** Test `crates/hf-sim/tests/generations.rs::couples_who_want_children_have_more`: over 400 built couple-years, the top desire quartile has at least twice the births of the bottom. Done when the test passes and seed 5's births are within 15% of before (mean unchanged; a related item tunes the level).
+
+### OST-438 · A couple who want a child never do anything about it: no home made ready, no staying near
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Wanting a child causes no preparation. Once aims exist, let a secure couple who both want children hold a shared time-limited aim, prepare beds and stay near camp, with a birth-chance lift and recorded fulfillment or disappointment. Tracking issue: [#113](https://github.com/danhicks96/ostrog-public-ci/issues/113).
+
+**Acceptance:** Test `crates/hf-sim/tests/generations.rs::a_couple_wanting_a_child_holds_the_aim`: two partners at desire 0.8 and secure food get the aim within a day; it ends on a birth with a fulfilment thought. Done when the test passes.
+
+### OST-444 · Children grow up with none of their family's friends or enemies, except through a formal feud
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Children acquire none of their parents' ordinary friends and enemies. At coming of age, inherit faint bounded contributions from the strongest parental and foster ties to living community adults. Let those contributions fade unless personal experience confirms them, and record the strongest in the coming-of-age event. Tracking issue: [#135](https://github.com/danhicks96/ostrog-public-ci/issues/135).
+
+**Acceptance:** Test `crates/hf-sim/tests/childhood.rs::a_child_comes_of_age_with_the_family_friends`: a mother at +0.9 to A and -0.8 to B; at coming of age the child holds a positive `Inherited` bond to A and a negative one to B, both gone 130 days later if untended. Done when the test passes and the a related item census reports the share of comers-of-age holding an inherited tie.
+
+### OST-482 · An exiled partner never once comes back to see the one they left: let former members visit their kin
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Former members never visit their surviving kin. Once the off-map records exist, schedule seeded short visits by living former members, retaining their identity while they travel and visit. Record arrival and departure; visitors use ordinary needs and social behavior without becoming community workers or members. Tracking issue: [#205](https://github.com/danhicks96/ostrog-public-ci/issues/205).
+
+**Acceptance:** New test `crates/hf-sim/tests/visitors.rs::an_exiled_partner_comes_back_to_see_their_kin`: a scenario exile whose partner stays in the valley comes back within 60 days, reaches the partner's home, talks to them, and leaves again; one with no kin left never comes. Done when the test passes and `tools/enum_order.py` passes.
+
+### OST-483 · Nobody ever marries in from outside: let a courted visitor stay, or take their partner home
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Visitors cannot become partners who join or take someone home. Permit eligible adult visitors to pair after their stay under the proposed mutual-opinion rule, then choose once whether the visitor joins or the valley partner leaves with them. Keep the destination, realm relationship and direction in recorded history. Tracking issue: [#206](https://github.com/danhicks96/ostrog-public-ci/issues/206).
+
+**Acceptance:** New test `crates/hf-sim/tests/visitors.rs::a_visitor_who_is_courted_marries_in`: a scenario visitor and an unpartnered valley adult at opinion 0.8 each pair during the visit, and either the visitor is a member of the community afterwards or the valley adult is in `overworld.gone` bound for the visitor's site; the figure's `partner` is set. Done when the test passes and `tools/enum_order.py` passes.
+
+### OST-603 · Find out why couples have about a third of the children the birth dice allow
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Observed births are below those predicted by the nominal dice, but the blocking gate is unknown. Extract a shared read-only birth-gate helper used by births and a new census so the checks cannot drift. Count couple-days by gate and actual births on seeds 1-8 under all three deities for 600 days; report the measured cause without changing behavior. Tracking issue: [#132](https://github.com/danhicks96/ostrog-public-ci/issues/132).
+
+**Acceptance:** Test `crates/hf-sim/tests/generations.rs::births_census_counts_a_built_couple`: a built couple, one partner aged 50, gives all days stopped at the age gate (the counting is a pub fn in `crates/hf-sim/src/systems/life.rs`, e.g. `birth_gate(w, a, b) -> Gate`, which `births` itself then calls so the two cannot drift). Done when the census table for seeds 1-8 is in the issue and fix log.
+
+### OST-604 · Birth rates are set by a guessed constant and a population cap: tune them so families reach a third generation
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Birth rates and crowd limits are guessed. After the shared birth census and prerequisite pairing changes, tune the base rate, crowd threshold and desire scaling on seeds 1-8 under all three deities for 600 days. Record proposed parameters, measurements and the simulation digest change. Tracking issue: [#141](https://github.com/danhicks96/ostrog-public-ci/issues/141).
+
+**Acceptance:** Test: a sibling item to a sibling item tests pass with tuned constants. Done when, across seeds 1-8: births >= joiners per seed; >= 10 third-generation births per surviving seed; the soak's memory check still passes (`ostrog soak --opening`, seeds 1-4).
+
+### OST-605 · Nobody measures how many families reach three generations or what passes down them
+
+**Milestone:** Make the valley feel alive · **State:** Claimed · **Developer:** Ostrog CI (OX) · **Public PR:** Pending
+
+Lineages and inherited ties are measured only outside the repository. Add a pure lineage_stats helper and ties-census counts for living people with a living grandparent, births to valley-born parents and inherited feuds, adding inherited ties once that behavior exists. Check a built three-generation family and compare measured runs with the earlier reported figures. Tracking issue: [#151](https://github.com/danhicks96/ostrog-public-ci/issues/151).
+
+**Acceptance:** Test `crates/hf-sim/tests/generations.rs::lineage_stats_count_a_built_family`: a built grandmother, mother and child give one three-generation line. Done when the census prints the table for seeds 5-8 and seed 5's third-generation births equal the probe's 8.
+
 ### OST-901 · Count births per community, not per valley
 
 **Milestone:** Make the valley feel alive · **State:** Landed · **Developer:** Sol (SL) · **Public PR:** [#634](https://github.com/danhicks96/ostrog-public-ci/pull/634)
