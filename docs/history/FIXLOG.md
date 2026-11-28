@@ -23,6 +23,15 @@ Setup names the selected local area the landing site and identifies the founding
   retain the unchanged guard and refresh the source and generated-image hashes.
 - Guard: `tools/art/plants_animals_check.py` checks the outer canopy; it failed before the
   generator change and passes with it.
+## 2026-11-27: the public frame-time guard required a private plan
+
+- Symptom: local CI in the public snapshot stopped before checking the remaining client guards
+  because `docs/plan/WP-06-renderer-art.md` is not shipped there.
+- Cause: the frame-time harness guard read that private plan unconditionally.
+- Fix: always check the harness; check the plan when present, require it in a private tree with
+  `tools/publish`, and report its absence in a public snapshot.
+- Guard: `tools/tests/frame_time_harness_guard_test.py` covers public and private trees, invalid
+  and valid plans, and a missing harness.
 
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
