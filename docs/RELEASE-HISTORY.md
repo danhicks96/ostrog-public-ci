@@ -40,6 +40,10 @@ The **0.1.1 and 0.1.2 update tests** showed that installing one update did not p
 
 The public repository started with a source snapshot for continuous integration (CI), the automated checks that run against code changes. It is not a game download. Rendered images and audio are not included; CI creates the image inputs it needs for tests from included recipes. Those temporary assets are not cleared for a game release. [Build notes](../README.md) · [Asset status](ASSETS.md)
 
-The first public CI fix put Windows and Linux digest output in the same byte format without weakening what the checks compare. Development then moved into the public repository with two drafts: keeping major events visible when nobody is nearby and explaining breakdowns in the chronicle. These are development changes under review, not released features. [CI fix](https://github.com/danhicks96/ostrog-public-ci/pull/1) · [Camera draft](https://github.com/danhicks96/ostrog-public-ci/pull/2) · [Breakdown draft](https://github.com/danhicks96/ostrog-public-ci/pull/3)
+The first public CI fix put Windows and Linux digest output in the same byte format without weakening what the checks compare. [CI fix](https://github.com/danhicks96/ostrog-public-ci/pull/1)
+
+On November 20, two development changes landed in source. The camera used to discount major events when nobody was nearby: a death in an empty cell could lose to one busy worker elsewhere. The [camera fix](https://github.com/danhicks96/ostrog-public-ci/pull/2) removes that penalty for major events about people. Whether the camera catches more major events over long runs remains to be measured.
+
+The first attempt to explain a breakdown added a separate event. That shifted event IDs and changed simulation behavior in a comparison. The [merged explanation](https://github.com/danhicks96/ostrog-public-ci/pull/3) stays on the original event instead, preserving its identity. Neither source change was a public game release.
 
 Ostrog remains pre-release. The source includes the simulation, Godot client, and Windows launcher. Ten people still come through a portal; three begin together, while the others' fates have to be discovered. The valley builds, remembers, and changes without player orders. The [development backlog](BACKLOG.md) shows what developers can take on now and what must wait.

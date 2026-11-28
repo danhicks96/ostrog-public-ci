@@ -34,7 +34,7 @@ A daze stood the person where they were for a whole game-day and night. It now l
 
 ### OST-001 · Give major personal events more weight in camera selection
 
-**Milestone:** Make important events easier to follow · **State:** In review · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
+**Milestone:** Make important events easier to follow · **State:** Landed · **Developer:** Ostrog CI (OC) · **Public PR:** [#2](https://github.com/danhicks96/ostrog-public-ci/pull/2)
 
 An unwitnessed major event can be discounted enough that one busy person elsewhere draws the camera instead. Give major deaths, captures, breakdowns and exiles full presence even in an empty cell. Keep the existing weights for routine events, fires and departing caravans.
 
@@ -417,6 +417,14 @@ Extend the opt-in decision logger with a Flight Recorder for machine soaks and d
 
 **First implementation acceptance:** From an unattended run with no person selected, reopen the output in a fresh process and recover a real decision, attempt, failure and later retry; distinguish missing evidence from a recorded absence. Report capture coverage, dropped output and retention limits. Preserve the build, seed and tick range, bound resource use, leave normal runs without a trace file, and prove equal simulation digests with diagnostics on and off. No new player-facing or gameplay behavior in the first slice.
 
+### OST-016 · Let keepers retrieve treasured tools
+
+**Milestone:** Make people's possessions matter · **State:** Ready · **Developer:** None · **Public PR:** None
+
+A living keeper who knows about a reachable treasured tool on the ground can walk back and pick up that exact tool without losing its story. This first slice covers tools only. Leave an equipped tool in place and defer retrieval rather than silently replacing it. Keep this separate from changes to how workers fetch ordinary tools and from inheritance or save-format changes.
+
+**Acceptance:** In a running simulation, a keeper with an empty tool slot walks to and recovers the exact known tool, retaining its keepsake and history. An unknown, unreachable, moved, or no-longer-owned item is not taken from the old target. When a treasured tool and an ordinary stack share a tile, a non-keeper hauling the stack takes only the ordinary goods and can still complete the work. Check an already-planned haul and ordinary tool selection so neither can take a living keeper's treasure. Use focused fixtures for these cases and standard CI.
+
 ### OST-203 · Use the bounded long-memory term in mood
 
 **Milestone:** Make the valley feel alive · **State:** In review · **Developer:** Ostrog CI Inner Life (OT) · **Public PR:** [#742](https://github.com/danhicks96/ostrog-public-ci/pull/742)
@@ -697,11 +705,19 @@ Add `crates/hf-sim/examples/catch_up_census.rs`: for each 8-game-hour window on 
 
 ### OST-863 · Check that a biography fits on a page and keeps every life event
 
-**Milestone:** Make important events easier to follow · **State:** Ready · **Developer:** None · **Public PR:** None
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
 
 Add `crates/hf-sim/examples/biography_census.rs`: for each colonist who lived at least 100 game-days, count `view::biography` lines and check that every child's birth, pairing, partner's death and their own death is present. Tracking issue: [#405](https://github.com/danhicks96/ostrog-public-ci/issues/405).
 
 **Acceptance:** 95% of such lives fit in 60 lines and 100% keep the listed events, or the shortfall is reported with examples. Simulation state is unchanged.
+
+### OST-157 · Let the soak table script take seeds and keep the alive lines
+
+**Milestone:** Make important events easier to follow · **State:** Claimed · **Developer:** Ostrog CI Watcher (OW) · **Public PR:** None
+
+`tools/soak/run4.sh` runs seeds 1 to 4 only and keeps only the `SOAK` lines. Take the seeds from `SEEDS` (default `1 2 3 4`), keep every seed's `ALIVE` lines in `alive.txt`, and print each key's values side by side. Extra arguments such as `--alive` already pass through to the soak. Tracking issue: [#73](https://github.com/danhicks96/ostrog-public-ci/issues/73).
+
+**Acceptance:** `SEEDS="1 2" tools/soak/run4.sh <wt> 2 <out> --alive` prints two `SOAK` lines and an `alive.txt` with two lines per key; without `SEEDS` it behaves as before (four seeds). Simulation state is unchanged.
 
 ## Repository usability and diagnostics
 
