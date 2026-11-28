@@ -1,5 +1,17 @@
 # Fix log
 
+## 2026-11-28: the soak table script takes seeds and keeps the alive lines (OST-157)
+
+- Symptom: `tools/soak/run4.sh` ran seeds 1 to 4 only and kept only the `SOAK` lines, so a soak run with
+  `--alive` lost its people report and a review could not use more than four seeds.
+- Fix: the seeds come from `SEEDS` (default `1 2 3 4`) for the soaks and the resume checks; with
+  `--alive` the script writes every seed's `ALIVE key value` lines to `alive.txt` (`key seed value`,
+  sorted by key) and prints one line per key with the seeds side by side. Without `--alive` the
+  output is as before. The soak itself is untouched.
+- Guard: the aggregation was run on two fake seeds' output (two `ALIVE` keys each) and gave
+  `alive.txt` with two lines per key and the side-by-side lines; a build-machine run of
+  `SEEDS="1 2" tools/soak/run4.sh <wt> 2 <out> --alive` is the entry's acceptance.
+
 ## 2026-11-27: a break into a daze stood someone still for a whole day (OST-323)
 
 - Symptom: `Break::Daze` set a `Loitering` activity of a full game-day (28,800 ticks), re-decided only
